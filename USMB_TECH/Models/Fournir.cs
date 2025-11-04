@@ -1,8 +1,17 @@
-﻿namespace USMB_TECH.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace USMB_TECH.Models
 {
+    [Table("fournir")]
     public class Fournir
     {
+        [Key]
+        [Column("id_equipement")]
         public int Id_Equipement { get; set; }
+
+        [Key]
+        [Column("id_prestation")]
         public int Id_Prestation { get; set; }
     }
 }
