@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    public class Est_Lier
+    [Table("est_Lier")]
+    public partial class Est_Lier
     {
         [Column("Nom_Court")]
-        [StringLength(25)]
+        [MaxLength(25)]
         public string Nom_Court { get; set; }
 
         [Column("Id_Thematique")]

@@ -4,25 +4,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace USMB_TECH.Models
 {
     [Table("Laboratoire")]
-    public class Laboratoire
+    public partial class Laboratoire
     {
         [Key]
-        [Column("Nom_Court")]
-        public int Nom_Court { get; set; }
+        [Column("nom_court")]
+        [MaxLength(25)]
+        public string Nom_Court { get; set; }
 
-        [Column("Id_Adresse_Campus")]
+        [Column("id_adresse_campus")]
         public int Id_Adresse_Campus { get; set; }
 
         [Column("Id_Adresse_Labo")]
         public int Id_Adresse_Labo { get; set; }
 
         [Column("Nom_Long")]
-        [StringLength(255)]
-        public string? Nom_Long { get; set; }
+        [MaxLength(255)]
+        public string Nom_Long { get; set; }
 
         [Column("Description")]
-        [StringLength(1000)]
-        public string? Description { get; set; }
+        [MaxLength(1000)]
+        public string Description { get; set; }
 
 
     }

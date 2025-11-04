@@ -1,8 +1,17 @@
-﻿namespace USMB_TECH.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace USMB_TECH.Models
 {
-    public class Marque
+    [Table("marque")]   
+    public partial class Marque
     {
+        [Key]
+        [Column("id_marque")]
         public int Id_Marque { get; set; }
+
+        [Column("nom_marque")]
+        [MaxLength(50)]
         public string Nom_Marque { get; set; }
     }
 }
