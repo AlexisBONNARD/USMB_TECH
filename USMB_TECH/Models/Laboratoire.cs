@@ -25,6 +25,7 @@ namespace USMB_TECH.Models
         [MaxLength(1000)]
         public string Description { get; set; }
 
-
+        [InverseProperty(nameof(Prestation.LaboratoireNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
     }
 }

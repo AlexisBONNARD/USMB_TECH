@@ -13,5 +13,8 @@ namespace USMB_TECH.Models
         [Column("nom_type_prestation")]
         [MaxLength(50)]
         public string Nom_Type_Prestation { get; set; }
+
+        [InverseProperty(nameof(Prestation.Type_PrestationNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
     }
 }

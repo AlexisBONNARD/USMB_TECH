@@ -13,5 +13,8 @@ namespace USMB_TECH.Models
         [Column("nom_unite_oeuvre")]
         [MaxLength(20)]
         public string Nom_Unite_Oeuvre { get; set; }
+
+        [InverseProperty(nameof(Prestation.Unite_OeuvreNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
     }
 }

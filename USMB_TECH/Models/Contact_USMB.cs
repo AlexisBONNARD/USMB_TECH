@@ -40,5 +40,8 @@ namespace USMB_TECH.Models
         [Column("telephone")]
         [MaxLength(50)]
         public string? Telephone { get; set; }
+
+        [InverseProperty(nameof(Prestation.Contact_USMBNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
     }
 }
