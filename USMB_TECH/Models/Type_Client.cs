@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("Type_Client")]
-    public class Type_Client
+    [Table("type_client")]
+    public partial class Type_Client
     {
         [Key]
-        [Column("Id_TypeClient")]
-        public int Id_TypeClient { get; set; }
+        [Column("id_type_client")]
+        public int Id_Type_Client { get; set; }
 
-        [Column("Nom_TypeClient")]
-        [StringLength(50)]
-        public string Nom_TypeClient { get; set; }
+        [Column("nom_typeclient")]
+        [MaxLength(50)]
+        public string Nom_Type_Client { get; set; }
     }
 }

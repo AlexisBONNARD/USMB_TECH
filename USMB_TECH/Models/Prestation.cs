@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("Prestation")]
+    [Table("prestation")]
     public partial class Prestation
     {
         [Key]

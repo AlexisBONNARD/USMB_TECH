@@ -1,17 +1,32 @@
-﻿namespace USMB_TECH.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace USMB_TECH.Models
 {
+    [Table("consommable")]
     public partial class Consommable
     {
+        [Key]
+        [Column("id_consommable")]
         public int Id_Consommable {  get; set; }
 
+        [Column("id_unite")]
         public int Id_Unite { get; set; }
 
-        public string Nom_Consommable { get; set; } 
+        [Column("nom_consommable")]
+        [MaxLength(50)]
+        public string Nom_Consommable { get; set; }
 
+        [Column("prix_unite")]
+        [Precision(10, 2)]
         public double Prix_Unite { get; set; }
 
+        [Column("prix_forfait")]
+        [Precision(10, 2)]
         public double Prix_Forfait { get; set; }
 
-        public int Forfait { get; set; }
+        [Column("forfait")]
+        public bool Forfait { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace USMB_TECH.Models
 {
     [Table("presenter")]
-    public class Presenter
+    public partial class Presenter
     {
         [Key]
         [Column("id_plateforme")]
