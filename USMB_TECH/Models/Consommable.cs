@@ -30,7 +30,11 @@ namespace USMB_TECH.Models
         public bool Forfait { get; set; }
 
         [InverseProperty(nameof(Consommer.ConsommerNavigation))]
-        public virtual ICollection<Consommer> Fournirs { get; set; } = new List<Consommer>();
+        public virtual ICollection<Consommer> Consommables { get; set; } = new List<Consommer>();
+
+        [ForeignKey("id_unite")]
+        [InverseProperty(nameof(Unite.Unites))]
+        public virtual Unite? UniteNavigation { get; set; } = null!;
 
     }
 }
