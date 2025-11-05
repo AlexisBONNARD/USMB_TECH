@@ -54,5 +54,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Associer.Contact_USMBNavigation))]
         public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
+
+        [InverseProperty(nameof(Referencer.Contact_USMBNavigation))]
+        public virtual ICollection<Referencer> Referencers { get; set; } = new List<Referencer>();
     }
 }

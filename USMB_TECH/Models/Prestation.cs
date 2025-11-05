@@ -64,5 +64,10 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Presenter.PrestationNavigation))]
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
+
+        [InverseProperty(nameof(Fournir.PrestationNavigation))]
+        public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
+
+
     }
 }
