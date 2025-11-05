@@ -50,5 +50,14 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Associer.PlateformeNavigation))]
         public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
+
+        [InverseProperty(nameof(Exposer.PlateformeNavigation))]
+        public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
+
+        [InverseProperty(nameof(Exemple_Utilisation.PlateformeNavigation))]
+        public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
+
+        [InverseProperty(nameof(Photo.PlateformeNavigation))]
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

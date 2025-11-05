@@ -28,6 +28,8 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Equipement.Photos))]
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
-
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Plateforme.Photos))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
     }
 }

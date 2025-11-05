@@ -26,7 +26,11 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_equipement")]
         [InverseProperty(nameof(Equipement.Exemple_Utilisations))]
-        public virtual Exemple_Utilisation? EquipementNavigation { get; set; } = null!;
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Exemple_Utilisations))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
 
     }
 }

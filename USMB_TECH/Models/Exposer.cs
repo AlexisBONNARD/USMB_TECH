@@ -12,5 +12,13 @@ namespace USMB_TECH.Models
 
         [Column("id_thematique")]
         public int Id_Thematique { get; set; }
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Exposers))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+
+        [ForeignKey("id_thematique")]
+        [InverseProperty(nameof(Thematique.Exposers))]
+        public virtual Thematique? ThematiqueNavigation { get; set; } = null!;
     }
 }
