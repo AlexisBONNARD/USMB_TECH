@@ -47,5 +47,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Gerer.PlateformeNavigation))]
         public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
+
+        [InverseProperty(nameof(Associer.PlateformeNavigation))]
+        public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
     }
 }
