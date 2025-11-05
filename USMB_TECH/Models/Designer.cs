@@ -13,5 +13,13 @@ namespace USMB_TECH.Models
         [Key]
         [Column("nom_court")]
         public int Nom_Court { get; set; }
+
+        [ForeignKey("id_mot_clef")]
+        [InverseProperty(nameof(Mot_Clef.Designers))]
+        public virtual Mot_Clef? Mot_ClefNavigation { get; set; } = null!;
+
+        [ForeignKey("nom_court")]
+        [InverseProperty(nameof(Laboratoire.Designers))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
     }
 }

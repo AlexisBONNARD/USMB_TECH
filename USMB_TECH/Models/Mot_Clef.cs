@@ -13,5 +13,8 @@ namespace USMB_TECH.Models
         [Column("nom_mot_clef")]
         [MaxLength(25)]
         public string Nom_Mot_Clef { get; set; }
+
+        [InverseProperty(nameof(Designer.Mot_ClefNavigation))]
+        public virtual ICollection<Designer> Designers { get; set; } = new List<Designer>();
     }
 }
