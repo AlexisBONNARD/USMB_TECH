@@ -50,5 +50,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Associer.PlateformeNavigation))]
         public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
+
+        [InverseProperty(nameof(Exposer.PlateformeNavigation))]
+        public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
     }
 }
