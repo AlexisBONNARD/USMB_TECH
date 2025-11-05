@@ -17,5 +17,8 @@ namespace USMB_TECH.Models
         [Column("description")]
         [MaxLength(1000)]
         public string Description { get; set; }
+
+        [InverseProperty(nameof(Posseder.FonctionaliteNavigation))]
+        public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
     }
 }

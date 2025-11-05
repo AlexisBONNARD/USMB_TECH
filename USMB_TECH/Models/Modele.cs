@@ -16,5 +16,9 @@ namespace USMB_TECH.Models
         [Column("nom_Modele")]
         [MaxLength(50)] 
         public string Nom_Modele { get; set; }
+
+        [ForeignKey("id_Marque")]
+        [InverseProperty(nameof(Marque.Modeles))]
+        public virtual Marque? MarqueNavigation { get; set; } = null!;
     }
 }

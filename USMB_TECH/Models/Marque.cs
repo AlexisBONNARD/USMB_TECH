@@ -16,5 +16,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Equipement.MarqueNavigation))]
         public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
+
+        [InverseProperty(nameof(Modele.MarqueNavigation))]
+        public virtual ICollection<Modele> Modeles { get; set; } = new List<Modele>();
     }
 }
