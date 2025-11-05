@@ -41,9 +41,6 @@ namespace USMB_TECH.Models
         [MaxLength(50)]
         public string? Telephone { get; set; }
 
-        [InverseProperty(nameof(Prestation.Contact_USMBNavigation))]
-        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
-
         [ForeignKey("id_fonction")]
         [InverseProperty(nameof(Fonction.Contacts))]
         public virtual Fonction? FonctionNavigation { get; set; } = null!;
@@ -51,5 +48,11 @@ namespace USMB_TECH.Models
         [ForeignKey("id_fonction")]
         [InverseProperty(nameof(Laboratoire.Contacts))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
+
+        [InverseProperty(nameof(Prestation.Contact_USMBNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
+
+        [InverseProperty(nameof(Associer.Contact_USMBNavigation))]
+        public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
     }
 }
