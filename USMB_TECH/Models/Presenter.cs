@@ -13,5 +13,13 @@ namespace USMB_TECH.Models
         [Key]
         [Column("id_prestation")]
         public int Id_Prestation { get; set; }
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Presenters))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+
+        [ForeignKey("id_prestation")]
+        [InverseProperty(nameof(Prestation.Presenters))]
+        public virtual Prestation? PrestationNavigation { get; set; } = null!;
     }
 }

@@ -61,5 +61,8 @@ namespace USMB_TECH.Models
         [ForeignKey("id_contact")]
         [InverseProperty(nameof(Contact_USMB.Prestations))]
         public virtual Contact_USMB? Contact_USMBNavigation { get; set; } = null!;
+
+        [InverseProperty(nameof(Presenter.PrestationNavigation))]
+        public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
     }
 }
