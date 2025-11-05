@@ -16,5 +16,9 @@ namespace USMB_TECH.Models
 
         [Column("role")]
         public string Role { get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Referencers))]
+        public virtual Equipement? ReferencerNavigation { get; set; } = null!;
     }
 }
