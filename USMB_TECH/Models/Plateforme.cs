@@ -44,5 +44,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Prise_Contact.PlateformeNavigation))]
         public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
+
+        [InverseProperty(nameof(Gerer.PlateformeNavigation))]
+        public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
     }
 }

@@ -17,5 +17,13 @@ namespace USMB_TECH.Models
         [Column("pourcentage")]
         [Precision(5, 2)]
         public double Pourcentage { get; set; }
+
+        [ForeignKey("nom_court")]
+        [InverseProperty(nameof(Laboratoire.Gerers))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Gerers))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
     }
 }
