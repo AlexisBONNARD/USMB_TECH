@@ -41,5 +41,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Designer.LaboratoireNavigation))]
         public virtual ICollection<Designer> Designers { get; set; } = new List<Designer>();
+
+        [InverseProperty(nameof(Est_Lier.LaboratoireNavigation))]
+        public virtual ICollection<Est_Lier> Est_Liers { get; set; } = new List<Est_Lier>();
     }
 }
