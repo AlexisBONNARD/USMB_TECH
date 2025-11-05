@@ -32,5 +32,8 @@ namespace USMB_TECH.Models
 
         [Column("actif")]
         public bool Actif {  get; set; }
+
+        [InverseProperty(nameof(Equipement.PlateformeNavigation))]
+        public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
     }
 }

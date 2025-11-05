@@ -23,5 +23,10 @@ namespace USMB_TECH.Models
         [Column("description_utilisation")]
         [MaxLength(500)]
         public string Description_Utilisation { get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Exemple_Utilisations))]
+        public virtual Exemple_Utilisation? Exemple_UtilisationNavigation { get; set; } = null!;
+
     }
 }

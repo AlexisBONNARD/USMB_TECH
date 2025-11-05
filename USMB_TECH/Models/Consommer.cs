@@ -16,5 +16,10 @@ namespace USMB_TECH.Models
 
         [Column("quantite")]
         public int Quantite {  get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Consommers))]
+        public virtual Equipement? ConsommerNavigation { get; set; } = null!;
+
     }
 }

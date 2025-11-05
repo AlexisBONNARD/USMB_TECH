@@ -54,5 +54,26 @@ namespace USMB_TECH.Models
 
         [Column("actif")]
         public bool Actif { get; set; }
+
+        [ForeignKey("id_type_equipement")]
+        [InverseProperty(nameof(Type_Equipement.Equipements))]
+        public virtual Unite_Oeuvre? Type_EquipementNavigation { get; set; } = null!;
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Equipements))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+
+        [ForeignKey("id_marque")]
+        [InverseProperty(nameof(Marque.Equipements))]
+        public virtual Marque? MarqueNavigation { get; set; } = null!;
+
+        [InverseProperty(nameof(Consommer.ConsommerNavigation))]
+        public virtual ICollection<Consommer> Consommers { get; set; } = new List<Consommer>();
+
+        [InverseProperty(nameof(Exemple_Utilisation.Exemple_UtilisationNavigation))]
+        public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
+
+
+
     }
 }

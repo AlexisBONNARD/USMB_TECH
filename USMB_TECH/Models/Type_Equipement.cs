@@ -13,5 +13,8 @@ namespace USMB_TECH.Models
         [Column("nom_type")]
         [MaxLength(50)]
         public string Nom_Type { get; set; }
+
+        [InverseProperty(nameof(Equipement.Type_EquipementNavigation))]
+        public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
     }
 }
