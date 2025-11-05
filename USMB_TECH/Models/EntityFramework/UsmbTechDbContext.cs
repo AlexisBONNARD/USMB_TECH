@@ -63,6 +63,7 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Adresse_Campus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("laboratoire_id_adresse_campus_fkey");
+
             e.HasMany(d => d.Laboratoires_labo)
                 .WithOne(p => p.Adresse_laboNavigation)
                 .HasForeignKey(d => d.Id_Adresse_Labo)
@@ -98,7 +99,7 @@ public partial class UsmbTechDbContext : DbContext
                 .HasConstraintName("consommer_id_consommable_fkey");
 
             e.HasOne(d => d.UniteNavigation)
-                .WithMany(p => p.Unites)
+                .WithMany(p => p.Consommables)
                 .HasForeignKey(d => d.Id_Unite)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("consommable_id_unite_fkey");
@@ -158,6 +159,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Designer>(e =>
         {
             e.HasKey(e => new { e.Id_Mot_Clef, e.Nom_Court }).HasName("designer_pkey");
+
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Designers)
                 .HasForeignKey(d => d.Nom_Court)
@@ -241,6 +243,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Est_Lier>(e =>
         {
             e.HasKey(e => new { e.Nom_Court, e.Id_Thematique }).HasName("est_lier_pkey");
+
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Est_Liers)
                 .HasForeignKey(d => d.Nom_Court)
@@ -257,6 +260,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Exemple_Utilisation>(e =>
         {
             e.HasKey(e => e.Id_Exemple_Utilisation).HasName("exemple_utilisation_pkey");
+
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Exemple_Utilisations)
                 .HasForeignKey(d => d.Id_Equipement)
@@ -273,11 +277,13 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Exposer>(e =>
         {
             e.HasKey(e => new { e.Id_Plateforme, e.Id_Thematique }).HasName("exposer_pkey");
+
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Exposers)
                 .HasForeignKey(d => d.Id_Plateforme)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("exposer_id_plateforme_fkey");
+
             e.HasOne(d => d.ThematiqueNavigation)
                 .WithMany(p => p.Exposers)
                 .HasForeignKey(d => d.Id_Thematique)
@@ -311,6 +317,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Fournir>(e =>
         {
             e.HasKey(e => new { e.Id_Equipement, e.Id_Prestation }).HasName("fournir_pkey");
+
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Fournirs)
                 .HasForeignKey(d => d.Id_Equipement)
@@ -327,6 +334,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Gerer>(e =>
         {
             e.HasKey(e => new { e.Id_Plateforme, e.Nom_Court }).HasName("gerer_pkey");
+
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Gerers)
                 .HasForeignKey(d => d.Id_Plateforme)
@@ -447,6 +455,15 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Plateforme)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("photo_id_plateforme_fkey");
+
+            // ✅ Contrainte d'exclusion : Une photo ne peut être liée qu'à un équipement ou à une plateforme, pas les deux.
+            e.ToTable(tb =>
+            {
+                tb.HasCheckConstraint(
+                    "CK_Photo_EquipementOuPlateforme",
+                    "(\"Id_Equipement\" IS NULL) <> (\"Id_Plateforme\" IS NULL)"
+                );
+            });
         });
 
         modelBuilder.Entity<Plateforme>(e =>
@@ -546,6 +563,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Prestation>(e =>
         {
             e.HasKey(e => new { e.Id_Prestation }).HasName("prestation_pkey");
+
             e.HasMany(d => d.Fournirs)
                 .WithOne(p => p.PrestationNavigation)
                 .HasForeignKey(d => d.Id_Prestation)
@@ -587,21 +605,33 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Prise_Contact>(e =>
         {
             e.HasKey(e => e.Num_Prise_Contact).HasName("prise_contact_pkey");
+
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Equipement)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("prise_contact_id_equipement_fkey");
+
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Plateforme)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("prise_contact_id_plateforme_fkey");
+
             e.HasOne(d => d.Type_ClientNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Type_Client)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("prise_contact_id_type_client_fkey");
+
+            // ✅ Contrainte d’exclusion : Une prise de contact ne peut être liée qu’à une plateforme ou à un équipement, pas les deux.
+            e.ToTable(tb =>
+            {
+                tb.HasCheckConstraint(
+                    "CK_PriseContact_EquipementOuPlateforme",
+                    "(\"Id_Equipement\" IS NULL) <> (\"Id_Plateforme\" IS NULL)"
+                );
+            });
         });
 
         modelBuilder.Entity<Referencer>(e =>
