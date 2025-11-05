@@ -13,5 +13,8 @@ namespace USMB_TECH.Models
         [Column("nom_fonction")]
         [MaxLength(50)]
         public string Nom_Fonction { get; set; }
+
+        [InverseProperty(nameof(Contact_USMB.FonctionNavigation))]
+        public virtual ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
     }
 }

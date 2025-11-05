@@ -29,5 +29,11 @@ namespace USMB_TECH.Models
         [Column("pays_adresse")]
         [MaxLength(50)]
         public string? Pays_Adresse { get; set; }
+
+        [InverseProperty(nameof(Laboratoire.Adresse_campusNavigation))]
+        public virtual ICollection<Laboratoire> Laboratoires_campus { get; set; } = new List<Laboratoire>();
+
+        [InverseProperty(nameof(Laboratoire.Adresse_laboNavigation))]
+        public virtual ICollection<Laboratoire> Laboratoires_labo { get; set; } = new List<Laboratoire>();
     }
 }
