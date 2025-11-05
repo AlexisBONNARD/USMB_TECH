@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("Laboratoire")]
+    [Table("laboratoire")]
     public partial class Laboratoire
     {
         [Key]
@@ -14,18 +14,26 @@ namespace USMB_TECH.Models
         [Column("id_adresse_campus")]
         public int Id_Adresse_Campus { get; set; }
 
-        [Column("Id_Adresse_Labo")]
+        [Column("id_adresse_labo")]
         public int Id_Adresse_Labo { get; set; }
 
-        [Column("Nom_Long")]
+        [Column("nom_long")]
         [MaxLength(255)]
         public string Nom_Long { get; set; }
 
-        [Column("Description")]
+        [Column("description")]
         [MaxLength(1000)]
         public string Description { get; set; }
 
         [InverseProperty(nameof(Prestation.LaboratoireNavigation))]
         public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
+
+        [ForeignKey("id_adresse_campus")]
+        [InverseProperty(nameof(Adresse.Laboratoires_campus))]
+        public virtual Unite_Oeuvre? Adresse_campusNavigation { get; set; } = null!;
+
+        [ForeignKey("id_adresse_labo")]
+        [InverseProperty(nameof(Adresse.Laboratoires_labo))]
+        public virtual Unite_Oeuvre? Adresse_laboNavigation { get; set; } = null!;
     }
 }
