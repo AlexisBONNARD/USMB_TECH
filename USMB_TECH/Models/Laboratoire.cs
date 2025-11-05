@@ -38,5 +38,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Contact_USMB.LaboratoireNavigation))]
         public virtual ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
+
+        [InverseProperty(nameof(Designer.LaboratoireNavigation))]
+        public virtual ICollection<Designer> Designers { get; set; } = new List<Designer>();
     }
 }
