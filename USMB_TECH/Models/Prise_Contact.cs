@@ -41,6 +41,14 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_equipement")]
         [InverseProperty(nameof(Equipement.Prise_Contacts))]
-        public virtual Equipement? Prise_ContactNavigation { get; set; } = null!;
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Prise_Contacts))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+
+        [ForeignKey("id_type_client")]
+        [InverseProperty(nameof(Type_Client.Prise_Contacts))]
+        public virtual Type_Client? Type_ClientNavigation { get; set; } = null!;
     }
 }
