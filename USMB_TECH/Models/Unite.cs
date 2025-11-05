@@ -15,7 +15,7 @@ namespace USMB_TECH.Models
         public string Nom_Unite { get; set; }
 
         [InverseProperty(nameof(Consommable.UniteNavigation))]
-        public virtual ICollection<Consommable> Unites { get; set; } = new List<Consommable>();
+        public virtual ICollection<Consommable> Consommables { get; set; } = new List<Consommable>();
 
     }
 }
