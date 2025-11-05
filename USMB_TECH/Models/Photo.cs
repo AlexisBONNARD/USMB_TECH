@@ -26,7 +26,7 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_equipement")]
         [InverseProperty(nameof(Equipement.Photos))]
-        public virtual Equipement? PhotoNavigation { get; set; } = null!;
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
 
     }

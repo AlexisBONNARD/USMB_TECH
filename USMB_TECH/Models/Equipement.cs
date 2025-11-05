@@ -67,25 +67,25 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Marque.Equipements))]
         public virtual Marque? MarqueNavigation { get; set; } = null!;
 
-        [InverseProperty(nameof(Consommer.ConsommerNavigation))]
+        [InverseProperty(nameof(Consommer.EquipementNavigation))]
         public virtual ICollection<Consommer> Consommers { get; set; } = new List<Consommer>();
 
-        [InverseProperty(nameof(Posseder.PossederNavigation))]
+        [InverseProperty(nameof(Posseder.EquipementNavigation))]
         public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
 
-        [InverseProperty(nameof(Exemple_Utilisation.Exemple_UtilisationNavigation))]
+        [InverseProperty(nameof(Exemple_Utilisation.EquipementNavigation))]
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 
-        [InverseProperty(nameof(Referencer.ReferencerNavigation))]
+        [InverseProperty(nameof(Referencer.EquipementNavigation))]
         public virtual ICollection<Referencer> Referencers { get; set; } = new List<Referencer>();
 
-        [InverseProperty(nameof(Prise_Contact.Prise_ContactNavigation))]
+        [InverseProperty(nameof(Prise_Contact.EquipementNavigation))]
         public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
 
-        [InverseProperty(nameof(Photo.PhotoNavigation))]
+        [InverseProperty(nameof(Photo.EquipementNavigation))]
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
-        [InverseProperty(nameof(Fournir.FournirNavigation))]
+        [InverseProperty(nameof(Fournir.EquipementNavigation))]
         public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
 
 

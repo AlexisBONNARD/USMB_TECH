@@ -19,7 +19,10 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_equipement")]
         [InverseProperty(nameof(Equipement.Consommers))]
-        public virtual Equipement? ConsommerNavigation { get; set; } = null!;
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
+        [ForeignKey("id_consommable")]
+        [InverseProperty(nameof(Consommable.Consommers))]
+        public virtual Consommable? ConsommableNavigation { get; set; } = null!;
     }
 }

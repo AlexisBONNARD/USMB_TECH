@@ -28,5 +28,9 @@ namespace USMB_TECH.Models
 
         [Column("forfait")]
         public bool Forfait { get; set; }
+
+        [InverseProperty(nameof(Consommer.ConsommerNavigation))]
+        public virtual ICollection<Consommer> Fournirs { get; set; } = new List<Consommer>();
+
     }
 }

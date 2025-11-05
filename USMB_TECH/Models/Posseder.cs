@@ -15,6 +15,6 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_equipement")]
         [InverseProperty(nameof(Equipement.Posseders))]
-        public virtual Equipement? PossederNavigation { get; set; } = null!;
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
     }
 }
