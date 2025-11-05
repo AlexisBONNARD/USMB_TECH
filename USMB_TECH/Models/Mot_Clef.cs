@@ -16,5 +16,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Designer.Mot_ClefNavigation))]
         public virtual ICollection<Designer> Designers { get; set; } = new List<Designer>();
+
+        [InverseProperty(nameof(Specifier.Mot_ClefNavigation))]
+        public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
     }
 }

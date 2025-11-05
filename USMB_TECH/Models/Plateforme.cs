@@ -38,5 +38,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Equipement.PlateformeNavigation))]
         public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
+
+        [InverseProperty(nameof(Specifier.PlateformeNavigation))]
+        public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
     }
 }
