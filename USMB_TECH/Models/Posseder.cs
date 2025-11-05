@@ -12,5 +12,9 @@ namespace USMB_TECH.Models
         [Key]
         [Column("id_fonctionalite")]
         public int Id_Fonctionalite { get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Posseders))]
+        public virtual Equipement? PossederNavigation { get; set; } = null!;
     }
 }

@@ -70,9 +70,14 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Consommer.ConsommerNavigation))]
         public virtual ICollection<Consommer> Consommers { get; set; } = new List<Consommer>();
 
+        [InverseProperty(nameof(Posseder.PossederNavigation))]
+        public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
+
         [InverseProperty(nameof(Exemple_Utilisation.Exemple_UtilisationNavigation))]
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 
+        [InverseProperty(nameof(Referencer.ReferencerNavigation))]
+        public virtual ICollection<Referencer> Referencers { get; set; } = new List<Referencer>();
 
 
     }
