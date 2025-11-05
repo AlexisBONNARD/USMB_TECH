@@ -45,7 +45,7 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Fonction.Contacts))]
         public virtual Fonction? FonctionNavigation { get; set; } = null!;
 
-        [ForeignKey("id_fonction")]
+        [ForeignKey("nom_court")]
         [InverseProperty(nameof(Laboratoire.Contacts))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 

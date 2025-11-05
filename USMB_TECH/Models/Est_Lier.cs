@@ -3,21 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("est_Lier")]
+    [Table("est_lier")]
     public partial class Est_Lier
     {
-        [Column("Nom_Court")]
+        [Column("nom_court")]
         [MaxLength(25)]
         public string Nom_Court { get; set; }
 
-        [Column("Id_Thematique")]
+        [Column("id_thematique")]
         public int Id_Thematique { get; set; }
 
-        [ForeignKey("Nom_Court")]
+        [ForeignKey("nom_court")]
         [InverseProperty(nameof(Laboratoire.Est_Liers))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
-        [ForeignKey("Id_Thematique")]
+        [ForeignKey("id_thematique")]
         [InverseProperty(nameof(Thematique.Est_Liers))]
         public virtual Thematique? ThematiqueNavigation { get; set; } = null!;
     }
