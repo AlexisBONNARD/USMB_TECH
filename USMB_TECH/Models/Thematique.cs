@@ -16,5 +16,12 @@ namespace USMB_TECH.Models
         [Column("nom_thematique")]
         [MaxLength(50)]
         public string Nom_Thematique { get; set; }
-        }
+
+        [ForeignKey("id_sous_thematique")]
+        [InverseProperty(nameof(Thematique.Thematiques))]
+        public virtual Thematique? ThematiqueNavigation { get; set; } = null!;
+
+        [InverseProperty(nameof(Thematique.ThematiqueNavigation))]
+        public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
+    }
 }
