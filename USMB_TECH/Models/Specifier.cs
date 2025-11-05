@@ -13,5 +13,13 @@ namespace USMB_TECH.Models
         [Key]
         [Column("id_mot_clef")]
         public int Id_Mot_Clef { get; set; }
+
+        [ForeignKey("id_plateforme")]
+        [InverseProperty(nameof(Plateforme.Specifiers))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+
+        [ForeignKey("id_mot_clef")]
+        [InverseProperty(nameof(Mot_Clef.Specifiers))]
+        public virtual Mot_Clef? Mot_ClefNavigation { get; set; } = null!;
     }
 }
