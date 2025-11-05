@@ -13,5 +13,9 @@ namespace USMB_TECH.Models
         [Column("nom_unite")]
         [MaxLength(20)]
         public string Nom_Unite { get; set; }
+
+        [InverseProperty(nameof(Consommable.UniteNavigation))]
+        public virtual ICollection<Consommable> Unites { get; set; } = new List<Consommable>();
+
     }
 }

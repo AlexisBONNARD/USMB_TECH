@@ -22,7 +22,9 @@ namespace USMB_TECH.Models
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
         [ForeignKey("id_consommable")]
-        [InverseProperty(nameof(Consommable.Consommers))]
-        public virtual Consommable? ConsommableNavigation { get; set; } = null!;
+        [InverseProperty(nameof(Consommable.Consommables))]
+        public virtual Consommable? UniteNavigation { get; set; } = null!;
+
+
     }
 }
