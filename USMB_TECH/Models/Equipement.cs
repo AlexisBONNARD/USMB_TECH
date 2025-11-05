@@ -65,7 +65,7 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_type_equipement")]
         [InverseProperty(nameof(Type_Equipement.Equipements))]
-        public virtual Unite_Oeuvre? Type_EquipementNavigation { get; set; } = null!;
+        public virtual Type_Equipement? Type_EquipementNavigation { get; set; } = null!;
 
         [InverseProperty(nameof(Consommer.EquipementNavigation))]
         public virtual ICollection<Consommer> Consommers { get; set; } = new List<Consommer>();
