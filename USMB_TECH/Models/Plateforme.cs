@@ -41,5 +41,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Specifier.PlateformeNavigation))]
         public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
+
+        [InverseProperty(nameof(Prise_Contact.PlateformeNavigation))]
+        public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
     }
 }

@@ -23,5 +23,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Thematique.ThematiqueNavigation))]
         public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
+
+        [InverseProperty(nameof(Est_Lier.ThematiqueNavigation))]
+        public virtual ICollection<Est_Lier> Est_Liers { get; set; } = new List<Est_Lier>();
     }
 }

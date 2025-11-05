@@ -13,5 +13,8 @@ namespace USMB_TECH.Models
         [Column("nom_typeclient")]
         [MaxLength(50)]
         public string Nom_Type_Client { get; set; }
+
+        [InverseProperty(nameof(Prise_Contact.Type_ClientNavigation))]
+        public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
     }
 }
