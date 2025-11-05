@@ -30,10 +30,10 @@ namespace USMB_TECH.Models
 
         [ForeignKey("id_adresse_campus")]
         [InverseProperty(nameof(Adresse.Laboratoires_campus))]
-        public virtual Unite_Oeuvre? Adresse_campusNavigation { get; set; } = null!;
+        public virtual Adresse? Adresse_campusNavigation { get; set; } = null!;
 
         [ForeignKey("id_adresse_labo")]
         [InverseProperty(nameof(Adresse.Laboratoires_labo))]
-        public virtual Unite_Oeuvre? Adresse_laboNavigation { get; set; } = null!;
+        public virtual Adresse? Adresse_laboNavigation { get; set; } = null!;
     }
 }
