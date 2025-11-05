@@ -25,9 +25,6 @@ namespace USMB_TECH.Models
         [MaxLength(1000)]
         public string Description { get; set; }
 
-        [InverseProperty(nameof(Prestation.LaboratoireNavigation))]
-        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
-
         [ForeignKey("id_adresse_campus")]
         [InverseProperty(nameof(Adresse.Laboratoires_campus))]
         public virtual Adresse? Adresse_campusNavigation { get; set; } = null!;
@@ -35,5 +32,11 @@ namespace USMB_TECH.Models
         [ForeignKey("id_adresse_labo")]
         [InverseProperty(nameof(Adresse.Laboratoires_labo))]
         public virtual Adresse? Adresse_laboNavigation { get; set; } = null!;
+
+        [InverseProperty(nameof(Prestation.LaboratoireNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
+
+        [InverseProperty(nameof(Contact_USMB.LaboratoireNavigation))]
+        public virtual ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
     }
 }

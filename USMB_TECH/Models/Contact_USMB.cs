@@ -43,5 +43,13 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Prestation.Contact_USMBNavigation))]
         public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
+
+        [ForeignKey("id_fonction")]
+        [InverseProperty(nameof(Fonction.Contacts))]
+        public virtual Fonction? FonctionNavigation { get; set; } = null!;
+
+        [ForeignKey("id_fonction")]
+        [InverseProperty(nameof(Laboratoire.Contacts))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
     }
 }
