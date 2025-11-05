@@ -38,5 +38,9 @@ namespace USMB_TECH.Models
         [Column("description_besoins")]
         [MaxLength(200)]
         public string Description_besoins { get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Prise_Contacts))]
+        public virtual Equipement? Prise_ContactNavigation { get; set; } = null!;
     }
 }

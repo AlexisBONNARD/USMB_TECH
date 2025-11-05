@@ -79,6 +79,15 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Referencer.ReferencerNavigation))]
         public virtual ICollection<Referencer> Referencers { get; set; } = new List<Referencer>();
 
+        [InverseProperty(nameof(Prise_Contact.Prise_ContactNavigation))]
+        public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
+
+        [InverseProperty(nameof(Photo.PhotoNavigation))]
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
+        [InverseProperty(nameof(Fournir.FournirNavigation))]
+        public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
+
 
     }
 }

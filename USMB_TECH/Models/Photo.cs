@@ -23,5 +23,11 @@ namespace USMB_TECH.Models
         [Column("url_photo")]
         [MaxLength(500)]
         public string Url_Photo { get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Photos))]
+        public virtual Equipement? PhotoNavigation { get; set; } = null!;
+
+
     }
 }

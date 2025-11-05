@@ -13,5 +13,9 @@ namespace USMB_TECH.Models
         [Key]
         [Column("id_prestation")]
         public int Id_Prestation { get; set; }
+
+        [ForeignKey("id_equipement")]
+        [InverseProperty(nameof(Equipement.Fournirs))]
+        public virtual Equipement? FournirNavigation { get; set; } = null!;
     }
 }
