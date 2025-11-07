@@ -3,8 +3,7 @@
     public interface IEditRepository<TEntity>
     {
         Task AddAsync(TEntity entity);
-        Task UpdateAsync(TEntity entity);
-        Task PutAsync(TEntity entityToUpdate, TEntity entity);
+        Task UpdateAsync(TEntity entityToUpdate, TEntity entity);
         Task DeleteAsync(TEntity entity);
     }
 }

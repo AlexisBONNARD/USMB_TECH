@@ -28,14 +28,9 @@ namespace USMB_TECH.Models.Repository
             context.Laboratoires.Remove(entity);
             await context.SaveChangesAsync();
         }
-
-        public async Task UpdateAsync(Laboratoire entity) 
+        public async Task UpdateAsync(Laboratoire entityToUpdate, Laboratoire entity) 
         {
-            context.Laboratoires.Update(entity);
-            await context.SaveChangesAsync();
-        }
-        public async Task PutAsync(Laboratoire entityToUpdate, Laboratoire entity) 
-        {
+            context.Laboratoires.Attach(entityToUpdate);
             context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
             await context.SaveChangesAsync();
         }

@@ -26,13 +26,9 @@ namespace USMB_TECH.Models.Repository
         {
             return await context.Plateformes.FindAsync(id);
         }
-        public async Task UpdateAsync(Plateforme entity)
+        public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme entity)
         {
-            context.Plateformes.Update(entity);
-            await context.SaveChangesAsync();
-        }
-        public async Task PutAsync(Plateforme entityToUpdate, Plateforme entity)
-        {
+            context.Plateformes.Attach(entityToUpdate);
             context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
             await context.SaveChangesAsync();
         }
