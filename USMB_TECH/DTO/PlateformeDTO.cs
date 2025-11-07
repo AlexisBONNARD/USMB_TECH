@@ -1,4 +1,6 @@
-﻿namespace USMB_TECH.DTO
+﻿using System;
+
+namespace USMB_TECH.DTO
 {
     public class PlateformeDTO
     {
@@ -22,7 +24,14 @@
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id_Plateforme, Nom_Plateforme, Description_Plateforme, Nom_Contenu, Url_Contenu, Description_Contenu);
+            HashCode hash = new HashCode();
+            hash.Add(Id_Plateforme);
+            hash.Add(Nom_Plateforme);
+            hash.Add(Description_Plateforme);
+            hash.Add(Nom_Contenu);
+            hash.Add(Url_Contenu);
+            hash.Add(Description_Contenu);
+            return hash.ToHashCode();
         }
     }
 }
