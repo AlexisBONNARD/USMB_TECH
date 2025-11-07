@@ -42,9 +42,7 @@ namespace USMB_TECH.Controllers
             var laboratoire = await _dataRepository.GetByIdAsync(id);
 
             if (laboratoire == null)
-            {
-                return NotFound();
-            }
+                return NotFound($"Aucune laboratoire trouvée avec l'id {id}");
 
             return laboratoire;
         }
@@ -69,14 +67,10 @@ namespace USMB_TECH.Controllers
             var laboratoireToUpdate = await _dataRepository.GetByIdAsync(id);
 
             if (laboratoireToUpdate == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                await _dataRepository.UpdateAsync(laboratoireToUpdate, laboratoire);
-                return NoContent();
-            }
+                return NotFound($"Plateforme avec l'id {id} introuvable.");
+            
+            await _dataRepository.UpdateAsync(laboratoireToUpdate, laboratoire);
+            return NoContent();
         }
 
         // POST: api/Laboratoires
@@ -87,11 +81,9 @@ namespace USMB_TECH.Controllers
         public async Task<ActionResult<Laboratoire>> PostLaboratoire(Laboratoire laboratoire)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-            await _dataRepository.AddAsync(laboratoire);
 
+            await _dataRepository.AddAsync(laboratoire);
             return CreatedAtAction("GetLaboratoire", new { id = laboratoire.Nom_Court }, laboratoire);
         }
 
