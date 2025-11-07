@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Threading.Tasks;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
+using USMB_TECH.Models.Repository;
 
 namespace USMB_TECH.Controllers
 {
@@ -15,10 +18,12 @@ namespace USMB_TECH.Controllers
     public class EquipementsController : ControllerBase
     {
         private readonly UsmbTechDbContext _context;
+        private readonly IMainRepository<Equipement, int> _dataRepository;
 
-        public EquipementsController(UsmbTechDbContext context)
+        public EquipementsController(UsmbTechDbContext context, IMainRepository<Equipement, int> dataRepository)
         {
             _context = context;
+            _dataRepository = dataRepository;
         }
 
         // GET: api/Equipements
@@ -26,7 +31,10 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Equipement>>> GetEquipements()
         {
-            return await _context.Equipements.ToListAsync();
+            var equipements = await _dataRepository.GetAllAsync();
+            if (equipements == null || !equipements.Any())
+                return NotFound();
+            return Ok(equipements);
         }
 
         // GET: api/Equipements/5
@@ -35,14 +43,8 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Equipement>> GetEquipement(int id)
         {
-            var equipement = await _context.Equipements.FindAsync(id);
-
-            if (equipement == null)
-            {
-                return NotFound();
-            }
-
-            return equipement;
+            var resultat = await _dataRepository.GetByIdAsync(id);
+            return resultat == null ? NotFound() : Ok(resultat);
         }
 
         // PUT: api/Equipements/5
@@ -53,28 +55,22 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutEquipement(int id, Equipement equipement)
         {
-            if (id != equipement.Id_Equipement)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            _context.Entry(equipement).State = EntityState.Modified;
+            // Récupérer la marque existante
+            Equipement? equipementAModifier = await _dataRepository.GetByIdAsync(id);
 
-            try
+            if (equipementAModifier == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EquipementExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            equipement.Id_Equipement = id; // Conserver l'ID
+
+            await _dataRepository.UpdateAsync(equipementAModifier, equipement);
 
             return NoContent();
         }
@@ -86,10 +82,16 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Equipement>> PostEquipement(Equipement equipement)
         {
-            _context.Equipements.Add(equipement);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetEquipement", new { id = equipement.Id_Equipement }, equipement);
+            // Sauvegarde de la  marque
+            await _dataRepository.AddAsync(equipement);
+
+            // Retourner le détail de la marque  créé
+            return CreatedAtAction("Get", new { id = equipement.Id_Equipement }, equipement);
         }
 
         // DELETE: api/Equipements/5
@@ -98,15 +100,10 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteEquipement(int id)
         {
-            var equipement = await _context.Equipements.FindAsync(id);
-            if (equipement == null)
-            {
+            ActionResult<Equipement?> brand = await _dataRepository.GetByIdAsync(id);
+            if (brand.Value == null)
                 return NotFound();
-            }
-
-            _context.Equipements.Remove(equipement);
-            await _context.SaveChangesAsync();
-
+            await _dataRepository.DeleteAsync(brand.Value);
             return NoContent();
         }
 
