@@ -13,6 +13,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UsmbTechDbContext>();
 builder.Services.AddScoped<IMainRepository<Laboratoire, int>, LaboratoireManager>();
 builder.Services.AddScoped<IMainRepository<Plateforme, int>, PlateformeManager>();
+builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
+builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
+builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
+builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
 
 var app = builder.Build();
 

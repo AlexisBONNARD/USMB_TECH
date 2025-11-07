@@ -3,7 +3,7 @@ using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
 {
-    public class Contact_UsmbManager
+    public class Contact_USMBManager : IMainRepository<Contact_USMB, int>
     {
         public UsmbTechDbContext context = new UsmbTechDbContext();
 
@@ -12,7 +12,7 @@ namespace USMB_TECH.Models.Repository
             return await context.Contact_USMBs.ToListAsync();
         }
 
-        public async Task<Contact_USMB?> GetByIdAsync(int id) 
+        public async Task<Contact_USMB?> GetByIdAsync(int id)
         {
             return await context.Contact_USMBs.FindAsync(id);
         }
@@ -27,6 +27,12 @@ namespace USMB_TECH.Models.Repository
         {
             context.Contact_USMBs.Attach(entityToUpdate);
             context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Contact_USMB entity) 
+        {
+            context.Contact_USMBs.Remove(entity);
             await context.SaveChangesAsync();
         }
     }
