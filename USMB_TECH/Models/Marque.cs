@@ -14,9 +14,6 @@ namespace USMB_TECH.Models
         [MaxLength(50)]
         public string Nom_Marque { get; set; }
 
-        [InverseProperty(nameof(Equipement.MarqueNavigation))]
-        public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
-
         [InverseProperty(nameof(Modele.MarqueNavigation))]
         public virtual ICollection<Modele> Modeles { get; set; } = new List<Modele>();
     }

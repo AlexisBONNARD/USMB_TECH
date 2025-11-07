@@ -17,6 +17,9 @@ namespace USMB_TECH.Models
         [MaxLength(50)] 
         public string Nom_Modele { get; set; }
 
+        [InverseProperty(nameof(Equipement.ModeleNavigation))]
+        public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
+
         [ForeignKey("id_Marque")]
         [InverseProperty(nameof(Marque.Modeles))]
         public virtual Marque? MarqueNavigation { get; set; } = null!;

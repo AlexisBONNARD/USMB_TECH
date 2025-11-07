@@ -14,8 +14,8 @@ namespace USMB_TECH.Models
         [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 
-        [Column("id_marque")]
-        public int Id_Marque { get; set; }
+        [Column("id_modele")]
+        public int Id_Modele { get; set; }
 
         [Column("id_type_equipement")]  
         public int Id_Type_Equipement { get; set; }
@@ -59,9 +59,9 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Plateforme.Equipements))]
         public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
 
-        [ForeignKey("id_marque")]
-        [InverseProperty(nameof(Marque.Equipements))]
-        public virtual Marque? MarqueNavigation { get; set; } = null!;
+        [ForeignKey("id_modele")]
+        [InverseProperty(nameof(Modele.Equipements))]
+        public virtual Modele? ModeleNavigation { get; set; } = null!;
 
         [ForeignKey("id_type_equipement")]
         [InverseProperty(nameof(Type_Equipement.Equipements))]
