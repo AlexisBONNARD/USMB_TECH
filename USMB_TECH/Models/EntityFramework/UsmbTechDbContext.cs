@@ -50,10 +50,12 @@ public partial class UsmbTechDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Server=51.83.36.122;port=5432;Database=usmbTechDB; uid=s213;password=dN8QKrYi;SearchPath=usmbTech;");
+        => optionsBuilder.UseNpgsql("Server=51.83.36.122;port=5432;Database=usmbTechDB; uid=s213;password=dN8QKrYi;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("usmbTech");
+
         modelBuilder.Entity<Adresse>(e =>
         {
             e.HasKey(e => e.Id_Adresse).HasName("pk_adresse");
@@ -454,11 +456,12 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_photo_plateforme");
 
+            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à une plateforme ou à un équipement, pas les deux.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
                     "CK_Photo_EquipementOuPlateforme",
-                    "(\"Id_Equipement\" IS NULL) <> (\"Id_Plateforme\" IS NULL)"
+                    "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)"
                 );
             });
         });
@@ -624,7 +627,7 @@ public partial class UsmbTechDbContext : DbContext
             {
                 tb.HasCheckConstraint(
                     "CK_PriseContact_EquipementOuPlateforme",
-                    "(\"Id_Equipement\" IS NULL) <> (\"Id_Plateforme\" IS NULL)"
+                    "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)"
                 );
             });
         });
