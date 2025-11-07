@@ -65,7 +65,6 @@ namespace USMB_TECH.Controllers
         public async Task<ActionResult<Laboratoire>> PostLaboratoire(Laboratoire laboratoire)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
             }
 
