@@ -12,7 +12,8 @@ namespace USMB_TECH.Models
 
         [Key]
         [Column("nom_court")]
-        public int Nom_Court { get; set; }
+        [MaxLength(25)]
+        public string Nom_Court { get; set; }
 
         [ForeignKey("id_mot_clef")]
         [InverseProperty(nameof(Mot_Clef.Designers))]
