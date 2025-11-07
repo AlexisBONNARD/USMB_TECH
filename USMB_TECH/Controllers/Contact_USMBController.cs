@@ -23,6 +23,7 @@ namespace USMB_TECH.Controllers
 
         // GET: api/Contact_USMB
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Contact_USMB>>> GetContact_USMBs()
         {
             return await _context.Contact_USMBs.ToListAsync();
@@ -30,6 +31,8 @@ namespace USMB_TECH.Controllers
 
         // GET: api/Contact_USMB/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Contact_USMB>> GetContact_USMB(int id)
         {
             var contact_USMB = await _context.Contact_USMBs.FindAsync(id);
@@ -45,6 +48,9 @@ namespace USMB_TECH.Controllers
         // PUT: api/Contact_USMB/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutContact_USMB(int id, Contact_USMB contact_USMB)
         {
             if (id != contact_USMB.Id_Contact)
@@ -76,6 +82,8 @@ namespace USMB_TECH.Controllers
         // POST: api/Contact_USMB
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Contact_USMB>> PostContact_USMB(Contact_USMB contact_USMB)
         {
             _context.Contact_USMBs.Add(contact_USMB);
@@ -86,6 +94,8 @@ namespace USMB_TECH.Controllers
 
         // DELETE: api/Contact_USMB/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteContact_USMB(int id)
         {
             var contact_USMB = await _context.Contact_USMBs.FindAsync(id);
