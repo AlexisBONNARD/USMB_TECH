@@ -3,11 +3,11 @@ using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
 {
-    public class LaboratoireManager : IMainRepository<Laboratoire, int>
+    public class LaboratoireManager : IMainRepository<Laboratoire, string>
     {
         public UsmbTechDbContext context = new UsmbTechDbContext();
 
-        public async Task<Laboratoire?> GetByIdAsync(int id) 
+        public async Task<Laboratoire?> GetByIdAsync(string id) 
         {
             return await context.Laboratoires.FindAsync(id);
         }
