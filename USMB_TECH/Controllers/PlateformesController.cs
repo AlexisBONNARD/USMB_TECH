@@ -61,7 +61,7 @@ namespace USMB_TECH.Controllers
             if (existingPlateforme == null)
                 return NotFound($"Plateforme avec l'id {id} introuvable.");
 
-            await _manager.PutAsync(existingPlateforme, plateforme);
+            await _manager.UpdateAsync(existingPlateforme, plateforme);
             return NoContent();
         }
 
@@ -94,9 +94,11 @@ namespace USMB_TECH.Controllers
         }
 
         // IF EXISTS: api/Plateformes/5/exists
+        /*
         private bool PlateformeExists(int id)
         {
             return _manager.Plateformes.Any(e => e.Id_Plateforme == id);
         }
+        */
     }
 }
