@@ -20,7 +20,7 @@ namespace USMB_TECH.Controllers
         // GET: api/Laboratoires
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Laboratoire>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Laboratoire>>> GetLaboratoires()
         {
             var laboratoires = await _dataRepository.GetAllAsync();
             return Ok(laboratoires);
@@ -30,7 +30,7 @@ namespace USMB_TECH.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Laboratoire>> GetById(string id)
+        public async Task<ActionResult<Laboratoire>> GetLaboratoire(string id)
         {
             var laboratoire = await _dataRepository.GetByIdAsync(id);
             return laboratoire is null ? NotFound() : Ok(laboratoire);
@@ -65,18 +65,19 @@ namespace USMB_TECH.Controllers
         public async Task<ActionResult<Laboratoire>> PostLaboratoire(Laboratoire laboratoire)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
             await _dataRepository.AddAsync(laboratoire);
-            return CreatedAtAction(nameof(GetById), new { id = laboratoire.Nom_Court }, laboratoire);
+            return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoire);
         }
 
         // DELETE: api/Laboratoires/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteLaboratoire(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var laboratoire = await _dataRepository.GetByIdAsync(id);
             if (laboratoire is null)
