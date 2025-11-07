@@ -16,11 +16,13 @@ namespace USMB_TECH.Controllers
     [ApiController]
     public class PlateformesController : ControllerBase
     {
-        private readonly IMainRepository<Plateforme, int> _manager;
+        private readonly UsmbTechDbContext _context;
+        private readonly IMainRepository<Plateforme, int> _dataRepository;
 
-        public PlateformesController(IMainRepository<Plateforme, int> manager)
+        public PlateformesController(IMainRepository<Plateforme, int> dataRepository, UsmbTechDbContext context)
         {
-            _manager = manager;
+            _dataRepository = dataRepository;
+            _context = context;
         }
 
         // GET: api/Plateformes
@@ -28,8 +30,8 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Plateforme>>> GetPlateformes()
         {
-            var plateformes = await _manager.GetAllAsync();
-            return Ok(plateformes);
+            IEnumerable<Plateforme> plateformes = await _dataRepository.GetAllAsync();
+            return new ActionResult<IEnumerable<Plateforme>>(plateformes);
         }
 
         // GET: api/Plateformes/5
@@ -38,12 +40,12 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Plateforme>> GetPlateforme(int id)
         {
-            var plateforme = await _manager.GetByIdAsync(id);
+            var plateforme = await _dataRepository.GetByIdAsync(id);
 
             if (plateforme == null)
                 return NotFound($"Aucune plateforme trouvée avec l'id {id}");
 
-            return Ok(plateforme);
+            return plateforme;
         }
 
         // PUT: api/Plateformes/5
@@ -57,11 +59,11 @@ namespace USMB_TECH.Controllers
             if (id != plateforme.Id_Plateforme)
                 return BadRequest("L'ID de la plateforme ne correspond pas à l'objet fourni.");
 
-            var existingPlateforme = await _manager.GetByIdAsync(id);
+            var existingPlateforme = await _dataRepository.GetByIdAsync(id);
             if (existingPlateforme == null)
                 return NotFound($"Plateforme avec l'id {id} introuvable.");
 
-            await _manager.UpdateAsync(existingPlateforme, plateforme);
+            await _dataRepository.UpdateAsync(existingPlateforme, plateforme);
             return NoContent();
         }
 
@@ -75,7 +77,7 @@ namespace USMB_TECH.Controllers
             if (plateforme == null)
                 return BadRequest("La plateforme ne peut pas être nulle.");
 
-            await _manager.AddAsync(plateforme);
+            await _dataRepository.AddAsync(plateforme);
             return CreatedAtAction(nameof(GetPlateforme), new { id = plateforme.Id_Plateforme }, plateforme);
         }
 
@@ -85,20 +87,18 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePlateforme(int id)
         {
-            var plateforme = await _manager.GetByIdAsync(id);
+            var plateforme = await _dataRepository.GetByIdAsync(id);
             if (plateforme == null)
-                return NotFound();
+                return NotFound($"Plateforme avec l'id {id} introuvable.");
 
-            await _manager.DeleteAsync(plateforme);
+            await _dataRepository.DeleteAsync(plateforme);
             return NoContent();
         }
 
         // IF EXISTS: api/Plateformes/5/exists
-        /*
         private bool PlateformeExists(int id)
         {
-            return _manager.Plateformes.Any(e => e.Id_Plateforme == id);
+            return _context.Plateformes.Any(e => e.Id_Plateforme == id);
         }
-        */
     }
 }
