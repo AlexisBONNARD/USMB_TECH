@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UsmbTechDbContext>();
-builder.Services.AddScoped<IMainRepository<Laboratoire, int>, LaboratoireManager>();
+builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
 builder.Services.AddScoped<IMainRepository<Plateforme, int>, PlateformeManager>();
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
