@@ -53,7 +53,7 @@ namespace USMB_TECH.Controllers
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound();
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
             await _dataRepository.UpdateAsync(existing, laboratoire);
             return NoContent();
@@ -77,11 +77,11 @@ namespace USMB_TECH.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteLaboratoire(string id)
         {
             var laboratoire = await _dataRepository.GetByIdAsync(id);
             if (laboratoire is null)
-                return NotFound();
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
             await _dataRepository.DeleteAsync(laboratoire);
             return NoContent();

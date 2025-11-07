@@ -13,44 +13,30 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Contact_USMBController : ControllerBase
+    public class Contact_USMBController(IMainRepository<Contact_USMB, int> dataRepository) : ControllerBase
     {
-        private readonly UsmbTechDbContext _context;
-        private readonly IMainRepository<Contact_USMB, int> _dataRepository;
+        private readonly IMainRepository<Contact_USMB, int> _dataRepository = dataRepository;
 
-        public Contact_USMBController(IMainRepository<Contact_USMB, int> dataRepository, UsmbTechDbContext context)
-        {
-            _dataRepository = dataRepository;
-            _context = context;
-        }
-
-        // GET: api/Contact_USMB
+        // GET: api/Contact_USMBs
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Contact_USMB>>> GetContact_USMBs()
         {
-            IEnumerable<Contact_USMB> laboratoires = await _dataRepository.GetAllAsync();
-            return new ActionResult<IEnumerable<Contact_USMB>>(laboratoires);
+            var contact_USMB = await _dataRepository.GetAllAsync();
+            return Ok(contact_USMB);
         }
 
-        // GET: api/Contact_USMB/5
+        // GET: api/Contact_USMBs/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Contact_USMB>> GetContact_USMB(int id)
         {
             var contact_USMB = await _dataRepository.GetByIdAsync(id);
-
-            if (contact_USMB == null)
-            {
-                return NotFound();
-            }
-
-            return contact_USMB;
+            return contact_USMB is null ? NotFound() : Ok(contact_USMB);
         }
 
-        // PUT: api/Contact_USMB/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Contact_USMBs/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -61,60 +47,44 @@ namespace USMB_TECH.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             if (id != contact_USMB.Id_Contact)
-            {
-                return BadRequest("L'id Doit être identique à celui envoyé");
-            }
+                return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
-            var contact_USMBToUpdate = await _dataRepository.GetByIdAsync(id);
+            var existing = await _dataRepository.GetByIdAsync(id);
+            if (existing is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            if (contact_USMBToUpdate == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                await _dataRepository.UpdateAsync(contact_USMBToUpdate, contact_USMB);
-                return NoContent();
-            }
+            await _dataRepository.UpdateAsync(existing, contact_USMB);
+            return NoContent();
         }
 
-        // POST: api/Contact_USMB
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Contact_USMBs
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Contact_USMB>> PostContact_USMB(Contact_USMB contact_USMB)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            await _dataRepository.AddAsync(contact_USMB);
 
-            return CreatedAtAction("GetContact_USMB", new { id = contact_USMB.Nom_Court }, contact_USMB);
+            await _dataRepository.AddAsync(contact_USMB);
+            return CreatedAtAction(nameof(GetContact_USMB), new { id = contact_USMB.Id_Contact }, contact_USMB);
         }
 
-        // DELETE: api/Contact_USMB/5
+        // DELETE: api/Contact_USMBs/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteContact_USMB(int id)
         {
-            ActionResult<Contact_USMB?> contact_USMB = await _dataRepository.GetByIdAsync(id);
-            if (contact_USMB.Value == null)
-            {
-                return NotFound();
-            }
+            var contact_USMB = await _dataRepository.GetByIdAsync(id);
+            if (contact_USMB is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.DeleteAsync(contact_USMB.Value);
-
+            await _dataRepository.DeleteAsync(contact_USMB);
             return NoContent();
-        }
-
-        private bool Contact_USMBExists(int id)
-        {
-            return _context.Contact_USMBs.Any(e => e.Id_Contact == id);
         }
     }
 }

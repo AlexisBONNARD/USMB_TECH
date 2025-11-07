@@ -15,40 +15,30 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EquipementsController : ControllerBase
+    public class EquipementsController(IMainRepository<Equipement, int> dataRepository) : ControllerBase
     {
-        private readonly UsmbTechDbContext _context;
-        private readonly IMainRepository<Equipement, int> _dataRepository;
-
-        public EquipementsController(UsmbTechDbContext context, IMainRepository<Equipement, int> dataRepository)
-        {
-            _context = context;
-            _dataRepository = dataRepository;
-        }
+        private readonly IMainRepository<Equipement, int> _dataRepository = dataRepository;
 
         // GET: api/Equipements
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Equipement>>> GetEquipements()
         {
-            var equipements = await _dataRepository.GetAllAsync();
-            if (equipements == null || !equipements.Any())
-                return NotFound();
-            return Ok(equipements);
+            var laboratoires = await _dataRepository.GetAllAsync();
+            return Ok(laboratoires);
         }
 
-        // GET: api/Equipements/5
+        // GET: api/Equipements/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Equipement>> GetEquipement(int id)
         {
-            var resultat = await _dataRepository.GetByIdAsync(id);
-            return resultat == null ? NotFound() : Ok(resultat);
+            var equipement = await _dataRepository.GetByIdAsync(id);
+            return equipement is null ? NotFound() : Ok(equipement);
         }
 
-        // PUT: api/Equipements/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Equipements/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -60,26 +50,20 @@ namespace USMB_TECH.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Récupérer la marque existante
-            Equipement? equipementAModifier = await _dataRepository.GetByIdAsync(id);
+            if (id != equipement.Id_Equipement)
+                return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
-            if (equipementAModifier == null)
-            {
-                return NotFound();
-            }
+            var existing = await _dataRepository.GetByIdAsync(id);
+            if (existing is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            equipement.Id_Equipement = id; // Conserver l'ID
-
-            await _dataRepository.UpdateAsync(equipementAModifier, equipement);
-
+            await _dataRepository.UpdateAsync(existing, equipement);
             return NoContent();
         }
 
         // POST: api/Equipements
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Equipement>> PostEquipement(Equipement equipement)
         {
             if (!ModelState.IsValid)
@@ -87,29 +71,22 @@ namespace USMB_TECH.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Sauvegarde de la  marque
             await _dataRepository.AddAsync(equipement);
-
-            // Retourner le détail de la marque  créé
-            return CreatedAtAction("Get", new { id = equipement.Id_Equipement }, equipement);
+            return CreatedAtAction(nameof(GetEquipement), new { id = equipement.Id_Equipement }, equipement);
         }
 
-        // DELETE: api/Equipements/5
+        // DELETE: api/Equipements/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteEquipement(int id)
         {
-            ActionResult<Equipement?> brand = await _dataRepository.GetByIdAsync(id);
-            if (brand.Value == null)
-                return NotFound();
-            await _dataRepository.DeleteAsync(brand.Value);
-            return NoContent();
-        }
+            var equipement = await _dataRepository.GetByIdAsync(id);
+            if (equipement is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-        private bool EquipementExists(int id)
-        {
-            return _context.Equipements.Any(e => e.Id_Equipement == id);
+            await _dataRepository.DeleteAsync(equipement);
+            return NoContent();
         }
     }
 }

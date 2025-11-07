@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,91 +15,78 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlateformesController : ControllerBase
+    public class PlateformesController(IMainRepository<Plateforme, int> dataRepository) : ControllerBase
     {
-        private readonly UsmbTechDbContext _context;
-        private readonly IMainRepository<Plateforme, int> _dataRepository;
-
-        public PlateformesController(IMainRepository<Plateforme, int> dataRepository, UsmbTechDbContext context)
-        {
-            _dataRepository = dataRepository;
-            _context = context;
-        }
+        private readonly IMainRepository<Plateforme, int> _dataRepository = dataRepository;
 
         // GET: api/Plateformes
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Plateforme>>> GetPlateformes()
         {
-            IEnumerable<Plateforme> plateformes = await _dataRepository.GetAllAsync();
-            return new ActionResult<IEnumerable<Plateforme>>(plateformes);
+            var plateformes = await _dataRepository.GetAllAsync();
+            return Ok(plateformes);
         }
 
-        // GET: api/Plateformes/5
+        // GET: api/Plateformes/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Plateforme>> GetPlateforme(int id)
         {
             var plateforme = await _dataRepository.GetByIdAsync(id);
-
-            if (plateforme == null)
-                return NotFound($"Aucune plateforme trouvée avec l'id {id}");
-
-            return plateforme;
+            return plateforme is null ? NotFound() : Ok(plateforme);
         }
 
-        // PUT: api/Plateformes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Plateformes/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutPlateforme(int id, Plateforme plateforme)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != plateforme.Id_Plateforme)
-                return BadRequest("L'ID de la plateforme ne correspond pas à l'objet fourni.");
+                return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
-            var existingPlateforme = await _dataRepository.GetByIdAsync(id);
-            if (existingPlateforme == null)
-                return NotFound($"Plateforme avec l'id {id} introuvable.");
+            var existing = await _dataRepository.GetByIdAsync(id);
+            if (existing is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existingPlateforme, plateforme);
+            await _dataRepository.UpdateAsync(existing, plateforme);
             return NoContent();
         }
 
         // POST: api/Plateformes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Plateforme>> PostPlateforme(Plateforme plateforme)
         {
-            if (plateforme == null)
-                return BadRequest("La plateforme ne peut pas être nulle.");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             await _dataRepository.AddAsync(plateforme);
             return CreatedAtAction(nameof(GetPlateforme), new { id = plateforme.Id_Plateforme }, plateforme);
         }
 
-        // DELETE: api/Plateformes/5
+        // DELETE: api/Plateformes/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePlateforme(int id)
         {
-            var plateforme = await _dataRepository.GetByIdAsync(id);
-            if (plateforme == null)
-                return NotFound($"Plateforme avec l'id {id} introuvable.");
+            var laboratoire = await _dataRepository.GetByIdAsync(id);
+            if (laboratoire is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.DeleteAsync(plateforme);
+            await _dataRepository.DeleteAsync(laboratoire);
             return NoContent();
-        }
-
-        // IF EXISTS: api/Plateformes/5/exists
-        private bool PlateformeExists(int id)
-        {
-            return _context.Plateformes.Any(e => e.Id_Plateforme == id);
         }
     }
 }
