@@ -101,3 +101,47 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.usmb-header {
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+.usmb-header-top {
+    background-color: #1f3566;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 20px;
+}
+
+.usmb-header-main {
+    background-color: #ffffff;
+    color: #1f3566;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 40px;
+    border-bottom: 2px solid #eee;
+}
+
+.usmb-logo {
+    height: 50px;
+}
+
+.usmb-nav a {
+    margin: 0 20px;
+    color: #1f3566;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+    .usmb-nav a:hover {
+        text-decoration: underline;
+    }
+
+.usmb-logo {
+    height: 60px;
+    width: auto;
+    margin-right: 20px;
+}
