@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
+using USMB_TECH.Models.Repository;
 
 namespace USMB_TECH.Controllers
 {
@@ -15,9 +16,11 @@ namespace USMB_TECH.Controllers
     public class LaboratoiresController : ControllerBase
     {
         private readonly UsmbTechDbContext _context;
+        private readonly IMainRepository<Laboratoire,string> _dataRepository;
 
-        public LaboratoiresController(UsmbTechDbContext context)
+        public LaboratoiresController(IMainRepository<Laboratoire,string> dataRepository, UsmbTechDbContext context)
         {
+            _dataRepository = dataRepository;
             _context = context;
         }
 
@@ -26,7 +29,8 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Laboratoire>>> GetLaboratoires()
         {
-            return await _context.Laboratoires.ToListAsync();
+            IEnumerable<Laboratoire> laboratoires = await _dataRepository.GetAllAsync();
+            return new ActionResult<IEnumerable<Laboratoire>>(laboratoires);
         }
 
         // GET: api/Laboratoires/5
@@ -35,7 +39,7 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Laboratoire>> GetLaboratoire(string id)
         {
-            var laboratoire = await _context.Laboratoires.FindAsync(id);
+            var laboratoire = await _dataRepository.GetByIdAsync(id);
 
             if (laboratoire == null)
             {
@@ -53,30 +57,26 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutLaboratoire(string id, Laboratoire laboratoire)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (id != laboratoire.Nom_Court)
             {
-                return BadRequest();
+                return BadRequest("L'id Doit être identique à celui envoyé");
             }
 
-            _context.Entry(laboratoire).State = EntityState.Modified;
+            var laboratoireToUpdate = await _dataRepository.GetByIdAsync(id);
 
-            try
+            if (laboratoireToUpdate == null)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!LaboratoireExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                await _dataRepository.UpdateAsync(laboratoireToUpdate, laboratoire);
+                return NoContent();
             }
-
-            return NoContent();
         }
 
         // POST: api/Laboratoires
@@ -86,22 +86,11 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Laboratoire>> PostLaboratoire(Laboratoire laboratoire)
         {
-            _context.Laboratoires.Add(laboratoire);
-            try
+            if (!ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
+                return BadRequest(ModelState);
             }
-            catch (DbUpdateException)
-            {
-                if (LaboratoireExists(laboratoire.Nom_Court))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _dataRepository.AddAsync(laboratoire);
 
             return CreatedAtAction("GetLaboratoire", new { id = laboratoire.Nom_Court }, laboratoire);
         }
@@ -112,14 +101,13 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteLaboratoire(string id)
         {
-            var laboratoire = await _context.Laboratoires.FindAsync(id);
-            if (laboratoire == null)
+            ActionResult<Laboratoire?> laboratoire = await _dataRepository.GetByIdAsync(id);
+            if (laboratoire.Value == null)
             {
                 return NotFound();
             }
 
-            _context.Laboratoires.Remove(laboratoire);
-            await _context.SaveChangesAsync();
+            await _dataRepository.DeleteAsync(laboratoire.Value);
 
             return NoContent();
         }
@@ -130,3 +118,4 @@ namespace USMB_TECH.Controllers
         }
     }
 }
+               
