@@ -1,16 +1,18 @@
-﻿@inject IMainService<Plateforme,int> PlateformeService
+﻿@using USMB_TECH_Blazor.Models;
+@using USMB_TECH_Blazor.Service;
+@inject IMainService<Plateforme,int> PlateformeService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
 
 <div class="usmb-nav-container">
     <div class="usmb-nav">
-        <NavLink class="" href="" Match="NavLinkMatch.All">
-            <span class=""></span> USMB TECH
-        </NavLink>
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class=""></span> USMB TECH
+            </NavLink>
 
         <!-- Dropdown NOS PLATEFORMES -->
-        <div class="nav-link dropdown" style="cursor:pointer;" @onclick="ToggleDropdown">
+        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdown">
             <span class="dropdown-toggle">NOS PLATEFORMES</span>
             <ul class="dropdown-menu @(showDropdown ? "show" : "")">
                 @if (plateformes != null)
@@ -25,10 +27,9 @@
             </ul>
         </div>
 
-
-        <NavLink class="" href="Equipement">
-            <span class=""></span> NOS ÉQUIPEMENTS
-        </NavLink>
+        <NavLink class="nav-link" href="Equipement">
+                <span class=""></span> NOS ÉQUIPEMENTS
+            </NavLink>
 
     </div>
 
@@ -43,7 +44,7 @@
     {
         plateformes = await PlateformeService.GetAllAsync();
 
-        // Affichage dans la console 
+        // Affichage dans la console
         if (plateformes != null)
         {
             foreach (var p in plateformes)
