@@ -17,4 +17,6 @@ builder.Services.AddScoped<IMainService<Plateforme, int>>(eq => new WebService<P
 builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<Prestation, int>("Prestations"));
 builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematiques"));
 
+
+
 await builder.Build().RunAsync();

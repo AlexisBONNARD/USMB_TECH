@@ -214,3 +214,53 @@ code {
         .search-box button:hover {
             background-color: #003d80;
         }
+
+/*NAv menu*/
+
+.usmb-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 15px 0;
+    border: dashed 0.5px #ccc;
+}
+
+.nav-link {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: #3aa1ff;
+    }
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: white;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    width: 200px;
+}
+
+    .dropdown-menu li {
+        padding: 10px 15px;
+        cursor: pointer;
+        color: #0a1b3b;
+    }
+
+        .dropdown-menu li:hover {
+            background-color: #e6f0ff;
+        }

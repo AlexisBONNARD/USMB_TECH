@@ -1,39 +1,54 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">USMB_TECH_Blazor</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+﻿@using USMB_TECH_Blazor.Models
+@using USMB_TECH_Blazor.Service
+@inject IMainService<Plateforme,int> PlateformeService
+@inject NavigationManager Nav
+
+<div class="usmb-nav-container">
+    <div class="usmb-nav">
+        <NavLink class="" href="" Match="NavLinkMatch.All">
+            <span class=""></span> USMB TECH
+        </NavLink>
+
+        <!-- Dropdown NOS PLATEFORMES -->
+        <div class="nav-link dropdown" @onclick="ToggleDropdown" style="cursor:pointer;">
+            <span class="dropdown-toggle">NOS PLATEFORMES</span>
+            @if (showDropdown && plateformes != null)
+            {
+                <ul class="dropdown-menu">
+                    @foreach (var p in plateformes)
+                    {
+                        <li @onclick="() => GoToPlateforme(p.Id_Plateforme)">
+                            @p.Nom_Plateforme
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <NavLink class="" href="Equipement">
+            <span class=""></span> NOS ÉQUIPEMENTS
+        </NavLink>
+
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
 @code {
-    private bool collapseNavMenu = true;
+    private bool showDropdown = false;
+    private IEnumerable<Plateforme>? plateformes;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        plateformes = await PlateformeService.GetAllAsync();
+    }
+
+    private void ToggleDropdown()
+    {
+        showDropdown = !showDropdown;
+    }
+
+    private void GoToPlateforme(int id)
+    {
+        Nav.NavigateTo($"/plateforme/{id}");
+        showDropdown = false;
     }
 }
