@@ -20,7 +20,7 @@ namespace USMB_TECH.DTO
         public string Description_Technique { get; set; }
         public bool Disponibilite { get; set; }
         public bool Autonomie { get; set; }
-        public bool Utiliser_Chez_Le_Client { get; set; }
+        public bool Utilisable_Chez_Le_Client { get; set; }
         public bool Actif { get; set; }
 
         public override bool Equals(object? obj)
@@ -38,7 +38,7 @@ namespace USMB_TECH.DTO
                     Description_Technique == DTO.Description_Technique &&
                     Disponibilite == DTO.Disponibilite &&
                     Autonomie == DTO.Autonomie &&
-                    Utiliser_Chez_Le_Client == DTO.Utiliser_Chez_Le_Client &&
+                    Utilisable_Chez_Le_Client == DTO.Utilisable_Chez_Le_Client &&
                     Actif == DTO.Actif;
         }
 
@@ -57,7 +57,7 @@ namespace USMB_TECH.DTO
             hash.Add(Description_Technique );
             hash.Add(Disponibilite );
             hash.Add(Autonomie );
-            hash.Add(Utiliser_Chez_Le_Client );
+            hash.Add(Utilisable_Chez_Le_Client );
             hash.Add(Actif);
             return hash.ToHashCode();
         }

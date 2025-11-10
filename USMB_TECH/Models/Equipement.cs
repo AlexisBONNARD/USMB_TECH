@@ -39,7 +39,7 @@ namespace USMB_TECH.Models
         [Precision(10, 2)]
         public double Prix_Revient { get; set; }
 
-        [Column("description_equipement")]
+        [Column("description_technique")]
         [MaxLength(500)]
         public string Description_Technique { get; set; }
 
@@ -49,8 +49,8 @@ namespace USMB_TECH.Models
         [Column("autonomie")]
         public bool Autonomie { get; set; }
 
-        [Column("utiliser_chez_le_client")]
-        public bool Utiliser_Chez_Le_Client { get; set; }
+        [Column("utilisable_chez_le_client")]
+        public bool Utilisable_Chez_Le_Client { get; set; }
 
         [Column("actif")]
         public bool Actif { get; set; }

@@ -314,7 +314,7 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
-                        .HasColumnName("description_equipement");
+                        .HasColumnName("description_technique");
 
                     b.Property<bool>("Disponibilite")
                         .HasColumnType("boolean")
@@ -354,9 +354,9 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("prix_revient");
 
-                    b.Property<bool>("Utiliser_Chez_Le_Client")
+                    b.Property<bool>("Utilisable_Chez_Le_Client")
                         .HasColumnType("boolean")
-                        .HasColumnName("utiliser_chez_le_client");
+                        .HasColumnName("utilisable_chez_le_client");
 
                     b.Property<int?>("id_modele")
                         .HasColumnType("integer");
