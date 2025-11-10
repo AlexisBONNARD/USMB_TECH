@@ -1,0 +1,29 @@
+﻿@page "/plateforme/{Id:int}"
+@inject IMainService<Plateforme,int> PlateformeService
+@inject NavigationManager Nav
+
+<h3>PlateformeDetail</h3>
+@if (plateforme == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="plateforme-detail">
+        <h4>@plateforme.Nom_Plateforme</h4>
+        <p><strong>Location:</strong> @plateforme.Id_Plateforme</p>
+        <p>@plateforme.Description_Contenu</p>
+        <p><strong>Contact:</strong> @plateforme.Description_Contenu</p>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Plateforme? plateforme;
+
+    protected override async Task OnInitializedAsync()
+    {
+        plateforme = await PlateformeService.GetByIdAsync(Id);
+    }
+}

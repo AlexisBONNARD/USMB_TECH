@@ -18,5 +18,9 @@ namespace USMB_TECH_Blazor.Models
         public string Description_Contenu { get; set; }
 
         public bool Actif { get; set; }
+
+
+
+        public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
     }
 }
