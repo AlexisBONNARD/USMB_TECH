@@ -7,10 +7,22 @@ namespace USMB_TECH.Models.Repository
     {
         public UsmbTechDbContext context = new UsmbTechDbContext();
 
-        public async Task<IEnumerable<Equipement>> GetAllAsync() 
+        public async Task<IEnumerable<Equipement>> GetAllAsync()
         {
-            return await context.Equipements.ToListAsync();
+            return await context.Equipements
+                                .Include(e => e.PlateformeNavigation)
+                                .Include(e => e.ModeleNavigation)
+                                .Include(e => e.Type_EquipementNavigation)
+                                .Include(e => e.Consommers)
+                                .Include(e => e.Posseders)
+                                .Include(e => e.Exemple_Utilisations)
+                                .Include(e => e.Referencers)
+                                .Include(e => e.Prise_Contacts)
+                                .Include(e => e.Photos)
+                                .Include(e => e.Fournirs)
+                                .ToListAsync();
         }
+
 
         public async Task<Equipement?> GetByIdAsync(int id) 
         {
