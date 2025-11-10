@@ -57,7 +57,8 @@ public partial class UsmbTechDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("usmbTech");
+
+    modelBuilder.HasDefaultSchema("usmbTech");
 
         modelBuilder.Entity<Adresse>(e =>
         {
@@ -669,6 +670,8 @@ public partial class UsmbTechDbContext : DbContext
                 .HasConstraintName("fk_specifier_plateforme");
         });
 
+
+
         modelBuilder.Entity<Thematique>(e =>
         {
             e.HasKey(e => e.Id_Thematique).HasName("thematique_pkey");
@@ -755,6 +758,7 @@ public partial class UsmbTechDbContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -1,4 +1,4 @@
-﻿@page "/Equipement/{Id:int}"
+﻿@page "/equipement/{Id:int}"
 @inject Service.IMainService<Equipement,int> dataRepository
 @inject NavigationManager Navigation
 
@@ -22,10 +22,10 @@ else
         <p><strong>@exemple.Nom_Utilisation :</strong> @exemple.Description_Utilisation</p>
     } *@
 
-    <p class="card-text"><strong>caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
+    <p class="card-text"><strong>Caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
 
-    @* @equipement.Id_Plateforme
-    @foreach (var plateforme in equipement.Id_Plateforme)
+    @equipement.Id_Plateforme
+    @* @foreach (var plateforme in equipement.Id_Plateforme)
     {
         <div>
             <strong>Plateforme :</strong> @plateforme.Nom_Plateforme
@@ -37,14 +37,15 @@ else
     } *@
 
     <p class="card-text"><strong>En réappro :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
-    <button class="btn btn-primary mt-2" @onclick="@RetourListe">Retour à la liste</button>
+
+    <!-- Bouton pour retourner à la liste des plateformes -->
+    <button class="btn btn-primary mt-2" @onclick="@(() => RetourListe(equipement.Id_Plateforme))">Voir Plateforme @(equipement.Id_Plateforme)</button>
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
     private Equipement? equipement;
-    //private Plateforme? plateforme;
 
     // Dans la classe EquipementForecast
     public string Exemple_Utilisation_Nom { get; set; }
@@ -53,27 +54,34 @@ else
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
-        Console.WriteLine(equipement.Id_Equipement);
+        if (equipement != null)
+        {
+            Console.WriteLine($"Equipement chargé: {equipement.Id_Equipement}");
 
-        // Récupérer les plateformes liées à cet équipement
-        var Id_Plateformes = equipement.Id_Plateforme;
-        var plateforme = await dataRepository.GetByIdAsync(Id_Plateformes);
-        Console.WriteLine(plateforme.Id_Plateforme);
+            // Récupérer la plateforme liée à cet équipement, si elle existe
+            if (equipement.Id_Plateforme != null)
+            {
+                var plateforme = await dataRepository.GetByIdAsync(equipement.Id_Plateforme);
+                Console.WriteLine($"Plateforme chargée: {plateforme.Id_Plateforme}");
 
-        // Récupérer tous les exemples d'utilisation associés à cet équipement
-        // var exemplesUtilisation = equipement.Exemple_Utilisations;
-        // foreach (var exemple in exemplesUtilisation)
-        // {
-        //     Console.WriteLine($"Exemple Utilisation: {exemple.Nom_Utilisation}");
-        //     Tu peux ajouter ces valeurs dans une collection ou les afficher directement
-        //     Exemple_Utilisation_Nom = exemple.Nom_Utilisation;
-        //     Exemple_Utilisation_Description = exemple.Description_Utilisation;
-        // }
+                // Ajouter ici le traitement nécessaire pour afficher les informations de la plateforme
+            }
+
+            // Récupérer tous les exemples d'utilisation associés à cet équipement
+            var exemplesUtilisation = equipement.Exemple_Utilisations;
+            foreach (var exemple in exemplesUtilisation)
+            {
+                Console.WriteLine($"Exemple Utilisation: {exemple.Nom_Utilisation}");
+                // Tu peux ajouter ces valeurs dans une collection ou les afficher directement
+                Exemple_Utilisation_Nom = exemple.Nom_Utilisation;
+                Exemple_Utilisation_Description = exemple.Description_Utilisation;
+            }
+        }
     }
 
-    private async Task RetourListe()
+    private async Task RetourListe(int IdPlateforme)
     {
-        Navigation.NavigateTo("/equipements");
-    }
+        // Naviguer vers la page plateforme spécifique
+        Navigation.NavigateTo($"/plateforme/{IdPlateforme}");
     }
 }
