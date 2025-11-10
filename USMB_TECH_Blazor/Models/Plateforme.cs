@@ -22,5 +22,7 @@ namespace USMB_TECH_Blazor.Models
 
 
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
+
+        public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
     }
 }
