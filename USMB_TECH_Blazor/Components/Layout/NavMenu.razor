@@ -2,6 +2,8 @@
 @using USMB_TECH_Blazor.Service
 @inject IMainService<Plateforme,int> PlateformeService
 @inject NavigationManager Nav
+@inject IJSRuntime JS
+
 
 <div class="usmb-nav-container">
     <div class="usmb-nav">
@@ -10,20 +12,21 @@
         </NavLink>
 
         <!-- Dropdown NOS PLATEFORMES -->
-        <div class="nav-link dropdown" @onclick="ToggleDropdown" style="cursor:pointer;">
+        <div class="nav-link dropdown" style="cursor:pointer;" @onclick="ToggleDropdown">
             <span class="dropdown-toggle">NOS PLATEFORMES</span>
-            @if (showDropdown && plateformes != null)
-            {
-                <ul class="dropdown-menu">
+            <ul class="dropdown-menu @(showDropdown ? "show" : "")">
+                @if (plateformes != null)
+                {
                     @foreach (var p in plateformes)
                     {
                         <li @onclick="() => GoToPlateforme(p.Id_Plateforme)">
                             @p.Nom_Plateforme
                         </li>
                     }
-                </ul>
-            }
+                }
+            </ul>
         </div>
+
 
         <NavLink class="" href="Equipement">
             <span class=""></span> NOS ÉQUIPEMENTS
@@ -39,6 +42,15 @@
     protected override async Task OnInitializedAsync()
     {
         plateformes = await PlateformeService.GetAllAsync();
+
+        // Affichage dans la console 
+        if (plateformes != null)
+        {
+            foreach (var p in plateformes)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Plateforme: {p.Nom_Plateforme}, Id: {p.Id_Plateforme}");
+            }
+        }
     }
 
     private void ToggleDropdown()

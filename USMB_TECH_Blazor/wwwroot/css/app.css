@@ -256,3 +256,6 @@ code {
         .dropdown-menu li:hover {
             background-color: #e6f0ff;
         }
+.dropdown-menu.show {
+    display: block; /* Force l'affichage quand show = true */
+}
