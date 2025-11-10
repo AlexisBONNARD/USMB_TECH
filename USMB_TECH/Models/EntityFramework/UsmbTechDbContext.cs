@@ -384,7 +384,7 @@ public partial class UsmbTechDbContext : DbContext
 
             e.HasOne(d => d.Adresse_campusNavigation)
                 .WithMany(p => p.Laboratoires_campus)
-                .HasForeignKey(d => d.Id_Adresse_Campus)
+                .HasForeignKey(d => d.Id_Adresse_Campus)    
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_laboratoire_adresse_campus");
 

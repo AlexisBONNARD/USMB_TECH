@@ -454,7 +454,7 @@ namespace USMB_TECH.Migrations
                     id_modele = table.Column<int>(type: "integer", nullable: false),
                     id_type_equipement = table.Column<int>(type: "integer", nullable: false),
                     nom_equipement = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    num_equipement = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    num_immobilisation = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     date_acquisition = table.Column<DateTime>(type: "date", nullable: false),
                     prix_achat = table.Column<double>(type: "double precision", precision: 10, scale: 2, nullable: false),
                     prix_revient = table.Column<double>(type: "double precision", precision: 10, scale: 2, nullable: false),

@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251110073755_InitialCreate")]
+    [Migration("20251110083454_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -345,7 +345,7 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("num_equipement");
+                        .HasColumnName("num_immobilisation");
 
                     b.Property<double>("Prix_Achat")
                         .HasPrecision(10, 2)

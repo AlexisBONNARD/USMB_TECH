@@ -342,7 +342,7 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("num_equipement");
+                        .HasColumnName("num_immobilisation");
 
                     b.Property<double>("Prix_Achat")
                         .HasPrecision(10, 2)
