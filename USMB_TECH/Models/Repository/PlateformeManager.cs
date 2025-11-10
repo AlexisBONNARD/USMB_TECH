@@ -7,16 +7,6 @@ namespace USMB_TECH.Models.Repository
     {
         public UsmbTechDbContext context = new UsmbTechDbContext();
        
-        public async Task AddAsync(Plateforme entity)
-        {
-            context.Plateformes.Add(entity);
-            await context.SaveChangesAsync();
-        }
-        public async Task DeleteAsync(Plateforme entity)
-        {
-            context.Plateformes.Remove(entity);
-            await context.SaveChangesAsync();
-        }
 
         public async Task<IEnumerable<Plateforme>> GetAllAsync()
         {
@@ -30,6 +20,17 @@ namespace USMB_TECH.Models.Repository
         {
             context.Plateformes.Attach(entityToUpdate);
             context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            await context.SaveChangesAsync();
+        }
+
+                public async Task AddAsync(Plateforme entity)
+        {
+            context.Plateformes.Add(entity);
+            await context.SaveChangesAsync();
+        }
+        public async Task DeleteAsync(Plateforme entity)
+        {
+            context.Plateformes.Remove(entity);
             await context.SaveChangesAsync();
         }
 
