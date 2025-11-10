@@ -1,5 +1,6 @@
 ﻿@using USMB_TECH_Blazor.Service;
 @inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Equipement,int> EquipementService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -28,10 +29,20 @@
             </ul>
         </div>
 
-        <div class="nav-link">
-            <NavLink class="" href="Equipement">
-                <span class=""></span> NOS ÉQUIPEMENTS
-            </NavLink>
+        <!-- Dropdown NOS EQUIPEMENTS -->
+        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdown">
+            <span class="dropdown-toggle">NOS EQUIPEMENTS</span>
+            <ul class="dropdown-menu @(showDropdown ? "show" : "")">
+                @if (equipements != null)
+                {
+                    @foreach (var eq in equipements)
+                    {
+                        <li @onclick="() => GoToEquipement(eq.Id_Equipement)">
+                            @eq.Nom_Equipement
+                        </li>
+                    }
+                }
+            </ul>
         </div>
 
     </div>
@@ -42,10 +53,11 @@
 @code {
     private bool showDropdown = false;
     private IEnumerable<Plateforme>? plateformes;
-
+    private IEnumerable<Equipement>? equipements;
     protected override async Task OnInitializedAsync()
     {
         plateformes = await PlateformeService.GetAllAsync();
+        equipements = await EquipementService.GetAllAsync();
 
         // Affichage dans la console
         if (plateformes != null)
@@ -55,6 +67,15 @@
                 await JS.InvokeVoidAsync("console.log", $"Plateforme: {p.Nom_Plateforme}, Id: {p.Id_Plateforme}");
             }
         }
+
+        if(equipements != null)
+        {
+            foreach (var e in equipements)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Equipement: {e.Nom_Equipement}, Id: {e.Id_Equipement}");
+            }
+        }
+
     }
 
     private void ToggleDropdown()
@@ -65,6 +86,12 @@
     private void GoToPlateforme(int id)
     {
         Nav.NavigateTo($"/plateforme/{id}");
+        showDropdown = false;
+    }
+
+    private void GoToEquipement(int id)
+    {
+        Nav.NavigateTo($"/equipement/{id}");
         showDropdown = false;
     }
 }
