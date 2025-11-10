@@ -17,7 +17,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -150,67 +150,56 @@ code {
 
 .hero-section {
     position: relative;
-    width: 100%;
+    width: 100vw;
     height: 300px;
     background: url('/images/Home.png') no-repeat center center/cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: start;
+    justify-content: left;
     text-align: left;
     color: white;
     overflow: hidden;
-}
-
-    .hero-section::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 40, 0.5); /* filtre bleu foncé transparent */
-        z-index: 0;
-    }
-
-/*---------*/
-
-.hero-content {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    width: 90%;
 }
 
 .hero-text {
     font-size: 1.2rem;
     margin-bottom: 20px;
     font-style: italic;
+    margin-left: 5vw;
+    margin-top: 10px;
 }
 
-.search-box {
-    display: flex;
-    align-items: center;
-    width: 400px;
-    background-color: white;
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+#search-box-nav {
+    width: 100vw;
+    margin-top: 170px;
 }
 
-    .search-box input {
-        flex: 1;
-        border: none;
-        padding: 10px 15px;
-        font-size: 1rem;
-        outline: none;
+    #search-box-nav .search-box {
+        display: flex;
+        width: 400px;
+        align-items: center;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        margin-left: calc(100vw - 450px);
     }
 
-    .search-box button {
-        background-color: #0056b3;
-        border: none;
-        color: white;
-        padding: 10px 15px;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-        .search-box button:hover {
-            background-color: #003d80;
+        #search-box-nav .search-box input {
+            flex: 1;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1rem;
+            outline: none;
         }
+
+        #search-box-nav .search-box button {
+            background-color: #0056b3;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            #search-box-nav .search-box button:hover {
+                background-color: #003d80;
+            }
