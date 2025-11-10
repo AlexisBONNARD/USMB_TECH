@@ -1,5 +1,6 @@
 ﻿@page "/plateforme/{Id:int}"
 @inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Nav
 
 @if (plateforme == null)
@@ -17,23 +18,50 @@ else
             <h4>MOTS CLES</h4>
             <p>Un mot clés</p>
         </div>
+        <div>
+            <h4>Catalogue de prestations</h4>
+            @if(prestations == null)
+            {
+                <p>Aucunes prestations disponibles actuellement</p>
+            }
+            else
+            {
+                @foreach(var prestation in prestations)
+                {
+                    <li>@prestation.Intitule_Prestation</li>
+                    if(prestation.Description_Prestation != null)
+                    {
+                        <p>@prestation.Description_Prestation</p>
+                    }
+                }
+            }
+        </div>
     </div>
     <div>
         <div>
         <h4>NOS ÉQUIPEMENTS</h4>
-         @foreach(var equipement in plateforme.Equipements)
+        @if(plateforme.Equipements == null)
         {
-             <li>
-                <img src="#" alt="photo de l'équipement"/>
-                <p>equipement.Nom_Equipement</p>
-             </li>
+           <p>
+                Aucun équipement disponible pour cette plateforme.
+           </p>     
+        }
+        else
+        {
+            @foreach(var equipement in plateforme.Equipements)
+            {
+                 <li>
+                        <img src="images/logo_usmb.png" alt="photo de l'équipement" />
+                    <p>equipement.Nom_Equipement</p>
+                 </li>
+            }
         }
         </div>
         <div>
             <h4>Exemples de réalisations</h4>
             <p>@plateforme.Description_Contenu</p>
         </div>
-    </div>    
+    </div>
         
 
 }
@@ -42,10 +70,15 @@ else
     [Parameter]
     public int Id { get; set; }
     private Plateforme? plateforme;
-    
+    private List<Prestation> prestations = new List<Prestation>();
 
     protected override async Task OnInitializedAsync()
     {
         plateforme = await PlateformeService.GetByIdAsync(Id);
+
+        foreach (var present in plateforme.Presenters )
+        {
+            prestations.Add(await PrestationService.GetByIdAsync(present.Id_Prestation));
+        }
     }
 }

@@ -17,10 +17,10 @@ else
 
     <!-- Afficher tous les exemples d'utilisation -->
     <p class="card-text"><strong>Exemples d'Utilisation :</strong></p>
-    @foreach (var exemple in equipement.Exemple_Utilisations)
+    @* @foreach (var exemple in equipement.Exemple_Utilisations)
     {
         <p><strong>@exemple.Nom_Utilisation :</strong> @exemple.Description_Utilisation</p>
-    }
+    } *@
 
     <p class="card-text"><strong>caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
 
@@ -61,14 +61,14 @@ else
         Console.WriteLine(plateforme.Id_Plateforme);
 
         // Récupérer tous les exemples d'utilisation associés à cet équipement
-        var exemplesUtilisation = equipement.Exemple_Utilisations;
-        foreach (var exemple in exemplesUtilisation)
-        {
-            Console.WriteLine($"Exemple Utilisation: {exemple.Nom_Utilisation}");
-            // Tu peux ajouter ces valeurs dans une collection ou les afficher directement
-            Exemple_Utilisation_Nom = exemple.Nom_Utilisation;
-            Exemple_Utilisation_Description = exemple.Description_Utilisation;
-        }
+        // var exemplesUtilisation = equipement.Exemple_Utilisations;
+        // foreach (var exemple in exemplesUtilisation)
+        // {
+        //     Console.WriteLine($"Exemple Utilisation: {exemple.Nom_Utilisation}");
+        //     Tu peux ajouter ces valeurs dans une collection ou les afficher directement
+        //     Exemple_Utilisation_Nom = exemple.Nom_Utilisation;
+        //     Exemple_Utilisation_Description = exemple.Description_Utilisation;
+        // }
     }
 
     private async Task RetourListe()
