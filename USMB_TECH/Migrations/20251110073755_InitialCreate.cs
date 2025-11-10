@@ -230,18 +230,18 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_Modele = table.Column<int>(type: "integer", nullable: false)
+                    id_modele = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    id_Marque = table.Column<int>(type: "integer", nullable: false),
-                    nom_Modele = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    id_Marque1 = table.Column<int>(type: "integer", nullable: true)
+                    id_marque = table.Column<int>(type: "integer", nullable: false),
+                    nom_modele = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    id_marque1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_modele", x => x.id_Modele);
+                    table.PrimaryKey("pk_modele", x => x.id_modele);
                     table.ForeignKey(
                         name: "fk_modele_marque",
-                        column: x => x.id_Marque,
+                        column: x => x.id_marque,
                         principalSchema: "usmbTech",
                         principalTable: "marque",
                         principalColumn: "id_marque");
@@ -475,7 +475,7 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_modele,
                         principalSchema: "usmbTech",
                         principalTable: "modele",
-                        principalColumn: "id_Modele");
+                        principalColumn: "id_modele");
                     table.ForeignKey(
                         name: "fk_plateforme_equipement",
                         column: x => x.id_plateforme,
@@ -915,10 +915,10 @@ namespace USMB_TECH.Migrations
                 column: "id_adresse_labo");
 
             migrationBuilder.CreateIndex(
-                name: "IX_modele_id_Marque",
+                name: "IX_modele_id_marque",
                 schema: "usmbTech",
                 table: "modele",
-                column: "id_Marque");
+                column: "id_marque");
 
             migrationBuilder.CreateIndex(
                 name: "IX_photo_id_equipement",

@@ -696,21 +696,21 @@ namespace USMB_TECH.Migrations
                     b.Property<int>("Id_Modele")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id_Modele");
+                        .HasColumnName("id_modele");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Modele"));
 
                     b.Property<int>("Id_Marque")
                         .HasColumnType("integer")
-                        .HasColumnName("id_Marque");
+                        .HasColumnName("id_marque");
 
                     b.Property<string>("Nom_Modele")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("nom_Modele");
+                        .HasColumnName("nom_modele");
 
-                    b.Property<int?>("id_Marque")
+                    b.Property<int?>("id_marque")
                         .HasColumnType("integer");
 
                     b.HasKey("Id_Modele")
@@ -720,8 +720,8 @@ namespace USMB_TECH.Migrations
 
                     b.ToTable("modele", "usmbTech", t =>
                         {
-                            t.Property("id_Marque")
-                                .HasColumnName("id_Marque1");
+                            t.Property("id_marque")
+                                .HasColumnName("id_marque1");
                         });
                 });
 
