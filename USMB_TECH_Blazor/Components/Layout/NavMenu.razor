@@ -8,14 +8,14 @@
 
 <div class="usmb-nav-container">
     <div class="usmb-nav">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class=""></span> USMB TECH
-            </NavLink>
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span class=""></span> USMB TECH
+        </NavLink>
 
         <!-- Dropdown NOS PLATEFORMES -->
-        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdown">
+        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdownPlateforme">
             <span class="dropdown-toggle">NOS PLATEFORMES</span>
-            <ul class="dropdown-menu @(showDropdown ? "show" : "")">
+            <ul class="dropdown-menu @(showDropdown == "Plateforme" ? "show" : "")">
                 @if (plateformes != null)
                 {
                     @foreach (var p in plateformes)
@@ -29,9 +29,9 @@
         </div>
 
         <!-- Dropdown NOS EQUIPEMENTS -->
-        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdown">
+        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdownEquipement">
             <span class="dropdown-toggle">NOS EQUIPEMENTS</span>
-            <ul class="dropdown-menu @(showDropdown ? "show" : "")">
+            <ul class="dropdown-menu @(showDropdown == "Equipement" ? "show" : "")">
                 @if (equipements != null)
                 {
                     @foreach (var eq in equipements)
@@ -50,7 +50,7 @@
 
 
 @code {
-    private bool showDropdown = false;
+    private string showDropdown = null;
     private IEnumerable<Plateforme>? plateformes;
     private IEnumerable<Equipement>? equipements;
     protected override async Task OnInitializedAsync()
@@ -67,7 +67,7 @@
             }
         }
 
-        if(equipements != null)
+        if (equipements != null)
         {
             foreach (var e in equipements)
             {
@@ -77,20 +77,25 @@
 
     }
 
-    private void ToggleDropdown()
+    private void ToggleDropdownPlateforme()
     {
-        showDropdown = !showDropdown;
+        showDropdown = showDropdown == "Plateforme" ? null : "Plateforme";
+    }
+
+    private void ToggleDropdownEquipement()
+    {
+        showDropdown = showDropdown == "Equipement" ? null : "Equipement";
     }
 
     private void GoToPlateforme(int id)
     {
         Nav.NavigateTo($"/plateforme/{id}");
-        showDropdown = false;
+        showDropdown = null;
     }
 
     private void GoToEquipement(int id)
     {
         Nav.NavigateTo($"/equipement/{id}");
-        showDropdown = false;
+        showDropdown = null;
     }
 }
