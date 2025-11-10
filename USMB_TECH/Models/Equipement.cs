@@ -24,7 +24,7 @@ namespace USMB_TECH.Models
         [MaxLength(50)]
         public string Nom_Equipement { get; set; }
 
-        [Column("num_equipement")]
+        [Column("num_immobilisation")]
         [MaxLength(50)]
         public string Num_Immobilisation { get; set; }
 
