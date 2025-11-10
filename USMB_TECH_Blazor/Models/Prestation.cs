@@ -16,6 +16,7 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Contact { get; set; }
 
+
         public string Intitule_Prestation { get; set; }
 
         public string Description_Prestation { get; set; }
@@ -27,5 +28,7 @@ namespace USMB_TECH_Blazor.Models
         public bool Peux_Ce_Realiser_Chez_Le_Client { get; set; }
 
         public bool Actif { get; set; }
+
+        public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
     }
 }
