@@ -1,4 +1,4 @@
-﻿@* @page "/Equipement/{Id:int}"
+﻿@page "/Equipement/{Id:int}"
 @inject Service.IMainService<Equipement,int> dataRepository
 @inject NavigationManager Navigation
 
@@ -13,27 +13,28 @@
 else
 {
     <p class="card-text"><strong>Equipement @(equipement.Num_Immobilisation) @(equipement.Nom_Equipement) :</strong></p>
-    <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo"/>
-    
-    // @equipement.exemple_Utilisation = @exemple_utilisation.Id_Utilisation alors afficher @exemple_utilisation.Nom_Utilisation et @exemple_utilisation.Description_Utilisation
-    // probléme notre table ne poséde pas de Id exemple_Utilisation donc on ne peut pas faire la liaison il faut donc trouvé un moyen pour que le exemple_utilisation qui est lier a equipement vias l'id equipement dans exemple_utilisation
-    <p class="card-text"><strong>Exemple d'Utilisation :</strong> @equipement.Exemple_Utilisation_Nom</p>
-    <p class="card-text"><strong>Description d'exemple d'Utilisation:</strong> @equipement.Exemple_Utilisation_Description</p>
+    <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
+
+    <!-- Afficher tous les exemples d'utilisation -->
+    <p class="card-text"><strong>Exemples d'Utilisation :</strong></p>
+    @foreach (var exemple in equipement.Exemple_Utilisations)
+    {
+        <p><strong>@exemple.Nom_Utilisation :</strong> @exemple.Description_Utilisation</p>
+    }
 
     <p class="card-text"><strong>caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
-    
-    // @equipement.Id_Plateforme = @specifier.Id_Plateforme alors @specifier.Id_mot_clef = @mot_clef.Id_mot_clef alors afficher @mot_clef.Nom_Mot_Clef
-    @equipement.Id_Plateforme
+
+    @* @equipement.Id_Plateforme
     @foreach (var plateforme in equipement.Id_Plateforme)
     {
         <div>
-            <strong>Plateforme :</strong> @plateforme.Nom
+            <strong>Plateforme :</strong> @plateforme.Nom_Plateforme
             @foreach (var motClef in plateforme.MotsCles)
             {
                 <p><strong>Mot-clé :</strong> @motClef.Nom_Mot_Clef</p>
-             }
+            }
         </div>
-    }
+    } *@
 
     <p class="card-text"><strong>En réappro :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
     <button class="btn btn-primary mt-2" @onclick="@RetourListe">Retour à la liste</button>
@@ -75,4 +76,4 @@ else
         Navigation.NavigateTo("/equipements");
     }
     }
-} *@
+}
