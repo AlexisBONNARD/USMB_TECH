@@ -1,0 +1,78 @@
+﻿@* @page "/Equipement/{Id:int}"
+@inject Service.IMainService<Equipement,int> dataRepository
+@inject NavigationManager Navigation
+
+<PageTitle>Détails Equipement</PageTitle>
+
+<h1>Détails de l'Equipement</h1>
+
+@if (equipement == null)
+{
+    <p><em>Chargement...</em></p>
+}
+else
+{
+    <p class="card-text"><strong>Equipement @(equipement.Num_Immobilisation) @(equipement.Nom_Equipement) :</strong></p>
+    <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo"/>
+    
+    // @equipement.exemple_Utilisation = @exemple_utilisation.Id_Utilisation alors afficher @exemple_utilisation.Nom_Utilisation et @exemple_utilisation.Description_Utilisation
+    // probléme notre table ne poséde pas de Id exemple_Utilisation donc on ne peut pas faire la liaison il faut donc trouvé un moyen pour que le exemple_utilisation qui est lier a equipement vias l'id equipement dans exemple_utilisation
+    <p class="card-text"><strong>Exemple d'Utilisation :</strong> @equipement.Exemple_Utilisation_Nom</p>
+    <p class="card-text"><strong>Description d'exemple d'Utilisation:</strong> @equipement.Exemple_Utilisation_Description</p>
+
+    <p class="card-text"><strong>caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
+    
+    // @equipement.Id_Plateforme = @specifier.Id_Plateforme alors @specifier.Id_mot_clef = @mot_clef.Id_mot_clef alors afficher @mot_clef.Nom_Mot_Clef
+    @equipement.Id_Plateforme
+    @foreach (var plateforme in equipement.Id_Plateforme)
+    {
+        <div>
+            <strong>Plateforme :</strong> @plateforme.Nom
+            @foreach (var motClef in plateforme.MotsCles)
+            {
+                <p><strong>Mot-clé :</strong> @motClef.Nom_Mot_Clef</p>
+             }
+        </div>
+    }
+
+    <p class="card-text"><strong>En réappro :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
+    <button class="btn btn-primary mt-2" @onclick="@RetourListe">Retour à la liste</button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Equipement? equipement;
+    //private Plateforme? plateforme;
+
+    // Dans la classe EquipementForecast
+    public string Exemple_Utilisation_Nom { get; set; }
+    public string Exemple_Utilisation_Description { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        equipement = await dataRepository.GetByIdAsync(Id);
+        Console.WriteLine(equipement.Id_Equipement);
+
+        // Récupérer les plateformes liées à cet équipement
+        var Id_Plateformes = equipement.Id_Plateforme;
+        var plateforme = await dataRepository.GetByIdAsync(Id_Plateformes);
+        Console.WriteLine(plateforme.Id_Plateforme);
+
+        // Récupérer tous les exemples d'utilisation associés à cet équipement
+        var exemplesUtilisation = equipement.Exemple_Utilisations;
+        foreach (var exemple in exemplesUtilisation)
+        {
+            Console.WriteLine($"Exemple Utilisation: {exemple.Nom_Utilisation}");
+            // Tu peux ajouter ces valeurs dans une collection ou les afficher directement
+            Exemple_Utilisation_Nom = exemple.Nom_Utilisation;
+            Exemple_Utilisation_Description = exemple.Description_Utilisation;
+        }
+    }
+
+    private async Task RetourListe()
+    {
+        Navigation.NavigateTo("/equipements");
+    }
+    }
+} *@

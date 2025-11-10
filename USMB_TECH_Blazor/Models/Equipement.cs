@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
@@ -30,8 +31,10 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Autonomie { get; set; }
 
-        public bool Utiliser_Chez_Le_Client { get; set; }
+        public bool Utilisable_Chez_Le_Client { get; set; }
 
         public bool Actif { get; set; }
+
+        public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
     }
 }
