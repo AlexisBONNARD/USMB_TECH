@@ -576,9 +576,7 @@ namespace USMB_TECH.Migrations
                 {
                     id_equipement = table.Column<int>(type: "integer", nullable: false),
                     id_consommable = table.Column<int>(type: "integer", nullable: false),
-                    quantite = table.Column<int>(type: "integer", nullable: false),
-                    id_consommable1 = table.Column<int>(type: "integer", nullable: true),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true)
+                    quantite = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

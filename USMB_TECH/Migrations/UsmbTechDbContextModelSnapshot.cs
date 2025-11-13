@@ -162,25 +162,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("quantite");
 
-                    b.Property<int?>("id_consommable")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Equipement", "Id_Consommable")
                         .HasName("pk_consommer");
 
                     b.HasIndex("Id_Consommable");
 
-                    b.ToTable("consommer", "usmbTech", t =>
-                        {
-                            t.Property("id_consommable")
-                                .HasColumnName("id_consommable1");
-
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-                        });
+                    b.ToTable("consommer", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Contact_USMB", b =>
