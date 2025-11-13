@@ -35,6 +35,6 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Actif { get; set; }
 
-        //public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
+        public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
     }
 }
