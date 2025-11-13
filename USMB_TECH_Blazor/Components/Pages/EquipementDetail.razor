@@ -18,10 +18,10 @@ else
 
     <!-- Afficher tous les exemples d'utilisation -->
     <p class="card-text"><strong>Exemples d'Utilisation :</strong></p>
-    @foreach (var exemple in equipement.Exemple_Utilisations)
+    @* @foreach (var exemple in equipement.Exemple_Utilisations)
     {
         <p><strong>@exemple.Nom_Utilisation :</strong> @exemple.Description_Utilisation</p>
-    }
+    } *@
 
     <p class="card-text"><strong>Caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
 
