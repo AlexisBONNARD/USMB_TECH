@@ -821,8 +821,8 @@ namespace USMB_TECH.Migrations
 
                     b.Property<string>("Description_Plateforme")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
                         .HasColumnName("description_plateforme");
 
                     b.Property<string>("Nom_Contenu")

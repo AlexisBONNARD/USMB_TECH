@@ -15,7 +15,7 @@ namespace USMB_TECH.Models
         public string Nom_Plateforme { get; set; }
 
         [Column("description_plateforme")]
-        [MaxLength(50)]
+        [MaxLength(250)]
         public string Description_Plateforme { get; set; }
 
         [Column("nom_contenu")]

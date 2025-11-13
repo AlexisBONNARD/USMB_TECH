@@ -98,7 +98,7 @@ namespace USMB_TECH.Migrations
                     id_plateforme = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nom_plateforme = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    description_plateforme = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    description_plateforme = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     nom_contenu = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     url_contenu = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     description_contenu = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
