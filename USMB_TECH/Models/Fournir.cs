@@ -6,11 +6,9 @@ namespace USMB_TECH.Models
     [Table("fournir")]
     public partial class Fournir
     {
-        [Key]
         [Column("id_equipement")]
         public int Id_Equipement { get; set; }
 
-        [Key]
         [Column("id_prestation")]
         public int Id_Prestation { get; set; }
 

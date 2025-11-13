@@ -6,11 +6,9 @@ namespace USMB_TECH.Models
     [Table("specifier")]
     public partial class Specifier
     {
-        [Key]
         [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 
-        [Key]
         [Column("id_mot_clef")]
         public int Id_Mot_Clef { get; set; }
 

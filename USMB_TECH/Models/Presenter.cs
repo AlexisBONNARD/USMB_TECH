@@ -6,11 +6,9 @@ namespace USMB_TECH.Models
     [Table("presenter")]
     public partial class Presenter
     {
-        [Key]
         [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 
-        [Key]
         [Column("id_prestation")]
         public int Id_Prestation { get; set; }
 

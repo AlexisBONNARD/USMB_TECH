@@ -6,11 +6,9 @@ namespace USMB_TECH.Models
     [Table("designer")]
     public partial class Designer
     {
-        [Key]
         [Column("id_mot_clef")]
         public int Id_Mot_Clef { get; set; }
 
-        [Key]
         [Column("nom_court")]
         [MaxLength(25)]
         public string Nom_Court { get; set; }

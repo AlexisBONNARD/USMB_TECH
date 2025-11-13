@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251113081551_InitialCreate")]
+    [Migration("20251113083223_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -274,7 +274,7 @@ namespace USMB_TECH.Migrations
                     b.Property<int?>("id_mot_clef")
                         .HasColumnType("integer");
 
-                    b.Property<int>("nom_court")
+                    b.Property<int?>("nom_court")
                         .HasColumnType("integer");
 
                     b.HasKey("Id_Mot_Clef", "Nom_Court")

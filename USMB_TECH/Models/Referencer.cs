@@ -6,11 +6,9 @@ namespace USMB_TECH.Models
     [Table("referencer")]
     public partial class Referencer
     {
-        [Key]
         [Column("id_contact")]
         public int Id_Contact { get; set; }
 
-        [Key]
         [Column("id_equipement")]
         public int Id_Equipement { get; set; }
 

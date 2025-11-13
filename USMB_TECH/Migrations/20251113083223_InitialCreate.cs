@@ -369,7 +369,7 @@ namespace USMB_TECH.Migrations
                     id_mot_clef = table.Column<int>(type: "integer", nullable: false),
                     nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     id_mot_clef1 = table.Column<int>(type: "integer", nullable: true),
-                    nom_court1 = table.Column<int>(type: "integer", nullable: false)
+                    nom_court1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {

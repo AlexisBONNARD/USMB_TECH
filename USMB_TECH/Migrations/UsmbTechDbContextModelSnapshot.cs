@@ -271,7 +271,7 @@ namespace USMB_TECH.Migrations
                     b.Property<int?>("id_mot_clef")
                         .HasColumnType("integer");
 
-                    b.Property<int>("nom_court")
+                    b.Property<int?>("nom_court")
                         .HasColumnType("integer");
 
                     b.HasKey("Id_Mot_Clef", "Nom_Court")
