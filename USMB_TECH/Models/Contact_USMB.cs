@@ -41,11 +41,11 @@ namespace USMB_TECH.Models
         [MaxLength(50)]
         public string? Telephone { get; set; }
 
-        [ForeignKey("id_fonction")]
+        [ForeignKey("Id_Fonction")]
         [InverseProperty(nameof(Fonction.Contacts))]
         public virtual Fonction? FonctionNavigation { get; set; } = null!;
 
-        [ForeignKey("nom_court")]
+        [ForeignKey("Nom_Court")]
         [InverseProperty(nameof(Laboratoire.Contacts))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 

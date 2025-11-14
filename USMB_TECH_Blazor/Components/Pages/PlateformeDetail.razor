@@ -20,21 +20,14 @@ else
         </div>
         <div>
             <h4>Catalogue de prestations</h4>
-            @if(prestations == null)
-            {
-                <p>Aucunes prestations disponibles actuellement</p>
+               @foreach(var prestation in prestations)
+               {
+                    <li>
+                        <img src="images/logo_usmb.png" alt="photo de la prestation" />
+                        <p>prestation.Nom_Prestation</p>
+                    </li>
             }
-            else
-            {
-                @foreach(var prestation in prestations)
-                {
-                    <li>@prestation.Intitule_Prestation</li>
-                    if(prestation.Description_Prestation != null)
-                    {
-                        <p>@prestation.Description_Prestation</p>
-                    }
-                }
-            }
+    )
         </div>
     </div>
     <div>
@@ -52,7 +45,7 @@ else
             {
                  <li>
                         <img src="images/logo_usmb.png" alt="photo de l'équipement" />
-                    <p>equipement.Nom_Equipement</p>
+                        <p>equipement.Nom_Equipement</p>
                  </li>
             }
         }
@@ -76,9 +69,6 @@ else
     {
         plateforme = await PlateformeService.GetByIdAsync(Id);
 
-        foreach (var present in plateforme.Presenters )
-        {
-            prestations.Add(await PrestationService.GetByIdAsync(present.Id_Prestation));
-        }
+        prestations = plateforme.Presenters.Select(p => p.Prestation).Where(p => p != null).ToList();
     }
 }

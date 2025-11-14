@@ -13,11 +13,11 @@ namespace USMB_TECH.Models
         [Column("id_thematique")]
         public int Id_Thematique { get; set; }
 
-        [ForeignKey("nom_court")]
+        [ForeignKey("Nom_Court")]
         [InverseProperty(nameof(Laboratoire.Est_Liers))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
-        [ForeignKey("id_thematique")]
+        [ForeignKey("Id_Thematique")]
         [InverseProperty(nameof(Thematique.Est_Liers))]
         public virtual Thematique? ThematiqueNavigation { get; set; } = null!;
     }

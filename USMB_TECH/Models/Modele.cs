@@ -20,7 +20,7 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Equipement.ModeleNavigation))]
         public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
 
-        [ForeignKey("id_marque")]
+        [ForeignKey("Id_Marque")]
         [InverseProperty(nameof(Marque.Modeles))]
         public virtual Marque? MarqueNavigation { get; set; } = null!;
     }

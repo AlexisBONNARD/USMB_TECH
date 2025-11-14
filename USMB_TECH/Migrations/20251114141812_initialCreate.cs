@@ -117,8 +117,7 @@ namespace USMB_TECH.Migrations
                     id_thematique = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_sous_thematique = table.Column<int>(type: "integer", nullable: false),
-                    nom_thematique = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    id_sous_thematique1 = table.Column<int>(type: "integer", nullable: true)
+                    nom_thematique = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,9 +203,7 @@ namespace USMB_TECH.Migrations
                     id_adresse_campus = table.Column<int>(type: "integer", nullable: false),
                     id_adresse_labo = table.Column<int>(type: "integer", nullable: false),
                     nom_long = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    id_adresse_campus1 = table.Column<int>(type: "integer", nullable: true),
-                    id_adresse_labo1 = table.Column<int>(type: "integer", nullable: true)
+                    description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,8 +230,7 @@ namespace USMB_TECH.Migrations
                     id_modele = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_marque = table.Column<int>(type: "integer", nullable: false),
-                    nom_modele = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    id_marque1 = table.Column<int>(type: "integer", nullable: true)
+                    nom_modele = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -253,9 +249,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_plateforme = table.Column<int>(type: "integer", nullable: false),
-                    id_mot_clef = table.Column<int>(type: "integer", nullable: false),
-                    id_mot_clef1 = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true)
+                    id_mot_clef = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -280,9 +274,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_plateforme = table.Column<int>(type: "integer", nullable: false),
-                    id_thematique = table.Column<int>(type: "integer", nullable: false),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true),
-                    id_thematique1 = table.Column<int>(type: "integer", nullable: true)
+                    id_thematique = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -339,9 +331,7 @@ namespace USMB_TECH.Migrations
                     nom_contact = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     prenom_contact = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     mail = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    telephone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    id_fonction1 = table.Column<int>(type: "integer", nullable: true),
-                    nom_court1 = table.Column<int>(type: "integer", nullable: true)
+                    telephone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -366,9 +356,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_mot_clef = table.Column<int>(type: "integer", nullable: false),
-                    nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
-                    id_mot_clef1 = table.Column<int>(type: "integer", nullable: true),
-                    nom_court1 = table.Column<int>(type: "integer", nullable: true)
+                    nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -393,9 +381,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
-                    id_thematique = table.Column<int>(type: "integer", nullable: false),
-                    id_thematique1 = table.Column<int>(type: "integer", nullable: true),
-                    nom_court1 = table.Column<int>(type: "integer", nullable: true)
+                    id_thematique = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -459,10 +445,7 @@ namespace USMB_TECH.Migrations
                     disponibilite = table.Column<bool>(type: "boolean", nullable: false),
                     autonomie = table.Column<bool>(type: "boolean", nullable: false),
                     utilisable_chez_le_client = table.Column<bool>(type: "boolean", nullable: false),
-                    actif = table.Column<bool>(type: "boolean", nullable: false),
-                    id_modele1 = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true),
-                    id_type_equipement1 = table.Column<int>(type: "integer", nullable: true)
+                    actif = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -494,9 +477,7 @@ namespace USMB_TECH.Migrations
                 {
                     id_plateforme = table.Column<int>(type: "integer", nullable: false),
                     id_contact = table.Column<int>(type: "integer", nullable: false),
-                    fonction = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    id_contact1 = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true)
+                    fonction = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -531,11 +512,7 @@ namespace USMB_TECH.Migrations
                     prix_revient = table.Column<double>(type: "double precision", precision: 10, scale: 2, nullable: false),
                     prix_vente = table.Column<double>(type: "double precision", precision: 10, scale: 2, nullable: false),
                     peux_ce_realiser_chez_le_client = table.Column<bool>(type: "boolean", nullable: false),
-                    actif = table.Column<bool>(type: "boolean", nullable: false),
-                    id_contact1 = table.Column<int>(type: "integer", nullable: true),
-                    id_type_prestation1 = table.Column<int>(type: "integer", nullable: true),
-                    id_unite_oeuvre1 = table.Column<int>(type: "integer", nullable: true),
-                    nom_court1 = table.Column<int>(type: "integer", nullable: true)
+                    actif = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -602,9 +579,7 @@ namespace USMB_TECH.Migrations
                     id_equipement = table.Column<int>(type: "integer", nullable: false),
                     id_plateforme = table.Column<int>(type: "integer", nullable: false),
                     nom_utilisation = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    description_utilisation = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true)
+                    description_utilisation = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -633,9 +608,7 @@ namespace USMB_TECH.Migrations
                     id_equipement = table.Column<int>(type: "integer", nullable: true),
                     id_plateforme = table.Column<int>(type: "integer", nullable: true),
                     nom_photo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    url_photo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true)
+                    url_photo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -661,9 +634,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    id_fonctionalite = table.Column<int>(type: "integer", nullable: false),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true),
-                    id_fonctionalite1 = table.Column<int>(type: "integer", nullable: true)
+                    id_fonctionalite = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -729,9 +700,7 @@ namespace USMB_TECH.Migrations
                 {
                     id_contact = table.Column<int>(type: "integer", nullable: false),
                     id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    role = table.Column<string>(type: "text", nullable: false),
-                    id_contact1 = table.Column<int>(type: "integer", nullable: true),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true)
+                    role = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -756,9 +725,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    id_prestation = table.Column<int>(type: "integer", nullable: false),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true),
-                    id_prestation1 = table.Column<int>(type: "integer", nullable: true)
+                    id_prestation = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -783,9 +750,7 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_plateforme = table.Column<int>(type: "integer", nullable: false),
-                    id_prestation = table.Column<int>(type: "integer", nullable: false),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true),
-                    id_prestation1 = table.Column<int>(type: "integer", nullable: true)
+                    id_prestation = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
