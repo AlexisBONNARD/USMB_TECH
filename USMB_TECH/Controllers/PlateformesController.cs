@@ -60,7 +60,6 @@ namespace USMB_TECH.Controllers
             await _dataRepository.UpdateAsync(existing, plateforme);
             return NoContent();
         }
-
         // POST: api/Plateformes
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

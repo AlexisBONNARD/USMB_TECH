@@ -89,13 +89,13 @@
 
     private void GoToPlateforme(int id)
     {
-        Nav.NavigateTo($"/plateforme/{id}");
+        Nav.NavigateTo($"/plateforme/{id}", true);
         showDropdown = null;
     }
 
     private void GoToEquipement(int id)
     {
-        Nav.NavigateTo($"/equipement/{id}");
+        Nav.NavigateTo($"/equipement/{id}", true);
         showDropdown = null;
     }
 }
