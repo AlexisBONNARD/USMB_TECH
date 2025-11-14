@@ -18,11 +18,11 @@ namespace USMB_TECH.Models
         [Precision(5, 2)]
         public double Pourcentage { get; set; }
 
-        [ForeignKey("nom_court")]
+        [ForeignKey("Nom_Court")]
         [InverseProperty(nameof(Laboratoire.Gerers))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
-        [ForeignKey("id_plateforme")]
+        [ForeignKey("Id_Plateforme")]
         [InverseProperty(nameof(Plateforme.Gerers))]
         public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
     }

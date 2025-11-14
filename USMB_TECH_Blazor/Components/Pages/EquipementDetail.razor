@@ -13,15 +13,16 @@
 }
 else
 {
-    <p class="card-text"><strong>Equipement @(equipement.Num_Immobilisation) @(equipement.Nom_Equipement) :</strong></p>
+    <p class="card-text">Equipement <strong> @(equipement.Nom_Equipement) :</strong></p>
+    <p class="card-text"><strong>Num : </strong>@(equipement.Num_Immobilisation)</p>
     <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
 
     <!-- Afficher tous les exemples d'utilisation -->
     <p class="card-text"><strong>Exemples d'Utilisation :</strong></p>
-    @* @foreach (var exemple in equipement.Exemple_Utilisations)
+    @foreach (var exemple in equipement.Exemple_Utilisations)
     {
         <p><strong>@exemple.Nom_Utilisation :</strong> @exemple.Description_Utilisation</p>
-    } *@
+    }
 
     <p class="card-text"><strong>Caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
 
@@ -43,7 +44,7 @@ else
         <p><em>Aucune plateforme liée trouvée.</em></p>
     }
 
-    <p class="card-text"><strong>En réappro :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
+    <p class="card-text"><strong>Actif :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
 
     <!-- Bouton pour retourner à la liste des plateformes -->
     <button class="btn btn-primary mt-2" @onclick="@(() => RetourListe(equipement.Id_Plateforme))">Voir Plateforme @(equipement.Id_Plateforme)</button>

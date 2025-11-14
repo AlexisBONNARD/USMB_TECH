@@ -29,7 +29,7 @@ namespace USMB_TECH.Models
         [Column("forfait")]
         public bool Forfait { get; set; }
 
-        [ForeignKey("id_unite")]
+        [ForeignKey("Id_Unite")]
         [InverseProperty(nameof(Unite.Consommables))]
         public virtual Unite? UniteNavigation { get; set; } = null!;
 
