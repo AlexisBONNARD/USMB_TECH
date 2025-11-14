@@ -16,7 +16,12 @@ builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebServi
 builder.Services.AddScoped<IMainService<Plateforme, int>>(eq => new WebService<Plateforme, int>("Plateformes"));
 builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<Prestation, int>("Prestations"));
 builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematiques"));
+builder.Services.AddScoped<ISearchService, SearchService>();
 
+//builder.Services.AddScoped(sp => new HttpClient
+//{
+//    BaseAddress = new Uri("https://localhost:7093/")
+//});
 
 
 await builder.Build().RunAsync();

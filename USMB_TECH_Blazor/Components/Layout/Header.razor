@@ -1,9 +1,14 @@
-﻿<HeadContent>
+﻿@inject NavigationManager Nav
+
+<HeadContent>
     <link href="css/app.css" rel="stylesheet" />
 </HeadContent>
 
 <header class="usmb-header">
+
+    <!-- Bandeau supérieur -->
     <div class="usmb-header-top">
+
         <div class="usmb-header-lang">
             <button>FR</button>
         </div>
@@ -12,19 +17,48 @@
             <a href="#">Liens directs</a>
         </div>
 
-        <div class="usmb-header-icons">
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-            <a href="#"><i class="bi bi-youtube"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
+        <!-- Icônes + Barre de recherche -->
+        <div class="usmb-header-top-right">
+
+            <div class="usmb-header-icons">
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-twitter"></i></a>
+                <a href="#"><i class="bi bi-youtube"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a>
+            </div>
+
+            <!-- BARRE DE RECHERCHE -->
+            <div class="usmb-header-search">
+                <input @bind="SearchText"
+                       @bind:event="oninput"
+                       type="text"
+                       placeholder="Rechercher..." />
+
+                <button @onclick="PerformSearch">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+
         </div>
     </div>
 
+    <!-- Bandeau principal -->
     <div class="usmb-header-main">
-        <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
+        <img src="images/logo_usmb.png"
+             alt="Logo Université Savoie Mont Blanc"
+             class="usmb-logo" />
 
         <NavMenu></NavMenu>
-
     </div>
+
 </header>
 
+@code {
+    private string SearchText = "";
+
+    private void PerformSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(SearchText))
+            Nav.NavigateTo($"/search/{SearchText}");
+    }
+}
