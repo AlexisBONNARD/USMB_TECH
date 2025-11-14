@@ -39,6 +39,18 @@ namespace USMB_TECH.Models.Repository
             context.Plateformes.Remove(entity);
             await context.SaveChangesAsync();
         }
+        // Méthode générique pour ajouter n'importe quelle entité liée
+        public async Task AddEntityAsync<T>(T entity) where T : class
+        {
+            context.Set<T>().Add(entity);
+            await context.SaveChangesAsync();
+        }
+
+        // Méthode générique pour sauvegarder toutes les modifications
+        public async Task SaveChangesAsync()
+        {
+            await context.SaveChangesAsync();
+        }
 
     }
 }

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
+using USMB_TECH.DTO;
+using USMB_TECH.Mapper;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
@@ -63,16 +65,88 @@ namespace USMB_TECH.Controllers
         // POST: api/Plateformes
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Plateforme>> PostPlateforme(Plateforme plateforme)
+        public async Task<ActionResult<Plateforme>> PostPlateforme(AddPlateformeDto dto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
+
+            // 1️⃣ Mapper DTO → entité Plateforme
+            var plateforme = PlateformeMapper.ToEntity(dto);
+
+            // 2️⃣ Ajouter la plateforme
+            await _dataRepository.AddAsync(plateforme);
+            int id = plateforme.Id_Plateforme;
+
+            // 3️⃣ Gérer les mots-clés (Specifier)
+            var manager = (PlateformeManager)_dataRepository; // cast vers manager concret
+
+            foreach (var mc in dto.MotsCles)
+            {
+                int motId;
+                if (mc.Id_Mot_Clef.HasValue)
+                {
+                    motId = mc.Id_Mot_Clef.Value;
+                }
+                else
+                {
+                    var newMot = new Mot_Clef { Nom_Mot_Clef = mc.Nom_Mot_Clef };
+                    await manager.AddEntityAsync(newMot);
+                    motId = newMot.Id_Mot_Clef;
+                }
+
+                await manager.AddEntityAsync(new Specifier
+                {
+                    Id_Plateforme = id,
+                    Id_Mot_Clef = motId
+                });
             }
 
-            await _dataRepository.AddAsync(plateforme);
-            return CreatedAtAction(nameof(GetPlateforme), new { id = plateforme.Id_Plateforme }, plateforme);
+            // 4️⃣ Gérer les thématiques (Exposer)
+            foreach (var t in dto.Thematiques)
+            {
+                int themaId;
+                if (t.Id_Thematique.HasValue)
+                {
+                    themaId = t.Id_Thematique.Value;
+                }
+                else
+                {
+                    var newT = new Thematique
+                    {
+                        Nom_Thematique = t.Nom_Thematique,
+                        Id_Sous_Thematique = t.Id_Sous_Thematique ?? 0
+                    };
+                    await manager.AddEntityAsync(newT);
+                    themaId = newT.Id_Thematique;
+                }
+
+                await manager.AddEntityAsync(new Exposer
+                {
+                    Id_Plateforme = id,
+                    Id_Thematique = themaId
+                });
+            }
+
+            // 5️⃣ Gérer les exemples d’utilisation
+            foreach (var e in plateforme.Exemple_Utilisations)
+            {
+                e.Id_Plateforme = id;
+                await manager.AddEntityAsync(e);
+            }
+
+            // 6️⃣ Gérer les photos
+            foreach (var p in plateforme.Photos)
+            {
+                p.Id_Plateforme = id;
+                await manager.AddEntityAsync(p);
+            }
+
+            // 7️⃣ Valider toutes les entités liées
+            await manager.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetPlateforme), new { id = id }, plateforme);
         }
+
 
         // DELETE: api/Plateformes/{id}
         [HttpDelete("{id}")]

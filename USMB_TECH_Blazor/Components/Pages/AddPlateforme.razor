@@ -1,0 +1,177 @@
+@page "/ajouter-plateforme"
+@inject HttpClient Http
+
+<h2>Ajouter une plateforme</h2>
+
+<EditForm Model="@plateforme" OnValidSubmit="SubmitPlateforme">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <h4>Infos générales</h4>
+    <InputText class="form-control" @bind-Value="plateforme.Nom_Plateforme" placeholder="Nom plateforme" />
+    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Plateforme" placeholder="Description" />
+
+    <InputText class="form-control mt-2" @bind-Value="plateforme.Nom_Contenu" placeholder="Nom contenu" />
+    <InputText class="form-control mt-2" @bind-Value="plateforme.Url_Contenu" placeholder="URL contenu" />
+    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Contenu" placeholder="Description contenu" />
+
+    <label class="mt-3">Active ?</label>
+    <InputSelect class="form-control" @bind-Value="plateforme.Actif">
+        <option value="true">Oui</option>
+        <option value="false">Non</option>
+    </InputSelect>
+
+    <hr />
+    <h4>Photos</h4>
+    <InputFile multiple OnChange="HandlePhotos" />
+    <ul>
+        @foreach (var p in plateforme.Photos)
+        {
+            <li>@p.Nom_Photo</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Mots-clés</h4>
+    <InputText @bind-Value="newMot_Clef" placeholder="Ajouter un mot-clé" />
+    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddMot_Clef">Ajouter</button>
+    <ul>
+        @foreach (var mc in plateforme.MotsCles)
+        {
+            <li>@mc.Nom_Mot_Clef</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Thématiques</h4>
+    <InputText @bind-Value="newThematique" placeholder="Ajouter une thématique" />
+    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddThematique">Ajouter</button>
+    <ul>
+        @foreach (var t in plateforme.Thematiques)
+        {
+            <li>@t.Nom_Thematique</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Exemples d’utilisation</h4>
+    <InputText @bind-Value="newExempleNom" placeholder="Nom exemple" />
+    <InputTextArea @bind-Value="newExempleDesc" placeholder="Description exemple" />
+    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddExemple">Ajouter</button>
+    <ul>
+        @foreach (var e in plateforme.ExempleUtilisations)
+        {
+            <li>@e.Nom_Utilisation : @e.Description_Utilisation</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Equipements</h4>
+    <InputText @bind-Value="newEquipement" placeholder="Nom équipement" />
+    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddEquipement">Ajouter</button>
+    <ul>
+        @foreach (var eq in plateforme.Equipements)
+        {
+            <li>@eq.Nom_Equipement</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Presenters</h4>
+    <InputSelect @bind-Value="selectedPrestationId">
+        <option value="">-- Sélectionner une prestation --</option>
+        @foreach (var prestation in prestationsDisponibles)
+        {
+            <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
+        }
+    </InputSelect>
+    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddPresenter">Ajouter</button>
+    <ul>
+        @foreach (var pr in plateforme.Presenters)
+        {
+            <li>Prestation ID : @pr.Id_Prestation</li>
+        }
+    </ul>
+
+    <button class="btn btn-success mt-4" type="submit">Créer la plateforme</button>
+</EditForm>
+
+@code {
+    Plateforme plateforme = new Plateforme();
+
+    string newMot_Clef = "";
+    string newThematique = "";
+    string newExempleNom = "";
+    string newExempleDesc = "";
+    string newEquipement = "";
+    int? selectedPrestationId = null;
+
+    List<Prestation> prestationsDisponibles = new(); // à remplir depuis backend
+
+    async Task HandlePhotos(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            var url = $"uploads/{file.Name}";
+            plateforme.Photos.Add(new Photo { Nom_Photo = file.Name, Url_Photo = url });
+        }
+    }
+
+    void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(newMot_Clef))
+        {
+            plateforme.MotsCles.Add(new Mot_Clef { Nom_Mot_Clef = newMot_Clef });
+            newMot_Clef = "";
+        }
+    }
+
+    void AddThematique()
+    {
+        if (!string.IsNullOrWhiteSpace(newThematique))
+        {
+            plateforme.Thematiques.Add(new Thematique { Nom_Thematique = newThematique });
+            newThematique = "";
+        }
+    }
+
+    void AddExemple()
+    {
+        if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
+        {
+            plateforme.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            {
+                Nom_Utilisation = newExempleNom,
+                Description_Utilisation = newExempleDesc
+            });
+            newExempleNom = "";
+            newExempleDesc = "";
+        }
+    }
+
+    void AddEquipement()
+    {
+        if (!string.IsNullOrWhiteSpace(newEquipement))
+        {
+            plateforme.Equipements.Add(new Equipement { Nom_Equipement = newEquipement });
+            newEquipement = "";
+        }
+    }
+
+    void AddPresenter()
+    {
+        if (selectedPrestationId.HasValue)
+        {
+            plateforme.Presenters.Add(new Presenter
+            {
+                Id_Prestation = selectedPrestationId.Value
+            });
+            selectedPrestationId = null;
+        }
+    }
+
+    async Task SubmitPlateforme()
+    {
+        await Http.PostAsJsonAsync("api/plateformes", plateforme);
+    }
+}
