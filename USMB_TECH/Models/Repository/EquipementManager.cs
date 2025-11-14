@@ -36,6 +36,9 @@ namespace USMB_TECH.Models.Repository
                                            .Include(e => e.Prise_Contacts)
                                            .Include(e => e.Photos)
                                            .Include(e => e.Fournirs)
+                                           .Include(e => e.PlateformeNavigation)
+                                                .ThenInclude(p => p.Specifiers)
+                                                    .ThenInclude(s => s.Mot_ClefNavigation)
                                            .FirstOrDefaultAsync(e => e.Id_Equipement == id);
         }
 
