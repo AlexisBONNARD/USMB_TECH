@@ -26,7 +26,17 @@ namespace USMB_TECH.Models.Repository
 
         public async Task<Equipement?> GetByIdAsync(int id) 
         {
-            return await context.Equipements.FindAsync(id);
+            return await context.Equipements.Include<Equipement, Plateforme>(e => e.PlateformeNavigation)
+                                           .Include<Equipement, Modele>(e => e.ModeleNavigation)
+                                           .Include<Equipement, Type_Equipement>(e => e.Type_EquipementNavigation)
+                                           .Include(e => e.Consommers)
+                                           .Include(e => e.Posseders)
+                                           .Include(e => e.Exemple_Utilisations)
+                                           .Include(e => e.Referencers)
+                                           .Include(e => e.Prise_Contacts)
+                                           .Include(e => e.Photos)
+                                           .Include(e => e.Fournirs)
+                                           .FirstOrDefaultAsync(e => e.Id_Equipement == id);
         }
 
         public async Task AddAsync(Equipement entity) 
