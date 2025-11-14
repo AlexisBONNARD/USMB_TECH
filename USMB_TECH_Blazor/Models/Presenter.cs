@@ -10,6 +10,6 @@ namespace USMB_TECH_Blazor.Models
         public int Id_Prestation { get; set; }
 
         public virtual Plateforme? Plateforme { get; set; }
-        public virtual Prestation? Prestation { get; set; }
+        public virtual Prestation? prestationNavigation { get; set; }
     }
 }
