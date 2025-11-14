@@ -14,7 +14,9 @@ namespace USMB_TECH.Models.Repository
         }
         public async Task<Plateforme?> GetByIdAsync(int id)
         {
-            return await context.Plateformes.FindAsync(id);
+            return await context.Plateformes.Include(p => p.Presenters)
+                .ThenInclude(pr => pr.PrestationNavigation)
+                .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
         }
         public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme entity)
         {
