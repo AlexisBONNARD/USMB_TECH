@@ -12,8 +12,8 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251113085920_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251114130104_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,19 +136,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("prix_unite");
 
-                    b.Property<int?>("id_unite")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Consommable")
                         .HasName("pk_consommable");
 
                     b.HasIndex("Id_Unite");
 
-                    b.ToTable("consommable", "usmbTech", t =>
-                        {
-                            t.Property("id_unite")
-                                .HasColumnName("id_unite1");
-                        });
+                    b.ToTable("consommable", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Consommer", b =>
@@ -589,25 +582,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("pourcentage");
 
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("nom_court")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Plateforme", "Nom_Court")
                         .HasName("pk_gerer");
 
                     b.HasIndex("Nom_Court");
 
-                    b.ToTable("gerer", "usmbTech", t =>
-                        {
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-
-                            t.Property("nom_court")
-                                .HasColumnName("nom_court1");
-                        });
+                    b.ToTable("gerer", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Laboratoire", b =>
@@ -745,11 +725,11 @@ namespace USMB_TECH.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Photo"));
 
-                    b.Property<int>("Id_Equipement")
+                    b.Property<int?>("Id_Equipement")
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int?>("Id_Plateforme")
                         .HasColumnType("integer")
                         .HasColumnName("id_plateforme");
 
@@ -1024,11 +1004,11 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("entreprise_contact");
 
-                    b.Property<int>("Id_Equipement")
+                    b.Property<int?>("Id_Equipement")
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int?>("Id_Plateforme")
                         .HasColumnType("integer")
                         .HasColumnName("id_plateforme");
 
@@ -1048,15 +1028,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("prenom_contact");
 
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_type_client")
-                        .HasColumnType("integer");
-
                     b.HasKey("Num_Prise_Contact")
                         .HasName("pk_prise_contact");
 
@@ -1069,15 +1040,6 @@ namespace USMB_TECH.Migrations
                     b.ToTable("prise_contact", "usmbTech", t =>
                         {
                             t.HasCheckConstraint("CK_PriseContact_EquipementOuPlateforme", "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)");
-
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-
-                            t.Property("id_type_client")
-                                .HasColumnName("id_type_client1");
                         });
                 });
 
@@ -1529,13 +1491,11 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Photos")
                         .HasForeignKey("Id_Equipement")
-                        .IsRequired()
                         .HasConstraintName("fk_photo_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Photos")
                         .HasForeignKey("Id_Plateforme")
-                        .IsRequired()
                         .HasConstraintName("fk_plateforme_photo");
 
                     b.Navigation("EquipementNavigation");
@@ -1621,13 +1581,11 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Prise_Contacts")
                         .HasForeignKey("Id_Equipement")
-                        .IsRequired()
                         .HasConstraintName("fk_prise_contact_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Prise_Contacts")
                         .HasForeignKey("Id_Plateforme")
-                        .IsRequired()
                         .HasConstraintName("fk_prise_contact_plateforme");
 
                     b.HasOne("USMB_TECH.Models.Type_Client", "Type_ClientNavigation")

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace USMB_TECH.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -312,8 +312,7 @@ namespace USMB_TECH.Migrations
                     nom_consommable = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     prix_unite = table.Column<double>(type: "double precision", precision: 10, scale: 2, nullable: false),
                     prix_forfait = table.Column<double>(type: "double precision", precision: 10, scale: 2, nullable: false),
-                    forfait = table.Column<bool>(type: "boolean", nullable: false),
-                    id_unite1 = table.Column<int>(type: "integer", nullable: true)
+                    forfait = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -422,9 +421,7 @@ namespace USMB_TECH.Migrations
                 {
                     nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
                     id_plateforme = table.Column<int>(type: "integer", nullable: false),
-                    pourcentage = table.Column<double>(type: "double precision", precision: 5, scale: 2, nullable: false),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true),
-                    nom_court1 = table.Column<int>(type: "integer", nullable: true)
+                    pourcentage = table.Column<double>(type: "double precision", precision: 5, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -633,8 +630,8 @@ namespace USMB_TECH.Migrations
                 {
                     id_photo = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_equipement = table.Column<int>(type: "integer", nullable: true),
+                    id_plateforme = table.Column<int>(type: "integer", nullable: true),
                     nom_photo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     url_photo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     id_equipement1 = table.Column<int>(type: "integer", nullable: true),
@@ -692,17 +689,14 @@ namespace USMB_TECH.Migrations
                 {
                     num_prise_contact = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_equipement = table.Column<int>(type: "integer", nullable: true),
+                    id_plateforme = table.Column<int>(type: "integer", nullable: true),
                     id_type_client = table.Column<int>(type: "integer", nullable: false),
                     nom_contact = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     prenom_contact = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     entreprise_contact = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     email_contact = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    description_besoins = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    id_equipement1 = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme1 = table.Column<int>(type: "integer", nullable: true),
-                    id_type_client1 = table.Column<int>(type: "integer", nullable: true)
+                    description_besoins = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {

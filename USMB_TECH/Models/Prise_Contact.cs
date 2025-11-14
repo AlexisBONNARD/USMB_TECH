@@ -11,10 +11,10 @@ namespace USMB_TECH.Models
         public int Num_Prise_Contact { get; set; }
 
         [Column("id_equipement")]
-        public int Id_Equipement { get; set; }
+        public int? Id_Equipement { get; set; }
 
         [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        public int? Id_Plateforme { get; set; }
 
         [Column("id_type_client")]
         public int Id_Type_Client { get; set; }
@@ -39,15 +39,15 @@ namespace USMB_TECH.Models
         [MaxLength(200)]
         public string Description_besoins { get; set; }
 
-        [ForeignKey("id_equipement")]
+        [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Prise_Contacts))]
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
-        [ForeignKey("id_plateforme")]
+        [ForeignKey("Id_Plateforme")]
         [InverseProperty(nameof(Plateforme.Prise_Contacts))]
         public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
 
-        [ForeignKey("id_type_client")]
+        [ForeignKey("Id_Type_Client")]
         [InverseProperty(nameof(Type_Client.Prise_Contacts))]
         public virtual Type_Client? Type_ClientNavigation { get; set; } = null!;
     }
