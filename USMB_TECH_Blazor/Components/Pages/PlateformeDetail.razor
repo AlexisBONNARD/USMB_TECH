@@ -36,7 +36,7 @@ else
         <div>
         <h4>NOS ÉQUIPEMENTS</h4>
         @if(plateforme.Equipements == null)
-        {
+        {+
            <p>
                 Aucun équipement disponible pour cette plateforme.
            </p>     
@@ -47,6 +47,7 @@ else
             {
                  <li>
                         <img src="images/logo_usmb.png" alt="photo de l'équipement" />
+                        <p>équipement</p>
                         <p>@equipement.Nom_Equipement</p>
                  </li>
             }
