@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using USMB_TECH.Models;
-using USMB_TECH.Models.EntityFramework;
+using USMB_TECH.Models.Repository;
 
 [ApiController]
 [Route("api/[controller]")]
 public class SearchController : ControllerBase
 {
-    private readonly UsmbTechDbContext context;
+    private readonly EquipementManager _equipManager;
 
-    public SearchController(UsmbTechDbContext ctx)
+    public SearchController(EquipementManager equipManager)
     {
-        context = ctx;
+        _equipManager = equipManager;
     }
 
     [HttpGet]
@@ -22,41 +21,18 @@ public class SearchController : ControllerBase
 
         query = query.ToLower();
 
-        var byMotCle = context.Equipements
-            .Include(e => e.PlateformeNavigation)
-                .ThenInclude(p => p.Specifiers)
-                    .ThenInclude(s => s.Mot_ClefNavigation)
-            .Where(e =>
-                e.PlateformeNavigation.Specifiers
-                    .Any(s => s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-            );
+        var allEquip = await _equipManager.GetAllAsync();
 
-        var byThematique = context.Equipements
-            .Include(e => e.PlateformeNavigation)
-                .ThenInclude(p => p.Exposers)
-                    .ThenInclude(ex => ex.ThematiqueNavigation)
-            .Where(e =>
-                e.PlateformeNavigation.Exposers
-                    .Any(ex => ex.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
-            );
-
-        var byCategorie = context.Equipements
-            .Include(e => e.Fournirs)
-                .ThenInclude(f => f.PrestationNavigation)
-                    .ThenInclude(p => p.Type_PrestationNavigation)
-            .Where(e =>
-                e.Fournirs.Any(f =>
-                    f.PrestationNavigation.Type_PrestationNavigation.Nom_Type_Prestation
-                        .ToLower()
-                        .Contains(query)
-                )
-            );
-
-        var results = await byMotCle
-            .Union(byThematique)
-            .Union(byCategorie)
-            .Distinct()
-            .ToListAsync();
+        var results = allEquip.Where(e =>
+            e.PlateformeNavigation.Specifiers.Any(s =>
+                s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query)) ||
+            e.PlateformeNavigation.Exposers.Any(ex =>
+                ex.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query)) ||
+            e.Fournirs.Any(f =>
+                f.PrestationNavigation.Type_PrestationNavigation.Nom_Type_Prestation
+                    .ToLower()
+                    .Contains(query))
+        ).ToList();
 
         return Ok(results);
     }

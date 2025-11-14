@@ -5,40 +5,45 @@ namespace USMB_TECH.Models.Repository
 {
     public class PlateformeManager : IMainRepository<Plateforme, int>
     {
-        public UsmbTechDbContext context = new UsmbTechDbContext();
-       
+        private readonly UsmbTechDbContext _context;
+
+        public PlateformeManager(UsmbTechDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IEnumerable<Plateforme>> GetAllAsync()
         {
-            return await context.Plateformes.ToListAsync();
+            return await _context.Plateformes.ToListAsync();
         }
+
         public async Task<Plateforme?> GetByIdAsync(int id)
         {
-            return await context.Plateformes
+            return await _context.Plateformes
                 .Include(p => p.Specifiers)
                     .ThenInclude(s => s.Mot_ClefNavigation)
-                    .Include(p => p.Presenters)
+                .Include(p => p.Presenters)
                     .ThenInclude(pr => pr.PrestationNavigation)
                 .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
         }
 
+        public async Task AddAsync(Plateforme entity)
+        {
+            _context.Plateformes.Add(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme entity)
         {
-            context.Plateformes.Attach(entityToUpdate);
-            context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-            await context.SaveChangesAsync();
+            _context.Plateformes.Attach(entityToUpdate);
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync();
         }
 
-                public async Task AddAsync(Plateforme entity)
-        {
-            context.Plateformes.Add(entity);
-            await context.SaveChangesAsync();
-        }
         public async Task DeleteAsync(Plateforme entity)
         {
-            context.Plateformes.Remove(entity);
-            await context.SaveChangesAsync();
+            _context.Plateformes.Remove(entity);
+            await _context.SaveChangesAsync();
         }
-
     }
 }
