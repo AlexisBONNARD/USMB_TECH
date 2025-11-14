@@ -15,12 +15,13 @@ namespace USMB_TECH.Models
         [Column("quantite")]
         public int Quantite {  get; set; }
 
-        [ForeignKey("id_equipement")]
+        [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Consommers))]
-        public virtual Equipement? EquipementNavigation { get; set; } = null!;
+        public virtual Equipement EquipementNavigation { get; set; } = null!;
 
-        [ForeignKey("id_consommable")]
+        [ForeignKey("Id_Consommable")]
         [InverseProperty(nameof(Consommable.Consommers))]
-        public virtual Consommable? ConsommableNavigation { get; set; } = null!;
+        public virtual Consommable ConsommableNavigation { get; set; } = null!;
+
     }
 }
