@@ -18,6 +18,7 @@ builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>(
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
+
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("UsmbTechDbContext")));
 

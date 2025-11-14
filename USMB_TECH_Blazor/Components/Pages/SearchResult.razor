@@ -1,0 +1,35 @@
+﻿@page "/search/{query}"
+@inject ISearchService SearchService
+
+<h3>Résultats pour "@query"</h3>
+
+@if (equipements == null)
+{
+    <p>Chargement...</p>
+}
+else if (!equipements.Any())
+{
+    <p>Aucun résultat trouvé.</p>
+}
+else
+{
+    foreach (var e in equipements)
+    {
+        <div class="equipement-card">
+            <h4>@e.Nom_Equipement</h4>
+            <p>@e.Description_Technique</p>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public string query { get; set; }
+
+    private IEnumerable<Equipement> equipements;
+
+    protected override async Task OnInitializedAsync()
+    {
+        equipements = await SearchService.GlobalSearchAsync(query);
+    }
+}
