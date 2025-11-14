@@ -13,11 +13,11 @@ namespace USMB_TECH.Models
         [MaxLength(25)]
         public string Nom_Court { get; set; }
 
-        [ForeignKey("id_mot_clef")]
+        [ForeignKey("Id_Mot_Clef")]
         [InverseProperty(nameof(Mot_Clef.Designers))]
         public virtual Mot_Clef? Mot_ClefNavigation { get; set; } = null!;
 
-        [ForeignKey("nom_court")]
+        [ForeignKey("Nom_Court")]
         [InverseProperty(nameof(Laboratoire.Designers))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
     }

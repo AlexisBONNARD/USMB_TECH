@@ -79,25 +79,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("fonction");
 
-                    b.Property<int?>("id_contact")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Contact", "Id_Plateforme")
                         .HasName("pk_associer");
 
                     b.HasIndex("Id_Plateforme");
 
-                    b.ToTable("associer", "usmbTech", t =>
-                        {
-                            t.Property("id_contact")
-                                .HasColumnName("id_contact1");
-
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-                        });
+                    b.ToTable("associer", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Consommable", b =>
@@ -214,12 +201,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("telephone");
 
-                    b.Property<int?>("id_fonction")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("nom_court")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Contact")
                         .HasName("pk_contact_USMB");
 
@@ -227,14 +208,7 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Nom_Court");
 
-                    b.ToTable("contact_usmb", "usmbTech", t =>
-                        {
-                            t.Property("id_fonction")
-                                .HasColumnName("id_fonction1");
-
-                            t.Property("nom_court")
-                                .HasColumnName("nom_court1");
-                        });
+                    b.ToTable("contact_usmb", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Designer", b =>
@@ -248,25 +222,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(25)")
                         .HasColumnName("nom_court");
 
-                    b.Property<int?>("id_mot_clef")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("nom_court")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Mot_Clef", "Nom_Court")
                         .HasName("pk_designer");
 
                     b.HasIndex("Nom_Court");
 
-                    b.ToTable("designer", "usmbTech", t =>
-                        {
-                            t.Property("id_mot_clef")
-                                .HasColumnName("id_mot_clef1");
-
-                            t.Property("nom_court")
-                                .HasColumnName("nom_court1");
-                        });
+                    b.ToTable("designer", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Equipement", b =>
@@ -338,15 +299,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("utilisable_chez_le_client");
 
-                    b.Property<int?>("id_modele")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_type_equipement")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Equipement")
                         .HasName("pk_equipement");
 
@@ -356,17 +308,7 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Id_Type_Equipement");
 
-                    b.ToTable("equipement", "usmbTech", t =>
-                        {
-                            t.Property("id_modele")
-                                .HasColumnName("id_modele1");
-
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-
-                            t.Property("id_type_equipement")
-                                .HasColumnName("id_type_equipement1");
-                        });
+                    b.ToTable("equipement", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Est_Lier", b =>
@@ -380,25 +322,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_thematique");
 
-                    b.Property<int?>("id_thematique")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("nom_court")
-                        .HasColumnType("integer");
-
                     b.HasKey("Nom_Court", "Id_Thematique")
                         .HasName("pk_est_lier");
 
                     b.HasIndex("Id_Thematique");
 
-                    b.ToTable("est_lier", "usmbTech", t =>
-                        {
-                            t.Property("id_thematique")
-                                .HasColumnName("id_thematique1");
-
-                            t.Property("nom_court")
-                                .HasColumnName("nom_court1");
-                        });
+                    b.ToTable("est_lier", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Exemple_Utilisation", b =>
@@ -430,12 +359,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nom_utilisation");
 
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Exemple_Utilisation")
                         .HasName("pk_exemple_utilisation");
 
@@ -443,14 +366,7 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Id_Plateforme");
 
-                    b.ToTable("exemple_utilisation", "usmbTech", t =>
-                        {
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-                        });
+                    b.ToTable("exemple_utilisation", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Exposer", b =>
@@ -463,25 +379,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_thematique");
 
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_thematique")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Plateforme", "Id_Thematique")
                         .HasName("pk_exposer");
 
                     b.HasIndex("Id_Thematique");
 
-                    b.ToTable("exposer", "usmbTech", t =>
-                        {
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-
-                            t.Property("id_thematique")
-                                .HasColumnName("id_thematique1");
-                        });
+                    b.ToTable("exposer", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Fonction", b =>
@@ -542,25 +445,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_prestation");
 
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_prestation")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Equipement", "Id_Prestation")
                         .HasName("pk_fournir");
 
                     b.HasIndex("Id_Prestation");
 
-                    b.ToTable("fournir", "usmbTech", t =>
-                        {
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-
-                            t.Property("id_prestation")
-                                .HasColumnName("id_prestation1");
-                        });
+                    b.ToTable("fournir", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Gerer", b =>
@@ -614,12 +504,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("nom_long");
 
-                    b.Property<int?>("id_adresse_campus")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_adresse_labo")
-                        .HasColumnType("integer");
-
                     b.HasKey("Nom_Court")
                         .HasName("pk_laboratoire");
 
@@ -627,14 +511,7 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Id_Adresse_Labo");
 
-                    b.ToTable("laboratoire", "usmbTech", t =>
-                        {
-                            t.Property("id_adresse_campus")
-                                .HasColumnName("id_adresse_campus1");
-
-                            t.Property("id_adresse_labo")
-                                .HasColumnName("id_adresse_labo1");
-                        });
+                    b.ToTable("laboratoire", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Marque", b =>
@@ -677,19 +554,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nom_modele");
 
-                    b.Property<int?>("id_marque")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Modele")
                         .HasName("pk_modele");
 
                     b.HasIndex("Id_Marque");
 
-                    b.ToTable("modele", "usmbTech", t =>
-                        {
-                            t.Property("id_marque")
-                                .HasColumnName("id_marque1");
-                        });
+                    b.ToTable("modele", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Mot_Clef", b =>
@@ -742,12 +612,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("url_photo");
 
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Photo")
                         .HasName("pk_photo");
 
@@ -758,12 +622,6 @@ namespace USMB_TECH.Migrations
                     b.ToTable("photo", "usmbTech", t =>
                         {
                             t.HasCheckConstraint("CK_Photo_EquipementOuPlateforme", "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)");
-
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
                         });
                 });
 
@@ -826,25 +684,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_fonctionalite");
 
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_fonctionalite")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Equipement", "Id_Fonctionalite")
                         .HasName("pk_posseder");
 
                     b.HasIndex("Id_Fonctionalite");
 
-                    b.ToTable("posseder", "usmbTech", t =>
-                        {
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-
-                            t.Property("id_fonctionalite")
-                                .HasColumnName("id_fonctionalite1");
-                        });
+                    b.ToTable("posseder", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Presenter", b =>
@@ -857,25 +702,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_prestation");
 
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_prestation")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Plateforme", "Id_Prestation")
                         .HasName("pk_presenter");
 
                     b.HasIndex("Id_Prestation");
 
-                    b.ToTable("presenter", "usmbTech", t =>
-                        {
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-
-                            t.Property("id_prestation")
-                                .HasColumnName("id_prestation1");
-                        });
+                    b.ToTable("presenter", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Prestation", b =>
@@ -935,18 +767,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("prix_vente");
 
-                    b.Property<int?>("id_contact")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_type_prestation")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_unite_oeuvre")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("nom_court")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Prestation")
                         .HasName("pk_prestation");
 
@@ -958,20 +778,7 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Nom_Court");
 
-                    b.ToTable("prestation", "usmbTech", t =>
-                        {
-                            t.Property("id_contact")
-                                .HasColumnName("id_contact1");
-
-                            t.Property("id_type_prestation")
-                                .HasColumnName("id_type_prestation1");
-
-                            t.Property("id_unite_oeuvre")
-                                .HasColumnName("id_unite_oeuvre1");
-
-                            t.Property("nom_court")
-                                .HasColumnName("nom_court1");
-                        });
+                    b.ToTable("prestation", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Prise_Contact", b =>
@@ -1055,25 +862,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("text")
                         .HasColumnName("role");
 
-                    b.Property<int?>("id_contact")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_equipement")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Equipement", "Id_Contact")
                         .HasName("pk_referencer");
 
                     b.HasIndex("Id_Contact");
 
-                    b.ToTable("referencer", "usmbTech", t =>
-                        {
-                            t.Property("id_contact")
-                                .HasColumnName("id_contact1");
-
-                            t.Property("id_equipement")
-                                .HasColumnName("id_equipement1");
-                        });
+                    b.ToTable("referencer", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Specifier", b =>
@@ -1086,25 +880,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_plateforme");
 
-                    b.Property<int?>("id_mot_clef")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("id_plateforme")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Mot_Clef", "Id_Plateforme")
                         .HasName("pk_specifier");
 
                     b.HasIndex("Id_Plateforme");
 
-                    b.ToTable("specifier", "usmbTech", t =>
-                        {
-                            t.Property("id_mot_clef")
-                                .HasColumnName("id_mot_clef1");
-
-                            t.Property("id_plateforme")
-                                .HasColumnName("id_plateforme1");
-                        });
+                    b.ToTable("specifier", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Thematique", b =>
@@ -1126,17 +907,10 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nom_thematique");
 
-                    b.Property<int?>("id_sous_thematique")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id_Thematique")
                         .HasName("thematique_pkey");
 
-                    b.ToTable("thematique", "usmbTech", t =>
-                        {
-                            t.Property("id_sous_thematique")
-                                .HasColumnName("id_sous_thematique1");
-                        });
+                    b.ToTable("thematique", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Type_Client", b =>
