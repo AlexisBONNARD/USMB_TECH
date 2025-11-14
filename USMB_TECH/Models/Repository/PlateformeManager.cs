@@ -16,9 +16,11 @@ namespace USMB_TECH.Models.Repository
         {
             return await context.Plateformes
                 .Include(p => p.Specifiers)
-                    .ThenInclude(s => s.Mot_ClefNavigation)
-                    .Include(p => p.Presenters)
-                    .ThenInclude(pr => pr.PrestationNavigation)
+                .ThenInclude(s => s.Mot_ClefNavigation)
+                .Include(p => p.Presenters)
+                .ThenInclude(pr => pr.PrestationNavigation)
+                .Include(e => e.Exposers)
+                .ThenInclude(t => t.ThematiqueNavigation)
                 .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
         }
 

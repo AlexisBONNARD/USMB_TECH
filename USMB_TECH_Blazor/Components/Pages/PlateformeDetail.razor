@@ -2,6 +2,7 @@
 @inject IMainService<Plateforme,int> PlateformeService
 @inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 
 @if (plateforme == null)
 {
@@ -15,19 +16,20 @@ else
             <p>@plateforme.Description_Plateforme</p>
         </div>
         <div>
-            <h4>MOTS CLES</h4>
-            <p>Un mot clés</p>
+            <h4>MOTS CLÉS</h4>
+            @foreach(var motCle in motsCles)
+            {
+                <p>@motCle.Nom_Mot_Clef</p>
+            }
+
         </div>
         <div>
             <h4>Catalogue de prestations</h4>
                @foreach(var prestation in prestations)
                {
-                    <li>
-                        <img src="images/logo_usmb.png" alt="photo de la prestation" />
-                        <p>prestation.Nom_Prestation</p>
-                    </li>
-            }
-    )
+                    <p>@prestation.Intitule_Prestation</p>
+                    <p>@prestation.Description_Prestation</p>
+                }
         </div>
     </div>
     <div>
@@ -45,10 +47,14 @@ else
             {
                  <li>
                         <img src="images/logo_usmb.png" alt="photo de l'équipement" />
-                        <p>equipement.Nom_Equipement</p>
+                        <p>@equipement.Nom_Equipement</p>
                  </li>
             }
         }
+        <div>
+            <p>Domaine d'excellence</p>
+            <div>@thematique</div>
+        </div>
         </div>
         <div>
             <h4>Exemples de réalisations</h4>
@@ -60,15 +66,19 @@ else
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
+        [Parameter]
+        public int Id { get; set; }
     private Plateforme? plateforme;
     private List<Prestation> prestations = new List<Prestation>();
+    private List<Mot_Clef> motsCles = new List<Mot_Clef>();
+    private string thematique;
+
 
     protected override async Task OnInitializedAsync()
     {
         plateforme = await PlateformeService.GetByIdAsync(Id);
-
-        prestations = plateforme.Presenters.Select(p => p.Prestation).Where(p => p != null).ToList();
+        prestations = plateforme.Presenters.Select(p => p.prestationNavigation).ToList();
+        motsCles = plateforme.Specifiers.Select(s => s.Mot_ClefNavigation).ToList();
+        thematique = plateforme.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
     }
 }
