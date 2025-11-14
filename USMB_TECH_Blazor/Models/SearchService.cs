@@ -1,22 +1,34 @@
 ﻿using System.Net.Http.Json;
+
 using USMB_TECH_Blazor.Models;
 
-namespace USMB_TECH_Blazor.Service
+namespace USMB_TECH_Blazor.Models
 {
-    public class SearchService : ISearchService
+    public class SearchService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _http;
 
-        public SearchService(HttpClient httpClient)
+        public SearchService(HttpClient http)
         {
-            _httpClient = httpClient;
+            _http = http;
         }
 
-        public async Task<IEnumerable<Equipement>> GlobalSearchAsync(string query)
+        public async Task<IEnumerable<Equipement>> SearchAsync(string query)
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<Equipement>>(
-                $"api/search?query={query}"
-            );
+            if (string.IsNullOrWhiteSpace(query))
+                return Enumerable.Empty<Equipement>();
+
+            try
+            {
+                // Appel GET à l'API avec query en paramètre
+                var results = await _http.GetFromJsonAsync<IEnumerable<Equipement>>($"api/Search?query={Uri.EscapeDataString(query)}");
+                return results ?? Enumerable.Empty<Equipement>();
+            }
+            catch
+            {
+                // En cas d'erreur, on retourne une liste vide
+                return Enumerable.Empty<Equipement>();
+            }
         }
     }
 }
