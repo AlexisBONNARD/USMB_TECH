@@ -24,7 +24,10 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(s => s.Mot_ClefNavigation)
                 .Include(p => p.Presenters)
                     .ThenInclude(pr => pr.PrestationNavigation)
+                .Include(e => e.Exposers)
+                    .ThenInclude(t => t.ThematiqueNavigation)
                 .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
+
         }
 
         public async Task AddAsync(Plateforme entity)
