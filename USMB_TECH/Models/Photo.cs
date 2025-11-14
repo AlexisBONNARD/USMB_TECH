@@ -24,11 +24,11 @@ namespace USMB_TECH.Models
         [MaxLength(500)]
         public string Url_Photo { get; set; }
 
-        [ForeignKey("id_equipement")]
+        [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Photos))]
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
-        [ForeignKey("id_plateforme")]
+        [ForeignKey("Id_Plateforme")]
         [InverseProperty(nameof(Plateforme.Photos))]
         public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
     }

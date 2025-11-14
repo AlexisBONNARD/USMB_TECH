@@ -55,15 +55,15 @@ namespace USMB_TECH.Models
         [Column("actif")]
         public bool Actif { get; set; }
 
-        [ForeignKey("id_plateforme")]
+        [ForeignKey("Id_Plateforme")]
         [InverseProperty(nameof(Plateforme.Equipements))]
         public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
 
-        [ForeignKey("id_modele")]
+        [ForeignKey("Id_Modele")]
         [InverseProperty(nameof(Modele.Equipements))]
         public virtual Modele? ModeleNavigation { get; set; } = null!;
 
-        [ForeignKey("id_type_equipement")]
+        [ForeignKey("Id_Type_Equipement")]
         [InverseProperty(nameof(Type_Equipement.Equipements))]
         public virtual Type_Equipement? Type_EquipementNavigation { get; set; } = null!;
 

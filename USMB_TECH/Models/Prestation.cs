@@ -46,19 +46,19 @@ namespace USMB_TECH.Models
         [Column("actif")]
         public bool Actif { get; set; }
 
-        [ForeignKey("id_unite_oeuvre")]
+        [ForeignKey("Id_Unite_Oeuvre")]
         [InverseProperty(nameof(Unite_Oeuvre.Prestations))]
         public virtual Unite_Oeuvre? Unite_OeuvreNavigation { get; set; } = null!;
 
-        [ForeignKey("id_type_prestation")]
+        [ForeignKey("Id_Type_Prestation")]
         [InverseProperty(nameof(Type_Prestation.Prestations))]
         public virtual Type_Prestation? Type_PrestationNavigation { get; set; } = null!;
 
-        [ForeignKey("nom_court")]
+        [ForeignKey("Nom_Court")]
         [InverseProperty(nameof(Laboratoire.Prestations))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
-        [ForeignKey("id_contact")]
+        [ForeignKey("Id_Contact")]
         [InverseProperty(nameof(Contact_USMB.Prestations))]
         public virtual Contact_USMB? Contact_USMBNavigation { get; set; } = null!;
 

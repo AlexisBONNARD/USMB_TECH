@@ -25,11 +25,11 @@ namespace USMB_TECH.Models
         [MaxLength(1000)]
         public string Description { get; set; }
 
-        [ForeignKey("id_adresse_campus")]
+        [ForeignKey("Id_Adresse_Campus")]
         [InverseProperty(nameof(Adresse.Laboratoires_campus))]
         public virtual Adresse? Adresse_campusNavigation { get; set; } = null!;
 
-        [ForeignKey("id_adresse_labo")]
+        [ForeignKey("Id_Adresse_Labo")]
         [InverseProperty(nameof(Adresse.Laboratoires_labo))]
         public virtual Adresse? Adresse_laboNavigation { get; set; } = null!;
 
