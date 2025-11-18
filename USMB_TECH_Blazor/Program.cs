@@ -17,8 +17,11 @@ builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebServi
 builder.Services.AddScoped<IMainService<Plateforme, int>>(eq => new WebService<Plateforme, int>("Plateformes"));
 builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<Prestation, int>("Prestations"));
 builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematiques"));
-builder.Services.AddScoped<SearchService>();
+
 //builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
-
-
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("https://localhost:7093/") // URL de ton API
+});
+builder.Services.AddScoped<SearchService>();
 await builder.Build().RunAsync();

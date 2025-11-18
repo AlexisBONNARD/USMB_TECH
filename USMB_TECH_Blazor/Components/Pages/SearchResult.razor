@@ -20,22 +20,31 @@ else
         <div class="equipement-card border p-3 mb-2">
             <h4>@e.Nom_Equipement</h4>
             <p>@e.Description_Technique</p>
-            @if (e.PlateformeNavigation != null)
+            @if (!string.IsNullOrEmpty(e.Nom_Plateforme))
             {
-                <p><strong>Plateforme:</strong> @e.PlateformeNavigation.Nom_Plateforme</p>
+                <p><strong>Plateforme:</strong> @e.Nom_Plateforme</p>
             }
             <p><strong>Prix d'achat:</strong> @e.Prix_Achat €</p>
             <p><strong>Date d'acquisition:</strong> @e.Date_Acquisition.ToShortDateString()</p>
             <p><strong>Disponibilité:</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
         </div>
+        @if (e.MotsCles?.Any() == true)
+        {
+            <p><strong>Mots-clés:</strong> @string.Join(", ", e.MotsCles)</p>
+        }
+        @if (e.Thematiques?.Any() == true)
+        {
+            <p><strong>Thématiques:</strong> @string.Join(", ", e.Thematiques)</p>
+        }
     }
+
 }
 
 @code {
     [Parameter]
     public string query { get; set; }
 
-    private IEnumerable<Equipement> Equipements { get; set; } = new List<Equipement>();
+    private IEnumerable<EquipementPreviewDTO> Equipements { get; set; } = new List<EquipementPreviewDTO>();
     private bool IsLoading { get; set; } = true;
 
     protected override async Task OnParametersSetAsync()
@@ -45,12 +54,14 @@ else
         if (!string.IsNullOrWhiteSpace(query))
         {
             Equipements = await SearchService.SearchAsync(query);
+            Console.WriteLine($"Résultats reçus : {Equipements.Count()}");
         }
         else
         {
-            Equipements = new List<Equipement>();
+            Equipements = new List<EquipementPreviewDTO>();
         }
 
         IsLoading = false;
     }
+
 }

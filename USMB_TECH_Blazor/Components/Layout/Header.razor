@@ -59,6 +59,9 @@
     private void PerformSearch()
     {
         if (!string.IsNullOrWhiteSpace(SearchText))
-            Nav.NavigateTo($"/search/{SearchText}");
+        {
+            var encodedQuery = Uri.EscapeDataString(SearchText);
+            Nav.NavigateTo($"/search/{encodedQuery}", forceLoad: false);
+        }
     }
 }
