@@ -11,10 +11,10 @@ namespace USMB_TECH.Models
         public int Id_Exemple_Utilisation { get; set; }
 
         [Column("id_equipement")]
-        public int Id_Equipement { get; set; }
+        public int? Id_Equipement { get; set; }
 
         [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        public int? Id_Plateforme { get; set; }
 
         [Column("nom_utilisation")]
         [MaxLength(50)]

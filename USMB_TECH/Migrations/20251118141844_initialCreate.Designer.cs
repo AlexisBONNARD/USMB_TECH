@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251114141812_initialCreate")]
+    [Migration("20251118141844_initialCreate")]
     partial class initialCreate
     {
         /// <inheritdoc />
@@ -348,11 +348,11 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("description_utilisation");
 
-                    b.Property<int>("Id_Equipement")
+                    b.Property<int?>("Id_Equipement")
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int?>("Id_Plateforme")
                         .HasColumnType("integer")
                         .HasColumnName("id_plateforme");
 
@@ -1159,13 +1159,11 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Exemple_Utilisations")
                         .HasForeignKey("Id_Equipement")
-                        .IsRequired()
                         .HasConstraintName("fk_exemple_utilisation_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Exemple_Utilisations")
                         .HasForeignKey("Id_Plateforme")
-                        .IsRequired()
                         .HasConstraintName("fk_plateforme_exemple_utilisation");
 
                     b.Navigation("EquipementNavigation");

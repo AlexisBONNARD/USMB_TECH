@@ -8,12 +8,25 @@
     <ValidationSummary />
 
     <h4>Infos générales</h4>
-    <InputText class="form-control" @bind-Value="plateforme.Nom_Plateforme" placeholder="Nom plateforme" />
-    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Plateforme" placeholder="Description" />
+    <label>Nom plateforme *</label>
+    <InputText class="form-control" @bind-Value="plateforme.Nom_Plateforme" />
+    <ValidationMessage For="@(() => plateforme.Nom_Plateforme)" />
 
-    <InputText class="form-control mt-2" @bind-Value="plateforme.Nom_Contenu" placeholder="Nom contenu" />
-    <InputText class="form-control mt-2" @bind-Value="plateforme.Url_Contenu" placeholder="URL contenu" />
-    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Contenu" placeholder="Description contenu" />
+    <label>Description *</label>
+    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Plateforme" />
+    <ValidationMessage For="@(() => plateforme.Description_Plateforme)" />
+
+    <label>Nom contenu *</label>
+    <InputText class="form-control mt-2" @bind-Value="plateforme.Nom_Contenu" />
+    <ValidationMessage For="@(() => plateforme.Nom_Contenu)" />
+
+    <label>URL contenu *</label>
+    <InputText class="form-control mt-2" @bind-Value="plateforme.Url_Contenu" />
+    <ValidationMessage For="@(() => plateforme.Url_Contenu)" />
+
+    <label>Description contenu *</label>
+    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Contenu" />
+    <ValidationMessage For="@(() => plateforme.Description_Contenu)" />
 
     <label class="mt-3">Active ?</label>
     <InputSelect class="form-control" @bind-Value="plateforme.Actif">
@@ -77,7 +90,7 @@
     </ul>
 
     <hr />
-    <h4>Presenters</h4>
+    <h4>Prestation</h4>
     <InputSelect @bind-Value="selectedPrestationId">
         <option value="">-- Sélectionner une prestation --</option>
         @foreach (var prestation in prestationsDisponibles)
@@ -96,6 +109,13 @@
     <button class="btn btn-success mt-4" type="submit">Créer la plateforme</button>
 </EditForm>
 
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+        @message
+    </div>
+}
+
 @code {
     Plateforme plateforme = new Plateforme();
 
@@ -107,6 +127,9 @@
     int? selectedPrestationId = null;
 
     List<Prestation> prestationsDisponibles = new(); // à remplir depuis backend
+
+    bool isSubmitted = false;
+    string message = "";
 
     async Task HandlePhotos(InputFileChangeEventArgs e)
     {
@@ -172,6 +195,24 @@
 
     async Task SubmitPlateforme()
     {
-        await Http.PostAsJsonAsync("api/plateformes", plateforme);
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/plateformes", plateforme);
+            if (response.IsSuccessStatusCode)
+            {
+                isSubmitted = true;
+                message = "Plateforme créée avec succès ✅";
+            }
+            else
+            {
+                isSubmitted = false;
+                message = "Erreur lors de la création ❌";
+            }
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            message = $"Erreur: {ex.Message}";
+        }
     }
 }
