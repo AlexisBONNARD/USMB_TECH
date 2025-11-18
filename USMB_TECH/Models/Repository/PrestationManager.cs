@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
@@ -39,6 +40,15 @@ namespace USMB_TECH.Models.Repository
         {
             _context.Prestations.Remove(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Prestation>> GetByKeysAsync<TProperty>(
+    Expression<Func<Prestation, TProperty>> propertySelector,
+    TProperty value)
+        {
+            return await _context.Prestations
+                .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
+                .ToListAsync();
         }
     }
 }

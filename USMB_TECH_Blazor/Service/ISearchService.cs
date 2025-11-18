@@ -4,6 +4,6 @@ namespace USMB_TECH_Blazor.Service
 {
     public interface ISearchService
     {
-        Task<IEnumerable<Equipement>> GlobalSearchAsync(string query);
+        Task<IEnumerable<EquipementPreviewDTO>> GlobalSearchAsync(string query);
     }
 }

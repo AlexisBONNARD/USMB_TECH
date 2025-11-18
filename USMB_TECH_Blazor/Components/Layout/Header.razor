@@ -35,10 +35,20 @@
                        type="text"
                        placeholder="Rechercher..." />
 
+                <div class="search-options">
+                    <label>
+                        <input type="checkbox" @bind="SearchMotClef" /> Par mot-clé
+                    </label>
+                    <label>
+                        <input type="checkbox" @bind="SearchThematique" /> Par thématique
+                    </label>
+                </div>
+
                 <button @onclick="PerformSearch">
                     <i class="bi bi-search"></i>
                 </button>
             </div>
+
 
         </div>
     </div>
@@ -56,10 +66,24 @@
 
 @code {
     private string SearchText = "";
-
+    private bool SearchMotClef = true;
+    private bool SearchThematique = false;
     private void PerformSearch()
     {
         if (!string.IsNullOrWhiteSpace(SearchText))
-            Nav.NavigateTo($"/search/{SearchText}");
+        {
+            var encodedQuery = Uri.EscapeDataString(SearchText);
+            var mode = "";
+
+            if (SearchMotClef && SearchThematique || !SearchMotClef && !SearchThematique)
+                mode = "motclef_thematique";
+            else if (SearchMotClef)
+                mode = "motclef";
+            else if (SearchThematique)
+                mode = "thematique";
+
+            if (!string.IsNullOrEmpty(mode))
+                Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
@@ -39,6 +40,16 @@ namespace USMB_TECH.Models.Repository
             _context.Laboratoires.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
             await _context.SaveChangesAsync();
+        }
+
+
+        public async Task<IEnumerable<Laboratoire>> GetByKeysAsync<TProperty>(
+    Expression<Func<Laboratoire, TProperty>> propertySelector,
+    TProperty value)
+        {
+            return await _context.Laboratoires
+                .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
+                .ToListAsync();
         }
     }
 }
