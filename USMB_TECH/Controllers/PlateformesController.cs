@@ -82,18 +82,26 @@ namespace USMB_TECH.Controllers
 
             foreach (var mc in dto.MotsCles)
             {
+                Console.WriteLine("mc : " + mc);
                 int motId;
-                if (mc.Id_Mot_Clef.HasValue)
+
+                // Vérifier si le mot-clé existe déjà
+                var existingMotCle = await manager.GetMotCleByNameAsync(mc.Nom_Mot_Clef);
+
+                if (existingMotCle != null)
                 {
-                    motId = mc.Id_Mot_Clef.Value;
+                    // Si le mot-clé existe déjà, récupérer son ID
+                    motId = existingMotCle.Id_Mot_Clef;
                 }
                 else
                 {
+                    // Si le mot-clé n'existe pas, le créer et récupérer son ID généré
                     var newMot = new Mot_Clef { Nom_Mot_Clef = mc.Nom_Mot_Clef };
-                    await manager.AddEntityAsync(newMot);
-                    motId = newMot.Id_Mot_Clef;
+                    await manager.AddEntityAsync(newMot);  // Cela va insérer et générer un ID
+                    motId = newMot.Id_Mot_Clef; // Maintenant, tu peux récupérer l'ID généré
                 }
 
+                // Ajouter la relation Specifier
                 await manager.AddEntityAsync(new Specifier
                 {
                     Id_Plateforme = id,
@@ -105,21 +113,28 @@ namespace USMB_TECH.Controllers
             foreach (var t in dto.Thematiques)
             {
                 int themaId;
-                if (t.Id_Thematique.HasValue)
+
+                // Vérifier si la thématique existe déjà
+                var existingThematique = await manager.GetThematiqueByNameAsync(t.Nom_Thematique);
+
+                if (existingThematique != null)
                 {
-                    themaId = t.Id_Thematique.Value;
+                    // Si la thématique existe déjà, récupérer son ID
+                    themaId = existingThematique.Id_Thematique;
                 }
                 else
                 {
-                    var newT = new Thematique
+                    // Si la thématique n'existe pas, la créer et récupérer son ID généré
+                    var newThematique = new Thematique
                     {
                         Nom_Thematique = t.Nom_Thematique,
                         Id_Sous_Thematique = t.Id_Sous_Thematique ?? 0
                     };
-                    await manager.AddEntityAsync(newT);
-                    themaId = newT.Id_Thematique;
+                    await manager.AddEntityAsync(newThematique);
+                    themaId = newThematique.Id_Thematique;  // Récupérer l'ID généré
                 }
 
+                // Ajouter la relation Exposer
                 await manager.AddEntityAsync(new Exposer
                 {
                     Id_Plateforme = id,
@@ -127,25 +142,65 @@ namespace USMB_TECH.Controllers
                 });
             }
 
-            // 5️⃣ Gérer les exemples d’utilisation
-            foreach (var e in plateforme.Exemple_Utilisations)
+            // 5️⃣ Gérer les équipements
+            foreach (var e in dto.Equipements)
             {
-                e.Id_Plateforme = id;
-                await manager.AddEntityAsync(e);
+                int equipId;
+
+                // Vérifier si l'équipement existe déjà
+                var existingEquip = await manager.Get(e.Nom_Equipement);
+
+                if (existingEquip != null)
+                {
+                    // Si l'équipement existe déjà, récupérer son ID
+                    equipId = existingEquip.Id_Equipement;
+                }
+                else
+                {
+                    // Si l'équipement n'existe pas, renvoyer vers la page d'ajout
+                    // Mettre cette partie en commentaire pour l'instant
+                    /*
+                    // Redirection vers la page d'ajout d'un équipement
+                    return RedirectToAction("AjouterEquipement", "Equipement");
+                    */
+                    // Ou pour l'instant, on le crée :
+                    var newEquip = new Equipement
+                    {
+                        Nom_Equipement = e.Nom_Equipement,
+                        Description = e.Description
+                    };
+                    await manager.AddEntityAsync(newEquip);
+                    equipId = newEquip.Id_Equipement;  // Récupérer l'ID généré
+                }
+
+                // Ajouter la relation avec l'équipement
+                await manager.AddEntityAsync(new Utiliser
+                {
+                    Id_Plateforme = id,
+                    Id_Equipement = equipId
+                });
             }
 
-            // 6️⃣ Gérer les photos
+            // 6️⃣ Gérer les exemples d’utilisation
+            foreach (var ex in plateforme.Exemple_Utilisations)
+            {
+                ex.Id_Plateforme = id;
+                await manager.AddEntityAsync(ex);
+            }
+
+            // 7️⃣ Gérer les photos
             foreach (var p in plateforme.Photos)
             {
                 p.Id_Plateforme = id;
                 await manager.AddEntityAsync(p);
             }
 
-            // 7️⃣ Valider toutes les entités liées
+            // 8️⃣ Valider toutes les entités liées
             await manager.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetPlateforme), new { id = id }, plateforme);
         }
+
 
 
         // DELETE: api/Plateformes/{id}
