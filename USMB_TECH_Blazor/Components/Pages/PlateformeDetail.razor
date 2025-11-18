@@ -1,4 +1,5 @@
 ﻿@page "/plateforme/{Id:int}"
+<link href="css/plateforme.css" rel="stylesheet" />
 @inject IMainService<Plateforme,int> PlateformeService
 @inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Nav
@@ -10,7 +11,7 @@
 }
 else
 {
-    <div class="plateforme-detail">
+    <div>
         <div>
             <h4>@plateforme.Nom_Plateforme</h4>
             <p>@plateforme.Description_Plateforme</p>
@@ -36,7 +37,7 @@ else
         <div>
         <h4>NOS ÉQUIPEMENTS</h4>
         @if(plateforme.Equipements == null)
-        {+
+        {
            <p>
                 Aucun équipement disponible pour cette plateforme.
            </p>     
@@ -47,7 +48,6 @@ else
             {
                  <li>
                         <img src="images/logo_usmb.png" alt="photo de l'équipement" />
-                        <p>équipement</p>
                         <p>@equipement.Nom_Equipement</p>
                  </li>
             }
@@ -67,8 +67,8 @@ else
 }
 
 @code {
-        [Parameter]
-        public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
     private Plateforme? plateforme;
     private List<Prestation> prestations = new List<Prestation>();
     private List<Mot_Clef> motsCles = new List<Mot_Clef>();
