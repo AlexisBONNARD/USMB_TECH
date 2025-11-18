@@ -12,7 +12,7 @@ namespace USMB_TECH_Blazor.Service
             _http = http;
         }
 
-        public async Task<IEnumerable<EquipementPreviewDTO>> SearchAsync(string query)
+        public async Task<IEnumerable<EquipementPreviewDTO>> SearchAsync(string query, string mode)
         {
             if (string.IsNullOrWhiteSpace(query))
                 return Enumerable.Empty<EquipementPreviewDTO>();
@@ -20,7 +20,7 @@ namespace USMB_TECH_Blazor.Service
             try
             {
                 var results = await _http.GetFromJsonAsync<IEnumerable<EquipementPreviewDTO>>(
-                    $"api/Search?query={Uri.EscapeDataString(query)}");
+                    $"api/Search?query={Uri.EscapeDataString(query)}&mode={mode}");
 
                 return results ?? Enumerable.Empty<EquipementPreviewDTO>();
             }
@@ -29,5 +29,6 @@ namespace USMB_TECH_Blazor.Service
                 return Enumerable.Empty<EquipementPreviewDTO>();
             }
         }
+
     }
 }

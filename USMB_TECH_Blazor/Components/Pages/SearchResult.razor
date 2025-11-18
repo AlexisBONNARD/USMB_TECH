@@ -1,9 +1,9 @@
-﻿@page "/search/{query}"
+﻿@page "/search/{mode}/{query}"
 @using USMB_TECH_Blazor.Service;
 @using USMB_TECH_Blazor.Models;
 @inject SearchService SearchService
 
-<h3>Résultats pour "@query"</h3>
+<h3>Résultats pour "@query" (mode: @mode)</h3>
 
 @if (IsLoading)
 {
@@ -41,8 +41,8 @@ else
 }
 
 @code {
-    [Parameter]
-    public string query { get; set; }
+    [Parameter] public string mode { get; set; }
+    [Parameter] public string query { get; set; }
 
     private IEnumerable<EquipementPreviewDTO> Equipements { get; set; } = new List<EquipementPreviewDTO>();
     private bool IsLoading { get; set; } = true;
@@ -53,15 +53,14 @@ else
 
         if (!string.IsNullOrWhiteSpace(query))
         {
-            Equipements = await SearchService.SearchAsync(query);
+            Equipements = await SearchService.SearchAsync(query, mode);
             Console.WriteLine($"Résultats reçus : {Equipements.Count()}");
         }
         else
         {
-            Equipements = new List<EquipementPreviewDTO>();
+            Equipements = await SearchService.SearchAsync(query, mode);
         }
 
         IsLoading = false;
     }
-
 }
