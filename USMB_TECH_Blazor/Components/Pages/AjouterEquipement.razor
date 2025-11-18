@@ -1,0 +1,34 @@
+﻿@page "/ajouterEquipement"
+@inject Service.IMainService<Equipement,int> dataRepository
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>AjouterEquipement</h3>
+<EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit" FormName="typeProductForm">
+    <label>Nom de l'équipement : </label>
+    <InputText @bind-Value="addEquipement.Nom_Equipement" />
+
+    <label for="ImmobilisationNumber"> Num_Immobilisation : </label>
+    <InputText @bind-Value="addEquipement.Num_Immobilisation"/>
+
+    <label>Description_Technique : </label>
+    <InputText @bind-Value="addEquipement.Description_Technique"/>
+
+    <label>Prix_Achat : </label>
+    <InputNumber @bind-Value="addEquipement.Prix_Achat"/>
+    <label> Actif : </label>
+    <InputCheckbox @bind-Value="addEquipement.Actif"/>
+
+    <label> Nom de plateforme : </label>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+</EditForm>
+
+@code {
+    private Equipement addEquipement = new();
+
+    private async Task HandleValidSubmit()
+    {
+        addEquipement.Date_Acquisition = DateTime.Now;
+
+    }
+}
