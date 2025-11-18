@@ -87,5 +87,12 @@ namespace USMB_TECH.Controllers
             await _dataRepository.DeleteAsync(laboratoire);
             return NoContent();
         }
+
+        [HttpGet("GetByNom/{nom}")]
+        public async Task<ActionResult<IEnumerable<Plateforme>>> GetByNom(string nom)
+        {
+            var results = await _dataRepository.GetByKeysAsync(p => p.Nom_Plateforme, nom);
+            return Ok(results);
+        }
     }
 }
