@@ -4,82 +4,80 @@
 
 <PageTitle>Détails Equipement</PageTitle>
 
-<h1>Détails de l'Equipement</h1>
+<div class="equipement-wrapper">
+    <h1>Détails de l'Equipement</h1>
 
-@if (equipement == null)
-{
-    <p><em>Chargement...</em></p>
-}
-else
-{
-    <div class="equipement-wrapper">
+    @if (equipement == null)
+    {
+        <p><em>Chargement...</em></p>
+    }
+    else
+    {
+        <div class="card-header">
+        </div>
 
-        <p class="card-text">
-            Equipement : <strong>@equipement.Nom_Equipement</strong>
-        </p>
+        <div class="card-body">
+            <div class="card-data">
+                <p class="card-text">
+                    Equipement : <strong>@equipement.Nom_Equipement</strong>
+                </p>
 
-        <p class="card-text"><strong>Num :</strong> @equipement.Num_Immobilisation</p>
+                <p class="card-text"><strong>Num :</strong> @equipement.Num_Immobilisation</p>
 
-        <img src="images/logo_usmb.png" class="usmb-logo" />
-        
-        <!-- Exemples d'utilisation -->
-        <p class="card-text"><strong>Exemples d’Utilisation :</strong></p>
+                <img src="images/logo_usmb.png" class="usmb-logo" />
 
-        @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
-        {
-            @foreach (var exemple in equipement.Exemple_Utilisations)
-            {
-                <div class="exemple-bloc">
-                    <p><strong>@exemple.Nom_Utilisation</strong></p>
-                    <p>@exemple.Description_Utilisation</p>
-                </div>
-            }
-        }
-        else
-        {
-            <p>Aucun exemple trouvé.</p>
-            Console.WriteLine("exemple non trouvé !");
-        }
+                <!-- Exemples d'utilisation -->
+                <p class="card-text"><strong>Utilisation - Domaine d’application :</strong></p>
 
-        <!-- Caractéristiques techniques -->
-        <p class="card-text"><strong>Caractéristiques techniques :</strong></p>
-        <p id="equipementDesc">@equipement.Description_Technique</p>
-
-        <!-- 🔹 Plateforme depuis plateformeNavigation -->
-        @if (equipement.PlateformeNavigation != null)
-        {
-            <div class="plateforme-box">
-                <strong>Plateforme :</strong> @equipement.PlateformeNavigation.Nom_Plateforme
-                @if (equipement.PlateformeNavigation?.Specifiers != null && equipement.PlateformeNavigation.Specifiers.Any(s => s.Mot_ClefNavigation != null))
+                @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                 {
-                    <p><strong>Mots-clés :</strong></p>
-
-                    @foreach (var specifier in equipement.PlateformeNavigation.Specifiers)
+                    @foreach (var exemple in equipement.Exemple_Utilisations)
                     {
-                        if (specifier.Mot_ClefNavigation != null)
-                        {
-                            <p>- @specifier.Mot_ClefNavigation.Nom_Mot_Clef</p>
-                        }
+                        <div class="exemple-bloc">
+                            <p><strong>@exemple.Nom_Utilisation</strong></p>
+                            <p>@exemple.Description_Utilisation</p>
+                        </div>
                     }
                 }
+                else
+                {
+                    <p>Aucun exemple trouvé.</p>
+                }
+
+                <!-- Caractéristiques techniques -->
+                <p class="card-text"><strong>Caractéristiques techniques :</strong></p>
+                <p id="equipementDesc">@equipement.Description_Technique</p>
+
+                <!-- 🔹 Plateforme depuis plateformeNavigation -->
+                <div class="mots-cles-box">
+                    @if (equipement.PlateformeNavigation?.Specifiers != null && equipement.PlateformeNavigation.Specifiers.Any(s => s.Mot_ClefNavigation != null))
+                    {
+                        <p><strong>Mots-clés :</strong></p>
+
+                        @foreach (var specifier in equipement.PlateformeNavigation.Specifiers)
+                        {
+                            if (specifier.Mot_ClefNavigation != null)
+                            {
+                                <p>- @specifier.Mot_ClefNavigation.Nom_Mot_Clef</p>
+                            }
+                        }
+                    }
+                </div>
+
+                <!-- Statuts -->
+                <p class="card-text"><strong>Actif :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
             </div>
-        }
-        else
-        {
-            <p><em>Plateforme non trouvée.</em></p>
-        }
 
-        <!-- Statuts -->
-        <p class="card-text"><strong>Actif :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
-
-        <!-- Bouton retour -->
-        <button class="btn btn-primary mt-3"
-                @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
-            Voir Plateforme @(equipement.Id_Plateforme)
-        </button>
-
-    </div>
-}
+            <div class="card-click">
+                <!-- Bouton retour -->
+                <button class="btn btn-primary mt-3"
+                        @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
+                    Voir @equipement.PlateformeNavigation.Nom_Plateforme
+                </button>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     [Parameter]
@@ -107,3 +105,129 @@ else
         Navigation.NavigateTo($"/plateforme/{idPlateforme}");
     }
 }
+
+<style>
+    /* Global container */
+    .equipement-wrapper {
+        font-family: 'Arial', sans-serif;
+        margin: 40px auto;
+        padding: 20px;
+        max-width: 1100px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Title */
+    .equipement-wrapper h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: #003366;
+    }
+
+    /* Card header */
+    .card-header {
+        background-color: #003366; /* Blue background */
+        padding: 15px 20px;
+        color: white;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        font-size: 1.6rem;
+    }
+
+    /* Card body */
+    .card-body {
+        padding: 25px 30px;
+        background-color: #f9f9f9;
+        border-radius: 0 0 10px 10px;
+    }
+
+    /* General text */
+    .card-text {
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+        /* Specific text (bold) */
+        .card-text strong {
+            font-weight: bold;
+            color: #003366;
+        }
+
+    /* Image logo */
+    .usmb-logo {
+        display: block;
+        width: 150px;
+        margin: 30px auto;
+    }
+
+    /* Block for examples of use */
+    .exemple-bloc {
+        background-color: #e5f0ff;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+
+        .exemple-bloc p {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+    /* Platform section */
+    .mots-cles-box {
+        background-color: #e5f0ff;
+        padding: 15px;
+        margin-top: 30px;
+        border-radius: 5px;
+    }
+
+        .mots-cles-box strong {
+            font-size: 1.2rem;
+            color: #003366;
+        }
+
+        /* Keywords in the platform section */
+        .mots-cles-box p {
+            font-size: 1rem;
+            margin-top: 10px;
+            color: #333;
+        }
+
+    /* Button */
+    .card-click {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+        .card-click .btn {
+            background-color: #003366;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+        }
+
+            .card-click .btn:hover {
+                background-color: #0055a4;
+            }
+
+    /* Mots-clés list */
+    .card-text ul {
+        padding-left: 20px;
+        list-style-type: none;
+    }
+
+        .card-text ul li {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+</style>
