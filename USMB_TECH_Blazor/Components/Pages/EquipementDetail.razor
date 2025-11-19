@@ -2,102 +2,122 @@
 @inject Service.IMainService<Equipement,int> dataRepository
 @inject NavigationManager Navigation
 
-<PageTitle>Détails Equipement</PageTitle>
+<HeadContent>
+    <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
+</HeadContent>
 
-<div class="equipement-wrapper">
-    <h1>Détails de l'Equipement</h1>
+@if (equipement == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="container">
 
-    @if (equipement == null)
-    {
-        <p><em>Chargement...</em></p>
-    }
-    else
-    {
-        <div class="card-header">
-        </div>
+        <!-- ========== COLONNE GAUCHE ========== -->
+        <div class="col-left">
 
-        <div class="card-body">
-            <div class="card-data">
-                <p class="card-text">
-                    Equipement : <strong>@equipement.Nom_Equipement</strong>
-                </p>
+            <!-- Nom équipement -->
+            <section>
+                <h2>@equipement.Nom_Equipement</h2>
+            </section>
 
-                <p class="card-text"><strong>Num :</strong> @equipement.Num_Immobilisation</p>
+            <!-- Image -->
+            <section class="equipement-image-block">
+                <div class="equipement-item">
+                    <img src="images/logo_usmb.png" alt="photo équipement" />
+                </div>
+            </section>
 
-                <img src="images/logo_usmb.png" class="usmb-logo" />
-
-                <!-- Exemples d'utilisation -->
-                <p class="card-text"><strong>Utilisation - Domaine d’application :</strong></p>
+            <!-- Utilisation -->
+            <section>
+                <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
 
                 @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                 {
                     @foreach (var exemple in equipement.Exemple_Utilisations)
                     {
-                        <div class="exemple-bloc">
-                            <p><strong>@exemple.Nom_Utilisation</strong></p>
-                            <p>@exemple.Description_Utilisation</p>
-                        </div>
+                        <p><strong>@exemple.Nom_Utilisation</strong></p>
+                        <p>@exemple.Description_Utilisation</p>
                     }
                 }
                 else
                 {
-                    <p>Aucun exemple trouvé.</p>
+                    <p>Aucune utilisation renseignée.</p>
                 }
+            </section>
 
-                <!-- Caractéristiques techniques -->
-                <p class="card-text"><strong>Caractéristiques techniques :</strong></p>
-                <p id="equipementDesc">@equipement.Description_Technique</p>
+            <!-- Caractéristiques -->
+            <section>
+                <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
+                <p>@equipement.Description_Technique</p>
+            </section>
 
-                <!-- 🔹 Plateforme depuis plateformeNavigation -->
-                <div class="mots-cles-box">
-                    @if (equipement.PlateformeNavigation?.Specifiers != null && equipement.PlateformeNavigation.Specifiers.Any(s => s.Mot_ClefNavigation != null))
+        </div>
+
+        <!-- ========== COLONNE CENTRALE ========== -->
+        <div class="col-center">
+
+            <section>
+                <h3>MOTS CLÉS</h3>
+
+                <ul class="list-style">
+                    @if (equipement.PlateformeNavigation?.Specifiers != null)
                     {
-                        <p><strong>Mots-clés :</strong></p>
-
-                        @foreach (var specifier in equipement.PlateformeNavigation.Specifiers)
+                        @foreach (var spec in equipement.PlateformeNavigation.Specifiers)
                         {
-                            if (specifier.Mot_ClefNavigation != null)
+                            if (spec.Mot_ClefNavigation != null)
                             {
-                                <p>- @specifier.Mot_ClefNavigation.Nom_Mot_Clef</p>
+                                <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
                             }
                         }
                     }
-                </div>
+                </ul>
+            </section>
 
-                <!-- Statuts -->
-                <p class="card-text"><strong>Actif :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
-            </div>
-
-            <div class="card-click">
-                <!-- Bouton retour -->
-                <button class="btn btn-primary mt-3"
-                        @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
-                    Voir @equipement.PlateformeNavigation.Nom_Plateforme
-                </button>
-            </div>
         </div>
-    }
-</div>
+
+        <!-- ========== COLONNE DROITE ========== -->
+        <div class="col-right">
+
+            <div class="info-block">
+                <h4>Domaine d'excellence :</h4>
+                <div class="btn-blue">@thematique</div>
+            </div>
+
+            <div class="info-block">
+                <h4>Localisation :</h4>
+                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)'</div>
+            </div>
+
+            <div class="info-block">
+                <div class="btn-blue">Formulaire de contact</div>
+            </div>
+
+            <div class="info-block">
+                <h4>Plateforme :</h4>
+                <div class="btn-blue"
+                     @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
+                    @equipement.PlateformeNavigation?.Nom_Plateforme
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+}
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
     private Equipement? equipement;
+    private string thematique;
 
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
-
-        if (equipement != null)
-        {
-            Console.WriteLine($"Equipement chargé : {equipement.Id_Equipement}");
-
-        }
-        else
-        {
-            Console.WriteLine("Équipement non trouvé !");
-        }
+        thematique = equipement.PlateformeNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
     }
 
     private void RetourListe(int idPlateforme)
@@ -105,129 +125,3 @@
         Navigation.NavigateTo($"/plateforme/{idPlateforme}");
     }
 }
-
-<style>
-    /* Global container */
-    .equipement-wrapper {
-        font-family: 'Arial', sans-serif;
-        margin: 40px auto;
-        padding: 20px;
-        max-width: 1100px;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Title */
-    .equipement-wrapper h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 30px;
-        color: #003366;
-    }
-
-    /* Card header */
-    .card-header {
-        background-color: #003366; /* Blue background */
-        padding: 15px 20px;
-        color: white;
-        border-radius: 10px 10px 0 0;
-        text-align: center;
-        font-size: 1.6rem;
-    }
-
-    /* Card body */
-    .card-body {
-        padding: 25px 30px;
-        background-color: #f9f9f9;
-        border-radius: 0 0 10px 10px;
-    }
-
-    /* General text */
-    .card-text {
-        font-size: 1rem;
-        color: #333;
-        margin-bottom: 15px;
-    }
-
-        /* Specific text (bold) */
-        .card-text strong {
-            font-weight: bold;
-            color: #003366;
-        }
-
-    /* Image logo */
-    .usmb-logo {
-        display: block;
-        width: 150px;
-        margin: 30px auto;
-    }
-
-    /* Block for examples of use */
-    .exemple-bloc {
-        background-color: #e5f0ff;
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 5px;
-    }
-
-        .exemple-bloc p {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-    /* Platform section */
-    .mots-cles-box {
-        background-color: #e5f0ff;
-        padding: 15px;
-        margin-top: 30px;
-        border-radius: 5px;
-    }
-
-        .mots-cles-box strong {
-            font-size: 1.2rem;
-            color: #003366;
-        }
-
-        /* Keywords in the platform section */
-        .mots-cles-box p {
-            font-size: 1rem;
-            margin-top: 10px;
-            color: #333;
-        }
-
-    /* Button */
-    .card-click {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-    }
-
-        .card-click .btn {
-            background-color: #003366;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            border: none;
-            cursor: pointer;
-        }
-
-            .card-click .btn:hover {
-                background-color: #0055a4;
-            }
-
-    /* Mots-clés list */
-    .card-text ul {
-        padding-left: 20px;
-        list-style-type: none;
-    }
-
-        .card-text ul li {
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-</style>
