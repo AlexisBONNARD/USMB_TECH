@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
@@ -25,15 +27,10 @@ builder.Services.AddScoped<LaboratoireManager>();
 builder.Services.AddScoped<PlateformeManager>();
 builder.Services.AddScoped<PrestationManager>();
 builder.Services.AddScoped<ThematiqueManager>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("UsmbTechDbContext")));
-
-//builder.Services.AddAutoMapper(cfg =>
-//{
-
-
-//});
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

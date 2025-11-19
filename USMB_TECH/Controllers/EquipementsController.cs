@@ -10,22 +10,25 @@ using System.Threading.Tasks;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
+using AutoMapper;
+using USMB_TECH.DTO;
 
 namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EquipementsController(IMainRepository<Equipement, int> dataRepository) : ControllerBase
+    public class EquipementsController(IMainRepository<Equipement, int> dataRepository, IMapper mapper) : ControllerBase
     {
         private readonly IMainRepository<Equipement, int> _dataRepository = dataRepository;
+        private readonly IMapper _mapper = mapper;
 
         // GET: api/Equipements
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Equipement>>> GetEquipements()
         {
-            var laboratoires = await _dataRepository.GetAllAsync();
-            return Ok(laboratoires);
+            var equipements = await _dataRepository.GetAllAsync();
+            return Ok(equipements);
         }
 
         // GET: api/Equipements/{id}
@@ -64,13 +67,13 @@ namespace USMB_TECH.Controllers
         // POST: api/Equipements
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Equipement>> PostEquipement(Equipement equipement)
+        public async Task<ActionResult<Equipement>> PostEquipement(EquipementAddDTO equipementDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var equipement = _mapper.Map<Equipement>(equipementDto);
             await _dataRepository.AddAsync(equipement);
             return CreatedAtAction(nameof(GetEquipement), new { id = equipement.Id_Equipement }, equipement);
         }

@@ -1,5 +1,5 @@
 ﻿@page "/ajouterEquipement"
-@inject Service.IMainService<Equipement,int> dataRepository
+@inject Service.IMainService<Plateforme,int> dataRepository
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -16,19 +16,29 @@
 
     <label>Prix_Achat : </label>
     <InputNumber @bind-Value="addEquipement.Prix_Achat"/>
-    <label> Actif : </label>
-    <InputCheckbox @bind-Value="addEquipement.Actif"/>
 
-    <label> Nom de plateforme : </label>
+    <label>Prix Revient</label>
+    <InputNumber @bind-Value="addEquipement.Prix_Revient" />
+
+    <label> Utilisable chez le client : </label>
+    <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client"/>
+
+    <label>Plateforme associée: </label>
     <button type="submit" class="btn btn-primary">Ajouter</button>
+    @foreach(var plateforme in plateformes)
+    {
+    <p>@plateforme.Nom_Plateforme</p>
+    })
 </EditForm>
 
 @code {
     private Equipement addEquipement = new();
+    private List<Plateforme> plateformes = new();
 
     private async Task HandleValidSubmit()
     {
+        plateformes = (await dataRepository.GetAllAsync()).ToList();
         addEquipement.Date_Acquisition = DateTime.Now;
-
+        
     }
 }
