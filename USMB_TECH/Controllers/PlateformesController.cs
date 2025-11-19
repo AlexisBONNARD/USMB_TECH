@@ -97,7 +97,7 @@ namespace USMB_TECH.Controllers
                 {
                     // Si le mot-clé n'existe pas, le créer et récupérer son ID généré
                     var newMot = new Mot_Clef { Nom_Mot_Clef = mc.Nom_Mot_Clef };
-                    await manager.AddEntityAsync(newMot);  // Cela va insérer et générer un ID
+                    await manager.Add(newMot);  // Cela va insérer et générer un ID
                     motId = newMot.Id_Mot_Clef; // Maintenant, tu peux récupérer l'ID généré
                 }
 
@@ -215,6 +215,13 @@ namespace USMB_TECH.Controllers
 
             await _dataRepository.DeleteAsync(laboratoire);
             return NoContent();
+        }
+
+        [HttpGet("GetByNom/{nom}")]
+        public async Task<ActionResult<IEnumerable<Plateforme>>> GetByNom(string nom)
+        {
+            var results = await _dataRepository.GetByKeysAsync(p => p.Nom_Plateforme, nom);
+            return Ok(results);
         }
     }
 }

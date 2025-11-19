@@ -1,38 +1,54 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
 {
     public class ThematiqueManager : IMainRepository<Thematique, int>
     {
-        public UsmbTechDbContext context = new UsmbTechDbContext();
+        private readonly UsmbTechDbContext _context;
+
+        public ThematiqueManager(UsmbTechDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IEnumerable<Thematique>> GetAllAsync()
         {
-            return await context.Thematiques.ToListAsync();
+            return await _context.Thematiques.ToListAsync();
         }
 
         public async Task<Thematique?> GetByIdAsync(int id)
         {
-            return await context.Thematiques.FindAsync(id);
+            return await _context.Thematiques.FindAsync(id);
         }
 
-        public async Task AddAsync(Thematique entity) 
+        public async Task AddAsync(Thematique entity)
         {
-            context.Thematiques.Add(entity);
-            await context.SaveChangesAsync();
+            _context.Thematiques.Add(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Thematique entityToUpdate, Thematique entity) 
+        public async Task UpdateAsync(Thematique entityToUpdate, Thematique entity)
         {
-            context.Thematiques.Attach(entityToUpdate);
-            context.Thematiques.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-            await context.SaveChangesAsync();
+            _context.Thematiques.Attach(entityToUpdate);
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsync(Thematique entity) 
+
+        public async Task DeleteAsync(Thematique entity)
         {
-            context.Thematiques.Remove(entity);
-            await context.SaveChangesAsync();
+            _context.Thematiques.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Thematique>> GetByKeysAsync<TProperty>(
+    Expression<Func<Thematique, TProperty>> propertySelector,
+    TProperty value)
+        {
+            return await _context.Thematiques
+                .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
+                .ToListAsync();
         }
     }
 }

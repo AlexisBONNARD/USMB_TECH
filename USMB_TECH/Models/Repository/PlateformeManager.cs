@@ -1,56 +1,63 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
 {
     public class PlateformeManager : IMainRepository<Plateforme, int>
     {
-        public UsmbTechDbContext context = new UsmbTechDbContext();
-       
+        private readonly UsmbTechDbContext _context;
+
+        public PlateformeManager(UsmbTechDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IEnumerable<Plateforme>> GetAllAsync()
         {
-            return await context.Plateformes.ToListAsync();
+            return await _context.Plateformes.ToListAsync();
         }
+
         public async Task<Plateforme?> GetByIdAsync(int id)
         {
-            return await context.Plateformes
+            return await _context.Plateformes
                 .Include(p => p.Specifiers)
                     .ThenInclude(s => s.Mot_ClefNavigation)
-                    .Include(p => p.Presenters)
+                .Include(p => p.Presenters)
                     .ThenInclude(pr => pr.PrestationNavigation)
+                .Include(e => e.Exposers)
+                    .ThenInclude(t => t.ThematiqueNavigation)
+                .Include(p => p.Equipements)
                 .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
+
+        }
+
+        public async Task AddAsync(Plateforme entity)
+        {
+            _context.Plateformes.Add(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme entity)
         {
-            context.Plateformes.Attach(entityToUpdate);
-            context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-            await context.SaveChangesAsync();
+            _context.Plateformes.Attach(entityToUpdate);
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync();
         }
 
-                public async Task AddAsync(Plateforme entity)
-        {
-            context.Plateformes.Add(entity);
-            await context.SaveChangesAsync();
-        }
         public async Task DeleteAsync(Plateforme entity)
         {
-            context.Plateformes.Remove(entity);
-            await context.SaveChangesAsync();
-        }
-        // Méthode générique pour ajouter n'importe quelle entité liée
-        public async Task AddEntityAsync<T>(T entity) where T : class
-        {
-            context.Set<T>().Add(entity);
-            await context.SaveChangesAsync();
+            _context.Plateformes.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
-        // Méthode générique pour sauvegarder toutes les modifications
-        public async Task SaveChangesAsync()
+        public async Task<IEnumerable<Plateforme>> GetByKeysAsync<TProperty>(
+            Expression<Func<Plateforme, TProperty>> propertySelector,
+            TProperty value)
         {
-            await context.SaveChangesAsync();
+            return await _context.Plateformes
+                .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
+                .ToListAsync();
         }
-
     }
 }
