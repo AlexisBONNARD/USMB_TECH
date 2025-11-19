@@ -1,0 +1,89 @@
+﻿/* ======= CONTAINER GLOBAL ======= */
+.platform-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 300px;
+    gap: 40px;
+    padding: 30px;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+
+    /* ======= TITRES ======= */
+    .platform-container h2 {
+        font-size: 20px;
+        font-weight: bold;
+        border-bottom: 2px solid #d9d9d9;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+
+    .platform-container h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #d9d9d9;
+        padding-bottom: 5px;
+        text-transform: uppercase;
+    }
+
+    /* ======= LISTES ======= */
+    .platform-container .list-style {
+        padding-left: 20px;
+    }
+
+        .platform-container .list-style li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+/* ======= COLONNE CENTRALE : ÉQUIPEMENTS ======= */
+.equipement-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.equipement-item {
+    text-align: center;
+}
+
+    .equipement-item img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 8px;
+    }
+
+    .equipement-item p {
+        font-size: 13px;
+    }
+
+/* ======= COLONNE DROITE ======= */
+.col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.info-block h4 {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-blue {
+    background-color: #0a3d7c;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+    .btn-blue:hover {
+        background-color: #0d4c9a;
+    }

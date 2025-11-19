@@ -1,0 +1,122 @@
+﻿/* Global container */
+.equipement-wrapper {
+    font-family: 'Arial', sans-serif;
+    margin: 40px auto;
+    padding: 20px;
+    max-width: 1100px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+    /* Title */
+    .equipement-wrapper h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: #003366;
+    }
+
+/* Card header */
+.card-header {
+    background-color: #003366; /* Blue background */
+    padding: 15px 20px;
+    color: white;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+    font-size: 1.6rem;
+}
+
+/* Card body */
+.card-body {
+    padding: 25px 30px;
+    background-color: #f9f9f9;
+    border-radius: 0 0 10px 10px;
+}
+
+/* General text */
+.card-text {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+    /* Specific text (bold) */
+    .card-text strong {
+        font-weight: bold;
+        color: #003366;
+    }
+
+/* Image logo */
+.usmb-logo {
+    display: block;
+    width: 150px;
+    margin: 30px auto;
+}
+
+/* Block for examples of use */
+.exemple-bloc {
+    background-color: #e5f0ff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+    .exemple-bloc p {
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+
+/* Platform section */
+.mots-cles-box {
+    background-color: #e5f0ff;
+    padding: 15px;
+    margin-top: 30px;
+    border-radius: 5px;
+}
+
+    .mots-cles-box strong {
+        font-size: 1.2rem;
+        color: #003366;
+    }
+
+    /* Keywords in the platform section */
+    .mots-cles-box p {
+        font-size: 1rem;
+        margin-top: 10px;
+        color: #333;
+    }
+
+/* Button */
+.card-click {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+    .card-click .btn {
+        background-color: #003366;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        border: none;
+        cursor: pointer;
+    }
+
+        .card-click .btn:hover {
+            background-color: #0055a4;
+        }
+
+/* Mots-clés list */
+.card-text ul {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+    .card-text ul li {
+        margin-bottom: 8px;
+        font-size: 1rem;
+    }
