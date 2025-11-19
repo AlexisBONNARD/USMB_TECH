@@ -6,7 +6,8 @@ namespace USMB_TECH.Models
     [Table("contact_usmb")]
     public partial class Contact_USMB
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_Contact")]
         public int Id_Contact { get; set; }
 

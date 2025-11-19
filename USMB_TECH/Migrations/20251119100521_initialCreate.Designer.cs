@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251119093910_initialCreate")]
+    [Migration("20251119100521_initialCreate")]
     partial class initialCreate
     {
         /// <inheritdoc />
@@ -375,6 +375,7 @@ namespace USMB_TECH.Migrations
             modelBuilder.Entity("USMB_TECH.Models.Exposer", b =>
                 {
                     b.Property<int>("Id_Plateforme")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_plateforme");
 

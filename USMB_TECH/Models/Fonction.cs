@@ -6,7 +6,8 @@ namespace USMB_TECH.Models
     [Table("fonction")]
     public partial class Fonction
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_fonction")]
         public int Id_Fonction { get; set; }
 

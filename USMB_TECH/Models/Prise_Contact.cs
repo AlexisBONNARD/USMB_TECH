@@ -6,7 +6,8 @@ namespace USMB_TECH.Models
     [Table("prise_contact")]
     public partial class Prise_Contact
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("num_prise_contact")]
         public int Num_Prise_Contact { get; set; }
 

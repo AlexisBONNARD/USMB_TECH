@@ -99,7 +99,8 @@ namespace USMB_TECH.Controllers
 
                     motId = newMot.Id_Mot_Clef;
                 }
-
+                Console.WriteLine($"Mot-clé traité : {nomMotClef} avec ID {motId}");
+                Console.WriteLine($"Plateforme ID : {idPlateforme}");
                 // Ajouter la relation dans Specifier
                 await _context.Specifiers.AddAsync(new Specifier
                 {

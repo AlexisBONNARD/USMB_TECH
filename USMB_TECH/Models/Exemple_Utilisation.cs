@@ -6,7 +6,8 @@ namespace USMB_TECH.Models
     [Table("exemple_utilisation")]
     public class Exemple_Utilisation
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_exemple_utilisation")]
         public int Id_Exemple_Utilisation { get; set; }
 

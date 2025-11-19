@@ -6,7 +6,8 @@ namespace USMB_TECH.Models
     [Table("plateforme")]
     public partial class Plateforme
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 

@@ -6,7 +6,8 @@ namespace USMB_TECH.Models
     [Table("thematique")]
     public class Thematique
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_thematique")]
         public int Id_Thematique { get; set; }
 

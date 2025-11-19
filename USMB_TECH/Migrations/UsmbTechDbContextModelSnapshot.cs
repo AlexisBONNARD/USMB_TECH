@@ -372,6 +372,7 @@ namespace USMB_TECH.Migrations
             modelBuilder.Entity("USMB_TECH.Models.Exposer", b =>
                 {
                     b.Property<int>("Id_Plateforme")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_plateforme");
 

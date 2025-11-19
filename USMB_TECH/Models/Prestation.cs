@@ -7,7 +7,8 @@ namespace USMB_TECH.Models
     [Table("prestation")]
     public partial class Prestation
     {
-        
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_prestation")]
         public int Id_Prestation { get; set; }
 
