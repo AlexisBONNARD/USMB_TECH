@@ -1,5 +1,5 @@
-﻿/* ======= CONTAINER GLOBAL ======= */
-.platform-container {
+﻿/* ======= GLOBAL CONTAINER ======= */
+.container {
     display: grid;
     grid-template-columns: 1fr 1fr 300px;
     gap: 40px;
@@ -7,9 +7,7 @@
     margin-top: 20px;
     font-family: Arial, sans-serif;
 }
-
-    /* ======= TITRES ======= */
-    .platform-container h2 {
+    .container h2 {
         font-size: 20px;
         font-weight: bold;
         border-bottom: 2px solid #d9d9d9;
@@ -18,7 +16,7 @@
         text-transform: uppercase;
     }
 
-    .platform-container h3 {
+    .container h3 {
         font-size: 16px;
         font-weight: bold;
         margin-bottom: 10px;
@@ -28,11 +26,11 @@
     }
 
     /* ======= LISTES ======= */
-    .platform-container .list-style {
+    .container .list-style {
         padding-left: 20px;
     }
 
-        .platform-container .list-style li {
+        .container .list-style li {
             margin-bottom: 8px;
             font-size: 14px;
         }
