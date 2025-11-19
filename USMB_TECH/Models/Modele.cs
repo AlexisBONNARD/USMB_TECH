@@ -6,7 +6,7 @@ namespace USMB_TECH.Models
     [Table("modele")]   
     public partial class Modele
     {
-        [Key]
+        
         [Column("id_modele")]
         public int Id_Modele { get; set; }
 

@@ -121,7 +121,7 @@ namespace USMB_TECH.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("thematique_pkey", x => x.id_thematique);
+                    table.PrimaryKey("pk_thematique", x => x.id_thematique);
                 });
 
             migrationBuilder.CreateTable(

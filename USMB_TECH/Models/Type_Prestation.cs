@@ -6,7 +6,7 @@ namespace USMB_TECH.Models
     [Table("type_prestation")]
     public partial class Type_Prestation
     {
-        [Key]
+        
         [Column("id_type_prestation")]
         public int Id_Type_Prestation { get; set; }
 

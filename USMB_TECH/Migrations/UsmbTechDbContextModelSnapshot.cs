@@ -908,7 +908,7 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("nom_thematique");
 
                     b.HasKey("Id_Thematique")
-                        .HasName("thematique_pkey");
+                        .HasName("pk_thematique");
 
                     b.ToTable("thematique", "usmbTech");
                 });

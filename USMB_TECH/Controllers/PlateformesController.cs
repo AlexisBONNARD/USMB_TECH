@@ -17,9 +17,10 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlateformesController(IMainRepository<Plateforme, int> dataRepository) : ControllerBase
+    public class PlateformesController(IMainRepository<Plateforme, int> dataRepository, UsmbTechDbContext context) : ControllerBase
     {
         private readonly IMainRepository<Plateforme, int> _dataRepository = dataRepository;
+        private readonly UsmbTechDbContext _context = context;
 
         // GET: api/Plateformes
         [HttpGet]
@@ -65,57 +66,61 @@ namespace USMB_TECH.Controllers
         // POST: api/Plateformes
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Plateforme>> PostPlateforme(AddPlateformeDto dto)
+        public async Task<ActionResult<Plateforme>> PostPlateforme(AddPlateformeDto plateformeDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // 1️⃣ Mapper DTO → entité Plateforme
-            var plateforme = PlateformeMapper.ToEntity(dto);
+            var plateforme = PlateformeMapper.ToEntity(plateformeDto);
 
-            // 2️⃣ Ajouter la plateforme
             await _dataRepository.AddAsync(plateforme);
-            int id = plateforme.Id_Plateforme;
+            int idPlateforme = plateforme.Id_Plateforme;
 
             // 3️⃣ Gérer les mots-clés (Specifier)
-            var manager = (PlateformeManager)_dataRepository; // cast vers manager concret
-
-            foreach (var mc in dto.MotsCles)
+            foreach (var mc in plateformeDto.MotsCles)
             {
-                Console.WriteLine("mc : " + mc);
                 int motId;
 
-                // Vérifier si le mot-clé existe déjà
-                var existingMotCle = await manager.GetMotCleByNameAsync(mc.Nom_Mot_Clef);
+                var nomMotClef = mc.Nom_Mot_Clef.Trim().ToLower();
+
+                // Récupérer l'entité si elle existe
+                var existingMotCle = await _context.Mot_Clefs.FirstOrDefaultAsync(m => m.Nom_Mot_Clef.ToLower() == nomMotClef);
 
                 if (existingMotCle != null)
                 {
-                    // Si le mot-clé existe déjà, récupérer son ID
                     motId = existingMotCle.Id_Mot_Clef;
                 }
                 else
                 {
-                    // Si le mot-clé n'existe pas, le créer et récupérer son ID généré
-                    var newMot = new Mot_Clef { Nom_Mot_Clef = mc.Nom_Mot_Clef };
-                    await manager.Add(newMot);  // Cela va insérer et générer un ID
-                    motId = newMot.Id_Mot_Clef; // Maintenant, tu peux récupérer l'ID généré
+                    // Créer le mot-clé
+                    var newMot = new Mot_Clef { Nom_Mot_Clef = nomMotClef };
+                    await _context.Mot_Clefs.AddAsync(newMot);
+                    await _context.SaveChangesAsync(); // Nécessaire pour générer l'ID
+
+                    motId = newMot.Id_Mot_Clef;
                 }
 
-                // Ajouter la relation Specifier
-                await manager.AddEntityAsync(new Specifier
+                // Ajouter la relation dans Specifier
+                await _context.Specifiers.AddAsync(new Specifier
                 {
-                    Id_Plateforme = id,
+                    Id_Plateforme = idPlateforme,
                     Id_Mot_Clef = motId
                 });
             }
 
+            // Sauvegarde finale
+            await _context.SaveChangesAsync();
+
+
             // 4️⃣ Gérer les thématiques (Exposer)
-            foreach (var t in dto.Thematiques)
+            foreach (var t in plateformeDto.Thematiques)
             {
                 int themaId;
 
+                var nomThematique = t.Nom_Thematique.Trim().ToLower();
+
                 // Vérifier si la thématique existe déjà
-                var existingThematique = await manager.GetThematiqueByNameAsync(t.Nom_Thematique);
+                var existingThematique = await _context.Thematiques.FirstOrDefaultAsync(m => m.Nom_Thematique.ToLower() == nomThematique);
 
                 if (existingThematique != null)
                 {
@@ -127,28 +132,30 @@ namespace USMB_TECH.Controllers
                     // Si la thématique n'existe pas, la créer et récupérer son ID généré
                     var newThematique = new Thematique
                     {
-                        Nom_Thematique = t.Nom_Thematique,
+                        Nom_Thematique = nomThematique,
                         Id_Sous_Thematique = t.Id_Sous_Thematique ?? 0
                     };
-                    await manager.AddEntityAsync(newThematique);
+                    await _context.Thematiques.AddAsync(newThematique);
                     themaId = newThematique.Id_Thematique;  // Récupérer l'ID généré
                 }
 
                 // Ajouter la relation Exposer
-                await manager.AddEntityAsync(new Exposer
+                await _context.Exposers.AddAsync(new Exposer
                 {
-                    Id_Plateforme = id,
+                    Id_Plateforme = idPlateforme,
                     Id_Thematique = themaId
                 });
             }
 
             // 5️⃣ Gérer les équipements
-            foreach (var e in dto.Equipements)
+            foreach (var e in plateformeDto.Equipements)
             {
                 int equipId;
 
+                var nomEquipement = e.Nom_Equipement.Trim().ToLower();
+
                 // Vérifier si l'équipement existe déjà
-                var existingEquip = await manager.Get(e.Nom_Equipement);
+                var existingEquip = await _context.Equipements.FirstOrDefaultAsync(m => m.Nom_Equipement.ToLower() == nomEquipement);
 
                 if (existingEquip != null)
                 {
@@ -164,41 +171,28 @@ namespace USMB_TECH.Controllers
                     return RedirectToAction("AjouterEquipement", "Equipement");
                     */
                     // Ou pour l'instant, on le crée :
-                    var newEquip = new Equipement
-                    {
-                        Nom_Equipement = e.Nom_Equipement,
-                        Description = e.Description
-                    };
-                    await manager.AddEntityAsync(newEquip);
-                    equipId = newEquip.Id_Equipement;  // Récupérer l'ID généré
+                    return BadRequest($"L'équipement '{nomEquipement}' n'existe pas. Veuillez l'ajouter avant de l'associer à une plateforme.");
                 }
-
-                // Ajouter la relation avec l'équipement
-                await manager.AddEntityAsync(new Utiliser
-                {
-                    Id_Plateforme = id,
-                    Id_Equipement = equipId
-                });
             }
 
             // 6️⃣ Gérer les exemples d’utilisation
             foreach (var ex in plateforme.Exemple_Utilisations)
             {
-                ex.Id_Plateforme = id;
-                await manager.AddEntityAsync(ex);
+                ex.Id_Plateforme = idPlateforme;
+                await _context.Exemple_Utilisations.AddAsync(ex);
             }
 
             // 7️⃣ Gérer les photos
             foreach (var p in plateforme.Photos)
             {
-                p.Id_Plateforme = id;
-                await manager.AddEntityAsync(p);
+                p.Id_Plateforme = idPlateforme;
+                await _context.Photos.AddAsync(p);
             }
 
             // 8️⃣ Valider toutes les entités liées
-            await manager.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPlateforme), new { id = id }, plateforme);
+            return CreatedAtAction(nameof(GetPlateforme), new { id = idPlateforme }, plateforme);
         }
 
 

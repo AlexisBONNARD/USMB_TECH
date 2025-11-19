@@ -6,7 +6,7 @@ namespace USMB_TECH.Models
     [Table("exposer")]
     public partial class Exposer
     {
-        [Key]
+        
         [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 

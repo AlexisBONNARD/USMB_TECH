@@ -1,4 +1,6 @@
 
+using USMB_TECH.Models;
+
 namespace USMB_TECH.DTO
 {
     public class AddPlateformeDto
@@ -14,5 +16,6 @@ namespace USMB_TECH.DTO
         public List<MotCleDto> MotsCles { get; set; } = new();
         public List<ThematiqueDto> Thematiques { get; set; } = new();
         public List<ExempleUtilisationDto> ExempleUtilisations { get; set; } = new();
+        public List<EquipementDTO> Equipements { get; set; } = new();
     }
 }

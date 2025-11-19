@@ -6,7 +6,7 @@ namespace USMB_TECH.Models
     [Table("fonctionalite")]
     public partial class Fonctionalite
     {
-        [Key]
+        
         [Column("id_fonctionalite")]
         public int Id_Fonctionalite { get; set; }
 

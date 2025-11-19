@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251118141844_initialCreate")]
+    [Migration("20251119093910_initialCreate")]
     partial class initialCreate
     {
         /// <inheritdoc />
@@ -911,7 +911,7 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("nom_thematique");
 
                     b.HasKey("Id_Thematique")
-                        .HasName("thematique_pkey");
+                        .HasName("pk_thematique");
 
                     b.ToTable("thematique", "usmbTech");
                 });

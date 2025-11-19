@@ -6,7 +6,6 @@ namespace USMB_TECH.Models
     [Table("mot_clef")]
     public partial class Mot_Clef
     {
-        [Key]
         [Column("id_mot_clef")]
         public int Id_Mot_Clef { get; set; }
 

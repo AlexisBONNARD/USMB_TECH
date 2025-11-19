@@ -6,7 +6,7 @@ namespace USMB_TECH.Models
     [Table("laboratoire")]
     public partial class Laboratoire
     {
-        [Key]
+        
         [Column("nom_court")]
         [MaxLength(25)]
         public string Nom_Court { get; set; }
