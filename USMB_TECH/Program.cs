@@ -20,6 +20,7 @@ builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>(
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
+builder.Services.AddScoped<IMainRepository<Type_Equipement, int>, Type_EquipementManager>();
 
 // Enregistrement des managers
 builder.Services.AddScoped<EquipementManager>();

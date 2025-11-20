@@ -17,7 +17,12 @@ namespace USMB_TECH_Blazor.Service
         }
         public async Task AddAsync(TEntity entity) 
         {
-            await _httpClient.PostAsJsonAsync($"{_endpoint}", entity);
+            var response = await _httpClient.PostAsJsonAsync($"{_endpoint}", entity);
+            if (!response.IsSuccessStatusCode) 
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Erreur API: {error}");
+            }
         }
 
         public async Task DeleteAsync(TIdentity id) 

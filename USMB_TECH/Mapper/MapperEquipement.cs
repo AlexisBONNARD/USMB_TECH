@@ -7,7 +7,14 @@ namespace USMB_TECH.Mapper
     {
         public MapperEquipement()
         {
-            CreateMap<EquipementAddDTO, Equipement>();
+            CreateMap<EquipementAddDTO, Equipement>()
+    .ForMember(dest => dest.PlateformeNavigation,
+               opt => opt.MapFrom(src => new Plateforme { Nom_Plateforme = src.Nom_Plateforme }))
+    .ForMember(dest => dest.Type_EquipementNavigation,
+               opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
+    .ForMember(dest => dest.Id_Plateforme, opt => opt.Ignore())
+    .ForMember(dest => dest.Id_Type_Equipement, opt => opt.Ignore());
+
         }
     }
 }
