@@ -1,0 +1,70 @@
+﻿@page "/search/{mode}/{query}"
+@using USMB_TECH_Blazor.Service;
+@using USMB_TECH_Blazor.Models;
+@inject SearchService SearchService
+<link href="css/SearchResult.css" rel="stylesheet" />
+
+<h3 class="results-title">Résultats pour "@query" (mode: @mode)</h3>
+
+<div class="results-container">
+    @if (IsLoading)
+    {
+        <p>Chargement...</p>
+    }
+    else if (Equipements == null || !Equipements.Any())
+    {
+        <p>Aucun résultat trouvé.</p>
+    }
+    else
+    {
+        @foreach (var e in Equipements)
+        {
+            <div class="equipement-card border p-3 mb-2">
+                <h4>@e.Nom_Equipement</h4>
+                <p>@e.Description_Technique</p>
+                @if (!string.IsNullOrEmpty(e.Nom_Plateforme))
+                {
+                    <p><strong>Plateforme:</strong> @e.Nom_Plateforme</p>
+                }
+                <p><strong>Prix d'achat:</strong> @e.Prix_Achat €</p>
+                <p><strong>Date d'acquisition:</strong> @e.Date_Acquisition.ToShortDateString()</p>
+                <p><strong>Disponibilité:</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
+
+                @if (e.MotsCles?.Any() == true)
+                {
+                    <p><strong>Mots-clés:</strong> @string.Join(", ", e.MotsCles)</p>
+                }
+                @if (e.Thematiques?.Any() == true)
+                {
+                    <p><strong>Thématiques:</strong> @string.Join(", ", e.Thematiques)</p>
+                }
+            </div>
+        }
+    }
+</div>
+
+
+@code {
+    [Parameter] public string mode { get; set; }
+    [Parameter] public string query { get; set; }
+
+    private IEnumerable<EquipementPreviewDTO> Equipements { get; set; } = new List<EquipementPreviewDTO>();
+    private bool IsLoading { get; set; } = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            Equipements = await SearchService.SearchAsync(query, mode);
+            Console.WriteLine($"Résultats reçus : {Equipements.Count()}");
+        }
+        else
+        {
+            Equipements = await SearchService.SearchAsync(query, mode);
+        }
+
+        IsLoading = false;
+    }
+}

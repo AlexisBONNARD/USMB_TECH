@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
@@ -18,14 +20,18 @@ builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>(
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
+builder.Services.AddScoped<IMainRepository<Type_Equipement, int>, Type_EquipementManager>();
+
+// Enregistrement des managers
+builder.Services.AddScoped<EquipementManager>();
+builder.Services.AddScoped<LaboratoireManager>();
+builder.Services.AddScoped<PlateformeManager>();
+builder.Services.AddScoped<PrestationManager>();
+builder.Services.AddScoped<ThematiqueManager>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("UsmbTechDbContext")));
-
-//builder.Services.AddAutoMapper(cfg =>
-//{
-
-
-//});
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

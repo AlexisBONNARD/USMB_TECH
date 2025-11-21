@@ -1,53 +1,110 @@
 ﻿@page "/equipement/{Id:int}"
 @inject Service.IMainService<Equipement,int> dataRepository
-@inject Service.IMainService<Plateforme,int> plateformeRepository
 @inject NavigationManager Navigation
 
-<PageTitle>Détails Equipement</PageTitle>
-
-<h1>Détails de l'Equipement</h1>
+<HeadContent>
+    <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
+</HeadContent>
 
 @if (equipement == null)
 {
-    <p><em>Chargement...</em></p>
+    <p>Chargement...</p>
 }
 else
 {
-    <p class="card-text">Equipement <strong> @(equipement.Nom_Equipement) :</strong></p>
-    <p class="card-text"><strong>Num : </strong>@(equipement.Num_Immobilisation)</p>
-    <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
+    <div class="container">
 
-    <!-- Afficher tous les exemples d'utilisation -->
-    <p class="card-text"><strong>Exemples d'Utilisation :</strong></p>
-    @foreach (var exemple in equipement.Exemple_Utilisations)
-    {
-        <p><strong>@exemple.Nom_Utilisation :</strong> @exemple.Description_Utilisation</p>
-    }
+        <!-- ========== COLONNE GAUCHE ========== -->
+        <div class="col-left">
 
-    <p class="card-text"><strong>Caractéristiques techniques :</strong> <p id="equipementDesc">@equipement.Description_Technique</p></p>
+            <!-- Nom équipement -->
+            <section>
+                <h2>@equipement.Nom_Equipement</h2>
+            </section>
 
-    @if (plateformeLiee != null)
-    {
-        <div>
-            <strong>Plateforme :</strong> @plateformeLiee.Nom_Plateforme
-            @* @if (plateformeLiee.MotsCles?.Any() == true)
-            {
-                @foreach (var motClef in plateformeLiee.MotsCles)
+            <!-- Image -->
+            <section class="equipement-image-block">
+                <div class="equipement-item">
+                    <img src="images/logo_usmb.png" alt="photo équipement" />
+                </div>
+            </section>
+
+            <!-- Utilisation -->
+            <section>
+                <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
+
+                @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                 {
-                    <p><strong>Mot-clé :</strong> @motClef.Nom_Mot_Clef</p>
+                    @foreach (var exemple in equipement.Exemple_Utilisations)
+                    {
+                        <p><strong>@exemple.Nom_Utilisation</strong></p>
+                        <p>@exemple.Description_Utilisation</p>
+                    }
                 }
-            } *@
+                else
+                {
+                    <p>Aucune utilisation renseignée.</p>
+                }
+            </section>
+
+            <!-- Caractéristiques -->
+            <section>
+                <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
+                <p>@equipement.Description_Technique</p>
+            </section>
+
         </div>
-    }
-    else
-    {
-        <p><em>Aucune plateforme liée trouvée.</em></p>
-    }
 
-    <p class="card-text"><strong>Actif :</strong> @(equipement.Actif ? "Oui" : "Non")</p>
+        <!-- ========== COLONNE CENTRALE ========== -->
+        <div class="col-center">
 
-    <!-- Bouton pour retourner à la liste des plateformes -->
-    <button class="btn btn-primary mt-2" @onclick="@(() => RetourListe(equipement.Id_Plateforme))">Voir Plateforme @(equipement.Id_Plateforme)</button>
+            <section>
+                <h3>MOTS CLÉS</h3>
+
+                <ul class="list-style">
+                    @if (equipement.PlateformeNavigation?.Specifiers != null)
+                    {
+                        @foreach (var spec in equipement.PlateformeNavigation.Specifiers)
+                        {
+                            if (spec.Mot_ClefNavigation != null)
+                            {
+                                <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
+                            }
+                        }
+                    }
+                </ul>
+            </section>
+
+        </div>
+
+        <!-- ========== COLONNE DROITE ========== -->
+        <div class="col-right">
+
+            <div class="info-block">
+                <h4>Domaine d'excellence :</h4>
+                <div class="btn-blue">@thematique</div>
+            </div>
+
+            <div class="info-block">
+                <h4>Localisation :</h4>
+                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)'</div>
+            </div>
+
+            <div class="info-block">
+                <div class="btn-blue">Formulaire de contact</div>
+            </div>
+
+            <div class="info-block">
+                <h4>Plateforme :</h4>
+                <div class="btn-blue"
+                     @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
+                    @equipement.PlateformeNavigation?.Nom_Plateforme
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 }
 
 @code {
@@ -55,40 +112,16 @@ else
     public int Id { get; set; }
 
     private Equipement? equipement;
-    private Plateforme? plateformeLiee;
-
-    // Dans la classe EquipementForecast
-    public string Exemple_Utilisation_Nom { get; set; }
-    public string Exemple_Utilisation_Description { get; set; }
+    private string thematique;
 
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
-        if (equipement != null)
-        {
-            Console.WriteLine($"Equipement chargé: {equipement.Id_Equipement}");
-
-            // Charger la plateforme associée
-            plateformeLiee = await plateformeRepository.GetByIdAsync(equipement.Id_Plateforme);
-
-            if (plateformeLiee != null)
-                Console.WriteLine($"Plateforme chargée: {plateformeLiee.Nom_Plateforme}");
-            else
-                Console.WriteLine("Plateforme non trouvée pour cet équipement.");
-
-            // Exemples d'utilisation
-            foreach (var exemple in equipement.Exemple_Utilisations)
-            {
-                Console.WriteLine($"Exemple Utilisation: {exemple.Nom_Utilisation}");
-                Exemple_Utilisation_Nom = exemple.Nom_Utilisation;
-                Exemple_Utilisation_Description = exemple.Description_Utilisation;
-            }
-        }
+        thematique = equipement.PlateformeNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
     }
 
-    private async Task RetourListe(int IdPlateforme)
+    private void RetourListe(int idPlateforme)
     {
-        // Naviguer vers la page plateforme spécifique
-        Navigation.NavigateTo($"/plateforme/{IdPlateforme}");
+        Navigation.NavigateTo($"/plateforme/{idPlateforme}");
     }
 }

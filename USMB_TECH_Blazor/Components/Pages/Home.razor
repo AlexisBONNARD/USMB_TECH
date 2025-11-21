@@ -1,5 +1,5 @@
 ﻿@page "/"
-
+@inject NavigationManager Nav
 
 <div class="hero-section">
     <p class="hero-text">
@@ -8,8 +8,36 @@
 
     <nav id="search-box-nav">
         <div class="search-box">
-            <input type="text" placeholder="Recherche par mots clés" />
-            <button><i class="bi bi-search"></i></button>
+            <input @bind="SearchText"
+                   @bind:event="oninput"
+                   type="text"
+                   placeholder="Recherche par mots clés"
+                   @onkeydown="HandleKeyDown" />
+
+            <button @onclick="PerformSearch">
+                <i class="bi bi-search"></i>
+            </button>
         </div>
     </nav>
 </div>
+@code {
+    private string SearchText = "";
+
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            PerformSearch();
+        }
+    }
+
+    private void PerformSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var encodedQuery = Uri.EscapeDataString(SearchText);
+            Nav.NavigateTo($"/search/motclef/{encodedQuery}");
+        }
+    }
+}

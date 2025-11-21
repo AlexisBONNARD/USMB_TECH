@@ -16,18 +16,20 @@ namespace USMB_TECH_Blazor.Models
         public int Id_Type_Equipement { get; set; }
 
         public string Nom_Equipement { get; set; }
-
         public string Num_Immobilisation { get; set; }
-
         public DateTime Date_Acquisition { get; set; }
+
+        public string Description_Technique { get; set; }
 
         public double Prix_Achat { get; set; }
 
         public double Prix_Revient { get; set; }
 
-        public string Description_Technique { get; set; }
+        public string Nom_Plateforme { get; set; }
 
-        public bool Disponibilite { get; set; }
+        public string Nom_Modele { get; set; }
+
+        public string Type_Equipement { get; set; }
 
         public bool Autonomie { get; set; }
 
@@ -35,6 +37,10 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Actif { get; set; }
 
+        public string Nom_Contact { get; set; }
+
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
+
+        public Plateforme? PlateformeNavigation { get; set; }
     }
 }

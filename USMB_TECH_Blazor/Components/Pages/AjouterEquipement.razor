@@ -1,0 +1,105 @@
+﻿@page "/ajouterEquipement"
+@inject Service.IMainService<Plateforme,int> plateformeDatas
+@inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
+@inject Service.IMainService<Equipement,int> equipementDatas
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<h3>Ajouter un équipement</h3>
+<EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
+    <label>Nom de l'équipement : </label>
+    <InputText @bind-Value="addEquipement.Nom_Equipement" />
+
+    <label for="ImmobilisationNumber"> Num_Immobilisation : </label>
+    <InputText @bind-Value="addEquipement.Num_Immobilisation"/>
+
+    <label>Description_Technique : </label>
+    <InputText @bind-Value="addEquipement.Description_Technique"/>
+
+
+    <label>Prix_Achat : </label>
+    <InputNumber @bind-Value="addEquipement.Prix_Achat"/>
+
+    <label>Prix Revient :</label>
+    <InputNumber @bind-Value="addEquipement.Prix_Revient"/>
+
+    <label> Autonomie : </label>
+    <InputCheckbox @bind-Value="addEquipement.Autonomie"/>
+
+    <label> Modèle : </label>
+    <InputText @bind-Value="addEquipement.Nom_Modele"/>
+
+    <label> Utilisable chez le client : </label>
+    <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client"/>
+
+    <label>Plateforme associée : </label>
+    <InputSelect TValue="string" Value="@addEquipement.Nom_Plateforme" ValueChanged="PLateformeRotation" ValueExpression="@(() => @addEquipement.Nom_Plateforme)">
+        <option>...</option>
+        @foreach(var plateforme in plateformes)
+        {
+            <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
+        }
+    </InputSelect>
+    <InputSelect TValue="string" Value="@addEquipement.Type_Equipement" ValueChanged="TypeRotation" ValueExpression="@(() => @addEquipement.Type_Equipement)">
+        <option>...</option>
+        @foreach (var type in type_Equipements)
+        {
+            <option value="@type.Nom_Type">@type.Nom_Type</option>
+        }
+    </InputSelect>
+
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+            @message
+        </div>
+    }
+</EditForm>
+
+    @code {
+    private Equipement addEquipement = new();
+    private List<Plateforme> plateformes = new();
+    private List<Type_Equipement> type_Equipements = new();
+
+    bool isSubmitted = false;
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        plateformes = (await plateformeDatas.GetAllAsync()).ToList();
+        type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            addEquipement.Date_Acquisition = DateTime.Now;
+            addEquipement.Actif = true;
+
+            await equipementDatas.AddAsync(addEquipement);
+
+            isSubmitted = true;
+            message = "Équipement ajouté avec succès !";
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            message = ex.Message;
+
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+
+    }
+    private void PLateformeRotation(string SelectedPlateforme)
+    {
+        addEquipement.Nom_Plateforme = SelectedPlateforme;
+    }
+    private void TypeRotation(string SelectedType)
+    {
+        addEquipement.Type_Equipement = SelectedType;
+    }
+}
