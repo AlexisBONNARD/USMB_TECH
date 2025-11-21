@@ -71,105 +71,200 @@ namespace USMB_TECH.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // 1️⃣ Mapper le DTO vers l'entité
-            var plateforme = PlateformeMapper.ToEntity(plateformeDto);
+            // On ouvre une transaction pour tout rollback en cas d'erreur
+            await using var tx = await _context.Database.BeginTransactionAsync();
 
-            // 2️⃣ Ajouter la plateforme et sauvegarder pour générer l'ID
-            await _context.Plateformes.AddAsync(plateforme);
-            await _context.SaveChangesAsync();
-            int idPlateforme = plateforme.Id_Plateforme;
-
-            // 3️⃣ Gérer les mots-clés (Specifier)
-            var specifiersToAdd = new List<Specifier>();
-            foreach (var mc in plateformeDto.MotsCles)
+            try
             {
-                var nomMotClef = mc.Nom_Mot_Clef.Trim().ToLower();
-
-                // Chercher si le mot-clé existe déjà
-                var existingMotCle = await _context.Mot_Clefs
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(m => m.Nom_Mot_Clef.ToLower() == nomMotClef);
-
-                int motId;
-
-                if (existingMotCle != null)
+                // -------------------------
+                // 1) Créer la plateforme (manuellement, pas via mapper pour éviter collections pré-remplies)
+                // -------------------------
+                var plateforme = new Plateforme
                 {
-                    motId = existingMotCle.Id_Mot_Clef;
-                }
-                else
-                {
-                    // Créer et sauvegarder immédiatement pour générer l'ID
-                    var newMot = new Mot_Clef { Nom_Mot_Clef = nomMotClef };
-                    _context.Mot_Clefs.Add(newMot);
-                    await _context.SaveChangesAsync(); // IMPORTANT : génère l'ID dans la DB
-
-                    motId = newMot.Id_Mot_Clef;
-                }
-
-                // Ajouter le Specifier
-                var spec = new Specifier
-                {
-                    Id_Plateforme = plateforme.Id_Plateforme,
-                    Id_Mot_Clef = motId
+                    Nom_Plateforme = plateformeDto.Nom_Plateforme?.Trim(),
+                    Description_Plateforme = plateformeDto.Description_Plateforme?.Trim(),
+                    Nom_Contenu = plateformeDto.Nom_Contenu?.Trim(),
+                    Url_Contenu = plateformeDto.Url_Contenu?.Trim(),
+                    Description_Contenu = plateformeDto.Description_Contenu?.Trim(),
+                    Actif = plateformeDto.Actif
                 };
-                _context.Specifiers.Add(spec);
-            }
 
-            // Sauvegarder tous les Specifiers
-            await _context.SaveChangesAsync();
+                _context.Plateformes.Add(plateforme);
+                await _context.SaveChangesAsync(); // Génère Id_Plateforme
+                var idPlateforme = plateforme.Id_Plateforme;
 
-            // 4️⃣ Gérer les thématiques (Exposer)
-            var exposersToAdd = new List<Exposer>();
-            foreach (var t in plateformeDto.Thematiques)
-            {
-                var nomThematique = t.Nom_Thematique.Trim().ToLower();
-                var existingThematique = await _context.Thematiques
-                    .FirstOrDefaultAsync(m => m.Nom_Thematique.ToLower() == nomThematique);
-
-                int themaId;
-                if (existingThematique != null)
+                // -------------------------
+                // 2) Mots-clés -> Mot_Clef + Specifier
+                // Pour chaque mot : reuse si existe (bd), sinon créer et SaveChanges pour obtenir l'id
+                // -------------------------
+                foreach (var mc in plateformeDto.MotsCles ?? Enumerable.Empty<MotCleDto>())
                 {
-                    themaId = existingThematique.Id_Thematique;
-                }
-                else
-                {
-                    var newThematique = new Thematique
+                    var nomMot = (mc.Nom_Mot_Clef ?? string.Empty).Trim().ToLower();
+                    if (string.IsNullOrEmpty(nomMot)) continue;
+
+                    // Cherche en base (no tracking)
+                    var existingMot = await _context.Mot_Clefs
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.Nom_Mot_Clef.ToLower() == nomMot);
+
+                    int motId;
+                    if (existingMot != null)
                     {
-                        Nom_Thematique = nomThematique,
-                        Id_Sous_Thematique = t.Id_Sous_Thematique ?? 0
-                    };
-                    await _context.Thematiques.AddAsync(newThematique);
-                    await _context.SaveChangesAsync(); // ID généré
-                    themaId = newThematique.Id_Thematique;
+                        motId = existingMot.Id_Mot_Clef;
+                    }
+                    else
+                    {
+                        // Vérifier dans le Local (au cas où on aurait déjà ajouté ce mot dans cette transaction)
+                        var localMot = _context.Mot_Clefs.Local
+                            .FirstOrDefault(m => string.Equals(m.Nom_Mot_Clef, nomMot, StringComparison.OrdinalIgnoreCase));
+
+                        if (localMot != null && localMot.Id_Mot_Clef > 0)
+                        {
+                            motId = localMot.Id_Mot_Clef;
+                        }
+                        else if (localMot != null && localMot.Id_Mot_Clef == 0)
+                        {
+                            // Si local présent mais id=0 (rare), persistons immédiatement
+                            await _context.SaveChangesAsync();
+                            motId = localMot.Id_Mot_Clef;
+                        }
+                        else
+                        {
+                            var newMot = new Mot_Clef { Nom_Mot_Clef = nomMot };
+                            _context.Mot_Clefs.Add(newMot);
+                            await _context.SaveChangesAsync(); // IMPORTANT pour récupérer Id_Mot_Clef
+                            motId = newMot.Id_Mot_Clef;
+                        }
+                    }
+
+                    // Ajouter la relation Specifier
+                    // Eviter doublon : on peut vérifier s'il existe déjà la relation (optionnel)
+                    var existsSpecifier = await _context.Specifiers
+                        .AnyAsync(s => s.Id_Plateforme == idPlateforme && s.Id_Mot_Clef == motId);
+
+                    if (!existsSpecifier)
+                    {
+                        _context.Specifiers.Add(new Specifier
+                        {
+                            Id_Plateforme = idPlateforme,
+                            Id_Mot_Clef = motId
+                        });
+                    }
                 }
 
-                exposersToAdd.Add(new Exposer
+                await _context.SaveChangesAsync();
+
+                // -------------------------
+                // 3) Thématiques -> Thematique + Exposer
+                // -------------------------
+                foreach (var t in plateformeDto.Thematiques ?? Enumerable.Empty<ThematiqueDto>())
                 {
-                    Id_Plateforme = idPlateforme,
-                    Id_Thematique = themaId
-                });
-            }
-            await _context.Exposers.AddRangeAsync(exposersToAdd);
+                    var nomT = (t.Nom_Thematique ?? string.Empty).Trim().ToLower();
+                    if (string.IsNullOrEmpty(nomT)) continue;
 
-            // 5️⃣ Gérer les exemples d’utilisation
-            foreach (var ex in plateforme.Exemple_Utilisations)
+                    var existingT = await _context.Thematiques
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(x => x.Nom_Thematique.ToLower() == nomT);
+
+                    int themeId;
+                    if (existingT != null)
+                    {
+                        themeId = existingT.Id_Thematique;
+                    }
+                    else
+                    {
+                        var localT = _context.Thematiques.Local
+                            .FirstOrDefault(x => string.Equals(x.Nom_Thematique, nomT, StringComparison.OrdinalIgnoreCase));
+
+                        if (localT != null && localT.Id_Thematique > 0)
+                        {
+                            themeId = localT.Id_Thematique;
+                        }
+                        else if (localT != null && localT.Id_Thematique == 0)
+                        {
+                            await _context.SaveChangesAsync();
+                            themeId = localT.Id_Thematique;
+                        }
+                        else
+                        {
+                            var newT = new Thematique
+                            {
+                                Nom_Thematique = nomT,
+                                Id_Sous_Thematique = t.Id_Sous_Thematique ?? 0
+                            };
+                            _context.Thematiques.Add(newT);
+                            await _context.SaveChangesAsync();
+                            themeId = newT.Id_Thematique;
+                        }
+                    }
+
+                    // Eviter doublon d'association
+                    var existsExposer = await _context.Exposers
+                        .AnyAsync(e => e.Id_Plateforme == idPlateforme && e.Id_Thematique == themeId);
+
+                    if (!existsExposer)
+                    {
+                        _context.Exposers.Add(new Exposer
+                        {
+                            Id_Plateforme = idPlateforme,
+                            Id_Thematique = themeId
+                        });
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                // -------------------------
+                // 4) Exemples d'utilisation
+                // -------------------------
+                foreach (var exDto in plateformeDto.ExempleUtilisations ?? Enumerable.Empty<ExempleUtilisationDto>())
+                {
+                    var newEx = new Exemple_Utilisation
+                    {
+                        Nom_Utilisation = exDto.Nom_Utilisation?.Trim(),
+                        Description_Utilisation = exDto.Description_Utilisation?.Trim(),
+                        Id_Plateforme = idPlateforme,
+                        Id_Equipement = null // car ton DTO n’a pas ce champ
+                    };
+
+                    _context.Exemple_Utilisations.Add(newEx);
+                }
+
+                await _context.SaveChangesAsync();
+
+                // -------------------------
+                // 5) Photos
+                // -------------------------
+                foreach (var pDto in plateformeDto.Photos ?? Enumerable.Empty<PhotoDto>())
+                {
+                    var newP = new Photo
+                    {
+                        Nom_Photo = pDto.Nom_Photo?.Trim(),
+                        Url_Photo = pDto.Url_Photo?.Trim(),
+                        Id_Plateforme = idPlateforme
+                    };
+
+                    _context.Photos.Add(newP);
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Commit transaction
+                await tx.CommitAsync();
+
+                // Recharger la plateforme (optionnel) pour retourner l'objet complet
+                await _context.Entry(plateforme).ReloadAsync();
+
+                return CreatedAtAction(nameof(GetPlateforme), new { id = idPlateforme }, plateforme);
+            }
+            catch (Exception ex)
             {
-                ex.Id_Plateforme = idPlateforme;
-                await _context.Exemple_Utilisations.AddAsync(ex);
+                await tx.RollbackAsync();
+                // Tu peux logger ex.Message / ex.ToString() ici
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
             }
-
-            // 6️⃣ Gérer les photos
-            foreach (var p in plateforme.Photos)
-            {
-                p.Id_Plateforme = idPlateforme;
-                await _context.Photos.AddAsync(p);
-            }
-
-            // 7️⃣ Sauvegarder toutes les entités liées
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetPlateforme), new { id = idPlateforme }, plateforme);
         }
+
 
 
 
