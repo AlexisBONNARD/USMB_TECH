@@ -21,6 +21,7 @@ builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>(
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
 builder.Services.AddScoped<IMainRepository<Type_Equipement, int>, Type_EquipementManager>();
+builder.Services.AddScoped<IMainRepository<Marque, int>, MarqueManager>();
 
 // Enregistrement des managers
 builder.Services.AddScoped<EquipementManager>();
@@ -28,6 +29,7 @@ builder.Services.AddScoped<LaboratoireManager>();
 builder.Services.AddScoped<PlateformeManager>();
 builder.Services.AddScoped<PrestationManager>();
 builder.Services.AddScoped<ThematiqueManager>();
+builder.Services.AddScoped<MarqueManager>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(

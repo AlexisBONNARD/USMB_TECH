@@ -2,6 +2,7 @@
 @inject Service.IMainService<Plateforme,int> plateformeDatas
 @inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
 @inject Service.IMainService<Equipement,int> equipementDatas
+@inject Service.IMainService<Marque, int> marqueDatas
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -24,24 +25,29 @@
     <label>Prix Revient :</label>
     <InputNumber @bind-Value="addEquipement.Prix_Revient"/>
 
-    <label> Autonomie : </label>
-    <InputCheckbox @bind-Value="addEquipement.Autonomie"/>
-
     <label> Modèle : </label>
     <InputText @bind-Value="addEquipement.Nom_Modele"/>
+
+    <label> Marque : </label>
+    <InputText @bind-Value="addEquipement.Nom_Marque" />
+
+    <label> Autonomie : </label>
+    <InputCheckbox @bind-Value="addEquipement.Autonomie" />
 
     <label> Utilisable chez le client : </label>
     <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client"/>
 
     <label>Plateforme associée : </label>
-    <InputSelect TValue="string" Value="@addEquipement.Nom_Plateforme" ValueChanged="PLateformeRotation" ValueExpression="@(() => @addEquipement.Nom_Plateforme)">
+    <InputSelect @bind-Value="addEquipement.Nom_Plateforme">
         <option>...</option>
         @foreach(var plateforme in plateformes)
         {
             <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
         }
     </InputSelect>
-    <InputSelect TValue="string" Value="@addEquipement.Type_Equipement" ValueChanged="TypeRotation" ValueExpression="@(() => @addEquipement.Type_Equipement)">
+
+    <label>Type Equipement : </label>
+    <InputSelect @bind-Value="addEquipement.Type_Equipement">
         <option>...</option>
         @foreach (var type in type_Equipements)
         {
@@ -63,6 +69,7 @@
     private Equipement addEquipement = new();
     private List<Plateforme> plateformes = new();
     private List<Type_Equipement> type_Equipements = new();
+    private Marque marqueequipement = new();
 
     bool isSubmitted = false;
     string message = "";
@@ -79,7 +86,18 @@
         {
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
-
+            marqueDatas.GetAllAsync().Result.ToList().ForEach(marque =>
+            {
+                if (marque.Nom_Marque == addEquipement.Nom_Marque)
+                {
+                    marqueequipement = marque;
+                    if(marqueequipement == null)
+                    {
+                        marqueDatas.AddAsync(marqueequipement);
+                    }
+            }
+            });
+            
             await equipementDatas.AddAsync(addEquipement);
 
             isSubmitted = true;
