@@ -54,8 +54,9 @@
         <hr />
         <h4 class="add_platform">Mots-clés</h4>
         <form onsubmit="return false;" class="mb-2">
-            <InputText class="form-control mb-1"
-                       @bind-Value="newMot_Clef"
+            <input class="form-control mb-1"
+                       @bind="newMot_Clef"
+                       @bind:event="oninput"
                        placeholder="Ajouter un mot-clé"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddMot_Clef(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
@@ -70,9 +71,10 @@
         <hr />
         <h4 class="add_platform">Thématiques</h4>
         <form onsubmit="return false;" class="mb-2">
-            <InputText class="form-control mb-1"
-                       @bind-Value="newThematique"
+            <input class="form-control mb-1"
+                       @bind="newThematique"
                        placeholder="Ajouter une thématique"
+                       @bind:event="oninput"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddThematique(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
         </form>
@@ -90,8 +92,9 @@
                        @bind-Value="newExempleNom"
                        placeholder="Nom exemple"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
-            <InputTextArea class="form-control mb-1"
-                           @bind-Value="newExempleDesc"
+            <input class="form-control mb-1"
+                           @bind="newExempleDesc"
+                           @bind:event="oninput"
                            placeholder="Description exemple"
                            @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
