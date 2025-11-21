@@ -32,21 +32,6 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>
-        window.addEventListener("DOMContentLoaded", function () {
-            const alertBox = document.getElementById("alertMessage");
-
-            if (alertBox && alertBox.innerText.trim() !== "") {
-                alertBox.style.opacity = "1";
-
-                setTimeout(() => {
-                    alertBox.style.opacity = "0";
-                }, 3000); // 3 secondes
-            }
-        });
-    </script>
-
-
 </body>
 
 </html>

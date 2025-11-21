@@ -1,8 +1,10 @@
 @page "/ajouter-plateforme"
 @inject HttpClient Http
+@inject Service.IMainService<Prestation,int> prestationDatas
+
 
 <HeadContent>
-    <li class="add_platform"nk href="css/addPlateforms.css" rel="stylesheet" />
+    <li class="add_platform" nk href="css/addPlateforms.css" rel="stylesheet" />
 </HeadContent>
 
 <h2 class="add_platform">Ajouter une plateforme</h2>
@@ -12,7 +14,7 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <h4 class ="add_platform">Infos générales</h4>
+        <h4 class="add_platform">Infos générales</h4>
         <label>Nom plateforme *</label>
         <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Plateforme" />
         <ValidationMessage For="@(() => plateforme.Nom_Plateforme)" />
@@ -52,8 +54,9 @@
         <hr />
         <h4 class="add_platform">Mots-clés</h4>
         <form onsubmit="return false;" class="mb-2">
-            <InputText class="form-control mb-1"
-                       @bind-Value="newMot_Clef"
+            <input class="form-control mb-1"
+                       @bind="newMot_Clef"
+                       @bind:event="oninput"
                        placeholder="Ajouter un mot-clé"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddMot_Clef(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
@@ -68,9 +71,10 @@
         <hr />
         <h4 class="add_platform">Thématiques</h4>
         <form onsubmit="return false;" class="mb-2">
-            <InputText class="form-control mb-1"
-                       @bind-Value="newThematique"
+            <input class="form-control mb-1"
+                       @bind="newThematique"
                        placeholder="Ajouter une thématique"
+                       @bind:event="oninput"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddThematique(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
         </form>
@@ -88,8 +92,9 @@
                        @bind-Value="newExempleNom"
                        placeholder="Nom exemple"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
-            <InputTextArea class="form-control mb-1"
-                           @bind-Value="newExempleDesc"
+            <input class="form-control mb-1"
+                           @bind="newExempleDesc"
+                           @bind:event="oninput"
                            placeholder="Description exemple"
                            @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
@@ -108,14 +113,14 @@
                          @bind-Value="selectedPrestationId"
                          @onkeydown="@(e => { if (e.Key == "Enter") { AddPresenter(); } })">
                 <option value="">-- Sélectionner une prestation --</option>
-                @foreach (var prestation in prestationsDisponibles)
+                @foreach (var prestation in prestations)
                 {
                     <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
                 }
             </InputSelect>
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
         </form>
-        <ul class="add_platform" >
+        <ul class="add_platform">
             @foreach (var pr in plateforme.Presenters)
             {
                 <li class="add_platform">Prestation ID : @pr.Id_Prestation</li>
@@ -132,12 +137,12 @@
     <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
         @message
     </div>
-
 }
 
 @code {
     Plateforme plateforme = new Plateforme();
-
+    private List<Prestation> prestations = new();
+    
     string newMot_Clef = "";
     string newThematique = "";
     string newExempleNom = "";
@@ -145,10 +150,15 @@
     string newEquipement = "";
     int? selectedPrestationId = null;
 
-    List<Prestation> prestationsDisponibles = new(); // à remplir depuis backend
 
     bool isSubmitted = false;
     string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        prestations = (await prestationDatas.GetAllAsync()).ToList();
+    }
+
 
     async Task HandlePhotos(InputFileChangeEventArgs e)
     {
@@ -208,21 +218,37 @@
         try
         {
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/plateformes", plateforme);
+
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;
-                message = "Plateforme créée avec succès ✅";
+                await ShowAlert("Plateforme créée avec succès ✅");
             }
             else
             {
                 isSubmitted = false;
-                message = "Erreur lors de la création ❌";
+                await ShowAlert("Erreur lors de la création ❌");
             }
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            message = $"Erreur: {ex.Message}";
+            await ShowAlert($"Erreur: {ex.Message}");
         }
     }
+
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+    }
 }
+
