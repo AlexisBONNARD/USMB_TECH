@@ -79,24 +79,29 @@
         plateformes = (await plateformeDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
     }
-
+   
     private async Task HandleValidSubmit()
     {
         try
         {
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
-            marqueDatas.GetAllAsync().Result.ToList().ForEach(marque =>
+
+            var marques = await marqueDatas.GetAllAsync();
+
+            foreach (var marque in marques)
             {
                 if (marque.Nom_Marque == addEquipement.Nom_Marque)
                 {
                     marqueequipement = marque;
-                    if(marqueequipement == null)
-                    {
-                        marqueDatas.AddAsync(marqueequipement);
-                    }
+                }
             }
-            });
+
+            // If not found, add it
+            if (marqueequipement == null)
+            {
+                await marqueDatas.AddAsync(marqueequipement);
+            }
             
             await equipementDatas.AddAsync(addEquipement);
 
