@@ -30,12 +30,26 @@
 
             <!-- BARRE DE RECHERCHE -->
             <div class="usmb-header-search">
+
                 <input @bind="SearchText"
                        @bind:event="oninput"
                        type="text"
-                       placeholder="Rechercher..." />
+                       placeholder="Rechercher..."
+                       @onkeydown="HandleKeyDown" />
 
-                <div class="search-options">
+                <!-- Bouton flèche -->
+                <button class="search-toggle @(ShowOptions ? "open" : "")"
+                        @onclick="ToggleOptions">
+                    ▲
+                </button>
+
+                <!-- Bouton loupe -->
+                <button class="search-btn" @onclick="PerformSearch">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                <!-- Options -->
+                <div class="search-options @(ShowOptions ? "open" : "")">
                     <label>
                         <input type="checkbox" @bind="SearchMotClef" /> Par mot-clé
                     </label>
@@ -44,10 +58,8 @@
                     </label>
                 </div>
 
-                <button @onclick="PerformSearch">
-                    <i class="bi bi-search"></i>
-                </button>
             </div>
+
 
 
         </div>
@@ -68,6 +80,21 @@
     private string SearchText = "";
     private bool SearchMotClef = true;
     private bool SearchThematique = false;
+    private bool ShowOptions = false;
+
+    private void ToggleOptions()
+    {
+        ShowOptions = !ShowOptions;
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            PerformSearch();
+        }
+    }
+
     private void PerformSearch()
     {
         if (!string.IsNullOrWhiteSpace(SearchText))
@@ -87,3 +114,5 @@
         }
     }
 }
+
+
