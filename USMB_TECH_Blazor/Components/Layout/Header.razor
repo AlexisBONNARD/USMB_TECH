@@ -20,12 +20,14 @@
         <!-- Icônes + Barre de recherche -->
         <div class="usmb-header-top-right">
 
+            <!-- ICONES DES RÉSEAUX → ici -->
             <div class="usmb-header-icons">
                 <a href="#"><i class="bi bi-facebook"></i></a>
                 <a href="#"><i class="bi bi-twitter"></i></a>
                 <a href="#"><i class="bi bi-youtube"></i></a>
                 <a href="#"><i class="bi bi-instagram"></i></a>
                 <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))" />
+                <button @onclick="@(() => Nav.NavigateTo("/ajouter-plateforme"))" />
             </div>
 
             <!-- BARRE DE RECHERCHE -->
@@ -59,10 +61,8 @@
                 </div>
 
             </div>
-
-
-
         </div>
+
     </div>
 
     <!-- Bandeau principal -->
@@ -78,7 +78,7 @@
 
 @code {
     private string SearchText = "";
-    private bool SearchMotClef = true;
+    private bool SearchMotClef = false;
     private bool SearchThematique = false;
     private bool ShowOptions = false;
 

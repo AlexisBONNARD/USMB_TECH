@@ -227,3 +227,26 @@ code {
         width: 16px;
         height: 16px;
     }
+
+.usmb-header-top-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.usmb-header-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .usmb-header-icons a {
+        color: white;
+        font-size: 18px;
+    }
+
+    .usmb-header-icons i:hover {
+        color: #dbe9ff;
+    }
+
+
