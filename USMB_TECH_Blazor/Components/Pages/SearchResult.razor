@@ -4,44 +4,63 @@
 @inject SearchService SearchService
 <link href="css/SearchResult.css" rel="stylesheet" />
 
-<h3 class="results-title">Résultats pour "@query" (mode: @mode)</h3>
+<h3 class="search-title">
+    Résultats pour "<strong>@query</strong>"
+    <span style="opacity:0.7;">(mode : @mode)</span>
+</h3>
 
-<div class="results-container">
-    @if (IsLoading)
-    {
-        <p>Chargement...</p>
-    }
-    else if (Equipements == null || !Equipements.Any())
-    {
-        <p>Aucun résultat trouvé.</p>
-    }
-    else
-    {
+@if (IsLoading)
+{
+    <p class="search-info">Chargement...</p>
+}
+else if (Equipements == null || !Equipements.Any())
+{
+    <p class="search-info">Aucun résultat trouvé.</p>
+} 
+else
+{
+    <div class="results-container">
         @foreach (var e in Equipements)
         {
-            <div class="equipement-card border p-3 mb-2">
+            <div class="equipement-card">
                 <h4>@e.Nom_Equipement</h4>
+
                 <p>@e.Description_Technique</p>
+
                 @if (!string.IsNullOrEmpty(e.Nom_Plateforme))
                 {
-                    <p><strong>Plateforme:</strong> @e.Nom_Plateforme</p>
+                    <p><strong>Plateforme : </strong>@e.Nom_Plateforme</p>
                 }
-                <p><strong>Prix d'achat:</strong> @e.Prix_Achat €</p>
-                <p><strong>Date d'acquisition:</strong> @e.Date_Acquisition.ToShortDateString()</p>
-                <p><strong>Disponibilité:</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
+
+                <p><strong>Prix d'achat :</strong> @e.Prix_Achat €</p>
+
+                <p><strong>Date d'acquisition :</strong> @e.Date_Acquisition.ToShortDateString()</p>
+
+                <p><strong>Disponibilité :</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
 
                 @if (e.MotsCles?.Any() == true)
                 {
-                    <p><strong>Mots-clés:</strong> @string.Join(", ", e.MotsCles)</p>
+                    <div class="tag-list">
+                        @foreach (var mc in e.MotsCles)
+                        {
+                            <span class="tag">@mc</span>
+                        }
+                    </div>
                 }
+
                 @if (e.Thematiques?.Any() == true)
                 {
-                    <p><strong>Thématiques:</strong> @string.Join(", ", e.Thematiques)</p>
+                    <div class="tag-list">
+                        @foreach (var th in e.Thematiques)
+                        {
+                            <span class="tag">@th</span>
+                        }
+                    </div>
                 }
             </div>
         }
-    }
-</div>
+    </div>
+}
 
 
 @code {
