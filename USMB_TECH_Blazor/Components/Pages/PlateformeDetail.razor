@@ -1,5 +1,4 @@
 ﻿@page "/plateforme/{Id:int}"
-<link href="css/plateforme.css" rel="stylesheet" />
 @inject IMainService<Plateforme,int> PlateformeService
 @inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Navigation
@@ -60,7 +59,7 @@ else
                     {
                         <div class="equipement-item"
                              @onclick="@(() => RetourListe(equipement.Id_Equipement))">
-                            <img src="images/logo_usmb.png" alt="photo équipement" />
+                            <img src=@equipement.PlateformeNavigation.Photos alt="photo équipement" />
                             <p>@equipement.Nom_Equipement</p>
                         </div>
                     }
@@ -89,6 +88,8 @@ else
             <div class="info-block">
                 <div class="btn-blue">Formulaire de contact</div>
             </div>
+
+            <FormulaireContact />
 
         </div>
 

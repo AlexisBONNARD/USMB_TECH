@@ -25,7 +25,7 @@ else
             <!-- Image -->
             <section class="equipement-image-block">
                 <div class="equipement-item">
-                    <img src="images/logo_usmb.png" alt="photo équipement" />
+                    <img src=@equipement.PlateformeNavigation.Photos alt="photo équipement" />
                 </div>
             </section>
 
@@ -91,16 +91,14 @@ else
             </div>
 
             <div class="info-block">
-                <div class="btn-blue">Formulaire de contact</div>
-            </div>
-
-            <div class="info-block">
                 <h4>Plateforme :</h4>
                 <div class="btn-blue"
                      @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
                     @equipement.PlateformeNavigation?.Nom_Plateforme
                 </div>
             </div>
+
+            <FormulaireContact />
 
         </div>
 
