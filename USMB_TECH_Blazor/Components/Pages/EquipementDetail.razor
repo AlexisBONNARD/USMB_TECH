@@ -25,7 +25,11 @@ else
             <!-- Image -->
             <section class="equipement-image-block">
                 <div class="equipement-item">
-                    <img src=@equipement.PlateformeNavigation.Photos alt="photo équipement" />
+                    @foreach (Photo photo in equipement.PlateformeNavigation.Photos)
+                    {
+
+                        <img src=@photo alt="photo équipement" />
+                    }
                 </div>
             </section>
 
