@@ -38,5 +38,7 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
 
         public virtual ICollection<Exemple_Utilisation> ExempleUtilisations { get; set; } = new List<Exemple_Utilisation>();
+
+        public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
     }
 }
