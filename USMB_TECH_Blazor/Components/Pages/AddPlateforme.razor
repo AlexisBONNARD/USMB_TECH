@@ -97,22 +97,6 @@
     </ul>
 
     <hr />
-    <h4>Équipements</h4>
-    <form onsubmit="return false;" class="mb-2">
-        <InputText class="form-control mb-1"
-                   @bind-Value="newEquipement"
-                   placeholder="Nom équipement"
-                   @onkeydown="@(e => { if (e.Key == "Enter") { AddEquipement(); } })" />
-        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddEquipement">Ajouter</button>
-    </form>
-    <ul>
-        @foreach (var eq in plateforme.Equipements)
-        {
-            <li>@eq.Nom_Equipement</li>
-        }
-    </ul>
-
-    <hr />
     <h4>Prestations</h4>
     <form onsubmit="return false;" class="mb-2">
         <InputSelect class="form-select mb-1"
@@ -197,15 +181,6 @@
             });
             newExempleNom = "";
             newExempleDesc = "";
-        }
-    }
-
-    void AddEquipement()
-    {
-        if (!string.IsNullOrWhiteSpace(newEquipement))
-        {
-            plateforme.Equipements.Add(new Equipement { Nom_Equipement = newEquipement });
-            newEquipement = "";
         }
     }
 
