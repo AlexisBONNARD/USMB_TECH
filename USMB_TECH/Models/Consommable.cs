@@ -8,6 +8,7 @@ namespace USMB_TECH.Models
     public partial class Consommable
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_consommable")]
         public int Id_Consommable {  get; set; }
 

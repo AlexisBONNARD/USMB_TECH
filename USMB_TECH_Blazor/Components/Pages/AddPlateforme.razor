@@ -1,0 +1,246 @@
+@page "/ajouter-plateforme"
+@inject HttpClient Http
+
+<h2>Ajouter une plateforme</h2>
+
+<EditForm Model="@plateforme" OnValidSubmit="SubmitPlateforme">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <h4>Infos générales</h4>
+    <label>Nom plateforme *</label>
+    <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Plateforme" />
+    <ValidationMessage For="@(() => plateforme.Nom_Plateforme)" />
+
+    <label>Description *</label>
+    <InputTextArea class="form-control mb-2" @bind-Value="plateforme.Description_Plateforme" />
+    <ValidationMessage For="@(() => plateforme.Description_Plateforme)" />
+
+    <label>Nom contenu *</label>
+    <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Contenu" />
+    <ValidationMessage For="@(() => plateforme.Nom_Contenu)" />
+
+    <label>URL contenu *</label>
+    <InputText class="form-control mb-2" @bind-Value="plateforme.Url_Contenu" />
+    <ValidationMessage For="@(() => plateforme.Url_Contenu)" />
+
+    <label>Description contenu *</label>
+    <InputTextArea class="form-control mb-2" @bind-Value="plateforme.Description_Contenu" />
+    <ValidationMessage For="@(() => plateforme.Description_Contenu)" />
+
+    <label class="mt-2">Active ?</label>
+    <InputSelect class="form-control mb-2" @bind-Value="plateforme.Actif">
+        <option value="true">Oui</option>
+        <option value="false">Non</option>
+    </InputSelect>
+
+    <hr />
+    <h4>Photos</h4>
+    <InputFile multiple OnChange="HandlePhotos" class="mb-2" />
+    <ul>
+        @foreach (var p in plateforme.Photos)
+        {
+            <li>@p.Nom_Photo</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Mots-clés</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newMot_Clef"
+                   placeholder="Ajouter un mot-clé"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddMot_Clef(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
+    </form>
+    <ul>
+        @foreach (var mc in plateforme.MotsCles)
+        {
+            <li>@mc.Nom_Mot_Clef</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Thématiques</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newThematique"
+                   placeholder="Ajouter une thématique"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddThematique(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
+    </form>
+    <ul>
+        @foreach (var t in plateforme.Thematiques)
+        {
+            <li>@t.Nom_Thematique</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Exemples d’utilisation</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newExempleNom"
+                   placeholder="Nom exemple"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+        <InputTextArea class="form-control mb-1"
+                       @bind-Value="newExempleDesc"
+                       placeholder="Description exemple"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
+    </form>
+    <ul>
+        @foreach (var e in plateforme.ExempleUtilisations)
+        {
+            <li>@e.Nom_Utilisation : @e.Description_Utilisation</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Équipements</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newEquipement"
+                   placeholder="Nom équipement"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddEquipement(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddEquipement">Ajouter</button>
+    </form>
+    <ul>
+        @foreach (var eq in plateforme.Equipements)
+        {
+            <li>@eq.Nom_Equipement</li>
+        }
+    </ul>
+
+    <hr />
+    <h4>Prestations</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputSelect class="form-select mb-1"
+                     @bind-Value="selectedPrestationId"
+                     @onkeydown="@(e => { if (e.Key == "Enter") { AddPresenter(); } })">
+            <option value="">-- Sélectionner une prestation --</option>
+            @foreach (var prestation in prestationsDisponibles)
+            {
+                <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
+            }
+        </InputSelect>
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
+    </form>
+    <ul>
+        @foreach (var pr in plateforme.Presenters)
+        {
+            <li>Prestation ID : @pr.Id_Prestation</li>
+        }
+    </ul>
+
+    <hr />
+    <button class="btn btn-success mt-3" type="submit">Créer la plateforme</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+        @message
+    </div>
+}
+
+@code {
+    Plateforme plateforme = new Plateforme();
+
+    string newMot_Clef = "";
+    string newThematique = "";
+    string newExempleNom = "";
+    string newExempleDesc = "";
+    string newEquipement = "";
+    int? selectedPrestationId = null;
+
+    List<Prestation> prestationsDisponibles = new(); // à remplir depuis backend
+
+    bool isSubmitted = false;
+    string message = "";
+
+    async Task HandlePhotos(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            var url = $"uploads/{file.Name}";
+            plateforme.Photos.Add(new Photo { Nom_Photo = file.Name, Url_Photo = url });
+        }
+    }
+
+    void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(newMot_Clef))
+        {
+            plateforme.MotsCles.Add(new Mot_Clef { Nom_Mot_Clef = newMot_Clef });
+            newMot_Clef = "";
+        }
+    }
+
+    void AddThematique()
+    {
+        if (!string.IsNullOrWhiteSpace(newThematique))
+        {
+            plateforme.Thematiques.Add(new Thematique { Nom_Thematique = newThematique });
+            newThematique = "";
+        }
+    }
+
+    void AddExemple()
+    {
+        if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
+        {
+            plateforme.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            {
+                Nom_Utilisation = newExempleNom,
+                Description_Utilisation = newExempleDesc
+            });
+            newExempleNom = "";
+            newExempleDesc = "";
+        }
+    }
+
+    void AddEquipement()
+    {
+        if (!string.IsNullOrWhiteSpace(newEquipement))
+        {
+            plateforme.Equipements.Add(new Equipement { Nom_Equipement = newEquipement });
+            newEquipement = "";
+        }
+    }
+
+    void AddPresenter()
+    {
+        if (selectedPrestationId.HasValue)
+        {
+            plateforme.Presenters.Add(new Presenter
+            {
+                Id_Prestation = selectedPrestationId.Value
+            });
+            selectedPrestationId = null;
+        }
+    }
+
+    async Task SubmitPlateforme()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/plateformes", plateforme);
+            if (response.IsSuccessStatusCode)
+            {
+                isSubmitted = true;
+                message = "Plateforme créée avec succès ✅";
+            }
+            else
+            {
+                isSubmitted = false;
+                message = "Erreur lors de la création ❌";
+            }
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            message = $"Erreur: {ex.Message}";
+        }
+    }
+}

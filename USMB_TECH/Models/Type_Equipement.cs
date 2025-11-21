@@ -7,6 +7,7 @@ namespace USMB_TECH.Models
     public partial class Type_Equipement
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_type")]
         public int Id_Type_Equipement { get; set; }
 
