@@ -29,6 +29,7 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     transition: 0.2s ease;
     border-left: 5px solid #1f3566;
+    cursor: pointer;
 }
 
     .equipement-card:hover {

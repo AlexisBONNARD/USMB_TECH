@@ -2,6 +2,7 @@
 @using USMB_TECH_Blazor.Service;
 @using USMB_TECH_Blazor.Models;
 @inject SearchService SearchService
+@inject NavigationManager Navigation
 <link href="css/SearchResult.css" rel="stylesheet" />
 
 <h3 class="search-title">
@@ -19,10 +20,10 @@ else if (Equipements == null || !Equipements.Any())
 } 
 else
 {
-    <div class="results-container">
+    <div  class="results-container">
         @foreach (var e in Equipements)
         {
-            <div class="equipement-card">
+            <div @onclick="@(() => VoirDetail(e.Id_Equipement))" class="equipement-card">
                 <h4>@e.Nom_Equipement</h4>
 
                 <p>@e.Description_Technique</p>
@@ -85,5 +86,9 @@ else
         }
 
         IsLoading = false;
+    }
+    private void VoirDetail(int idEquipement)
+    {
+        Navigation.NavigateTo($"/equipement/{idEquipement}");
     }
 }
