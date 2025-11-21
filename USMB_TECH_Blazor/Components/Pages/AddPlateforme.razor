@@ -2,7 +2,7 @@
 @inject HttpClient Http
 
 <HeadContent>
-    <link href="css/addPlateforms.css" rel="stylesheet" />
+    <li class="-add_platform"nk href="css/addPlateforms.css" rel="stylesheet" />
 </HeadContent>
 
 <h2>Ajouter une plateforme</h2>
@@ -42,10 +42,10 @@
         <hr />
         <h4>Photos</h4>
         <InputFile multiple OnChange="HandlePhotos" class="mb-2" />
-        <ul>
+        <ul class="-add_platform">
             @foreach (var p in plateforme.Photos)
             {
-                <li>@p.Nom_Photo</li>
+                <li class="-add_platform">@p.Nom_Photo</li>
             }
         </ul>
 
@@ -58,10 +58,10 @@
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddMot_Clef(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
         </form>
-        <ul>
+        <ul class="-add_platform">
             @foreach (var mc in plateforme.MotsCles)
             {
-                <li>@mc.Nom_Mot_Clef</li>
+                <li class="-add_platform">@mc.Nom_Mot_Clef</li>
             }
         </ul>
 
@@ -74,10 +74,10 @@
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddThematique(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
         </form>
-        <ul>
+        <ul class="-add_platform">
             @foreach (var t in plateforme.Thematiques)
             {
-                <li>@t.Nom_Thematique</li>
+                <li class="-add_platform">@t.Nom_Thematique</li>
             }
         </ul>
 
@@ -94,10 +94,10 @@
                            @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
         </form>
-        <ul>
+        <ul class="-add_platform">
             @foreach (var e in plateforme.ExempleUtilisations)
             {
-                <li>@e.Nom_Utilisation : @e.Description_Utilisation</li>
+                <li class="-add_platform">@e.Nom_Utilisation : @e.Description_Utilisation</li>
             }
         </ul>
 
@@ -115,10 +115,10 @@
             </InputSelect>
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
         </form>
-        <ul>
+        <ul class="-add_platform" >
             @foreach (var pr in plateforme.Presenters)
             {
-                <li>Prestation ID : @pr.Id_Prestation</li>
+                <li class="-add_platform">Prestation ID : @pr.Id_Prestation</li>
             }
         </ul>
 

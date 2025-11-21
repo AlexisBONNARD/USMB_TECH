@@ -52,12 +52,12 @@ button.btn-secondary {
 }
 
 /* Listes */
-ul {
+ul-add_platform {
     list-style: none;
     padding-left: 0;
 }
 
-    ul li {
+    ul-add_platform li-add_platform {
         background-color: #eef1f5;
         padding: 6px 12px;
         border-radius: 6px;
