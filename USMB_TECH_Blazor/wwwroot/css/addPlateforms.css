@@ -14,13 +14,14 @@
 }
 
 /* Titres */
-h2 {
+h2.add_platform {
+    margin-top: 20px;
     text-align: center;
     font-weight: 700;
     margin-bottom: 25px;
 }
 
-h4 {
+h4.add_platform {
     border-left: 4px solid #007bff;
     padding-left: 10px;
     margin-top: 30px;
@@ -52,12 +53,12 @@ button.btn-secondary {
 }
 
 /* Listes */
-ul-add_platform {
+ul.add_platform {
     list-style: none;
     padding-left: 0;
 }
 
-    ul-add_platform li-add_platform {
+    ul.add_platform li.add_platform {
         background-color: #eef1f5;
         padding: 6px 12px;
         border-radius: 6px;
