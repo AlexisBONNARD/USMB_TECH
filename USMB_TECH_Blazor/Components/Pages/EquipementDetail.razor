@@ -91,16 +91,14 @@ else
             </div>
 
             <div class="info-block">
-                <div class="btn-blue">Formulaire de contact</div>
-            </div>
-
-            <div class="info-block">
                 <h4>Plateforme :</h4>
                 <div class="btn-blue"
                      @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
                     @equipement.PlateformeNavigation?.Nom_Plateforme
                 </div>
             </div>
+
+            <FormulaireDeContactcs />
 
         </div>
 
