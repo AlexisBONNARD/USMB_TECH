@@ -249,6 +249,22 @@ namespace USMB_TECH.Controllers
 
                 await _context.SaveChangesAsync();
 
+                // -------------------------
+                // 6) Presenter
+                // -------------------------
+                foreach (var presenter in plateformeDto.Presenters ?? Enumerable.Empty<Presenter>())
+                {
+                    var newPresenter = new Presenter
+                    {
+                        Id_Plateforme = idPlateforme,
+                        Id_Prestation = presenter.Id_Prestation
+                    };
+
+                    _context.Presenters.Add(newPresenter);
+                }
+
+                await _context.SaveChangesAsync();
+
                 // Commit transaction
                 await tx.CommitAsync();
 
@@ -264,10 +280,6 @@ namespace USMB_TECH.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
             }
         }
-
-
-
-
 
         // DELETE: api/Plateformes/{id}
         [HttpDelete("{id}")]
