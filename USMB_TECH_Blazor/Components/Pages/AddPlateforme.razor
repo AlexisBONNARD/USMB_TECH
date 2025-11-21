@@ -1,6 +1,10 @@
 @page "/ajouter-plateforme"
 @inject HttpClient Http
 
+<HeadContent>
+    <link href="css/addPlateforms.css" rel="stylesheet" />
+</HeadContent>
+
 <h2>Ajouter une plateforme</h2>
 
 <EditForm Model="@plateforme" OnValidSubmit="SubmitPlateforme">
