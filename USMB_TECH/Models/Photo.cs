@@ -7,6 +7,7 @@ namespace USMB_TECH.Models
     public partial class Photo
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_photo")]
         public int Id_Photo { get; set; }
 

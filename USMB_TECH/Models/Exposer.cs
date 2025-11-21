@@ -7,6 +7,7 @@ namespace USMB_TECH.Models
     public partial class Exposer
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 

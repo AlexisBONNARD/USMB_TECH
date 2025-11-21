@@ -7,6 +7,7 @@ namespace USMB_TECH.Models
     public partial class Type_Prestation
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_type_prestation")]
         public int Id_Type_Prestation { get; set; }
 

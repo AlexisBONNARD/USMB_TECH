@@ -20,22 +20,38 @@
         <!-- Icônes + Barre de recherche -->
         <div class="usmb-header-top-right">
 
+            <!-- ICONES DES RÉSEAUX → ici -->
             <div class="usmb-header-icons">
                 <a href="#"><i class="bi bi-facebook"></i></a>
                 <a href="#"><i class="bi bi-twitter"></i></a>
                 <a href="#"><i class="bi bi-youtube"></i></a>
                 <a href="#"><i class="bi bi-instagram"></i></a>
                 <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))" />
+                <button @onclick="@(() => Nav.NavigateTo("/ajouter-plateforme"))" >Ajouter une plateforme</button>
             </div>
 
             <!-- BARRE DE RECHERCHE -->
             <div class="usmb-header-search">
+
                 <input @bind="SearchText"
                        @bind:event="oninput"
                        type="text"
-                       placeholder="Rechercher..." />
+                       placeholder="Rechercher..."
+                       @onkeydown="HandleKeyDown" />
 
-                <div class="search-options">
+                <!-- Bouton flèche -->
+                <button class="search-toggle @(ShowOptions ? "open" : "")"
+                        @onclick="ToggleOptions">
+                    ▲
+                </button>
+
+                <!-- Bouton loupe -->
+                <button class="search-btn" @onclick="PerformSearch">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                <!-- Options -->
+                <div class="search-options @(ShowOptions ? "open" : "")">
                     <label>
                         <input type="checkbox" @bind="SearchMotClef" /> Par mot-clé
                     </label>
@@ -44,21 +60,14 @@
                     </label>
                 </div>
 
-                <button @onclick="PerformSearch">
-                    <i class="bi bi-search"></i>
-                </button>
             </div>
-
-
         </div>
+
     </div>
 
     <!-- Bandeau principal -->
     <div class="usmb-header-main">
-        <img src="images/logo_usmb.png"
-             alt="Logo Université Savoie Mont Blanc"
-             class="usmb-logo" />
-
+        <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
         <NavMenu></NavMenu>
     </div>
 
@@ -66,8 +75,23 @@
 
 @code {
     private string SearchText = "";
-    private bool SearchMotClef = true;
+    private bool SearchMotClef = false;
     private bool SearchThematique = false;
+    private bool ShowOptions = false;
+
+    private void ToggleOptions()
+    {
+        ShowOptions = !ShowOptions;
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            PerformSearch();
+        }
+    }
+
     private void PerformSearch()
     {
         if (!string.IsNullOrWhiteSpace(SearchText))
@@ -87,3 +111,5 @@
         }
     }
 }
+
+

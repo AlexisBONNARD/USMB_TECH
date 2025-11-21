@@ -121,7 +121,7 @@ namespace USMB_TECH.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("thematique_pkey", x => x.id_thematique);
+                    table.PrimaryKey("pk_thematique", x => x.id_thematique);
                 });
 
             migrationBuilder.CreateTable(
@@ -576,8 +576,8 @@ namespace USMB_TECH.Migrations
                 {
                     id_exemple_utilisation = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_equipement = table.Column<int>(type: "integer", nullable: true),
+                    id_plateforme = table.Column<int>(type: "integer", nullable: true),
                     nom_utilisation = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     description_utilisation = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },

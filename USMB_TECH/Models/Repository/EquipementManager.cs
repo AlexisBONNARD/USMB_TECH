@@ -63,7 +63,6 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Equipement entity)
         {
-            // Gestion de la plateforme
             if (entity.PlateformeNavigation != null &&
                 !string.IsNullOrEmpty(entity.PlateformeNavigation.Nom_Plateforme))
             {
@@ -85,7 +84,6 @@ namespace USMB_TECH.Models.Repository
                 entity.PlateformeNavigation = plateforme;
             }
 
-            // Gestion du type
             if (entity.Type_EquipementNavigation != null &&
                 !string.IsNullOrEmpty(entity.Type_EquipementNavigation.Nom_Type))
             {
@@ -106,8 +104,23 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Type_Equipement = type.Id_Type_Equipement;
                 entity.Type_EquipementNavigation = type;
             }
+            if(entity.ModeleNavigation != null && !string.IsNullOrEmpty(entity.ModeleNavigation.Nom_Modele)) 
+            {
+                var model = await _context.Modeles.FirstOrDefaultAsync(m => m.Nom_Modele == entity.ModeleNavigation.Nom_Modele);
 
-            // Enregistrer l'équipement
+                if(model == null) 
+                {
+                    model = new Modele
+                    {
+                        Nom_Modele = entity.ModeleNavigation.Nom_Modele
+                    };
+                    _context.Modeles.Add(model);
+                    await _context.SaveChangesAsync();
+                }
+                entity.Id_Modele = model.Id_Modele;
+                entity.ModeleNavigation = model;
+            }
+
             _context.Equipements.Add(entity);
             await _context.SaveChangesAsync();
         }
