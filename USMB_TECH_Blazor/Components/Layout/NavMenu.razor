@@ -20,9 +20,12 @@
                 {
                     @foreach (var p in plateformes)
                     {
-                        <li @onclick="() => GoToPlateforme(p.Id_Plateforme)">
-                            @p.Nom_Plateforme
-                        </li>
+                        if (p.Actif)
+                        {
+                            <li @onclick="() => GoToPlateforme(p.Id_Plateforme)">
+                                @p.Nom_Plateforme
+                            </li>
+                        }
                     }
                 }
             </ul>

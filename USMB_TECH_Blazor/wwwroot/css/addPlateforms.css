@@ -1,0 +1,60 @@
+﻿/* Conteneur principal du formulaire */
+form[onsubmit="return false;"], .edit-form-container {
+    background-color: #f8f9fa; /* léger gris */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* Titres des sections */
+h4 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+/* Labels */
+label {
+    font-weight: 600;
+}
+
+/* Inputs */
+input.form-control, textarea.form-control, select.form-control, select.form-select {
+    border-radius: 5px;
+    padding: 10px;
+}
+
+/* Boutons Ajouter */
+button.btn-secondary {
+    margin-top: 5px;
+}
+
+/* Liste des éléments ajoutés */
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+    ul li {
+        background-color: #e9ecef;
+        margin-bottom: 5px;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+/* Bouton principal */
+button.btn-success {
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+}
+
+/* Alertes */
+.alert {
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 500;
+}
