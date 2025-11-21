@@ -28,6 +28,7 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Plateforme { get; set; }
 
         public string Nom_Modele { get; set; }
+        public string Nom_Marque { get; set; }
 
         public string Type_Equipement { get; set; }
 
@@ -40,6 +41,8 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Contact { get; set; }
 
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
+        public Modele? ModeleNavigation { get; set; }
+        public virtual Marque Marque_Equipement { get; set; } = new Marque();
 
         public Plateforme? PlateformeNavigation { get; set; }
     }
