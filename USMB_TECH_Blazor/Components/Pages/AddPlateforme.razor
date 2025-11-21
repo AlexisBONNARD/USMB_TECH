@@ -9,34 +9,34 @@
 
     <h4>Infos générales</h4>
     <label>Nom plateforme *</label>
-    <InputText class="form-control" @bind-Value="plateforme.Nom_Plateforme" />
+    <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Plateforme" />
     <ValidationMessage For="@(() => plateforme.Nom_Plateforme)" />
 
     <label>Description *</label>
-    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Plateforme" />
+    <InputTextArea class="form-control mb-2" @bind-Value="plateforme.Description_Plateforme" />
     <ValidationMessage For="@(() => plateforme.Description_Plateforme)" />
 
     <label>Nom contenu *</label>
-    <InputText class="form-control mt-2" @bind-Value="plateforme.Nom_Contenu" />
+    <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Contenu" />
     <ValidationMessage For="@(() => plateforme.Nom_Contenu)" />
 
     <label>URL contenu *</label>
-    <InputText class="form-control mt-2" @bind-Value="plateforme.Url_Contenu" />
+    <InputText class="form-control mb-2" @bind-Value="plateforme.Url_Contenu" />
     <ValidationMessage For="@(() => plateforme.Url_Contenu)" />
 
     <label>Description contenu *</label>
-    <InputTextArea class="form-control mt-2" @bind-Value="plateforme.Description_Contenu" />
+    <InputTextArea class="form-control mb-2" @bind-Value="plateforme.Description_Contenu" />
     <ValidationMessage For="@(() => plateforme.Description_Contenu)" />
 
-    <label class="mt-3">Active ?</label>
-    <InputSelect class="form-control" @bind-Value="plateforme.Actif">
+    <label class="mt-2">Active ?</label>
+    <InputSelect class="form-control mb-2" @bind-Value="plateforme.Actif">
         <option value="true">Oui</option>
         <option value="false">Non</option>
     </InputSelect>
 
     <hr />
     <h4>Photos</h4>
-    <InputFile multiple OnChange="HandlePhotos" />
+    <InputFile multiple OnChange="HandlePhotos" class="mb-2" />
     <ul>
         @foreach (var p in plateforme.Photos)
         {
@@ -46,8 +46,13 @@
 
     <hr />
     <h4>Mots-clés</h4>
-    <InputText @bind-Value="newMot_Clef" placeholder="Ajouter un mot-clé" />
-    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddMot_Clef">Ajouter</button>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newMot_Clef"
+                   placeholder="Ajouter un mot-clé"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddMot_Clef(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
+    </form>
     <ul>
         @foreach (var mc in plateforme.MotsCles)
         {
@@ -57,8 +62,13 @@
 
     <hr />
     <h4>Thématiques</h4>
-    <InputText @bind-Value="newThematique" placeholder="Ajouter une thématique" />
-    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddThematique">Ajouter</button>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newThematique"
+                   placeholder="Ajouter une thématique"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddThematique(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
+    </form>
     <ul>
         @foreach (var t in plateforme.Thematiques)
         {
@@ -68,9 +78,17 @@
 
     <hr />
     <h4>Exemples d’utilisation</h4>
-    <InputText @bind-Value="newExempleNom" placeholder="Nom exemple" />
-    <InputTextArea @bind-Value="newExempleDesc" placeholder="Description exemple" />
-    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddExemple">Ajouter</button>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newExempleNom"
+                   placeholder="Nom exemple"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+        <InputTextArea class="form-control mb-1"
+                       @bind-Value="newExempleDesc"
+                       placeholder="Description exemple"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
+    </form>
     <ul>
         @foreach (var e in plateforme.ExempleUtilisations)
         {
@@ -79,9 +97,14 @@
     </ul>
 
     <hr />
-    <h4>Equipements</h4>
-    <InputText @bind-Value="newEquipement" placeholder="Nom équipement" />
-    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddEquipement">Ajouter</button>
+    <h4>Équipements</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputText class="form-control mb-1"
+                   @bind-Value="newEquipement"
+                   placeholder="Nom équipement"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddEquipement(); } })" />
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddEquipement">Ajouter</button>
+    </form>
     <ul>
         @foreach (var eq in plateforme.Equipements)
         {
@@ -90,15 +113,19 @@
     </ul>
 
     <hr />
-    <h4>Prestation</h4>
-    <InputSelect @bind-Value="selectedPrestationId">
-        <option value="">-- Sélectionner une prestation --</option>
-        @foreach (var prestation in prestationsDisponibles)
-        {
-            <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
-        }
-    </InputSelect>
-    <button type="button" class="btn btn-secondary btn-sm" @onclick="AddPresenter">Ajouter</button>
+    <h4>Prestations</h4>
+    <form onsubmit="return false;" class="mb-2">
+        <InputSelect class="form-select mb-1"
+                     @bind-Value="selectedPrestationId"
+                     @onkeydown="@(e => { if (e.Key == "Enter") { AddPresenter(); } })">
+            <option value="">-- Sélectionner une prestation --</option>
+            @foreach (var prestation in prestationsDisponibles)
+            {
+                <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
+            }
+        </InputSelect>
+        <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
+    </form>
     <ul>
         @foreach (var pr in plateforme.Presenters)
         {
@@ -106,7 +133,8 @@
         }
     </ul>
 
-    <button class="btn btn-success mt-4" type="submit">Créer la plateforme</button>
+    <hr />
+    <button class="btn btn-success mt-3" type="submit">Créer la plateforme</button>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(message))
