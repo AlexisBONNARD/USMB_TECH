@@ -164,7 +164,7 @@
     {
         foreach (var file in e.GetMultipleFiles())
         {
-            var url = $"uploads/{file.Name}";
+            var url = $"/uploads/{file.Name}";
             plateforme.Photos.Add(new Photo { Nom_Photo = file.Name, Url_Photo = url });
         }
     }
