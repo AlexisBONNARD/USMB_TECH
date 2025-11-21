@@ -7,7 +7,7 @@
 @inject IJSRuntime JS
 
 <h3>Ajouter un équipement</h3>
-<EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit" FormName="typeProductForm">
+<EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
     <label>Nom de l'équipement : </label>
     <InputText @bind-Value="addEquipement.Nom_Equipement" />
 
@@ -17,6 +17,7 @@
     <label>Description_Technique : </label>
     <InputText @bind-Value="addEquipement.Description_Technique"/>
 
+
     <label>Prix_Achat : </label>
     <InputNumber @bind-Value="addEquipement.Prix_Achat"/>
 
@@ -25,6 +26,9 @@
 
     <label> Autonomie : </label>
     <InputCheckbox @bind-Value="addEquipement.Autonomie"/>
+
+    <label> Modèle : </label>
+    <InputText @bind-Value="addEquipement.Nom_Modele"/>
 
     <label> Utilisable chez le client : </label>
     <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client"/>
@@ -75,7 +79,6 @@
         {
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
-            addEquipement.Nom_Modele = "F370";
 
             await equipementDatas.AddAsync(addEquipement);
 
