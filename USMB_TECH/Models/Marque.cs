@@ -7,6 +7,7 @@ namespace USMB_TECH.Models
     public partial class Marque
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_marque")]
         public int Id_Marque { get; set; }
 

@@ -7,6 +7,7 @@ namespace USMB_TECH.Models
     public partial class Unite
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_unite")]
         public int Id_Unite { get; set; }
 

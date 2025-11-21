@@ -58,11 +58,13 @@ public partial class UsmbTechDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-    modelBuilder.HasDefaultSchema("usmbTech");
+        modelBuilder.HasDefaultSchema("usmbTech");
 
         modelBuilder.Entity<Adresse>(e =>
         {
             e.HasKey(e => e.Id_Adresse).HasName("pk_adresse");
+
+            e.Property(e => e.Id_Adresse).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Laboratoires_campus)
                 .WithOne(p => p.Adresse_campusNavigation)
@@ -98,6 +100,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Consommable).HasName("pk_consommable");
 
+            e.Property(e => e.Id_Consommable).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Consommers)
                 .WithOne(p => p.ConsommableNavigation)
                 .HasForeignKey(d => d.Id_Consommable)
@@ -131,6 +135,9 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Contact_USMB>(e =>
         {
             e.HasKey(e => e.Id_Contact).HasName("pk_contact_USMB");
+
+            e.Property(e => e.Id_Contact).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Associers)
                 .WithOne(p => p.Contact_USMBNavigation)
                 .HasForeignKey(d => d.Id_Contact)
@@ -183,6 +190,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Equipement>(e =>
 {
     e.HasKey(e => new { e.Id_Equipement }).HasName("pk_equipement");
+
+    e.Property(e => e.Id_Equipement).ValueGeneratedOnAdd();
 
     e.HasMany(d => d.Fournirs)
         .WithOne(p => p.EquipementNavigation)
@@ -266,6 +275,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Exemple_Utilisation).HasName("pk_exemple_utilisation");
 
+            e.Property(e => e.Id_Exemple_Utilisation).ValueGeneratedOnAdd();
+
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Exemple_Utilisations)
                 .HasForeignKey(d => d.Id_Equipement)
@@ -300,6 +311,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Fonction).HasName("pk_fonction");
 
+            e.Property(e => e.Id_Fonction).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Contacts)
                 .WithOne(p => p.FonctionNavigation)
                 .HasForeignKey(d => d.Id_Fonction)
@@ -310,6 +323,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Fonctionalite>(e =>
         {
             e.HasKey(e => e.Id_Fonctionalite).HasName("pk_fonctionalite");
+
+            e.Property(e => e.Id_Fonctionalite).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Posseders)
                 .WithOne(p => p.FonctionaliteNavigation)
@@ -388,7 +403,7 @@ public partial class UsmbTechDbContext : DbContext
 
             e.HasOne(d => d.Adresse_campusNavigation)
                 .WithMany(p => p.Laboratoires_campus)
-                .HasForeignKey(d => d.Id_Adresse_Campus)    
+                .HasForeignKey(d => d.Id_Adresse_Campus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_laboratoire_adresse_campus");
 
@@ -403,6 +418,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Marque).HasName("pk_marque");
 
+            e.Property(e => e.Id_Marque).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Modeles)
                 .WithOne(p => p.MarqueNavigation)
                 .HasForeignKey(d => d.Id_Marque)
@@ -413,6 +430,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Modele>(e =>
         {
             e.HasKey(e => e.Id_Modele).HasName("pk_modele");
+
+            e.Property(e => e.Id_Modele).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Equipements)
                 .WithOne(p => p.ModeleNavigation)
@@ -431,6 +450,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Mot_Clef).HasName("pk_mot_clef");
 
+            e.Property(e => e.Id_Mot_Clef).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Designers)
                 .WithOne(p => p.Mot_ClefNavigation)
                 .HasForeignKey(d => d.Id_Mot_Clef)
@@ -447,6 +468,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Photo>(e =>
         {
             e.HasKey(e => e.Id_Photo).HasName("pk_photo");
+
+            e.Property(e => e.Id_Photo).ValueGeneratedOnAdd();
 
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Photos)
@@ -473,6 +496,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Plateforme>(e =>
         {
             e.HasKey(e => e.Id_Plateforme).HasName("pk_plateforme");
+
+            e.Property(e => e.Id_Plateforme).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Associers)
                 .WithOne(p => p.PlateformeNavigation)
@@ -567,6 +592,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => new { e.Id_Prestation }).HasName("pk_prestation");
 
+            e.Property(e => e.Id_Prestation).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Fournirs)
                 .WithOne(p => p.PrestationNavigation)
                 .HasForeignKey(d => d.Id_Prestation)
@@ -607,6 +634,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Prise_Contact>(e =>
         {
             e.HasKey(e => e.Num_Prise_Contact).HasName("pk_prise_contact");
+
+            e.Property(e => e.Num_Prise_Contact).ValueGeneratedOnAdd();
 
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Prise_Contacts)
@@ -674,7 +703,9 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Thematique>(e =>
         {
-            e.HasKey(e => e.Id_Thematique).HasName("thematique_pkey");
+            e.HasKey(e => e.Id_Thematique).HasName("pk_thematique");
+
+            e.Property(e => e.Id_Thematique).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Est_Liers)
                 .WithOne(p => p.ThematiqueNavigation)
@@ -705,6 +736,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Type_Client).HasName("pk_type_client");
 
+            e.Property(e => e.Id_Type_Client).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Prise_Contacts)
                 .WithOne(p => p.Type_ClientNavigation)
                 .HasForeignKey(d => d.Id_Type_Client)
@@ -715,6 +748,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Type_Equipement>(e =>
         {
             e.HasKey(e => e.Id_Type_Equipement).HasName("pk_type_equipement");
+            
+            e.Property(e => e.Id_Type_Equipement).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Equipements)
                 .WithOne(p => p.Type_EquipementNavigation)
@@ -727,6 +762,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Type_Prestation).HasName("pk_type_prestation");
 
+            e.Property(e => e.Id_Type_Prestation).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Prestations)
                 .WithOne(p => p.Type_PrestationNavigation)
                 .HasForeignKey(d => d.Id_Type_Prestation)
@@ -738,6 +775,8 @@ public partial class UsmbTechDbContext : DbContext
         {
             e.HasKey(e => e.Id_Unite).HasName("pk_unite");
 
+            e.Property(e => e.Id_Unite).ValueGeneratedOnAdd();
+
             e.HasMany(d => d.Consommables)
                 .WithOne(p => p.UniteNavigation)
                 .HasForeignKey(d => d.Id_Unite)
@@ -748,6 +787,8 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Unite_Oeuvre>(e =>
         {
             e.HasKey(e => e.Id_Unite_Oeuvre).HasName("pk_unite_oeuvre");
+
+            e.Property(e => e.Id_Unite_Oeuvre).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Prestations)
                 .WithOne(p => p.Unite_OeuvreNavigation)

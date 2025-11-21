@@ -75,7 +75,7 @@ namespace USMB_TECH.Controllers
             }
             var equipement = _mapper.Map<Equipement>(equipementDto);
             await _dataRepository.AddAsync(equipement);
-            return CreatedAtAction(nameof(GetEquipement), new { id = equipement.Id_Equipement }, _mapper.Map<EquipementDTO>(equipement));
+            return CreatedAtAction(nameof(GetEquipement), new { id = equipement.Id_Equipement }, equipement);
         }
 
         // DELETE: api/Equipements/{id}
