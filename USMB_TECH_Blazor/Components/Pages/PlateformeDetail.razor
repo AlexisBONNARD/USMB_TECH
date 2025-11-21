@@ -59,7 +59,7 @@ else
                     {
                         <div class="equipement-item"
                              @onclick="@(() => RetourListe(equipement.Id_Equipement))">
-                            <img src="images/logo_usmb.png" alt="photo équipement" />
+                            <img src=@equipement.PlateformeNavigation.Photos alt="photo équipement" />
                             <p>@equipement.Nom_Equipement</p>
                         </div>
                     }

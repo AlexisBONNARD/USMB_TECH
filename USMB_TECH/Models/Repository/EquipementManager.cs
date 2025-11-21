@@ -104,6 +104,29 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Type_Equipement = type.Id_Type_Equipement;
                 entity.Type_EquipementNavigation = type;
             }
+            if(entity.ModeleNavigation.MarqueNavigation is not null) 
+            {
+                var marqueName = entity.ModeleNavigation.MarqueNavigation.Nom_Marque;
+                var existingMarque = await _context.Marques
+                    .FirstOrDefaultAsync(m => m.Nom_Marque == marqueName);
+
+                if(existingMarque is not null) 
+                {
+                    entity.ModeleNavigation.Id_Marque = existingMarque.Id_Marque;
+                    entity.ModeleNavigation.MarqueNavigation = existingMarque;
+                }
+                else 
+                {
+                    var newMarque = new Marque
+                    {
+                        Nom_Marque = marqueName
+                    };
+                    _context.Marques.Add(newMarque);
+                    await _context.SaveChangesAsync();
+                    entity.ModeleNavigation.Id_Marque = newMarque.Id_Marque;
+                    entity.ModeleNavigation.MarqueNavigation = newMarque;
+                }
+            }
             if (entity.ModeleNavigation != null && !string.IsNullOrEmpty(entity.ModeleNavigation.Nom_Modele))
             {
                 var model = await _context.Modeles.FirstOrDefaultAsync(m => m.Nom_Modele == entity.ModeleNavigation.Nom_Modele);
@@ -112,7 +135,9 @@ namespace USMB_TECH.Models.Repository
                 {
                     model = new Modele
                     {
-                        Nom_Modele = entity.ModeleNavigation.Nom_Modele
+                        Nom_Modele = entity.ModeleNavigation.Nom_Modele,
+                        Id_Marque = entity.ModeleNavigation.Id_Marque,
+                        MarqueNavigation = entity.ModeleNavigation.MarqueNavigation
                     };
                     _context.Modeles.Add(model);
                     await _context.SaveChangesAsync();
