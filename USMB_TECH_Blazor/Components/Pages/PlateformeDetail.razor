@@ -4,6 +4,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
+
 <HeadContent>
     <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
 </HeadContent>
@@ -97,6 +98,7 @@ else
             <FormulaireContact />
         </div>
     </div>
+    <button class="btn-back" @onclick="() => GoToUpdate(plateforme.Id_Plateforme)">EDIT PLATEFORME</button>
 }
 
 @code {
@@ -120,5 +122,11 @@ else
     private void RetourListe(int idEquipement)
     {
         Navigation.NavigateTo($"/equipement/{idEquipement}");
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/plateforme/edit/{id}", true);
+
     }
 }
