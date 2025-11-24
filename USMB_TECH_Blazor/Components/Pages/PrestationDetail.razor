@@ -21,30 +21,16 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>@prestation.Nom_Court</h2>
+                <h2>Prestation : @prestation.Nom_Court</h2>
+                <p>@prestation.Intitule_Prestation</p>
                 <p>@prestation.Description_Prestation</p>
             </section>
 
             <section>
-                <h3>MOTS CLÉS</h3>
+                <h3>PRIX</h3>
                 <ul class="list-style">
-                    @* @foreach (var mot in motsCles)
-                    {
-                        <li>@mot.Nom_Mot_Clef</li>
-                    } *@
-                </ul>
-            </section>
-
-            <section>
-                <h3>CATALOGUE DE PRESTATIONS</h3>
-                <ul class="list-style">
-                    @* @foreach (var prestation in prestations)
-                    {
-                        <li>
-                            <strong>@prestation.Intitule_Prestation :</strong>
-                            <span>@prestation.Description_Prestation</span>
-                        </li>
-                    } *@
+                    <p>Revient : @prestation.Prix_Revient</p>
+                    <p>Vente : @prestation.Prix_Vente</p>
                 </ul>
             </section>
         </div>
@@ -122,8 +108,14 @@ else
         prestation = await PrestationService.GetByIdAsync(Id);
         foreach (var plateforme in prestation.Presenters)
         {
+            Console.WriteLine("Id_Plateforme : -----------");
+            Console.WriteLine(plateforme.Id_Plateforme);
             var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
+            Console.WriteLine("plat : -----------");
+            Console.WriteLine(plat);
             this.plateformes.Add(plat);
+            Console.WriteLine("plateformes : -----------");
+            Console.WriteLine(plateformes);
         }
         foreach (var equipement in prestation.Fournirs)
         {
