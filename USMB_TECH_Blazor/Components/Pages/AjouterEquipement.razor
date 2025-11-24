@@ -7,56 +7,82 @@
 @inject HttpClient Http
 @inject IJSRuntime JS
 
+<HeadContent>
+    <link rel="stylesheet" href="css/addEquipement.css">
+</HeadContent>
 <h3>Ajouter un équipement</h3>
+
 <EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
-    <label>Nom de l'équipement : </label>
-    <InputText @bind-Value="addEquipement.Nom_Equipement" />
 
-    <label for="ImmobilisationNumber"> Num_Immobilisation : </label>
-    <InputText @bind-Value="addEquipement.Num_Immobilisation"/>
+    <div class="form-group">
+        <label>Nom de l'équipement :</label>
+        <InputText @bind-Value="addEquipement.Nom_Equipement" />
+    </div>
 
-    <label>Description_Technique : </label>
-    <InputText @bind-Value="addEquipement.Description_Technique"/>
+    <div class="form-group">
+        <label>Num_Immobilisation :</label>
+        <InputText @bind-Value="addEquipement.Num_Immobilisation" />
+    </div>
 
+    <div class="form-group">
+        <label>Description Technique :</label>
+        <InputText @bind-Value="addEquipement.Description_Technique" />
+    </div>
 
-    <label>Prix_Achat : </label>
-    <InputNumber @bind-Value="addEquipement.Prix_Achat"/>
+    <div class="form-group">
+        <label>Prix Achat :</label>
+        <InputNumber @bind-Value="addEquipement.Prix_Achat" />
+    </div>
 
-    <label>Prix Revient :</label>
-    <InputNumber @bind-Value="addEquipement.Prix_Revient"/>
+    <div class="form-group">
+        <label>Prix Revient :</label>
+        <InputNumber @bind-Value="addEquipement.Prix_Revient" />
+    </div>
 
-    <label> Modèle : </label>
-    <InputText @bind-Value="addEquipement.Nom_Modele"/>
+    <div class="form-group">
+        <label>Modèle :</label>
+        <InputText @bind-Value="addEquipement.Nom_Modele" />
+    </div>
 
-    <label> Marque : </label>
-    <InputText @bind-Value="addEquipement.Nom_Marque" />
+    <div class="form-group">
+        <label>Marque :</label>
+        <InputText @bind-Value="addEquipement.Nom_Marque" />
+    </div>
 
-    <label>Plateforme associée : </label>
-    <InputSelect @bind-Value="addEquipement.Nom_Plateforme">
-        <option>...</option>
-        @foreach(var plateforme in plateformes)
-        {
-            <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
-        }
-    </InputSelect>
+    <div class="form-group">
+        <label>Plateforme associée :</label>
+        <InputSelect @bind-Value="addEquipement.Nom_Plateforme">
+            <option>...</option>
+            @foreach (var plateforme in plateformes)
+            {
+                <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
+            }
+        </InputSelect>
+    </div>
 
-    <label>Type Equipement : </label>
-    <InputSelect @bind-Value="addEquipement.Type_Equipement">
-        <option>...</option>
-        @foreach (var type in type_Equipements)
-        {
-            <option value="@type.Nom_Type">@type.Nom_Type</option>
-        }
-    </InputSelect>
+    <div class="form-group">
+        <label>Type Equipement :</label>
+        <InputSelect @bind-Value="addEquipement.Type_Equipement">
+            <option>...</option>
+            @foreach (var type in type_Equipements)
+            {
+                <option value="@type.Nom_Type">@type.Nom_Type</option>
+            }
+        </InputSelect>
+    </div>
 
     <h4 class="add_platform">Photos</h4>
     <InputFile OnChange="HandleFileUpload" />
 
-    <label> Autonomie : </label>
-    <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+    <div class="checkbox-group">
+        <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+        <label>Autonomie</label>
+    </div>
 
-    <label> Utilisable chez le client : </label>
-    <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
+    <div class="checkbox-group">
+        <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
+        <label>Utilisable chez le client</label>
+    </div>
 
     <button type="submit" class="btn btn-primary">Ajouter</button>
 
@@ -66,7 +92,9 @@
             @message
         </div>
     }
+
 </EditForm>
+
 
     @code {
     private Equipement addEquipement = new();
@@ -127,7 +155,6 @@
                 }
             }
 
-            // If not found, add it
             if (marqueequipement == null)
             {
                 await marqueDatas.AddAsync(marqueequipement);
