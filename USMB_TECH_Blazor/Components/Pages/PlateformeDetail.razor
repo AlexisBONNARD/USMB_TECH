@@ -21,6 +21,10 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
+                @foreach (var image in plateforme.Photos)
+                {
+                    <img src=@image alt="photo plateforme" />
+                }
                 <h2>@plateforme.Nom_Plateforme</h2>
                 <p>@plateforme.Description_Plateforme</p>
             </section>
@@ -57,17 +61,15 @@ else
                 <div class="equipement-grid">
                     @foreach (var equipement in plateforme.Equipements)
                     {
-                        <div class="equipement-item"
-                             @onclick="@(() => RetourListe(equipement.Id_Equipement))">
-                            <img src=@plateforme.Photos alt="photo équipement" />
+                        <div class="equipement-item">
+                            @if (equipement.Photos?.Any() == true)
+                            {
+                                var photo = equipement.Photos.OrderBy(x => Guid.NewGuid()).First();
+                                <img src="@photo.Url_Photo" alt="photo équipement" />
+                            }
                             <p>@equipement.Nom_Equipement</p>
                         </div>
                     }
-                    @* @foreach (var image in plateforme.Photos)
-                    {
-                        <img src=@image alt="photo équipement" />
-                    } *@
-
                 </div>
             </section>
 
