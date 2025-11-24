@@ -49,6 +49,7 @@ namespace USMB_TECH_Blazor.Models
         public bool Utilisable_Chez_Le_Client { get; set; }
 
         public bool Actif { get; set; }
+        public bool Disponibilite { get; set; }
 
         public string Nom_Contact { get; set; }
 
