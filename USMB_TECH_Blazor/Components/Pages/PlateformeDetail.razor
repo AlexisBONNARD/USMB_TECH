@@ -21,12 +21,14 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                @foreach (var image in plateforme.Photos)
-                {
-                    <img src=@image alt="photo plateforme" />
-                }
                 <h2>@plateforme.Nom_Plateforme</h2>
                 <p>@plateforme.Description_Plateforme</p>
+                <div class="equipement-item">
+                    @foreach (Photo image in plateforme.Photos)
+                    {
+                        <img src=@image.Url_Photo alt="photo plateforme" />
+                    }
+                </div>
             </section>
 
             <section>
@@ -59,12 +61,13 @@ else
                 <h3>NOS ÉQUIPEMENTS</h3>
 
                 <div class="equipement-grid">
-                    @foreach (var equipement in plateforme.Equipements)
+                    @foreach (Equipement equipement in plateforme.Equipements)
                     {
                         <div class="equipement-item">
-                            @if (equipement.Photos?.Any() == true)
+                            @if (equipement.Photos?.Any() == false)
                             {
-                                var photo = equipement.Photos.OrderBy(x => Guid.NewGuid()).First();
+                                Photo photo = equipement.Photos.OrderBy(x => Guid.NewGuid()).First();
+                                Console.WriteLine(photo);
                                 <img src="@photo.Url_Photo" alt="photo équipement" />
                             }
                             <p>@equipement.Nom_Equipement</p>
