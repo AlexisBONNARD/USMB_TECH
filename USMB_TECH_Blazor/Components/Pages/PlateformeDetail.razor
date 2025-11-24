@@ -114,6 +114,7 @@ else
         prestations = plateforme.Presenters.Select(p => p.prestationNavigation).ToList();
         motsCles = plateforme.Specifiers.Select(s => s.Mot_ClefNavigation).ToList();
         thematique = plateforme.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+
     }
 
     private void RetourListe(int idEquipement)
