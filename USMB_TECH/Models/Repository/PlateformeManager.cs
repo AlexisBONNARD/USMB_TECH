@@ -42,12 +42,42 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme entity)
+        public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme updatedEntity)
         {
-            _context.Plateformes.Attach(entityToUpdate);
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            // Propriétés simples
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // --- Gestion incrémentale des Equipements ---
+            foreach (var updatedEquip in updatedEntity.Equipements)
+            {
+                var existingEquip = entityToUpdate.Equipements
+                    .FirstOrDefault(e => e.Id_Equipement == updatedEquip.Id_Equipement);
+
+                if (existingEquip != null)
+                {
+                    _context.Entry(existingEquip).CurrentValues.SetValues(updatedEquip);
+                }
+                else
+                {
+                    updatedEquip.PlateformeNavigation = entityToUpdate; //  important
+                    entityToUpdate.Equipements.Add(updatedEquip);
+                }
+            }
+
+            var toRemove = entityToUpdate.Equipements
+                .Where(e => !updatedEntity.Equipements.Any(ue => ue.Id_Equipement == e.Id_Equipement))
+                .ToList();
+
+            foreach (var equip in toRemove)
+            {
+                entityToUpdate.Equipements.Remove(equip);
+                _context.Equipements.Remove(equip); //  pour supprimer en base
+            }
+
             await _context.SaveChangesAsync();
         }
+
+
 
         public async Task DeleteAsync(Plateforme entity)
         {
