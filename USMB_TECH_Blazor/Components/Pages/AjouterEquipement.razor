@@ -31,12 +31,6 @@
     <label> Marque : </label>
     <InputText @bind-Value="addEquipement.Nom_Marque" />
 
-    <label> Autonomie : </label>
-    <InputCheckbox @bind-Value="addEquipement.Autonomie" />
-
-    <label> Utilisable chez le client : </label>
-    <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client"/>
-
     <label>Plateforme associée : </label>
     <InputSelect @bind-Value="addEquipement.Nom_Plateforme">
         <option>...</option>
@@ -54,6 +48,15 @@
             <option value="@type.Nom_Type">@type.Nom_Type</option>
         }
     </InputSelect>
+
+    <h4 class="add_platform">Photos</h4>
+    <InputFile OnChange="HandleFileUpload" />
+
+    <label> Autonomie : </label>
+    <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+
+    <label> Utilisable chez le client : </label>
+    <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
 
     <button type="submit" class="btn btn-primary">Ajouter</button>
 
@@ -78,6 +81,33 @@
     {
         plateformes = (await plateformeDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+    }
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+        content.Add(fileContent, "file", file.Name);
+
+        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+            addEquipement.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+        }
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
     }
    
     private async Task HandleValidSubmit()

@@ -48,7 +48,7 @@ namespace USMB_TECH_Blazor.Models
         
         public virtual Marque Marque_Equipement { get; set; } = new Marque();
 
-        public ICollection<Photo> Photos { get; set; }
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
         public Plateforme? PlateformeNavigation { get; set; }
     }
