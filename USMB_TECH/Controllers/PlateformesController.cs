@@ -46,23 +46,27 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutPlateforme(int id, Plateforme plateforme)
+        public async Task<IActionResult> PutPlateforme(int id, UpdatePlateformeDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != plateforme.Id_Plateforme)
+            if (id != dto.Id_Plateforme)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"Plateforme avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, plateforme);
+            // Mapper le DTO vers l'entité
+            var updatedEntity = PlateformeMapper.ToEntity(dto);
+
+            await _dataRepository.UpdateAsync(existing, updatedEntity);
             return NoContent();
         }
+
         // POST: api/Plateformes
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

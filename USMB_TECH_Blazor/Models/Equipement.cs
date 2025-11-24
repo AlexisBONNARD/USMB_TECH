@@ -15,21 +15,33 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Type_Equipement { get; set; }
 
+        [Required(ErrorMessage = "Le nom de l'équipement est obligatoire")]
         public string Nom_Equipement { get; set; }
+        [Required(ErrorMessage = "Le numéro d'immobilisation est obligatoire ou a été mal écrit")]
         public string Num_Immobilisation { get; set; }
         public DateTime Date_Acquisition { get; set; }
 
         public string Description_Technique { get; set; }
 
+        [Required(ErrorMessage = "Un prix d'achat est obligatoire")]
+        [Range(0, double.MaxValue, ErrorMessage = "Le prix d'achat ne peut pas être négatif")]
         public double Prix_Achat { get; set; }
 
+        [Required(ErrorMessage = "Un prix de revient est obligatoire")]
+        [Range(0, double.MaxValue, ErrorMessage = "Le prix de revient ne peut pas être négatif")]
         public double Prix_Revient { get; set; }
 
+        [Required(ErrorMessage = "Une plateforme doit être obligatoirement associée")]
         public string Nom_Plateforme { get; set; }
 
+
+        [Required(ErrorMessage = "Un modèle doit être obligatoirement associé")]
         public string Nom_Modele { get; set; }
+
+        [Required(ErrorMessage = "Une marque doit être obligatoirement associée")]
         public string Nom_Marque { get; set; }
 
+        [Required(ErrorMessage = "Un type d'équipement doit être obligatoirement associé")]
         public string Type_Equipement { get; set; }
 
         public bool Autonomie { get; set; }
@@ -37,6 +49,7 @@ namespace USMB_TECH_Blazor.Models
         public bool Utilisable_Chez_Le_Client { get; set; }
 
         public bool Actif { get; set; }
+        public bool Disponibilite { get; set; }
 
         public string Nom_Contact { get; set; }
 
