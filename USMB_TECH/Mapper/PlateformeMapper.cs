@@ -1,4 +1,4 @@
-
+using AutoMapper;
 using USMB_TECH.DTO;
 using USMB_TECH.Models;
 
@@ -6,6 +6,8 @@ namespace USMB_TECH.Mapper
 {
     public static class PlateformeMapper
     {
+
+
         public static Plateforme ToEntity(AddPlateformeDto dto)
         {
             var plateforme = new Plateforme
@@ -32,3 +34,9 @@ namespace USMB_TECH.Mapper
         }
     }
 }
+
+
+    
+
+
+
