@@ -1,4 +1,5 @@
 @page "/ajouter-plateforme"
+@using USMB_TECH.Models
 @inject HttpClient Http
 @inject Service.IMainService<Prestation,int> prestationDatas
 
@@ -43,13 +44,38 @@
 
         <hr />
         <h4 class="add_platform">Photos</h4>
-        <InputFile multiple OnChange="HandlePhotos" class="mb-2" />
-        <ul class="add_platform">
-            @foreach (var p in plateforme.Photos)
+        <InputFile OnChange="HandleFileUpload" />
+
+        @code {
+            private async Task HandleFileUpload(InputFileChangeEventArgs e)
             {
-                <li class="add_platform">@p.Nom_Photo</li>
+                var file = e.File;
+
+                using var content = new MultipartFormDataContent();
+                var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+                content.Add(fileContent, "file", file.Name);
+
+                var response = await Http.PostAsync("https://localhost:7093/api/plateformes/upload", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                    plateforme.Photos.Add(new Photo
+                    {
+                        Nom_Photo = file.Name,
+                        Url_Photo = result.url
+                    });
+                }
             }
-        </ul>
+
+            public class UploadResponse
+            {
+                public string url { get; set; }
+            }
+        }
+
 
         <hr />
         <h4 class="add_platform">Mots-clés</h4>
@@ -64,7 +90,10 @@
         <ul class="add_platform">
             @foreach (var mc in plateforme.MotsCles)
             {
-                <li class="add_platform">@mc.Nom_Mot_Clef</li>
+                <li class="add_platform">
+                    @mc.Nom_Mot_Clef
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
             }
         </ul>
 
@@ -81,9 +110,13 @@
         <ul class="add_platform">
             @foreach (var t in plateforme.Thematiques)
             {
-                <li class="add_platform">@t.Nom_Thematique</li>
+                <li class="add_platform">
+                    @t.Nom_Thematique
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(t)">Supprimer</button>
+                </li>
             }
         </ul>
+
 
         <hr />
         <h4 class="add_platform">Exemples d’utilisation</h4>
@@ -102,9 +135,13 @@
         <ul class="add_platform">
             @foreach (var e in plateforme.ExempleUtilisations)
             {
-                <li class="add_platform">@e.Nom_Utilisation : @e.Description_Utilisation</li>
+                <li class="add_platform">
+                    @e.Nom_Utilisation : @e.Description_Utilisation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveExemple(e)">Supprimer</button>
+                </li>
             }
         </ul>
+
 
         <hr />
         <h4 class="add_platform">Prestations</h4>
@@ -123,9 +160,13 @@
         <ul class="add_platform">
             @foreach (var pr in plateforme.Presenters)
             {
-                <li class="add_platform">Prestation ID : @pr.Id_Prestation</li>
+                <li class="add_platform">
+                    Prestation ID : @pr.Id_Prestation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePresenter(pr)">Supprimer</button>
+                </li>
             }
         </ul>
+
 
         <hr />
         <button class="btn btn-success mt-3" type="submit">Créer la plateforme</button>
@@ -157,16 +198,6 @@
     protected override async Task OnInitializedAsync()
     {
         prestations = (await prestationDatas.GetAllAsync()).ToList();
-    }
-
-
-    async Task HandlePhotos(InputFileChangeEventArgs e)
-    {
-        foreach (var file in e.GetMultipleFiles())
-        {
-            var url = $"/uploads/{file.Name}";
-            plateforme.Photos.Add(new Photo { Nom_Photo = file.Name, Url_Photo = url });
-        }
     }
 
     void AddMot_Clef()
@@ -250,5 +281,22 @@
         message = null;         // efface le message
         StateHasChanged();      // met à jour
     }
+    void RemoveMotCle(Mot_Clef mc)
+    {
+        plateforme.MotsCles.Remove(mc);
+    }
+    void RemoveThematique(Thematique t)
+    {
+        plateforme.Thematiques.Remove(t);
+    }
+    void RemoveExemple(Exemple_Utilisation e)
+    {
+        plateforme.ExempleUtilisations.Remove(e);
+    }
+    void RemovePresenter(Presenter pr)
+    {
+        plateforme.Presenters.Remove(pr);
+    }
+
 }
 

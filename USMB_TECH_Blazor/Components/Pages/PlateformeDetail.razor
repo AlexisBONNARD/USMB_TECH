@@ -22,6 +22,12 @@ else
             <section>
                 <h2>@plateforme.Nom_Plateforme</h2>
                 <p>@plateforme.Description_Plateforme</p>
+                <div class="equipement-item">
+                    @foreach (Photo image in plateforme.Photos)
+                    {
+                        <img src=@image.Url_Photo alt="photo plateforme" />
+                    }
+                </div>
             </section>
 
             <section>
@@ -56,16 +62,15 @@ else
                 <div class="equipement-grid">
                     @foreach (var equipement in plateforme.Equipements)
                     {
-                        <div class="equipement-item"
-                             @onclick="@(() => RetourListe(equipement.Id_Equipement))">
-                            <img src=@plateforme.Photos alt="photo équipement" />
+                        <div class="equipement-item" @onclick="@(() => RetourListe(equipement.Id_Equipement))">
+                            @if (equipement.Photos != null && equipement.Photos.Any())
+                            {
+                                var photo = equipement.Photos.First();
+                                <img src="@photo.Url_Photo" alt="photo équipement" />
+                            }
                             <p>@equipement.Nom_Equipement</p>
                         </div>
                     }
-                    @* @foreach (var image in plateforme.Photos)
-                    {
-                        <img src=@image alt="photo équipement" />
-                    } *@
 
                 </div>
             </section>
@@ -109,6 +114,7 @@ else
         prestations = plateforme.Presenters.Select(p => p.prestationNavigation).ToList();
         motsCles = plateforme.Specifiers.Select(s => s.Mot_ClefNavigation).ToList();
         thematique = plateforme.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+
     }
 
     private void RetourListe(int idEquipement)

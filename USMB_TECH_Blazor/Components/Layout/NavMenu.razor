@@ -13,8 +13,14 @@
         </NavLink>
 
         <!-- Dropdown NOS PLATEFORMES -->
-        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdownPlateforme">
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Plateforme"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+
             <span class="dropdown-toggle">NOS PLATEFORMES</span>
+
             <ul class="dropdown-menu @(showDropdown == "Plateforme" ? "show" : "")">
                 @if (plateformes != null)
                 {
@@ -32,8 +38,14 @@
         </div>
 
         <!-- Dropdown NOS EQUIPEMENTS -->
-        <div class="nav-link dropdown " style="cursor:pointer;" @onclick="ToggleDropdownEquipement">
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Equipement"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+
             <span class="dropdown-toggle">NOS EQUIPEMENTS</span>
+
             <ul class="dropdown-menu @(showDropdown == "Equipement" ? "show" : "")">
                 @if (equipements != null)
                 {
@@ -46,6 +58,7 @@
                 }
             </ul>
         </div>
+
 
     </div>
 
@@ -99,6 +112,17 @@
     private void GoToEquipement(int id)
     {
         Nav.NavigateTo($"/equipement/{id}", true);
+        showDropdown = null;
+    }
+
+
+    private void OpenDropdown(string name)
+    {
+        showDropdown = name;
+    }
+
+    private void CloseDropdown()
+    {
         showDropdown = null;
     }
 }
