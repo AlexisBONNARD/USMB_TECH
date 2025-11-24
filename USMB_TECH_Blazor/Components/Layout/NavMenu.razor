@@ -2,6 +2,7 @@
 @using USMB_TECH_Blazor.Service;
 @inject IMainService<Plateforme,int> PlateformeService
 @inject IMainService<Equipement,int> EquipementService
+@inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -18,18 +19,17 @@
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
 
-
             <span class="dropdown-toggle">NOS PLATEFORMES</span>
 
             <ul class="dropdown-menu @(showDropdown == "Plateforme" ? "show" : "")">
                 @if (plateformes != null)
                 {
-                    @foreach (var p in plateformes)
+                    @foreach (var pl in plateformes)
                     {
-                        if (p.Actif)
+                        if (pl.Actif)
                         {
-                            <li @onclick="() => GoToPlateforme(p.Id_Plateforme)">
-                                @p.Nom_Plateforme
+                            <li @onclick="() => GoToPlateforme(pl.Id_Plateforme)">
+                                @pl.Nom_Plateforme
                             </li>
                         }
                     }
@@ -42,7 +42,6 @@
              @onmouseenter="@(() => OpenDropdown("Equipement"))"
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
-
 
             <span class="dropdown-toggle">NOS EQUIPEMENTS</span>
 
@@ -59,7 +58,26 @@
             </ul>
         </div>
 
+        <!-- Dropdown NOS PRESTATIONS -->
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Prestation"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
 
+            <span class="dropdown-toggle">NOS PRESTATIONS</span>
+
+            <ul class="dropdown-menu @(showDropdown == "Prestation" ? "show" : "")">
+                @if (prestations != null)
+                {
+                    @foreach (var pr in prestations)
+                    {
+                        <li @onclick="() => GoToPrestation(pr.Id_Prestation)">
+                            @pr.Nom_Court
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
     </div>
 
 </div>
@@ -69,10 +87,12 @@
     private string showDropdown = null;
     private IEnumerable<Plateforme>? plateformes;
     private IEnumerable<Equipement>? equipements;
+    private IEnumerable<Prestation>? prestations;
     protected override async Task OnInitializedAsync()
     {
         plateformes = await PlateformeService.GetAllAsync();
         equipements = await EquipementService.GetAllAsync();
+        prestations = await PrestationService.GetAllAsync();
 
         // Affichage dans la console
         if (plateformes != null)
@@ -91,6 +111,13 @@
             }
         }
 
+        if (prestations != null)
+        {
+            foreach (var e in prestations)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Prestation: {e.Nom_Court}, Id: {e.Id_Prestation}");
+            }
+        }
     }
 
     private void ToggleDropdownPlateforme()
@@ -103,6 +130,11 @@
         showDropdown = showDropdown == "Equipement" ? null : "Equipement";
     }
 
+    private void ToggleDropdownPrestation()
+    {
+        showDropdown = showDropdown == "Prestation" ? null : "Prestation";
+    }
+
     private void GoToPlateforme(int id)
     {
         Nav.NavigateTo($"/plateforme/{id}", true);
@@ -112,6 +144,12 @@
     private void GoToEquipement(int id)
     {
         Nav.NavigateTo($"/equipement/{id}", true);
+        showDropdown = null;
+    }
+
+    private void GoToPrestation(int id)
+    {
+        Nav.NavigateTo($"/prestation/{id}", true);
         showDropdown = null;
     }
 

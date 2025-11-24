@@ -18,5 +18,7 @@
         public bool Autonomie { get; set; }
         public bool Utilisable_Chez_Le_Client { get; set; }
 
+        public List<PhotoDto> Photos { get; set; } = new();
+
     }
 }

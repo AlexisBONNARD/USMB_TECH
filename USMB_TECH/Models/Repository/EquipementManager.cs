@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using USMB_TECH.DTO;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
@@ -146,8 +147,21 @@ namespace USMB_TECH.Models.Repository
                 entity.ModeleNavigation = model;
             }
 
+            var photos = entity.Photos;
+            entity.Photos = null;
+
             _context.Equipements.Add(entity);
             await _context.SaveChangesAsync();
+
+            foreach (var p in photos)
+            {
+                p.Id_Equipement = entity.Id_Equipement;
+                _context.Photos.Add(p);
+            }
+
+            await _context.SaveChangesAsync();
+
+
         }
 
 
