@@ -43,13 +43,38 @@
 
         <hr />
         <h4 class="add_platform">Photos</h4>
-        <InputFile multiple OnChange="HandlePhotos" class="mb-2" />
-        <ul class="add_platform">
-            @foreach (var p in plateforme.Photos)
+        <InputFile OnChange="HandleFileUpload" />
+
+        @code {
+            private async Task HandleFileUpload(InputFileChangeEventArgs e)
             {
-                <li class="add_platform">@p.Nom_Photo</li>
+                var file = e.File;
+
+                using var content = new MultipartFormDataContent();
+                var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+                content.Add(fileContent, "file", file.Name);
+
+                var response = await Http.PostAsync("https://localhost:7093/api/plateformes/upload", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                    plateforme.Photos.Add(new Photo
+                    {
+                        Nom_Photo = file.Name,
+                        Url_Photo = result.url
+                    });
+                }
             }
-        </ul>
+
+            public class UploadResponse
+            {
+                public string url { get; set; }
+            }
+        }
+
 
         <hr />
         <h4 class="add_platform">Mots-clés</h4>
@@ -157,16 +182,6 @@
     protected override async Task OnInitializedAsync()
     {
         prestations = (await prestationDatas.GetAllAsync()).ToList();
-    }
-
-
-    async Task HandlePhotos(InputFileChangeEventArgs e)
-    {
-        foreach (var file in e.GetMultipleFiles())
-        {
-            var url = $"/uploads/{file.Name}";
-            plateforme.Photos.Add(new Photo { Nom_Photo = file.Name, Url_Photo = url });
-        }
     }
 
     void AddMot_Clef()

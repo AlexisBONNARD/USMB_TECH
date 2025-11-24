@@ -61,18 +61,18 @@ else
                 <h3>NOS ÉQUIPEMENTS</h3>
 
                 <div class="equipement-grid">
-                    @foreach (Equipement equipement in plateforme.Equipements)
+                    @foreach (var equipement in plateforme.Equipements)
                     {
-                        <div class="equipement-item">
-                            @if (equipement.Photos?.Any() == false)
+                        <div class="equipement-item" @onclick="@(() => RetourListe(equipement.Id_Equipement))">
+                            @if (equipement.Photos != null && equipement.Photos.Any())
                             {
-                                Photo photo = equipement.Photos.OrderBy(x => Guid.NewGuid()).First();
-                                Console.WriteLine(photo);
+                                var photo = equipement.Photos.First();
                                 <img src="@photo.Url_Photo" alt="photo équipement" />
                             }
                             <p>@equipement.Nom_Equipement</p>
                         </div>
                     }
+
                 </div>
             </section>
 

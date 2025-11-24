@@ -301,5 +301,27 @@ namespace USMB_TECH.Controllers
             var results = await _dataRepository.GetByKeysAsync(p => p.Nom_Plateforme, nom);
             return Ok(results);
         }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Aucun fichier reçu");
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+
+            if (!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            var filePath = Path.Combine(uploadsPath, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { url = $"/uploads/{file.FileName}" });
+        }
+
     }
 }
