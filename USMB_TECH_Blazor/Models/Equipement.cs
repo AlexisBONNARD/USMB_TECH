@@ -41,7 +41,11 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Contact { get; set; }
 
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
+
+        public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
+
         public Modele? ModeleNavigation { get; set; }
+        
         public virtual Marque Marque_Equipement { get; set; } = new Marque();
 
         public Plateforme? PlateformeNavigation { get; set; }

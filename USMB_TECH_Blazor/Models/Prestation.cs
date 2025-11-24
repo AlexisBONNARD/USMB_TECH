@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
@@ -16,7 +17,6 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Contact { get; set; }
 
-
         public string Intitule_Prestation { get; set; }
 
         public string Description_Prestation { get; set; }
@@ -30,5 +30,7 @@ namespace USMB_TECH_Blazor.Models
         public bool Actif { get; set; }
 
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
+
+        public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
     }
 }
