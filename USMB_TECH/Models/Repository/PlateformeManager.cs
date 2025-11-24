@@ -27,8 +27,11 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(pr => pr.PrestationNavigation)
                 .Include(e => e.Exposers)
                     .ThenInclude(t => t.ThematiqueNavigation)
-                .Include(p => p.Equipements)
+
                 .Include(p => p.Photos)
+                .Include(p => p.Equipements)
+                    .ThenInclude(e => e.Photos)
+
                 .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
 
         }
