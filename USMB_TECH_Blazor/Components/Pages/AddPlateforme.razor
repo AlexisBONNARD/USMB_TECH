@@ -1,4 +1,5 @@
 @page "/ajouter-plateforme"
+@using USMB_TECH.Models
 @inject HttpClient Http
 @inject Service.IMainService<Prestation,int> prestationDatas
 
@@ -89,7 +90,10 @@
         <ul class="add_platform">
             @foreach (var mc in plateforme.MotsCles)
             {
-                <li class="add_platform">@mc.Nom_Mot_Clef</li>
+                <li class="add_platform">
+                    @mc.Nom_Mot_Clef
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
             }
         </ul>
 
@@ -106,9 +110,13 @@
         <ul class="add_platform">
             @foreach (var t in plateforme.Thematiques)
             {
-                <li class="add_platform">@t.Nom_Thematique</li>
+                <li class="add_platform">
+                    @t.Nom_Thematique
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(t)">Supprimer</button>
+                </li>
             }
         </ul>
+
 
         <hr />
         <h4 class="add_platform">Exemples d’utilisation</h4>
@@ -127,9 +135,13 @@
         <ul class="add_platform">
             @foreach (var e in plateforme.ExempleUtilisations)
             {
-                <li class="add_platform">@e.Nom_Utilisation : @e.Description_Utilisation</li>
+                <li class="add_platform">
+                    @e.Nom_Utilisation : @e.Description_Utilisation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveExemple(e)">Supprimer</button>
+                </li>
             }
         </ul>
+
 
         <hr />
         <h4 class="add_platform">Prestations</h4>
@@ -148,9 +160,13 @@
         <ul class="add_platform">
             @foreach (var pr in plateforme.Presenters)
             {
-                <li class="add_platform">Prestation ID : @pr.Id_Prestation</li>
+                <li class="add_platform">
+                    Prestation ID : @pr.Id_Prestation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePresenter(pr)">Supprimer</button>
+                </li>
             }
         </ul>
+
 
         <hr />
         <button class="btn btn-success mt-3" type="submit">Créer la plateforme</button>
@@ -265,5 +281,22 @@
         message = null;         // efface le message
         StateHasChanged();      // met à jour
     }
+    void RemoveMotCle(Mot_Clef mc)
+    {
+        plateforme.MotsCles.Remove(mc);
+    }
+    void RemoveThematique(Thematique t)
+    {
+        plateforme.Thematiques.Remove(t);
+    }
+    void RemoveExemple(Exemple_Utilisation e)
+    {
+        plateforme.ExempleUtilisations.Remove(e);
+    }
+    void RemovePresenter(Presenter pr)
+    {
+        plateforme.Presenters.Remove(pr);
+    }
+
 }
 
