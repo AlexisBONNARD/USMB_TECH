@@ -15,7 +15,12 @@ namespace USMB_TECH.Models.Repository
 
         public async Task<Laboratoire?> GetByIdAsync(string id) 
         {
-            return await _context.Laboratoires.FindAsync(id);
+            return await _context.Laboratoires
+                .Include(l => l.Adresse_campusNavigation)
+                .Include(l => l.Adresse_laboNavigation)
+                .Include(l => l.Gerers)
+                    .ThenInclude(plt => plt.PlateformeNavigation)
+                .FirstOrDefaultAsync(lab => lab.Nom_Court == id);
         }
 
         public async Task<IEnumerable<Laboratoire>> GetAllAsync() 

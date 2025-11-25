@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Metrics;
+using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
@@ -14,5 +16,10 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Long { get; set; }
 
         public string Description { get; set; }
+
+        public virtual Adresse? Adresse_campusNavigation { get; set; } = null!;
+        public virtual Adresse? Adresse_laboNavigation { get; set; } = null!;
+
+        public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
     }
 }
