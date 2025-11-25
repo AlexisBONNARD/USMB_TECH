@@ -20,7 +20,14 @@ namespace USMB_TECH.Models.Repository
 
         public async Task<Prestation?> GetByIdAsync(int id)
         {
-            return await _context.Prestations.FindAsync(id);
+            return await _context.Prestations
+                .Include(p => p.Presenters)
+                    .ThenInclude(e => e.PlateformeNavigation)
+
+                .Include(p => p.Fournirs)
+                    .ThenInclude(e => e.EquipementNavigation)
+
+                .FirstOrDefaultAsync(p => p.Id_Prestation == id);
         }
 
         public async Task AddAsync(Prestation entity)
