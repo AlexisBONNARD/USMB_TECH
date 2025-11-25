@@ -1,4 +1,6 @@
 ﻿@page "/"
+@inject IMainService<Thematique,int> ThematiqueService
+@inject IMainService<Plateforme,int> PlateformeService
 @inject NavigationManager Nav
 
 <HeadContent>
@@ -44,6 +46,16 @@
             <h3>NOS DOMAINES D’EXCELLENCE</h3>
 
             <div class="domaines-block">
+                @foreach (var plateforme in plateformes)
+                {
+                    <div class="domaine" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
+                        @if (plateforme.Photos != null && plateforme.Photos.Any()) { var photo = plateforme.Photos.First();
+                            <img src="@photo.Url_Photo" class="domaine-img" />
+                        }
+                        <p class="domaine-title">@plateforme.Nom_Plateforme</p>
+                    </div>
+                }
+
                 <div class="domaine">
                     <img src="/images/Interaction_environnement.jpg" class="domaine-img" />
                     <p class="domaine-title">Interaction<br />Homme-environnement</p>
@@ -68,6 +80,27 @@
 
 @code {
     private string SearchText = "";
+    public int Id { get; set; }
+    private IEnumerable<Thematique> thematique = new List<Thematique>();
+    private List<Plateforme> plateformes = new List<Plateforme>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        thematique = await ThematiqueService.GetAllAsync();
+
+        plateformes = new List<Plateforme>();
+
+        foreach (var t in thematique)
+        {
+            
+        }
+
+        // foreach (var plateforme in thematique.PlateformeNavigation)
+        // {
+        //     var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
+        //     this.plateformes.Add(plat);
+        // }
+    }
 
 
     private void HandleKeyDown(KeyboardEventArgs e)
@@ -85,5 +118,10 @@
             var encodedQuery = Uri.EscapeDataString(SearchText);
             Nav.NavigateTo($"/search/motclef/{encodedQuery}");
         }
+    }
+
+    private void RetourListe(int idEquipement, string nomChemin)
+    {
+        Nav.NavigateTo($"/{nomChemin}/{idEquipement}");
     }
 }
