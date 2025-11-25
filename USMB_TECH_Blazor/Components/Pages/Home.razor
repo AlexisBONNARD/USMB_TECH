@@ -46,13 +46,13 @@
             <h3>NOS DOMAINES D’EXCELLENCE</h3>
 
             <div class="domaines-block">
-                @foreach (var plateforme in plateformes)
+                @foreach (var thematique in thematiques)
                 {
-                    <div class="domaine" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
-                        @if (plateforme.Photos != null && plateforme.Photos.Any()) { var photo = plateforme.Photos.First();
+                    <div class="domaine" @onclick="@(() => RetourListe(thematique.Id_Thematique, "thematique"))">
+                        @* @if (thematique.Exposers.plateformeNavigation.Photos != null && thematique.Exposers.Photos.Any())
                             <img src="@photo.Url_Photo" class="domaine-img" />
-                        }
-                        <p class="domaine-title">@plateforme.Nom_Plateforme</p>
+                        } *@
+                        <p class="domaine-title">@thematique.Nom_Thematique</p>
                     </div>
                 }
 
@@ -81,23 +81,21 @@
 @code {
     private string SearchText = "";
     public int Id { get; set; }
-    private IEnumerable<Thematique> thematique = new List<Thematique>();
-    private List<Plateforme> plateformes = new List<Plateforme>();
+    private IEnumerable<Thematique> thematiques = new List<Thematique>();
+    // private List<Plateforme> plateformes = new List<Plateforme>();
 
     protected override async Task OnInitializedAsync()
     {
-        thematique = await ThematiqueService.GetAllAsync();
+        thematiques = ThematiqueService.GetAllAsync().Result.ToList();
 
-        plateformes = new List<Plateforme>();
-
-        foreach (var t in thematique)
-        {
-            
-        }
-
-        // foreach (var plateforme in thematique.PlateformeNavigation)
+        // foreach (var thematique in thematiques)
         // {
-        //     var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
+        //     foreach (var plateforme in thematique.Exposers)
+        //     {
+        //         var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
+        //         this.plateformes.Add(plat);
+        //     }
+        //     var plat = await PlateformeService.GetByIdAsync(thematique.Id_Plateforme);
         //     this.plateformes.Add(plat);
         // }
     }
