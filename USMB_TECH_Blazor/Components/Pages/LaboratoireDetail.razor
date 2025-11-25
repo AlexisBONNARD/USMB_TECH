@@ -1,0 +1,33 @@
+﻿@page "/laboratoire/{Id}"
+@inject IMainService<Laboratoire, string> dataRepository
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>LaboratoireDetail</h3>
+@if (laboratoire == null)
+{
+    <p>Chargement en cours</p>
+}
+else
+{
+    <h1>@laboratoire.Nom_Long</h1>
+    <p>@laboratoire.Nom_Court</p>
+    <p>Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
+    <p>Adresse du Campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public Laboratoire laboratoire = new Laboratoire();
+    public Adresse adresseLabo = new Adresse();
+    public Adresse adresseCampus = new Adresse();
+    public IEnumerable<Plateforme> plateformes;
+    protected override async Task OnInitializedAsync()
+    {
+        laboratoire = await dataRepository.GetByIdAsync(Id);
+        adresseCampus = laboratoire.Adresse_campusNavigation;
+        adresseLabo = laboratoire.Adresse_laboNavigation;
+        plateformes = laboratoire.Gerers.Select(g => g.PlateformeNavigation).ToList();
+    }
+}

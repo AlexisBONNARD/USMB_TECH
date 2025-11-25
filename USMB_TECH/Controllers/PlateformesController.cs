@@ -291,11 +291,11 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePlateforme(int id)
         {
-            var laboratoire = await _dataRepository.GetByIdAsync(id);
-            if (laboratoire is null)
+            var plateforme = await _dataRepository.GetByIdAsync(id);
+            if (plateforme is null)
                 return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.DeleteAsync(laboratoire);
+            await _dataRepository.DeleteAsync(plateforme);
             return NoContent();
         }
 

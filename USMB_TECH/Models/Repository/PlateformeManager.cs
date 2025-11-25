@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Net.Http;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
@@ -7,10 +8,12 @@ namespace USMB_TECH.Models.Repository
     public class PlateformeManager : IMainRepository<Plateforme, int>
     {
         private readonly UsmbTechDbContext _context;
+        private readonly HttpClient _httpClient;
 
-        public PlateformeManager(UsmbTechDbContext context)
+        public PlateformeManager(UsmbTechDbContext context, HttpClient httpClient)
         {
             _context = context;
+            _httpClient = httpClient;
         }
 
         public async Task<IEnumerable<Plateforme>> GetAllAsync()
@@ -81,9 +84,41 @@ namespace USMB_TECH.Models.Repository
 
         public async Task DeleteAsync(Plateforme entity)
         {
+            // Supprime les relations directes de la plateforme
+            _context.Presenters.RemoveRange(
+                _context.Presenters.Where(pr => pr.Id_Plateforme == entity.Id_Plateforme));
+            _context.Specifiers.RemoveRange(
+                _context.Specifiers.Where(s => s.Id_Plateforme == entity.Id_Plateforme));
+            _context.Exposers.RemoveRange(
+                _context.Exposers.Where(ex => ex.Id_Plateforme == entity.Id_Plateforme));
+            _context.Gerers.RemoveRange(
+                _context.Gerers.Where(g => g.Id_Plateforme == entity.Id_Plateforme));
+            _context.Associers.RemoveRange(
+                _context.Associers.Where(a => a.Id_Plateforme == entity.Id_Plateforme));
+            _context.Prise_Contacts.RemoveRange(
+                _context.Prise_Contacts.Where(pc => pc.Id_Plateforme == entity.Id_Plateforme));
+            _context.Photos.RemoveRange(
+                _context.Photos.Where(ph => ph.Id_Plateforme == entity.Id_Plateforme));
+            _context.Exemple_Utilisations.RemoveRange(
+                _context.Exemple_Utilisations.Where(eu => eu.Id_Plateforme == entity.Id_Plateforme));
+
+            // Récupérer tous les équipements associés
+            var equipements = _context.Equipements.Where(e => e.Id_Plateforme == entity.Id_Plateforme).ToList();
+
+            // Appeler le controller Equipements pour chaque équipement
+            foreach (var equip in equipements)
+            {
+                // Appel HTTP DELETE vers l’API
+                var response = await _httpClient.DeleteAsync($"api/Equipements/{equip.Id_Equipement}");
+                response.EnsureSuccessStatusCode();
+            }
+
+            // Supprimer la plateforme
             _context.Plateformes.Remove(entity);
             await _context.SaveChangesAsync();
         }
+
+
 
         public async Task<IEnumerable<Plateforme>> GetByKeysAsync<TProperty>(
             Expression<Func<Plateforme, TProperty>> propertySelector,

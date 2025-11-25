@@ -49,6 +49,7 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
+                    .ThenInclude(m => m.MarqueNavigation)   
                 .Include(e => e.Type_EquipementNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
@@ -61,6 +62,7 @@ namespace USMB_TECH.Models.Repository
                         .ThenInclude(p => p.Type_PrestationNavigation)
                 .FirstOrDefaultAsync(e => e.Id_Equipement == id);
         }
+
 
         public async Task AddAsync(Equipement entity)
         {
@@ -165,15 +167,117 @@ namespace USMB_TECH.Models.Repository
         }
 
 
-        public async Task UpdateAsync(Equipement entityToUpdate, Equipement entity)
+        public async Task UpdateAsync(Equipement entityToUpdate, Equipement updatedEntity)
         {
-            _context.Equipements.Attach(entityToUpdate);
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            // --- Propriétés simples ---
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // --- Photos ---
+            foreach (var updatedPhoto in updatedEntity.Photos)
+            {
+                var existingPhoto = entityToUpdate.Photos
+                    .FirstOrDefault(p => p.Id_Photo == updatedPhoto.Id_Photo);
+
+                if (existingPhoto != null)
+                    _context.Entry(existingPhoto).CurrentValues.SetValues(updatedPhoto);
+                else
+                {
+                    updatedPhoto.Id_Equipement = entityToUpdate.Id_Equipement;
+                    entityToUpdate.Photos.Add(updatedPhoto);
+                }
+            }
+
+            var photosToRemove = entityToUpdate.Photos
+                .Where(p => !updatedEntity.Photos.Any(up => up.Id_Photo == p.Id_Photo))
+                .ToList();
+
+            foreach (var photo in photosToRemove)
+            {
+                entityToUpdate.Photos.Remove(photo);
+                _context.Photos.Remove(photo);
+            }
+
+            // --- Exemple_Utilisations ---
+            foreach (var updatedEx in updatedEntity.Exemple_Utilisations)
+            {
+                var existingEx = entityToUpdate.Exemple_Utilisations
+                    .FirstOrDefault(eu => eu.Id_Exemple_Utilisation == updatedEx.Id_Exemple_Utilisation);
+
+                if (existingEx != null)
+                    _context.Entry(existingEx).CurrentValues.SetValues(updatedEx);
+                else
+                {
+                    updatedEx.Id_Equipement = entityToUpdate.Id_Equipement;
+                    entityToUpdate.Exemple_Utilisations.Add(updatedEx);
+                }
+            }
+
+            var exToRemove = entityToUpdate.Exemple_Utilisations
+                .Where(eu => !updatedEntity.Exemple_Utilisations.Any(ue => ue.Id_Exemple_Utilisation == eu.Id_Exemple_Utilisation))
+                .ToList();
+
+            foreach (var ex in exToRemove)
+            {
+                entityToUpdate.Exemple_Utilisations.Remove(ex);
+                _context.Exemple_Utilisations.Remove(ex);
+            }
+
+            // --- Fournirs (association sans ID) ---
+            foreach (var updatedF in updatedEntity.Fournirs)
+            {
+                var existingF = entityToUpdate.Fournirs
+                    .FirstOrDefault(f => f.Id_Equipement == updatedF.Id_Equipement &&
+                                         f.Id_Prestation == updatedF.Id_Prestation);
+
+                if (existingF == null)
+                {
+                    updatedF.Id_Equipement = entityToUpdate.Id_Equipement;
+                    entityToUpdate.Fournirs.Add(updatedF);
+                }
+            }
+
+            var fToRemove = entityToUpdate.Fournirs
+                .Where(f => !updatedEntity.Fournirs.Any(uf => uf.Id_Equipement == f.Id_Equipement &&
+                                                              uf.Id_Prestation == f.Id_Prestation))
+                .ToList();
+
+            foreach (var f in fToRemove)
+            {
+                entityToUpdate.Fournirs.Remove(f);
+                _context.Fournirs.Remove(f);
+            }
+
+            // - Posseders
+            // - Consommers
+            // - Referencers
+            // - Prise_Contacts
+            // - Présenter (via Plateforme)
+            // - Spécifier (via Plateforme)
+            // - Exposer (via Plateforme)
+
             await _context.SaveChangesAsync();
         }
 
+
+
+
         public async Task DeleteAsync(Equipement entity)
         {
+            _context.Fournirs.RemoveRange(
+                _context.Fournirs.Where(f => f.Id_Equipement == entity.Id_Equipement));
+            _context.Photos.RemoveRange(
+                _context.Photos.Where(p => p.Id_Equipement == entity.Id_Equipement));
+            _context.Prise_Contacts.RemoveRange(
+                _context.Prise_Contacts.Where(pc => pc.Id_Equipement == entity.Id_Equipement));
+            _context.Referencers.RemoveRange(
+                _context.Referencers.Where(r => r.Id_Equipement == entity.Id_Equipement));
+            _context.Exemple_Utilisations.RemoveRange(
+                _context.Exemple_Utilisations.Where(eu => eu.Id_Equipement == entity.Id_Equipement));
+            _context.Posseders.RemoveRange(
+                _context.Posseders.Where(p => p.Id_Equipement == entity.Id_Equipement));
+            _context.Consommers.RemoveRange(
+                _context.Consommers.Where(c => c.Id_Equipement == entity.Id_Equipement));
+
             _context.Equipements.Remove(entity);
             await _context.SaveChangesAsync();
         }

@@ -4,12 +4,18 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-
 <HeadContent>
     <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
 </HeadContent>
 
 <PageTitle>Détails Plateforme</PageTitle>
+
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
 
 @if (plateforme == null)
 {
@@ -18,15 +24,21 @@
 else
 {
     <div class="container">
+
+        <button class="btn btn-danger mb-3" @onclick="() => DeletePlateforme(plateforme.Id_Plateforme)">
+            Supprimer
+        </button>
+
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
                 <h2>@plateforme.Nom_Plateforme</h2>
                 <p>@plateforme.Description_Plateforme</p>
+
                 <div class="equipement-item">
                     @foreach (Photo image in plateforme.Photos)
                     {
-                        <img src=@image.Url_Photo alt="photo plateforme" />
+                        <img src="@image.Url_Photo" alt="photo plateforme" />
                     }
                 </div>
             </section>
@@ -72,7 +84,6 @@ else
                             <p>@equipement.Nom_Equipement</p>
                         </div>
                     }
-
                 </div>
             </section>
 
@@ -84,7 +95,6 @@ else
 
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
-
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
                 <div class="btn-blue">@thematique</div>
@@ -92,32 +102,97 @@ else
 
             <div class="info-block">
                 <h4>Localisation :</h4>
-                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
+                <div class="btn-blue">Le Bourget du Lac (placeholder)</div>
             </div>
 
             <FormulaireContact />
         </div>
+
     </div>
-    <button class="btn-back" @onclick="() => GoToUpdate(plateforme.Id_Plateforme)">EDIT PLATEFORME</button>
+
+    <button class="btn-back" @onclick="() => GoToUpdate(plateforme.Id_Plateforme)">
+        EDIT PLATEFORME
+    </button>
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
+
     private Plateforme? plateforme;
-    private List<Prestation> prestations = new List<Prestation>();
-    private List<Mot_Clef> motsCles = new List<Mot_Clef>();
+    private List<Prestation> prestations = new();
+    private List<Mot_Clef> motsCles = new();
     private string thematique;
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
 
 
     protected override async Task OnInitializedAsync()
     {
         plateforme = await PlateformeService.GetByIdAsync(Id);
-        prestations = plateforme.Presenters.Select(p => p.prestationNavigation).ToList();
-        motsCles = plateforme.Specifiers.Select(s => s.Mot_ClefNavigation).ToList();
-        thematique = plateforme.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
 
+        prestations = plateforme.Presenters
+            .Select(p => p.prestationNavigation)
+            .ToList();
+
+        motsCles = plateforme.Specifiers
+            .Select(s => s.Mot_ClefNavigation)
+            .ToList();
+
+        thematique = plateforme.Exposers
+            .Select(t => t.ThematiqueNavigation.Nom_Thematique)
+            .FirstOrDefault();
     }
+
+
+    // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
+    private async Task DeletePlateforme(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer cette plateforme ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await PlateformeService.DeleteAsync(id);
+
+            deleteSuccess = true;
+            if (PlateformeService.GetByIdAsync(id) == null)
+            {
+                await ShowDeleteAlert("La plateforme n'a pas été supprimée ❌");
+            }
+            else
+            {
+                await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
+                Navigation.NavigateTo("/", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
 
     private void RetourListe(int idEquipement)
     {
@@ -127,6 +202,5 @@ else
     private void GoToUpdate(int id)
     {
         Navigation.NavigateTo($"/plateforme/edit/{id}", true);
-
     }
 }
