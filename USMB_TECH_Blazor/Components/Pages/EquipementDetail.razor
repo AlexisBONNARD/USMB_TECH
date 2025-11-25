@@ -22,7 +22,7 @@
 else
 {
     <div class="container">
-        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Plateforme)">
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
             Supprimer
         </button>
         <!-- ========== COLONNE GAUCHE ========== -->
@@ -153,9 +153,15 @@ else
             await dataRepository.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
-
-            Navigation.NavigateTo("/", true);
+            if (dataRepository.GetByIdAsync(id) == null)
+            {
+                await ShowDeleteAlert("L'équipement n'a pas été supprimé ❌");
+            }
+            else
+            {
+                await ShowDeleteAlert("Équipement supprimé avec succès ✅");
+                Navigation.NavigateTo("/", true);
+            }
         }
         catch (Exception ex)
         {

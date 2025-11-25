@@ -182,8 +182,6 @@ namespace USMB_TECH.Models.Repository
                 _context.Prise_Contacts.Where(pc => pc.Id_Equipement == entity.Id_Equipement));
             _context.Referencers.RemoveRange(
                 _context.Referencers.Where(r => r.Id_Equipement == entity.Id_Equipement));
-            _context.Modeles.RemoveRange(
-                _context.Modeles.Where(m => m.Id_Modele == entity.Id_Modele && !_context.Equipements.Any(e => e.Id_Modele == m.Id_Modele && e.Id_Equipement != entity.Id_Equipement)));
             _context.Exemple_Utilisations.RemoveRange(
                 _context.Exemple_Utilisations.Where(eu => eu.Id_Equipement == entity.Id_Equipement));
             _context.Posseders.RemoveRange(
