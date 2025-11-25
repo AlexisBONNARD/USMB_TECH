@@ -293,7 +293,7 @@ namespace USMB_TECH.Controllers
         {
             var plateforme = await _dataRepository.GetByIdAsync(id);
             if (plateforme is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"Plateforme avec l'id {id} introuvable.");
 
             await _dataRepository.DeleteAsync(plateforme);
             return NoContent();

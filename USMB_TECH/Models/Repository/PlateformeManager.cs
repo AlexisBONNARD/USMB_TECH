@@ -80,45 +80,38 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
-
-
         public async Task DeleteAsync(Plateforme entity)
         {
-            // Supprime les relations directes de la plateforme
-            _context.Presenters.RemoveRange(
-                _context.Presenters.Where(pr => pr.Id_Plateforme == entity.Id_Plateforme));
-            _context.Specifiers.RemoveRange(
-                _context.Specifiers.Where(s => s.Id_Plateforme == entity.Id_Plateforme));
-            _context.Exposers.RemoveRange(
-                _context.Exposers.Where(ex => ex.Id_Plateforme == entity.Id_Plateforme));
-            _context.Gerers.RemoveRange(
-                _context.Gerers.Where(g => g.Id_Plateforme == entity.Id_Plateforme));
-            _context.Associers.RemoveRange(
-                _context.Associers.Where(a => a.Id_Plateforme == entity.Id_Plateforme));
-            _context.Prise_Contacts.RemoveRange(
-                _context.Prise_Contacts.Where(pc => pc.Id_Plateforme == entity.Id_Plateforme));
-            _context.Photos.RemoveRange(
-                _context.Photos.Where(ph => ph.Id_Plateforme == entity.Id_Plateforme));
-            _context.Exemple_Utilisations.RemoveRange(
-                _context.Exemple_Utilisations.Where(eu => eu.Id_Plateforme == entity.Id_Plateforme));
+            // Récupérer la plateforme avec toutes ses relations
+            var plateforme = await _context.Plateformes
+                .Include(p => p.Associers)
+                .Include(p => p.Exposers)
+                .Include(p => p.Gerers)
+                .Include(p => p.Presenters)
+                .Include(p => p.Specifiers)
+                .Include(p => p.Photos)
+                .Include(p => p.Exemple_Utilisations)
+                .Include(p => p.Prise_Contacts)
+                .FirstOrDefaultAsync(p => p.Id_Plateforme == entity.Id_Plateforme);
 
-            // Récupérer tous les équipements associés
-            var equipements = _context.Equipements.Where(e => e.Id_Plateforme == entity.Id_Plateforme).ToList();
+            if (plateforme == null) return;
 
-            // Appeler le controller Equipements pour chaque équipement
-            foreach (var equip in equipements)
-            {
-                // Appel HTTP DELETE vers l’API
-                var response = await _httpClient.DeleteAsync($"api/Equipements/{equip.Id_Equipement}");
-                response.EnsureSuccessStatusCode();
-            }
+            // Supprimer les collections explicitement pour éviter tout problème
+            _context.Associers.RemoveRange(plateforme.Associers);
+            _context.Exposers.RemoveRange(plateforme.Exposers);
+            _context.Gerers.RemoveRange(plateforme.Gerers);
+            _context.Presenters.RemoveRange(plateforme.Presenters);
+            _context.Specifiers.RemoveRange(plateforme.Specifiers);
+            _context.Photos.RemoveRange(plateforme.Photos);
+            _context.Exemple_Utilisations.RemoveRange(plateforme.Exemple_Utilisations);
+            _context.Prise_Contacts.RemoveRange(plateforme.Prise_Contacts);
 
             // Supprimer la plateforme
-            _context.Plateformes.Remove(entity);
+            _context.Plateformes.Remove(plateforme);
+
+            // EF cascade supprimera automatiquement les Equipements et leurs dépendances
             await _context.SaveChangesAsync();
         }
-
-
 
         public async Task<IEnumerable<Plateforme>> GetByKeysAsync<TProperty>(
             Expression<Func<Plateforme, TProperty>> propertySelector,

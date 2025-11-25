@@ -163,15 +163,8 @@ else
             await PlateformeService.DeleteAsync(id);
 
             deleteSuccess = true;
-            if (PlateformeService.GetByIdAsync(id) == null)
-            {
-                await ShowDeleteAlert("La plateforme n'a pas été supprimée ❌");
-            }
-            else
-            {
-                await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
-                Navigation.NavigateTo("/", true);
-            }
+            await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
+            Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
         {

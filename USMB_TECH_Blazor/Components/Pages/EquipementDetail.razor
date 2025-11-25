@@ -151,15 +151,9 @@ else
             await dataRepository.DeleteAsync(id);
 
             deleteSuccess = true;
-            if (dataRepository.GetByIdAsync(id) == null)
-            {
-                await ShowDeleteAlert("L'équipement n'a pas été supprimé ❌");
-            }
-            else
-            {
-                await ShowDeleteAlert("Équipement supprimé avec succès ✅");
-                Navigation.NavigateTo("/", true);
-            }
+            await ShowDeleteAlert("Équipement supprimé avec succès ✅");
+            Navigation.NavigateTo("/", true);
+
         }
         catch (Exception ex)
         {
