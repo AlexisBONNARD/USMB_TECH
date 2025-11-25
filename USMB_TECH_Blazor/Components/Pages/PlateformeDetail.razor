@@ -24,11 +24,6 @@
 else
 {
     <div class="container">
-
-        <button class="btn btn-danger mb-3" @onclick="() => DeletePlateforme(plateforme.Id_Plateforme)">
-            Supprimer
-        </button>
-
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
@@ -110,9 +105,13 @@ else
 
     </div>
 
-    <button class="btn-back" @onclick="() => GoToUpdate(plateforme.Id_Plateforme)">
-        EDIT PLATEFORME
+    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(plateforme.Id_Plateforme)">
+        Modifier
     </button>
+    <button class="btn btn-danger mb-3" @onclick="() => DeletePlateforme(plateforme.Id_Plateforme)">
+        Supprimer
+    </button>
+
 }
 
 @code {
@@ -163,15 +162,8 @@ else
             await PlateformeService.DeleteAsync(id);
 
             deleteSuccess = true;
-            if (PlateformeService.GetByIdAsync(id) == null)
-            {
-                await ShowDeleteAlert("La plateforme n'a pas été supprimée ❌");
-            }
-            else
-            {
-                await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
-                Navigation.NavigateTo("/", true);
-            }
+            await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
+            Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
         {

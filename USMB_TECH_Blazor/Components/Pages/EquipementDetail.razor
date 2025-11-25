@@ -22,9 +22,6 @@
 else
 {
     <div class="container">
-        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
-            Supprimer
-        </button>
         <!-- ========== COLONNE GAUCHE ========== -->
         <div class="col-left">
 
@@ -111,11 +108,19 @@ else
                      @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
                     @equipement.PlateformeNavigation?.Nom_Plateforme
                 </div>
+
             </div>
 
             <FormulaireContact />
         </div>
     </div>
+
+    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
+        Modifier
+    </button>
+    <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
+        Supprimer
+    </button>
 }
 
 @code {
@@ -151,15 +156,9 @@ else
             await dataRepository.DeleteAsync(id);
 
             deleteSuccess = true;
-            if (dataRepository.GetByIdAsync(id) == null)
-            {
-                await ShowDeleteAlert("L'équipement n'a pas été supprimé ❌");
-            }
-            else
-            {
-                await ShowDeleteAlert("Équipement supprimé avec succès ✅");
-                Navigation.NavigateTo("/", true);
-            }
+            await ShowDeleteAlert("Équipement supprimé avec succès ✅");
+            Navigation.NavigateTo("/", true);
+
         }
         catch (Exception ex)
         {
@@ -184,5 +183,10 @@ else
     private void RetourListe(int idPlateforme)
     {
         Navigation.NavigateTo($"/plateforme/{idPlateforme}");
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/equipement/edit/{id}", true);
     }
 }
