@@ -1,0 +1,170 @@
+﻿@page "/equipement/edit/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using USMB_TECH.Models
+
+<h2 class="add_platform">Modifier l'équipement</h2>
+
+@if (equipement == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="@equipement" OnValidSubmit="SubmitEquipement">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <!-- Infos générales -->
+            <h4 class="add_platform">Infos générales</h4>
+            <label>Nom équipement *</label>
+            <InputText class="form-control mb-2" @bind-value="equipement.Nom_Equipement" />
+            <ValidationMessage For="@(() => equipement.Nom_Equipement)" />
+
+            <label>Numéro d'immobilisation *</label>
+            <InputText class="form-control mb-2" @bind-value="equipement.Num_Immobilisation" />
+            <ValidationMessage For="@(() => equipement.Num_Immobilisation)" />
+
+            <label>Date acquisition</label>
+            <InputDate class="form-control mb-2" @bind-value="equipement.Date_Acquisition" />
+
+            <label>Prix achat</label>
+            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Achat" />
+
+            <label>Prix revient</label>
+            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Revient" />
+
+            <label>Description technique</label>
+            <InputTextArea class="form-control mb-2" @bind-value="equipement.Description_Technique" />
+
+            <label>Disponibilité</label>
+            <InputCheckbox class="form-check-input mb-2" @bind-value="equipement.Disponibilite" />
+
+            <label>Autonomie</label>
+            <InputCheckbox class="form-check-input mb-2" @bind-value="equipement.Autonomie" />
+
+            <label>Utilisable chez le client</label>
+            <InputCheckbox class="form-check-input mb-2" @bind-value="equipement.Utilisable_Chez_Le_Client" />
+
+            <label>Actif</label>
+            <InputCheckbox class="form-check-input mb-2" @bind-value="equipement.Actif" />
+
+            <!-- Relations obligatoires -->
+            <h5 class="mt-4">Associations obligatoires</h5>
+
+            <!-- Plateforme -->
+            <label>Plateforme associée *</label>
+            <input class="form-control mb-2" type="text" value="@equipement.Nom_Plateforme" readonly />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Plateforme" />
+
+            <!-- Modèle -->
+            <label>Modèle associé *</label>
+            <input class="form-control mb-2" type="text" value="@equipement.Nom_Modele" readonly />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Modele" />
+
+            <!-- Marque -->
+            <label>Marque associée *</label>
+            <input class="form-control mb-2" type="text" value="@equipement.Nom_Marque" readonly />
+
+            <!-- Type d’équipement -->
+            <label>Type d’équipement associé *</label>
+            <input class="form-control mb-2" type="text" value="@equipement.Type_Equipement" readonly />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Type_Equipement" />
+
+
+
+            <hr />
+            <h4 class="add_platform">Photos</h4>
+            @foreach (var photo in equipement.Photos)
+            {
+                <div class="mb-3 border p-2">
+                    <label>Nom photo</label>
+                    <InputText class="form-control mb-1" @bind-value="photo.Nom_Photo" />
+
+                    <label>URL photo</label>
+                    <InputText class="form-control mb-1" @bind-value="photo.Url_Photo" />
+                </div>
+            }
+
+            <hr />
+            <h4 class="add_platform">Exemples d'utilisation</h4>
+            @foreach (var ex in equipement.Exemple_Utilisations)
+            {
+                <div class="mb-3 border p-2">
+                    <label>Nom utilisation</label>
+                    <InputText class="form-control mb-1" @bind-value="ex.Nom_Utilisation" />
+
+                    <label>Description utilisation</label>
+                    <InputTextArea class="form-control mb-1" @bind-value="ex.Description_Utilisation" />
+                </div>
+            }
+
+            <hr />
+            <h4 class="add_platform">Fournisseurs</h4>
+            @foreach (var f in equipement.Fournirs)
+            {
+                <div class="mb-3 border p-2">
+                    <label>Prestation liée</label>
+                    <InputNumber class="form-control mb-1" @bind-value="f.Id_Prestation" />
+                </div>
+            }
+
+            <hr />
+            <button class="btn btn-primary mt-3" type="submit">Mettre à jour</button>
+        </EditForm>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+        @message
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    Equipement? equipement;
+
+    bool isSubmitted = false;
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        equipement = await Http.GetFromJsonAsync<Equipement>($"https://localhost:7093/api/equipements/{Id}");
+    }
+
+    async Task SubmitEquipement()
+    {
+        try
+        {
+            var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/equipements/{Id}", equipement);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isSubmitted = true;
+                await ShowAlert("Équipement mis à jour avec succès ✅");
+            }
+            else
+            {
+                isSubmitted = false;
+                await ShowAlert("Erreur lors de la mise à jour ❌");
+            }
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            await ShowAlert($"Erreur: {ex.Message}");
+        }
+    }
+
+    async Task ShowAlert(string msg)
+    {
+        message = msg;
+        await Task.Delay(3000);
+        message = "";
+    }
+}

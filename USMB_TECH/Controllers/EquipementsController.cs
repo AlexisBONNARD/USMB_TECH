@@ -46,23 +46,27 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutEquipement(int id, Equipement equipement)
+        public async Task<IActionResult> PutEquipement(int id, EquipementDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != equipement.Id_Equipement)
+            if (id != dto.Id_Equipement)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"Équipement avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, equipement);
+            //  passage par AutoMapper
+            var mappedEntity = _mapper.Map<Equipement>(dto);
+
+            await _dataRepository.UpdateAsync(existing, mappedEntity);
             return NoContent();
         }
+
 
         // POST: api/Equipements
         [HttpPost]

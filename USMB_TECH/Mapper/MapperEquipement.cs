@@ -40,7 +40,7 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Utilisable_Chez_Le_Client, opt => opt.MapFrom(src => src.Utilisable_Chez_Le_Client))
                 .ForMember(dest => dest.Actif, opt => opt.MapFrom(src => src.Actif))
 
-                // ⚠️ Relations ignorées pour l’update (on travaille par ID)
+                //  Relations ignorées pour l’update (on travaille par ID)
                 .ForMember(dest => dest.PlateformeNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.Type_EquipementNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.ModeleNavigation, opt => opt.Ignore());
