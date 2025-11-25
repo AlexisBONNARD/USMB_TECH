@@ -174,6 +174,23 @@ namespace USMB_TECH.Models.Repository
 
         public async Task DeleteAsync(Equipement entity)
         {
+            _context.Fournirs.RemoveRange(
+                _context.Fournirs.Where(f => f.Id_Equipement == entity.Id_Equipement));
+            _context.Photos.RemoveRange(
+                _context.Photos.Where(p => p.Id_Equipement == entity.Id_Equipement));
+            _context.Prise_Contacts.RemoveRange(
+                _context.Prise_Contacts.Where(pc => pc.Id_Equipement == entity.Id_Equipement));
+            _context.Referencers.RemoveRange(
+                _context.Referencers.Where(r => r.Id_Equipement == entity.Id_Equipement));
+            _context.Modeles.RemoveRange(
+                _context.Modeles.Where(m => m.Id_Modele == entity.Id_Modele && !_context.Equipements.Any(e => e.Id_Modele == m.Id_Modele && e.Id_Equipement != entity.Id_Equipement)));
+            _context.Exemple_Utilisations.RemoveRange(
+                _context.Exemple_Utilisations.Where(eu => eu.Id_Equipement == entity.Id_Equipement));
+            _context.Posseders.RemoveRange(
+                _context.Posseders.Where(p => p.Id_Equipement == entity.Id_Equipement));
+            _context.Consommers.RemoveRange(
+                _context.Consommers.Where(c => c.Id_Equipement == entity.Id_Equipement));
+
             _context.Equipements.Remove(entity);
             await _context.SaveChangesAsync();
         }

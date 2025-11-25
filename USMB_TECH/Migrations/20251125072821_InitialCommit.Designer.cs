@@ -12,8 +12,8 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251119100521_initialCreate")]
-    partial class initialCreate
+    [Migration("20251125072821_InitialCommit")]
+    partial class InitialCommit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

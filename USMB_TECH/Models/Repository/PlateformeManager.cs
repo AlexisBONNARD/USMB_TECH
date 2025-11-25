@@ -81,9 +81,41 @@ namespace USMB_TECH.Models.Repository
 
         public async Task DeleteAsync(Plateforme entity)
         {
+            // Suppression manuelle des relations (si DeleteBehavior != Cascade)
+            _context.Presenters.RemoveRange(
+                _context.Presenters.Where(pr => pr.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Specifiers.RemoveRange(
+                _context.Specifiers.Where(s => s.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Exposers.RemoveRange(
+                _context.Exposers.Where(ex => ex.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Gerers.RemoveRange(
+                _context.Gerers.Where(g => g.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Associers.RemoveRange(
+                _context.Associers.Where(a => a.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Prise_Contacts.RemoveRange(
+                _context.Prise_Contacts.Where(pc => pc.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Photos.RemoveRange(
+                _context.Photos.Where(ph => ph.Id_Plateforme == entity.Id_Plateforme));
+
+            _context.Exemple_Utilisations.RemoveRange(
+                _context.Exemple_Utilisations.Where(eu => eu.Id_Plateforme == entity.Id_Plateforme));
+
+            var equipements = _context.Equipements
+                .Where(e => e.Id_Plateforme == entity.Id_Plateforme);
+
+            _context.Equipements.RemoveRange(equipements);
+
             _context.Plateformes.Remove(entity);
+
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<IEnumerable<Plateforme>> GetByKeysAsync<TProperty>(
             Expression<Func<Plateforme, TProperty>> propertySelector,

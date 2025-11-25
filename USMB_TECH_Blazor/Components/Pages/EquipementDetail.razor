@@ -1,10 +1,19 @@
 ﻿@page "/equipement/{Id:int}"
 @inject Service.IMainService<Equipement,int> dataRepository
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
+
 
 <HeadContent>
     <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
 </HeadContent>
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
+
 
 @if (equipement == null)
 {
@@ -13,7 +22,9 @@
 else
 {
     <div class="container">
-
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Plateforme)">
+            Supprimer
+        </button>
         <!-- ========== COLONNE GAUCHE ========== -->
         <div class="col-left">
 
@@ -116,10 +127,54 @@ else
     private Equipement? equipement;
     private string thematique;
 
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
+
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
         thematique = equipement.PlateformeNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+    }
+
+    // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
+    private async Task DeleteEquipement(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer cette plateforme ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await dataRepository.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
+
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
     }
 
     private void RetourListe(int idPlateforme)

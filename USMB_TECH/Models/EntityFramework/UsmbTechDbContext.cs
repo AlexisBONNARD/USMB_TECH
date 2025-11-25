@@ -69,13 +69,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Laboratoires_campus)
                 .WithOne(p => p.Adresse_campusNavigation)
                 .HasForeignKey(d => d.Id_Adresse_Campus)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_adresse_laboratoire_campus");
 
             e.HasMany(d => d.Laboratoires_labo)
                 .WithOne(p => p.Adresse_laboNavigation)
                 .HasForeignKey(d => d.Id_Adresse_Labo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_adresse_laboratoire_labo");
         });
 
@@ -86,13 +86,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.Contact_USMBNavigation)
                 .WithMany(p => p.Associers)
                 .HasForeignKey(d => d.Id_Contact)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_associer_contactUSMB");
 
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Associers)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_associer_plateforme");
         });
 
@@ -105,13 +105,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Consommers)
                 .WithOne(p => p.ConsommableNavigation)
                 .HasForeignKey(d => d.Id_Consommable)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_consommable_consommer");
 
             e.HasOne(d => d.UniteNavigation)
                 .WithMany(p => p.Consommables)
                 .HasForeignKey(d => d.Id_Unite)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_consommable_unite");
         });
 
@@ -122,13 +122,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Consommers)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_consommer_equipement");
 
             e.HasOne(d => d.ConsommableNavigation)
                 .WithMany(p => p.Consommers)
                 .HasForeignKey(d => d.Id_Consommable)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_consommer_consommable");
         });
 
@@ -141,31 +141,31 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Associers)
                 .WithOne(p => p.Contact_USMBNavigation)
                 .HasForeignKey(d => d.Id_Contact)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_contact_USMB_associer");
 
             e.HasMany(d => d.Prestations)
                 .WithOne(p => p.Contact_USMBNavigation)
                 .HasForeignKey(d => d.Id_Contact)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_contact_USMB_prestation");
 
             e.HasMany(d => d.Referencers)
                 .WithOne(p => p.Contact_USMBNavigation)
                 .HasForeignKey(d => d.Id_Contact)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_contact_USMB_referencer");
 
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Contacts)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_contact_USMB_laboratoire");
 
             e.HasOne(d => d.FonctionNavigation)
                 .WithMany(p => p.Contacts)
                 .HasForeignKey(d => d.Id_Fonction)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_contact_USBM_fonction");
         });
 
@@ -176,13 +176,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Designers)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_designer_laboratoire");
 
             e.HasOne(d => d.Mot_ClefNavigation)
                 .WithMany(p => p.Designers)
                 .HasForeignKey(d => d.Id_Mot_Clef)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_designer_mot_clef");
 
         });
@@ -196,61 +196,61 @@ public partial class UsmbTechDbContext : DbContext
     e.HasMany(d => d.Fournirs)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_fournir");
 
     e.HasMany(d => d.Consommers)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_consommer");
 
     e.HasMany(d => d.Posseders)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_posseder");
 
     e.HasMany(d => d.Exemple_Utilisations)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_exemple_utilisation");
 
     e.HasMany(d => d.Referencers)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_referencer");
 
     e.HasMany(d => d.Prise_Contacts)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_prise_contact");
 
     e.HasMany(d => d.Photos)
         .WithOne(p => p.EquipementNavigation)
         .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_photo");
 
     e.HasOne(d => d.Type_EquipementNavigation)
         .WithMany(p => p.Equipements)
         .HasForeignKey(d => d.Id_Type_Equipement)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_type_equipement");
 
     e.HasOne(d => d.ModeleNavigation)
         .WithMany(p => p.Equipements)
         .HasForeignKey(d => d.Id_Modele)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_modele");
 
     e.HasOne(d => d.PlateformeNavigation)
         .WithMany(p => p.Equipements)
         .HasForeignKey(d => d.Id_Plateforme)
-        .OnDelete(DeleteBehavior.ClientSetNull)
+        .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_plateforme");
 });
 
@@ -261,13 +261,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Est_Liers)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_est_lier_laboratoire");
 
             e.HasOne(d => d.ThematiqueNavigation)
                 .WithMany(p => p.Est_Liers)
                 .HasForeignKey(d => d.Id_Thematique)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_est_lier_thematique");
         });
 
@@ -280,13 +280,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Exemple_Utilisations)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_exemple_utilisation_equipement");
 
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Exemple_Utilisations)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_exemple_utilisation_plateforme");
         });
 
@@ -297,13 +297,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Exposers)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_exposer_plateforme");
 
             e.HasOne(d => d.ThematiqueNavigation)
                 .WithMany(p => p.Exposers)
                 .HasForeignKey(d => d.Id_Thematique)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_exposer_thematique");
         });
 
@@ -316,7 +316,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Contacts)
                 .WithOne(p => p.FonctionNavigation)
                 .HasForeignKey(d => d.Id_Fonction)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_fonction_contact");
         });
 
@@ -329,7 +329,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Posseders)
                 .WithOne(p => p.FonctionaliteNavigation)
                 .HasForeignKey(d => d.Id_Fonctionalite)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_fonctionalite_posseder");
         });
 
@@ -340,13 +340,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Fournirs)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_fournir_equipement");
 
             e.HasOne(d => d.PrestationNavigation)
                 .WithMany(p => p.Fournirs)
                 .HasForeignKey(d => d.Id_Prestation)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_fournir_prestation");
         });
 
@@ -357,13 +357,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Gerers)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_gerer_plateforme");
 
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Gerers)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_gerer_laboratoire");
         });
 
@@ -374,43 +374,43 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Contacts)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_contact_USMB");
 
             e.HasMany(d => d.Prestations)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_prestation");
 
             e.HasMany(d => d.Est_Liers)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_est_lier");
 
             e.HasMany(d => d.Designers)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_designer");
 
             e.HasMany(d => d.Gerers)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_gerer");
 
             e.HasOne(d => d.Adresse_campusNavigation)
                 .WithMany(p => p.Laboratoires_campus)
                 .HasForeignKey(d => d.Id_Adresse_Campus)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_adresse_campus");
 
             e.HasOne(d => d.Adresse_laboNavigation)
                 .WithMany(p => p.Laboratoires_labo)
                 .HasForeignKey(d => d.Id_Adresse_Labo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_adresse_labo");
         });
 
@@ -423,7 +423,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Modeles)
                 .WithOne(p => p.MarqueNavigation)
                 .HasForeignKey(d => d.Id_Marque)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_marque_modele");
         });
 
@@ -436,13 +436,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Equipements)
                 .WithOne(p => p.ModeleNavigation)
                 .HasForeignKey(d => d.Id_Modele)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_modele_equipement");
 
             e.HasOne(d => d.MarqueNavigation)
                 .WithMany(p => p.Modeles)
                 .HasForeignKey(d => d.Id_Marque)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_modele_marque");
         });
 
@@ -455,13 +455,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Designers)
                 .WithOne(p => p.Mot_ClefNavigation)
                 .HasForeignKey(d => d.Id_Mot_Clef)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_mot_clef_designer");
 
             e.HasMany(d => d.Specifiers)
                 .WithOne(p => p.Mot_ClefNavigation)
                 .HasForeignKey(d => d.Id_Mot_Clef)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_mot_clef_specifier");
         });
 
@@ -474,13 +474,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Photos)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_photo_equipement");
 
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Photos)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_photo_plateforme");
 
             // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à une plateforme ou à un équipement, pas les deux.
@@ -502,55 +502,55 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Associers)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_associer");
 
             e.HasMany(d => d.Exposers)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_exposer");
 
             e.HasMany(d => d.Gerers)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_gerer");
 
             e.HasMany(d => d.Equipements)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_equipement");
 
             e.HasMany(d => d.Exemple_Utilisations)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_exemple_utilisation");
 
             e.HasMany(d => d.Photos)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_photo");
 
             e.HasMany(d => d.Presenters)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_presenter");
 
             e.HasMany(d => d.Prise_Contacts)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_prise_contact");
 
             e.HasMany(d => d.Specifiers)
                 .WithOne(p => p.PlateformeNavigation)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_plateforme_specifier");
         });
 
@@ -561,13 +561,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Posseders)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_posseder_equipement");
 
             e.HasOne(d => d.FonctionaliteNavigation)
                 .WithMany(p => p.Posseders)
                 .HasForeignKey(d => d.Id_Fonctionalite)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_posseder_fonctionalite");
         });
 
@@ -578,13 +578,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Presenters)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_presenter_plateforme");
 
             e.HasOne(d => d.PrestationNavigation)
                 .WithMany(p => p.Presenters)
                 .HasForeignKey(d => d.Id_Prestation)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_presenter_prestation");
         });
 
@@ -597,37 +597,37 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Fournirs)
                 .WithOne(p => p.PrestationNavigation)
                 .HasForeignKey(d => d.Id_Prestation)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_fournir_prestation");
 
             e.HasMany(d => d.Presenters)
                 .WithOne(p => p.PrestationNavigation)
                 .HasForeignKey(d => d.Id_Prestation)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_presenter_prestation");
 
             e.HasOne(d => d.Unite_OeuvreNavigation)
                 .WithMany(p => p.Prestations)
                 .HasForeignKey(d => d.Id_Unite_Oeuvre)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prestation_unite_oeuvre");
 
             e.HasOne(d => d.Type_PrestationNavigation)
                 .WithMany(p => p.Prestations)
                 .HasForeignKey(d => d.Id_Type_Prestation)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prestation_type_prestation");
 
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Prestations)
                 .HasForeignKey(d => d.Nom_Court)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prestation_laboratoire");
 
             e.HasOne(d => d.Contact_USMBNavigation)
                 .WithMany(p => p.Prestations)
                 .HasForeignKey(d => d.Id_Contact)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prestation_contact_usmb");
         });
 
@@ -640,19 +640,19 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_equipement");
 
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_plateforme");
 
             e.HasOne(d => d.Type_ClientNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Type_Client)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_type_client");
 
             // ✅ Contrainte d’exclusion : Une prise de contact ne peut être liée qu’à une plateforme ou à un équipement, pas les deux.
@@ -672,13 +672,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Referencers)
                 .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_referencer_equipement");
 
             e.HasOne(d => d.Contact_USMBNavigation)
                 .WithMany(p => p.Referencers)
                 .HasForeignKey(d => d.Id_Contact)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_referencer_contact");
         });
 
@@ -689,13 +689,13 @@ public partial class UsmbTechDbContext : DbContext
             e.HasOne(d => d.Mot_ClefNavigation)
                 .WithMany(p => p.Specifiers)
                 .HasForeignKey(d => d.Id_Mot_Clef)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_specifier_mot_clef");
 
             e.HasOne(d => d.PlateformeNavigation)
                 .WithMany(p => p.Specifiers)
                 .HasForeignKey(d => d.Id_Plateforme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_specifier_plateforme");
         });
 
@@ -710,19 +710,19 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Est_Liers)
                 .WithOne(p => p.ThematiqueNavigation)
                 .HasForeignKey(d => d.Id_Thematique)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_thematique_est_lier");
 
             e.HasMany(d => d.Exposers)
                 .WithOne(p => p.ThematiqueNavigation)
                 .HasForeignKey(d => d.Id_Thematique)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_thematique_exposer");
 
             e.HasMany(d => d.Thematiques)
                 .WithOne(p => p.ThematiqueNavigation)
                 .HasForeignKey(d => d.Id_Thematique)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_thematique_sous_thematique");
 
             e.HasOne(d => d.ThematiqueNavigation)
@@ -741,7 +741,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Prise_Contacts)
                 .WithOne(p => p.Type_ClientNavigation)
                 .HasForeignKey(d => d.Id_Type_Client)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_type_client_prise_contact");
         });
 
@@ -754,7 +754,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Equipements)
                 .WithOne(p => p.Type_EquipementNavigation)
                 .HasForeignKey(d => d.Id_Type_Equipement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_type_equipement_equipement");
         });
 
@@ -767,7 +767,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Prestations)
                 .WithOne(p => p.Type_PrestationNavigation)
                 .HasForeignKey(d => d.Id_Type_Prestation)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_type_prestation_prestation");
         });
 
@@ -780,7 +780,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Consommables)
                 .WithOne(p => p.UniteNavigation)
                 .HasForeignKey(d => d.Id_Unite)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_unite_consommable");
         });
 
@@ -793,7 +793,7 @@ public partial class UsmbTechDbContext : DbContext
             e.HasMany(d => d.Prestations)
                 .WithOne(p => p.Unite_OeuvreNavigation)
                 .HasForeignKey(d => d.Id_Unite_Oeuvre)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_unite_oeuvre_prestation");
         });
 
