@@ -29,8 +29,8 @@ else
             <section>
                 <h3>PRIX</h3>
                 <ul class="list-style">
-                    <p>Revient : @prestation.Prix_Revient</p>
-                    <p>Vente : @prestation.Prix_Vente</p>
+                    <p>Revient : @prestation.Prix_Revient €</p>
+                    <p>Vente : @prestation.Prix_Vente €</p>
                 </ul>
             </section>
         </div>
@@ -43,7 +43,7 @@ else
                 <div class="equipement-grid">
                     @foreach (var plateforme in plateformes)
                     {
-                        <div class="equipement-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme))">
+                        <div class="equipement-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
                             @if (plateforme.Photos != null && plateforme.Photos.Any())
                             {
                                 var photo = plateforme.Photos.First();
@@ -52,7 +52,6 @@ else
                             <p>@plateforme.Nom_Plateforme</p>
                         </div>
                     }
-
                 </div>
             </section>
             <section>
@@ -61,7 +60,7 @@ else
                 <div class="equipement-grid">
                     @foreach (var equipement in equipements)
                     {
-                        <div class="equipement-item" @onclick="@(() => RetourListe(equipement.Id_Equipement))">
+                        <div class="equipement-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
                             @if (equipement.Photos != null && equipement.Photos.Any())
                             {
                                 var photo = equipement.Photos.First();
@@ -99,35 +98,24 @@ else
     private Prestation? prestation;
     private List<Plateforme> plateformes = new List<Plateforme>();
     private List<Equipement> equipements = new List<Equipement>();
-    // private List<Mot_Clef> motsCles = new List<Mot_Clef>();
-    // private string thematique;
-
 
     protected override async Task OnInitializedAsync()
     {
         prestation = await PrestationService.GetByIdAsync(Id);
         foreach (var plateforme in prestation.Presenters)
         {
-            Console.WriteLine("Id_Plateforme : -----------");
-            Console.WriteLine(plateforme.Id_Plateforme);
             var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
-            Console.WriteLine("plat : -----------");
-            Console.WriteLine(plat);
             this.plateformes.Add(plat);
-            Console.WriteLine("plateformes : -----------");
-            Console.WriteLine(plateformes);
         }
         foreach (var equipement in prestation.Fournirs)
         {
             var equip = await EquipementService.GetByIdAsync(equipement.Id_Equipement);
             this.equipements.Add(equip);
         }
-        // motsCles = plateforme.Specifiers.Select(s => s.Mot_ClefNavigation).ToList();
-        // thematique = plateforme.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
     }
 
-    private void RetourListe(int idEquipement)
+    private void RetourListe(int idEquipement, string nomChemin)
     {
-        Navigation.NavigateTo($"/equipement/{idEquipement}");
+        Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
     }
 }
