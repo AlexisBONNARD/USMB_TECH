@@ -15,7 +15,10 @@ namespace USMB_TECH.Models.Repository
 
         public async Task<IEnumerable<Thematique>> GetAllAsync()
         {
-            return await _context.Thematiques.ToListAsync();
+            return await _context.Thematiques
+                .Include(p => p.Exposers)
+                    .ThenInclude(e => e.PlateformeNavigation)
+                .ToListAsync();
         }
 
         public async Task<Thematique?> GetByIdAsync(int id)
