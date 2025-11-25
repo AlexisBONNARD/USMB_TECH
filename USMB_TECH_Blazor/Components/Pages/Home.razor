@@ -2,6 +2,7 @@
 @inject IMainService<Thematique,int> ThematiqueService
 @inject IMainService<Plateforme,int> PlateformeService
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 
 <HeadContent>
     <link href="css/Home.css" rel="stylesheet" />
@@ -46,30 +47,26 @@
             <h3>NOS DOMAINES D’EXCELLENCE</h3>
 
             <div class="domaines-block">
-                @foreach (var thematique in thematiques)
+                @if (thematiques == null)
                 {
-                    <div class="domaine" @onclick="@(() => RetourListe(thematique.Id_Thematique, "thematique"))">
-                        @* @if (thematique.Exposers.plateformeNavigation.Photos != null && thematique.Exposers.Photos.Any())
-                            <img src="@photo.Url_Photo" class="domaine-img" />
-                        } *@
-                        <p class="domaine-title">@thematique.Nom_Thematique</p>
-                    </div>
+                    <p class="domaine-title">Chargement...</p>
                 }
+                else
+                {
+                    @foreach (var thematique in thematiques)
+                    {
+                        var firstExposer = thematique.Exposers.FirstOrDefault();
+                        var plateforme = plateformes.FirstOrDefault(p => p.Id_Plateforme == firstExposer?.Id_Plateforme);
 
-                <div class="domaine">
-                    <img src="/images/Interaction_environnement.jpg" class="domaine-img" />
-                    <p class="domaine-title">Interaction<br />Homme-environnement</p>
-                </div>
-
-                <div class="domaine">
-                    <img src="/images/Services_industrie.jpg" class="domaine-img" />
-                    <p class="domaine-title">Services et<br />industrie du futur</p>
-                </div>
-
-                <div class="domaine">
-                    <img src="/images/Patrimoine_culturel.jpg" class="domaine-img" />
-                    <p class="domaine-title">Patrimoine culturel<br />et société en mutation</p>
-                </div>
+                        <div class="domaine" @onclick="@(() => RetourListe(thematique.Id_Thematique, "thematique"))">
+                            @if (plateforme?.Photos != null && plateforme.Photos.Any())
+                            {
+                                <img src="@plateforme.Photos.First().Url_Photo" class="domaine-img" />
+                            }
+                            <p class="domaine-title">@thematique.Nom_Thematique</p>
+                        </div>
+                    }
+                }
             </div>
         </div>
 
@@ -82,22 +79,24 @@
     private string SearchText = "";
     public int Id { get; set; }
     private IEnumerable<Thematique> thematiques = new List<Thematique>();
-    // private List<Plateforme> plateformes = new List<Plateforme>();
+    private List<Plateforme> plateformes = new List<Plateforme>();
 
     protected override async Task OnInitializedAsync()
     {
-        thematiques = ThematiqueService.GetAllAsync().Result.ToList();
+        thematiques = await ThematiqueService.GetAllAsync();
+        await JS.InvokeVoidAsync("console.log", $"Thematique {thematiques}");
 
-        // foreach (var thematique in thematiques)
-        // {
-        //     foreach (var plateforme in thematique.Exposers)
-        //     {
-        //         var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
-        //         this.plateformes.Add(plat);
-        //     }
-        //     var plat = await PlateformeService.GetByIdAsync(thematique.Id_Plateforme);
-        //     this.plateformes.Add(plat);
-        // }
+        foreach (var thematique in thematiques)
+        {
+            var firstExposer = thematique.Exposers.FirstOrDefault();
+
+            if (firstExposer != null)
+            {
+                var plat = await PlateformeService.GetByIdAsync(firstExposer.Id_Plateforme);
+                if (plat != null)
+                    plateformes.Add(plat);
+            }
+        }
     }
 
 
