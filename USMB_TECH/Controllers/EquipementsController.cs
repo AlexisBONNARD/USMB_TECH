@@ -46,7 +46,7 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutEquipement(int id, EquipementDTO dto)
+        public async Task<IActionResult> PutEquipement(int id, UpdateEquipementDto dto)
         {
             if (!ModelState.IsValid)
             {

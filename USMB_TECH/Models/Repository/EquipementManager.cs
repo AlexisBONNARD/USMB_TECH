@@ -49,6 +49,7 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
+                    .ThenInclude(m => m.MarqueNavigation)   
                 .Include(e => e.Type_EquipementNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
@@ -61,6 +62,7 @@ namespace USMB_TECH.Models.Repository
                         .ThenInclude(p => p.Type_PrestationNavigation)
                 .FirstOrDefaultAsync(e => e.Id_Equipement == id);
         }
+
 
         public async Task AddAsync(Equipement entity)
         {

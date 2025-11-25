@@ -29,6 +29,7 @@ builder.Services.AddScoped<MarqueManager>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("UsmbTechDbContext")));
 
