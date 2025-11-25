@@ -16,7 +16,7 @@ builder.Services.AddScoped<IMainService<Equipement, int>>(eq => new WebService<E
 builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebService<Laboratoire, string>("Laboratoires"));
 builder.Services.AddScoped<IMainService<Plateforme, int>>(eq => new WebService<Plateforme, int>("Plateformes"));
 builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<Prestation, int>("Prestations"));
-builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematiques"));
+builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematique"));
 builder.Services.AddScoped<IMainService<Type_Equipement, int>>(eq => new WebService<Type_Equipement, int>("Type_Equipements"));
 builder.Services.AddScoped<IMainService<Marque, int>>(eq => new WebService<Marque, int>("Marques")); 
 
