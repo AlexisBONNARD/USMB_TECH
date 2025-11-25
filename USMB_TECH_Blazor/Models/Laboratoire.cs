@@ -19,6 +19,8 @@ namespace USMB_TECH_Blazor.Models
 
         public virtual Adresse? Adresse_campusNavigation { get; set; } = null!;
         public virtual Adresse? Adresse_laboNavigation { get; set; } = null!;
+        public virtual ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
 
         public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
     }

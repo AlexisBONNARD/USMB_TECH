@@ -6,7 +6,12 @@
 
 
 <h2 class="add_platform">Modifier la plateforme</h2>
-
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
 @if (plateforme == null)
 {
     <p>Chargement...</p>
@@ -91,13 +96,6 @@ else
     </div>
 }
 
-@if (!string.IsNullOrEmpty(message))
-{
-    <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
-        @message
-    </div>
-}
-
 @code {
     [Parameter]
     public int Id { get; set; }
@@ -105,8 +103,9 @@ else
     Plateforme? plateforme;
     private List<Prestation> prestations = new();
 
-    bool isSubmitted = false;
-    string message = "";
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,26 +121,32 @@ else
 
             if (response.IsSuccessStatusCode)
             {
-                isSubmitted = true;
-                await ShowAlert("Plateforme mise à jour avec succès ✅");
+                deleteSuccess = true;
+                await ShowDeleteAlert("Plateforme mise à jour avec succès ✅");
+                NavigationManager.NavigateTo($"/plateforme/{Id}");
             }
             else
             {
-                isSubmitted = false;
-                await ShowAlert("Erreur lors de la mise à jour ❌");
+                deleteSuccess = false;
+                await ShowDeleteAlert("Erreur lors de la mise à jour ❌");
             }
         }
         catch (Exception ex)
         {
-            isSubmitted = false;
-            await ShowAlert($"Erreur: {ex.Message}");
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur: {ex.Message}");
         }
     }
 
-    async Task ShowAlert(string msg)
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
     {
-        message = msg;
+        deleteMessage = msg;
+        StateHasChanged();
+
         await Task.Delay(3000);
-        message = "";
+
+        deleteMessage = null;
+        StateHasChanged();
     }
 }

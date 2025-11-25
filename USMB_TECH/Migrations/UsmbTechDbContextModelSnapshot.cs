@@ -1024,12 +1024,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Contact_USMB", "Contact_USMBNavigation")
                         .WithMany("Associers")
                         .HasForeignKey("Id_Contact")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_contact_USMB_associer");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Associers")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_plateforme_associer");
 
@@ -1043,6 +1045,7 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Unite", "UniteNavigation")
                         .WithMany("Consommables")
                         .HasForeignKey("Id_Unite")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_unite_consommable");
 
@@ -1054,12 +1057,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Consommable", "ConsommableNavigation")
                         .WithMany("Consommers")
                         .HasForeignKey("Id_Consommable")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_consommer_consommable");
 
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Consommers")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_equipement_consommer");
 
@@ -1073,12 +1078,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Fonction", "FonctionNavigation")
                         .WithMany("Contacts")
                         .HasForeignKey("Id_Fonction")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_fonction_contact");
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Contacts")
                         .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_laboratoire_contact_USMB");
 
@@ -1092,12 +1099,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Mot_Clef", "Mot_ClefNavigation")
                         .WithMany("Designers")
                         .HasForeignKey("Id_Mot_Clef")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_mot_clef_designer");
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Designers")
                         .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_laboratoire_designer");
 
@@ -1111,18 +1120,21 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Modele", "ModeleNavigation")
                         .WithMany("Equipements")
                         .HasForeignKey("Id_Modele")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_modele_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Equipements")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_plateforme_equipement");
 
                     b.HasOne("USMB_TECH.Models.Type_Equipement", "Type_EquipementNavigation")
                         .WithMany("Equipements")
                         .HasForeignKey("Id_Type_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_type_equipement_equipement");
 
@@ -1138,12 +1150,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Thematique", "ThematiqueNavigation")
                         .WithMany("Est_Liers")
                         .HasForeignKey("Id_Thematique")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_thematique_est_lier");
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Est_Liers")
                         .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_laboratoire_est_lier");
 
@@ -1157,11 +1171,13 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Exemple_Utilisations")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_exemple_utilisation_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Exemple_Utilisations")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_plateforme_exemple_utilisation");
 
                     b.Navigation("EquipementNavigation");
@@ -1174,12 +1190,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Exposers")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_plateforme_exposer");
 
                     b.HasOne("USMB_TECH.Models.Thematique", "ThematiqueNavigation")
                         .WithMany("Exposers")
                         .HasForeignKey("Id_Thematique")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_thematique_exposer");
 
@@ -1193,12 +1211,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Fournirs")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_fournir_equipement");
 
                     b.HasOne("USMB_TECH.Models.Prestation", "PrestationNavigation")
                         .WithMany("Fournirs")
                         .HasForeignKey("Id_Prestation")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_fournir_prestation");
 
@@ -1212,12 +1232,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Gerers")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_plateforme_gerer");
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Gerers")
                         .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_laboratoire_gerer");
 
@@ -1231,12 +1253,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Adresse", "Adresse_campusNavigation")
                         .WithMany("Laboratoires_campus")
                         .HasForeignKey("Id_Adresse_Campus")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_laboratoire_adresse_campus");
 
                     b.HasOne("USMB_TECH.Models.Adresse", "Adresse_laboNavigation")
                         .WithMany("Laboratoires_labo")
                         .HasForeignKey("Id_Adresse_Labo")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_laboratoire_adresse_labo");
 
@@ -1250,6 +1274,7 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Marque", "MarqueNavigation")
                         .WithMany("Modeles")
                         .HasForeignKey("Id_Marque")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_modele_marque");
 
@@ -1261,11 +1286,13 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Photos")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_photo_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Photos")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_plateforme_photo");
 
                     b.Navigation("EquipementNavigation");
@@ -1278,12 +1305,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Posseders")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_posseder_equipement");
 
                     b.HasOne("USMB_TECH.Models.Fonctionalite", "FonctionaliteNavigation")
                         .WithMany("Posseders")
                         .HasForeignKey("Id_Fonctionalite")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_posseder_fonctionalite");
 
@@ -1297,12 +1326,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Presenters")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_presenter_plateforme");
 
                     b.HasOne("USMB_TECH.Models.Prestation", "PrestationNavigation")
                         .WithMany("Presenters")
                         .HasForeignKey("Id_Prestation")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_presenter_prestation");
 
@@ -1316,24 +1347,28 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Contact_USMB", "Contact_USMBNavigation")
                         .WithMany("Prestations")
                         .HasForeignKey("Id_Contact")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_prestation_contact_usmb");
 
                     b.HasOne("USMB_TECH.Models.Type_Prestation", "Type_PrestationNavigation")
                         .WithMany("Prestations")
                         .HasForeignKey("Id_Type_Prestation")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_type_prestation_prestation");
 
                     b.HasOne("USMB_TECH.Models.Unite_Oeuvre", "Unite_OeuvreNavigation")
                         .WithMany("Prestations")
                         .HasForeignKey("Id_Unite_Oeuvre")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_unite_oeuvre_prestation");
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Prestations")
                         .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_prestation_laboratoire");
 
@@ -1351,16 +1386,19 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Prise_Contacts")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_prise_contact_equipement");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Prise_Contacts")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_prise_contact_plateforme");
 
                     b.HasOne("USMB_TECH.Models.Type_Client", "Type_ClientNavigation")
                         .WithMany("Prise_Contacts")
                         .HasForeignKey("Id_Type_Client")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_type_client_prise_contact");
 
@@ -1376,12 +1414,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Contact_USMB", "Contact_USMBNavigation")
                         .WithMany("Referencers")
                         .HasForeignKey("Id_Contact")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_referencer_contact");
 
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Referencers")
                         .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_referencer_equipement");
 
@@ -1395,12 +1435,14 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Mot_Clef", "Mot_ClefNavigation")
                         .WithMany("Specifiers")
                         .HasForeignKey("Id_Mot_Clef")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_specifier_mot_clef");
 
                     b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
                         .WithMany("Specifiers")
                         .HasForeignKey("Id_Plateforme")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_specifier_plateforme");
 
@@ -1414,6 +1456,7 @@ namespace USMB_TECH.Migrations
                     b.HasOne("USMB_TECH.Models.Thematique", "ThematiqueNavigation")
                         .WithMany("Thematiques")
                         .HasForeignKey("Id_Thematique")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_thematique_thematique_parente");
 

@@ -73,7 +73,7 @@
                     @foreach (var pr in prestations)
                     {
                         <li @onclick="() => GoToPrestation(pr.Id_Prestation)">
-                            @pr.Nom_Court
+                            @pr.Intitule_Prestation
                         </li>
                     }
                 }
@@ -85,7 +85,7 @@
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
 
-            <span class="dropdown-toggle">Laboratoire</span>
+            <span class="dropdown-toggle">LABORATOIRE</span>
 
             <ul class="dropdown-menu @(showDropdown == "Laboratoire" ? "show" : "")">
                 @if (laboratoires != null)
@@ -93,7 +93,7 @@
                     @foreach (var lab in laboratoires)
                     {
                         <li @onclick="() => GoToLaboratoire(lab.Nom_Court)">
-                              @lab.Nom_Long
+                              @lab.Nom_Court
                         </li>
                     }
                 }
