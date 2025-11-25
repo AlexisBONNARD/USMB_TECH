@@ -31,6 +31,7 @@ namespace USMB_TECH_Blazor.Models
 
         public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
 
+        public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
         public virtual ICollection<Mot_Clef> MotsCles { get; set; } = new List<Mot_Clef>();
