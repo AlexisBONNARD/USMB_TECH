@@ -64,5 +64,7 @@ namespace USMB_TECH_Blazor.Models
         public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
         public Plateforme? PlateformeNavigation { get; set; }
+
+        public Type_Equipement? Type_EquipementNavigation { get; set; }
     }
 }

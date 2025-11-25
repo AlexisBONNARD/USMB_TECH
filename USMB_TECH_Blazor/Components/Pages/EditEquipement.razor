@@ -2,7 +2,8 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using USMB_TECH.Models
-
+@inject IJSRuntime JS
+@using System.Text.Json;
 <h2 class="add_platform">Modifier l'équipement</h2>
 
 @if (equipement == null)
@@ -135,6 +136,18 @@ else
     protected override async Task OnInitializedAsync()
     {
         equipement = await Http.GetFromJsonAsync<Equipement>($"https://localhost:7093/api/equipements/{Id}");
+
+        if (equipement != null)
+        {
+            equipement.Nom_Plateforme = equipement.PlateformeNavigation?.Nom_Plateforme ?? "";
+            equipement.Nom_Modele = equipement.ModeleNavigation?.Nom_Modele ?? "";
+            equipement.Nom_Marque = equipement.ModeleNavigation?.MarqueNavigation?.Nom_Marque ?? "";
+            equipement.Type_Equipement = equipement.Type_EquipementNavigation?.Nom_Type ?? "";
+        }
+
+        var json = JsonSerializer.Serialize(equipement);
+        await JS.InvokeVoidAsync("console.log", json);
+
     }
 
     async Task SubmitEquipement()

@@ -60,7 +60,16 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
+
+                .Include(e => e.Exemple_Utilisations)
+
+                // ✅ Fournirs with their Prestation
+                .Include(e => e.Fournirs)
+                    .ThenInclude(f => f.PrestationNavigation)
+                        .ThenInclude(p => p.Type_PrestationNavigation)
                 .FirstOrDefaultAsync(e => e.Id_Equipement == id);
+
+
         }
 
 
