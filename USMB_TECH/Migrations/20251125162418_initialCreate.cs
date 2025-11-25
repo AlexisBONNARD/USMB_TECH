@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace USMB_TECH.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCommit : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -213,13 +213,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_adresse_campus,
                         principalSchema: "usmbTech",
                         principalTable: "adresse",
-                        principalColumn: "id_adresse");
+                        principalColumn: "id_adresse",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_laboratoire_adresse_labo",
                         column: x => x.id_adresse_labo,
                         principalSchema: "usmbTech",
                         principalTable: "adresse",
-                        principalColumn: "id_adresse");
+                        principalColumn: "id_adresse",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,7 +242,8 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_marque,
                         principalSchema: "usmbTech",
                         principalTable: "marque",
-                        principalColumn: "id_marque");
+                        principalColumn: "id_marque",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -259,13 +262,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_mot_clef,
                         principalSchema: "usmbTech",
                         principalTable: "mot_clef",
-                        principalColumn: "id_mot_clef");
+                        principalColumn: "id_mot_clef",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_specifier_plateforme",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -284,13 +289,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_thematique_exposer",
                         column: x => x.id_thematique,
                         principalSchema: "usmbTech",
                         principalTable: "thematique",
-                        principalColumn: "id_thematique");
+                        principalColumn: "id_thematique",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -314,7 +321,8 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_unite,
                         principalSchema: "usmbTech",
                         principalTable: "unite",
-                        principalColumn: "id_unite");
+                        principalColumn: "id_unite",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -341,13 +349,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_fonction,
                         principalSchema: "usmbTech",
                         principalTable: "fonction",
-                        principalColumn: "id_fonction");
+                        principalColumn: "id_fonction",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_laboratoire_contact_USMB",
                         column: x => x.nom_court,
                         principalSchema: "usmbTech",
                         principalTable: "laboratoire",
-                        principalColumn: "nom_court");
+                        principalColumn: "nom_court",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -366,13 +376,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.nom_court,
                         principalSchema: "usmbTech",
                         principalTable: "laboratoire",
-                        principalColumn: "nom_court");
+                        principalColumn: "nom_court",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_mot_clef_designer",
                         column: x => x.id_mot_clef,
                         principalSchema: "usmbTech",
                         principalTable: "mot_clef",
-                        principalColumn: "id_mot_clef");
+                        principalColumn: "id_mot_clef",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -391,13 +403,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.nom_court,
                         principalSchema: "usmbTech",
                         principalTable: "laboratoire",
-                        principalColumn: "nom_court");
+                        principalColumn: "nom_court",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_thematique_est_lier",
                         column: x => x.id_thematique,
                         principalSchema: "usmbTech",
                         principalTable: "thematique",
-                        principalColumn: "id_thematique");
+                        principalColumn: "id_thematique",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -417,13 +431,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.nom_court,
                         principalSchema: "usmbTech",
                         principalTable: "laboratoire",
-                        principalColumn: "nom_court");
+                        principalColumn: "nom_court",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_plateforme_gerer",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -455,19 +471,22 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_modele,
                         principalSchema: "usmbTech",
                         principalTable: "modele",
-                        principalColumn: "id_modele");
+                        principalColumn: "id_modele",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_plateforme_equipement",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_type_equipement_equipement",
                         column: x => x.id_type_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "type_equipement",
-                        principalColumn: "id_type");
+                        principalColumn: "id_type",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -487,13 +506,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_contact,
                         principalSchema: "usmbTech",
                         principalTable: "contact_usmb",
-                        principalColumn: "id_Contact");
+                        principalColumn: "id_Contact",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_plateforme_associer",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -522,25 +543,29 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_contact,
                         principalSchema: "usmbTech",
                         principalTable: "contact_usmb",
-                        principalColumn: "id_Contact");
+                        principalColumn: "id_Contact",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_prestation_laboratoire",
                         column: x => x.nom_court,
                         principalSchema: "usmbTech",
                         principalTable: "laboratoire",
-                        principalColumn: "nom_court");
+                        principalColumn: "nom_court",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_type_prestation_prestation",
                         column: x => x.id_type_prestation,
                         principalSchema: "usmbTech",
                         principalTable: "type_prestation",
-                        principalColumn: "id_type_prestation");
+                        principalColumn: "id_type_prestation",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_unite_oeuvre_prestation",
                         column: x => x.id_unite_oeuvre,
                         principalSchema: "usmbTech",
                         principalTable: "unite_oeuvre",
-                        principalColumn: "id_unite_oeuvre");
+                        principalColumn: "id_unite_oeuvre",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -560,13 +585,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_consommable,
                         principalSchema: "usmbTech",
                         principalTable: "consommable",
-                        principalColumn: "id_consommable");
+                        principalColumn: "id_consommable",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_equipement_consommer",
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -589,13 +616,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_plateforme_exemple_utilisation",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -619,13 +648,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_plateforme_photo",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -644,13 +675,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_posseder_fonctionalite",
                         column: x => x.id_fonctionalite,
                         principalSchema: "usmbTech",
                         principalTable: "fonctionalite",
-                        principalColumn: "id_fonctionalite");
+                        principalColumn: "id_fonctionalite",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -678,19 +711,22 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_prise_contact_plateforme",
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_type_client_prise_contact",
                         column: x => x.id_type_client,
                         principalSchema: "usmbTech",
                         principalTable: "type_client",
-                        principalColumn: "id_type_client");
+                        principalColumn: "id_type_client",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -710,13 +746,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_contact,
                         principalSchema: "usmbTech",
                         principalTable: "contact_usmb",
-                        principalColumn: "id_Contact");
+                        principalColumn: "id_Contact",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_referencer_equipement",
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -735,13 +773,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_equipement,
                         principalSchema: "usmbTech",
                         principalTable: "equipement",
-                        principalColumn: "id_equipement");
+                        principalColumn: "id_equipement",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_fournir_prestation",
                         column: x => x.id_prestation,
                         principalSchema: "usmbTech",
                         principalTable: "prestation",
-                        principalColumn: "id_prestation");
+                        principalColumn: "id_prestation",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -760,13 +800,15 @@ namespace USMB_TECH.Migrations
                         column: x => x.id_plateforme,
                         principalSchema: "usmbTech",
                         principalTable: "plateforme",
-                        principalColumn: "id_plateforme");
+                        principalColumn: "id_plateforme",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_presenter_prestation",
                         column: x => x.id_prestation,
                         principalSchema: "usmbTech",
                         principalTable: "prestation",
-                        principalColumn: "id_prestation");
+                        principalColumn: "id_prestation",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
