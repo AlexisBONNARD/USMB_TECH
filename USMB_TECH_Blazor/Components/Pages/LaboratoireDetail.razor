@@ -3,6 +3,12 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
+<HeadContent>
+    <link href="css/PageDetail.css" rel="stylesheet" />
+</HeadContent>
+
+<PageTitle>Détails Laboratoire</PageTitle>
+
 <h1>LaboratoireDetail</h1>
 @if (laboratoire is null)
 {
@@ -10,36 +16,87 @@
 }
 else
 {
-    <h3>@laboratoire.Nom_Long</h3>
-    <p>@laboratoire.Nom_Court</p>
-    <h4>Adresse : </h4>
-    <p>Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
-    <p>Adresse du campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p>
-    if(plateformes is not null)
-    {
-        foreach (var plateforme in plateformes)
-        {
-            <p>@plateforme.Nom_Plateforme</p>
-        }
-    }
-    else
-    {
-        <p>Il n'y a pas de plateforme pour ce laboratoire</p>
-    }
-    
-    <h4>Contacts</h4>
-    @foreach(Contact_USMB contact in laboratoire.Contacts)
-    {
-        <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
-        <p>Mail : @contact.Mail</p>
-        <p>Numéro de téléphone : @contact.Telephone</p>
-    }
-    <h4>Prestations</h4>
-    @foreach (Prestation prestation in laboratoire.Prestations)
-    {
-        <p>@prestation.Intitule_Prestation</p>
-       
-    }
+    <div class="container">
+        <!-- ========= COLONNE GAUCHE ========= -->
+        <div class="col-left">
+            <section>
+                <h2>Laboratoire : @laboratoire.Nom_Long</h2>
+                <p>@laboratoire.Nom_Court</p>
+            </section>
+
+            <section>
+                <h3>Adresse</h3>
+                <ul class="list-style">
+                    <p>Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
+                    <p>Adresse du campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p>
+                </ul>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE CENTRALE ========= -->
+        <div class="col-center">
+            <section>
+                <h3>NOS PLATEFORMES</h3>
+                @if(plateformes is not null)
+                {
+                    <div class="center-grid">
+                        @foreach (var plateforme in plateformes)
+                        {
+                            <div class="center-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
+                                @if (plateforme.Photos != null && plateforme.Photos.Any())
+                                {
+                                    var photo = plateforme.Photos.First();
+                                    <img src="@photo.Url_Photo" alt="photo plateforme" />
+                                }
+                                <p>@plateforme.Nom_Plateforme</p>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>Il n'y a pas de plateforme pour ce laboratoire</p>
+                }
+            </section>
+            <section>
+                <h3>NOS CONTACTS</h3>
+
+                <div class="center-grid">
+                    @foreach (Contact_USMB contact in laboratoire.Contacts)
+                    {
+                        <div class="center-item">
+                            <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
+                            <p>Mail : @contact.Mail</p>
+                            <p>Numéro de téléphone : @contact.Telephone</p>
+                        </div>
+                    }
+                </div>
+            </section>
+            <section>
+                <h3>NOS PRESTATIONS</h3>
+
+                <div class="center-grid">
+                    @foreach (Prestation prestation in laboratoire.Prestations)
+                    {
+                        <div class="center-item" @onclick="@(() => RetourListe(prestation.Id_Prestation, "prestation"))">
+                            <p>@prestation.Intitule_Prestation</p>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE DROITE ========= -->
+        <div class="col-right">
+
+            <div class="info-block">
+                <h4>Localisation :</h4>
+                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
+            </div>
+
+            <FormulaireContact />
+        </div>
+    </div>
 }
 
 @code {
@@ -55,6 +112,10 @@ else
         adresseCampus = laboratoire.Adresse_campusNavigation;
         adresseLabo = laboratoire.Adresse_laboNavigation;
         plateformes = laboratoire.Gerers.Select(g => g.PlateformeNavigation).ToList();
+    }
 
+    private void RetourListe(int id, string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}/{id}");
     }
 }
