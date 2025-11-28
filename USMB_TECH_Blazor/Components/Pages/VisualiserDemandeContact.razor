@@ -1,7 +1,5 @@
-﻿@page "/prestation/{Id:int}"
-@inject IMainService<Prestation,int> PrestationService
-@inject IMainService<Plateforme,int> PlateformeService
-@inject IMainService<Equipement,int> EquipementService
+﻿@page "/demandeContact"
+@inject IMainService<Contact_USMB,int> ContactService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -9,7 +7,9 @@
     <link href="css/PageDetail.css" rel="stylesheet" />
 </HeadContent>
 
-@if (prestation == null)
+<PageTitle>Visualiser Demande de Contact</PageTitle>
+
+@* @if (prestation == null)
 {
     <p>Loading...</p>
 }
@@ -88,14 +88,14 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
-    private Prestation? prestation;
+    private Contact_USMB? contact;
     private List<Plateforme> plateformes = new List<Plateforme>();
     private List<Equipement> equipements = new List<Equipement>();
 
     protected override async Task OnInitializedAsync()
     {
-        prestation = await PrestationService.GetByIdAsync(Id);
-        foreach (var plateforme in prestation.Presenters)
+        contact = await ContactService.GetByIdAsync(Id);
+        foreach (var plateforme in contact.Presenters)
         {
             var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
             this.plateformes.Add(plat);
@@ -111,4 +111,4 @@ else
     {
         Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
     }
-}
+} *@
