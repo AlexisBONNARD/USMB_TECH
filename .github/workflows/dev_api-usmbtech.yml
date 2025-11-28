@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core API + Blazor WASM to Azure Web App - api-usmbtech
+name: Build and Deploy ASP.Net Core API + Blazor WASM to Azure Web App - api-usmbtech
 
 on:
   push:
@@ -13,22 +13,33 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      # Récupération du code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # Installation de .NET
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
+      # Nettoyage des anciens builds
+      - name: Clean solution
+        run: dotnet clean USMB_TECH/USMB_TECH.csproj
+
+      # Restauration des dépendances
       - name: Restore dependencies
         run: dotnet restore USMB_TECH/USMB_TECH.csproj
 
+      # Compilation en Release
       - name: Build solution
         run: dotnet build USMB_TECH/USMB_TECH.csproj --configuration Release --no-restore
 
-      - name: Publish API with Blazor front-end
+      # Publication de l'application complète (API + Blazor)
+      - name: Publish API and Blazor
         run: dotnet publish USMB_TECH/USMB_TECH.csproj --configuration Release --output publish
 
+      # Upload de l'artifact pour le déploiement
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
@@ -43,11 +54,14 @@ jobs:
       contents: read
 
     steps:
+      # Téléchargement de l'artifact du job build
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: full-app
+          path: publish
 
+      # Connexion à Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,9 +69,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CF49F06B2F244A3DAA092FFFDDF4DF78 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5081036E4D9E46B2ADAF49DD7A106AC6 }}
 
+      # Déploiement complet vers Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'api-usmbtech'
           slot-name: 'Production'
-          package: .
+          package: ./publish
