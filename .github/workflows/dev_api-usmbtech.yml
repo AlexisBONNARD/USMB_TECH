@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core API + Blazor WASM to Azure Web App - api-usmbtech
+name: Build and Deploy ASP.Net Core API to Azure Web App - api-usmbtech
 
 on:
   push:
@@ -13,26 +13,30 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
+      - name: Clean API project
+        run: dotnet clean USMB_TECH/USMB_TECH.csproj
+
       - name: Restore dependencies
         run: dotnet restore USMB_TECH/USMB_TECH.csproj
 
-      - name: Build solution
+      - name: Build API project
         run: dotnet build USMB_TECH/USMB_TECH.csproj --configuration Release --no-restore
 
-      - name: Publish API with Blazor front-end
+      - name: Publish API project
         run: dotnet publish USMB_TECH/USMB_TECH.csproj --configuration Release --output publish
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: full-app
+          name: api-app
           path: publish
 
   deploy:
@@ -43,10 +47,11 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: full-app
+          name: api-app
+          path: publish
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -60,4 +65,5 @@ jobs:
         with:
           app-name: 'api-usmbtech'
           slot-name: 'Production'
-          package: .
+          package: './publish'
+          clean: true
