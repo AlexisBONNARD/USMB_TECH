@@ -58,7 +58,7 @@
                         var firstExposer = thematique.Exposers.FirstOrDefault();
                         var plateforme = plateformes.FirstOrDefault(p => p.Id_Plateforme == firstExposer?.Id_Plateforme);
 
-                        <div class="domaine" @onclick="@(() => RetourListe(thematique.Id_Thematique, "thematique"))">
+                        <div class="domaine" @onclick="@(() => FastShearche(thematique.Nom_Thematique, "thematique"))">
                             @if (plateforme?.Photos != null && plateforme.Photos.Any())
                             {
                                 <img src="@plateforme.Photos.First().Url_Photo" class="domaine-img" />
@@ -120,5 +120,11 @@
     private void RetourListe(int idEquipement, string nomChemin)
     {
         Nav.NavigateTo($"/{nomChemin}/{idEquipement}");
+    }
+
+    private void FastShearche(string nom, string nomChemin)
+    {
+        var encodedQuery = Uri.EscapeDataString(nom);
+        Nav.NavigateTo($"/search/{nomChemin}/{encodedQuery}"); //motclef ou thematique ou motclef_thematique
     }
 }
