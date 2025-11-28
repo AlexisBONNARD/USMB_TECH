@@ -57,7 +57,7 @@
 
                 content.Add(fileContent, "file", file.Name);
 
-                var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/plateformes/upload", content);
+                var response = await Http.PostAsync("https://localhost:7093/api/plateformes/upload", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -248,7 +248,7 @@
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/plateformes", plateforme);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/plateformes", plateforme);
 
             if (response.IsSuccessStatusCode)
             {

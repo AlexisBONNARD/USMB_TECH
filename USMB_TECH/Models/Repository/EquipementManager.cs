@@ -157,6 +157,16 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Modele = model.Id_Modele;
                 entity.ModeleNavigation = model;
             }
+            if(entity.Exemple_Utilisations != null) 
+            {
+                foreach(var exemple in entity.Exemple_Utilisations) 
+                {
+                    exemple.Id_Equipement = entity.Id_Equipement;
+                    
+                    _context.Exemple_Utilisations.Add(exemple);
+                }
+                await _context.SaveChangesAsync();
+            }
 
             var photos = entity.Photos;
             entity.Photos = null;
@@ -169,7 +179,6 @@ namespace USMB_TECH.Models.Repository
                 p.Id_Equipement = entity.Id_Equipement;
                 _context.Photos.Add(p);
             }
-
             await _context.SaveChangesAsync();
 
 

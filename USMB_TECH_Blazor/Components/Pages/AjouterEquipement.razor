@@ -49,7 +49,17 @@
         <InputText @bind-Value="addEquipement.Nom_Modele" />
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
     </div>
-
+    <div>
+        <label>Exemple d'utilisation</label>
+        <div>
+            <label>Nom de l'exemple : </label>
+            <InputText @bind-Value="addEquipement.Nom_Exemple"/>
+        </div>
+        <div>
+            <label>Description : </label>
+            <InputText @bind-Value="addEquipement.Description_Exemple"/>
+        </div>
+    </div>
     <div class="form-group">
         <label>Marque :</label>
         <InputText @bind-Value="addEquipement.Nom_Marque" />
@@ -130,7 +140,7 @@
 
         content.Add(fileContent, "file", file.Name);
 
-        var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
+        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
 
         if (response.IsSuccessStatusCode)
         {

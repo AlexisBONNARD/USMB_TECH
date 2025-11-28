@@ -53,6 +53,10 @@ namespace USMB_TECH_Blazor.Models
 
         public string Nom_Contact { get; set; }
 
+        public string Nom_Exemple { get; set; }
+
+        public string Description_Exemple { get; set; }
+
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 
         public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();

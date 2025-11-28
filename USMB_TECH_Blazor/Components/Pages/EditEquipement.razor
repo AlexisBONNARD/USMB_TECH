@@ -135,7 +135,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        equipement = await Http.GetFromJsonAsync<Equipement>($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}");
+        equipement = await Http.GetFromJsonAsync<Equipement>($"https://localhost:7093/api/equipements/{Id}");
 
         if (equipement != null)
         {
@@ -154,7 +154,7 @@ else
     {
         try
         {
-            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}", equipement);
+            var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/equipements/{Id}", equipement);
 
             if (response.IsSuccessStatusCode)
             {
