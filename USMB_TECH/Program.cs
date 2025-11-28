@@ -71,9 +71,9 @@ app.UseStaticFiles();
 // APPLY CORS
 app.UseCors("AllowBlazor");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
