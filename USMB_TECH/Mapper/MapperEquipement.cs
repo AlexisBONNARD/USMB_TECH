@@ -52,7 +52,7 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Nom_Marque, opt => opt.MapFrom(src => src.ModeleNavigation.MarqueNavigation.Nom_Marque))
                 .ForMember(dest => dest.Type_Equipement, opt => opt.MapFrom(src => src.Type_EquipementNavigation.Nom_Type))
                 .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos))
-                .ForMember(dest => dest.ExempleUtilisations, opt => opt.MapFrom(src => src.Exemple_Utilisations))
+                .ForMember(dest => dest.Exemple_Utilisations, opt => opt.MapFrom(src => src.Exemple_Utilisations))
                 .ForMember(dest => dest.Fournirs, opt => opt.MapFrom(src => src.Fournirs));
 
 
@@ -74,7 +74,7 @@ namespace USMB_TECH.Mapper
 
                 // ⚡ ExempleUtilisations correctement mappés
                 .ForMember(dest => dest.Exemple_Utilisations, opt => opt.MapFrom(src =>
-                    src.ExempleUtilisations.Select(eu => new Exemple_Utilisation
+                    src.Exemple_Utilisations.Select(eu => new Exemple_Utilisation
                     {
                         Id_Exemple_Utilisation = eu.Id_Exemple_Utilisation,
                         Nom_Utilisation = eu.Nom_Utilisation,

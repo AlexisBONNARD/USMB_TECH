@@ -28,7 +28,7 @@ namespace USMB_TECH.DTO
         public string? Type_Equipement { get; set; }
 
         public List<PhotoDto> Photos { get; set; } = new();
-        public List<ExempleUtilisationDto> ExempleUtilisations { get; set; } = new();
+        public List<ExempleUtilisationDto> Exemple_Utilisations { get; set; } = new();
         public List<Fournir> Fournirs { get; set; } = new();
 
         public override bool Equals(object? obj)
@@ -53,7 +53,7 @@ namespace USMB_TECH.DTO
                    Nom_Marque == dto.Nom_Marque &&
                    Type_Equipement == dto.Type_Equipement &&
                    EqualityComparer<List<PhotoDto>>.Default.Equals(Photos, dto.Photos) &&
-                   EqualityComparer<List<ExempleUtilisationDto>>.Default.Equals(ExempleUtilisations, dto.ExempleUtilisations) &&
+                   EqualityComparer<List<ExempleUtilisationDto>>.Default.Equals(Exemple_Utilisations, dto.Exemple_Utilisations) &&
                    EqualityComparer<List<Fournir>>.Default.Equals(Fournirs, dto.Fournirs);
         }
 
@@ -79,7 +79,7 @@ namespace USMB_TECH.DTO
             hash.Add(Nom_Marque);
             hash.Add(Type_Equipement);
             hash.Add(Photos);
-            hash.Add(ExempleUtilisations);
+            hash.Add(Exemple_Utilisations);
             hash.Add(Fournirs);
             return hash.ToHashCode();
         }
