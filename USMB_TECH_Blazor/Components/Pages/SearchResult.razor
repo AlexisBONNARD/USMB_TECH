@@ -1,0 +1,94 @@
+﻿@page "/search/{mode}/{query}"
+@using USMB_TECH_Blazor.Service;
+@using USMB_TECH_Blazor.Models;
+@inject SearchService SearchService
+@inject NavigationManager Navigation
+<link href="css/SearchResult.css" rel="stylesheet" />
+
+<h3 class="search-title">
+    Résultats pour "<strong>@query</strong>"
+    <span style="opacity:0.7;">(mode : @mode)</span>
+</h3>
+
+@if (IsLoading)
+{
+    <p class="search-info">Chargement...</p>
+}
+else if (Equipements == null || !Equipements.Any())
+{
+    <p class="search-info">Aucun résultat trouvé.</p>
+} 
+else
+{
+    <div  class="results-container">
+        @foreach (var e in Equipements)
+        {
+            <div @onclick="@(() => VoirDetail(e.Id_Equipement))" class="equipement-card">
+                <h4>@e.Nom_Equipement</h4>
+
+                <p>@e.Description_Technique</p>
+
+                @if (!string.IsNullOrEmpty(e.Nom_Plateforme))
+                {
+                    <p><strong>Plateforme : </strong>@e.Nom_Plateforme</p>
+                }
+
+                <p><strong>Prix d'achat :</strong> @e.Prix_Achat €</p>
+
+                <p><strong>Date d'acquisition :</strong> @e.Date_Acquisition.ToShortDateString()</p>
+
+                <p><strong>Disponibilité :</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
+
+                @if (e.MotsCles?.Any() == true)
+                {
+                    <div class="tag-list">
+                        @foreach (var mc in e.MotsCles)
+                        {
+                            <span class="tag">@mc</span>
+                        }
+                    </div>
+                }
+
+                @if (e.Thematiques?.Any() == true)
+                {
+                    <div class="tag-list">
+                        @foreach (var th in e.Thematiques)
+                        {
+                            <span class="tag">@th</span>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+
+@code {
+    [Parameter] public string mode { get; set; }
+    [Parameter] public string query { get; set; }
+
+    private IEnumerable<EquipementPreviewDTO> Equipements { get; set; } = new List<EquipementPreviewDTO>();
+    private bool IsLoading { get; set; } = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            Equipements = await SearchService.SearchAsync(query, mode);
+            Console.WriteLine($"Résultats reçus : {Equipements.Count()}");
+        }
+        else
+        {
+            Equipements = await SearchService.SearchAsync(query, mode);
+        }
+
+        IsLoading = false;
+    }
+    private void VoirDetail(int idEquipement)
+    {
+        Navigation.NavigateTo($"/equipement/{idEquipement}");
+    }
+}

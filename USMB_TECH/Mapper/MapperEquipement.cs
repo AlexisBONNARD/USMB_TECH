@@ -1,0 +1,99 @@
+﻿using AutoMapper;
+using USMB_TECH.DTO;
+using USMB_TECH.Models;
+namespace USMB_TECH.Mapper
+{
+    public class MapperEquipement : Profile
+    {
+        public MapperEquipement()
+        {
+            CreateMap<EquipementAddDTO, Equipement>()
+            .ForMember(dest => dest.PlateformeNavigation,
+               opt => opt.MapFrom(src => new Plateforme { Nom_Plateforme = src.Nom_Plateforme }))
+            .ForMember(dest => dest.Type_EquipementNavigation,
+               opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
+            .ForMember(dest => dest.Id_Plateforme, opt => opt.Ignore())
+            .ForMember(dest => dest.Id_Type_Equipement, opt => opt.Ignore())
+            .ForMember(dest => dest.ModeleNavigation, 
+            opt => opt.MapFrom(src => new Modele
+            { Nom_Modele = src.Nom_Modele, 
+                MarqueNavigation = new Marque
+                {
+                    Nom_Marque = src.Nom_Marque
+                }
+            }))
+            .ForMember(dest => dest.Id_Modele, opt => opt.Ignore());
+
+            CreateMap<EquipementDTO, Equipement>()
+                .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))
+                .ForMember(dest => dest.Id_Plateforme, opt => opt.MapFrom(src => src.Id_Plateforme))
+                .ForMember(dest => dest.Id_Modele, opt => opt.MapFrom(src => src.Id_Modele))
+                .ForMember(dest => dest.Id_Type_Equipement, opt => opt.MapFrom(src => src.Id_Type_Equipement))
+                .ForMember(dest => dest.Nom_Equipement, opt => opt.MapFrom(src => src.Nom_Equipement))
+                .ForMember(dest => dest.Num_Immobilisation, opt => opt.MapFrom(src => src.Num_Immobilisation))
+                .ForMember(dest => dest.Date_Acquisition, opt => opt.MapFrom(src => src.Date_Acquisition))
+                .ForMember(dest => dest.Prix_Achat, opt => opt.MapFrom(src => src.Prix_Achat))
+                .ForMember(dest => dest.Prix_Revient, opt => opt.MapFrom(src => src.Prix_Revient))
+                .ForMember(dest => dest.Description_Technique, opt => opt.MapFrom(src => src.Description_Technique))
+                .ForMember(dest => dest.Disponibilite, opt => opt.MapFrom(src => src.Disponibilite))
+                .ForMember(dest => dest.Autonomie, opt => opt.MapFrom(src => src.Autonomie))
+                .ForMember(dest => dest.Utilisable_Chez_Le_Client, opt => opt.MapFrom(src => src.Utilisable_Chez_Le_Client))
+                .ForMember(dest => dest.Actif, opt => opt.MapFrom(src => src.Actif))
+
+                //  Relations ignorées pour l’update (on travaille par ID)
+                .ForMember(dest => dest.PlateformeNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.Type_EquipementNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.ModeleNavigation, opt => opt.Ignore());
+
+            // Déjà existant
+            CreateMap<Equipement, UpdateEquipementDto>()
+                .ForMember(dest => dest.Nom_Plateforme, opt => opt.MapFrom(src => src.PlateformeNavigation.Nom_Plateforme))
+                .ForMember(dest => dest.Nom_Modele, opt => opt.MapFrom(src => src.ModeleNavigation.Nom_Modele))
+                .ForMember(dest => dest.Nom_Marque, opt => opt.MapFrom(src => src.ModeleNavigation.MarqueNavigation.Nom_Marque))
+                .ForMember(dest => dest.Type_Equipement, opt => opt.MapFrom(src => src.Type_EquipementNavigation.Nom_Type))
+                .ForMember(dest => dest.Photos, opt => opt.MapFrom(src => src.Photos))
+                .ForMember(dest => dest.ExempleUtilisations, opt => opt.MapFrom(src => src.Exemple_Utilisations))
+                .ForMember(dest => dest.Fournirs, opt => opt.MapFrom(src => src.Fournirs));
+
+
+            CreateMap<UpdateEquipementDto, Equipement>()
+                            .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))
+                            .ForMember(dest => dest.Id_Plateforme, opt => opt.MapFrom(src => src.Id_Plateforme))
+                            .ForMember(dest => dest.Id_Modele, opt => opt.MapFrom(src => src.Id_Modele))
+                            .ForMember(dest => dest.Id_Type_Equipement, opt => opt.MapFrom(src => src.Id_Type_Equipement))
+                            .ForMember(dest => dest.Nom_Equipement, opt => opt.MapFrom(src => src.Nom_Equipement))
+                            .ForMember(dest => dest.Num_Immobilisation, opt => opt.MapFrom(src => src.Num_Immobilisation))
+                            .ForMember(dest => dest.Date_Acquisition, opt => opt.MapFrom(src => src.Date_Acquisition))
+                            .ForMember(dest => dest.Prix_Achat, opt => opt.MapFrom(src => (double)src.Prix_Achat))
+                            .ForMember(dest => dest.Prix_Revient, opt => opt.MapFrom(src => (double)src.Prix_Revient))
+                            .ForMember(dest => dest.Description_Technique, opt => opt.MapFrom(src => src.Description_Technique))
+                            .ForMember(dest => dest.Disponibilite, opt => opt.MapFrom(src => src.Disponibilite))
+                            .ForMember(dest => dest.Autonomie, opt => opt.MapFrom(src => src.Autonomie))
+                            .ForMember(dest => dest.Utilisable_Chez_Le_Client, opt => opt.MapFrom(src => src.Utilisable_Chez_Le_Client))
+                            .ForMember(dest => dest.Actif, opt => opt.MapFrom(src => src.Actif))
+
+                            // ⚡ Photos corrigées pour respecter la contrainte
+                            .ForMember(dest => dest.Photos, opt => opt.MapFrom(src =>
+                                src.Photos.Select(p => new Photo
+                                {
+                                    Id_Photo = p.Id_Photo,
+                                    Nom_Photo = p.Nom_Photo,
+                                    Url_Photo = p.Url_Photo,
+                                    Id_Equipement = src.Id_Equipement, // ⚡ obligatoire
+                                    Id_Plateforme = null               // ⚡ forcé à null
+                                }).ToList()
+                            ))
+
+                            // ⚡ Collections : on les ignore si tu veux éviter les suppressions involontaires
+                            .ForMember(dest => dest.Exemple_Utilisations, opt => opt.Ignore())
+                            .ForMember(dest => dest.Fournirs, opt => opt.Ignore());
+
+
+
+            // --- Collections ---
+            CreateMap<PhotoDto, Photo>();
+            CreateMap<ExempleUtilisationDto, Exemple_Utilisation>();
+        }
+
+    }
+}

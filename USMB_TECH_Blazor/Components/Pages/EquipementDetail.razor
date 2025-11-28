@@ -1,0 +1,192 @@
+﻿@page "/equipement/{Id:int}"
+@inject Service.IMainService<Equipement,int> dataRepository
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+
+<HeadContent>
+    <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
+</HeadContent>
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
+
+
+@if (equipement == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="container">
+        <!-- ========== COLONNE GAUCHE ========== -->
+        <div class="col-left">
+
+            <!-- Nom équipement -->
+            <section>
+                <h2>@equipement.Nom_Equipement</h2>
+            </section>
+
+            <!-- Image -->
+            <section class="equipement-image-block">
+                <div class="equipement-item">
+                    @foreach (Photo photo in equipement.Photos)
+                    {
+
+                        <img src=@photo.Url_Photo alt="photo équipement" />
+                    }
+                </div>
+            </section>
+
+            <!-- Utilisation -->
+            <section>
+                <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
+
+                @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
+                {
+                    @foreach (var exemple in equipement.Exemple_Utilisations)
+                    {
+                        <p><strong>@exemple.Nom_Utilisation</strong></p>
+                        <p>@exemple.Description_Utilisation</p>
+                    }
+                }
+                else
+                {
+                    <p>Aucune utilisation renseignée.</p>
+                }
+            </section>
+
+            <!-- Caractéristiques -->
+            <section>
+                <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
+                <p>@equipement.Description_Technique</p>
+            </section>
+
+        </div>
+
+        <!-- ========== COLONNE CENTRALE ========== -->
+        <div class="col-center">
+
+            <section>
+                <h3>MOTS CLÉS</h3>
+
+                <ul class="list-style">
+                    @if (equipement.PlateformeNavigation?.Specifiers != null)
+                    {
+                        @foreach (var spec in equipement.PlateformeNavigation.Specifiers)
+                        {
+                            if (spec.Mot_ClefNavigation != null)
+                            {
+                                <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
+                            }
+                        }
+                    }
+                </ul>
+            </section>
+
+        </div>
+
+        <!-- ========== COLONNE DROITE ========== -->
+        <div class="col-right">
+
+            <div class="info-block">
+                <h4>Domaine d'excellence :</h4>
+                <div class="btn-blue">@thematique</div>
+            </div>
+
+            <div class="info-block">
+                <h4>Localisation :</h4>
+                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)'</div>
+            </div>
+
+            <div class="info-block">
+                <h4>Plateforme :</h4>
+                <div class="btn-blue"
+                     @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
+                    @equipement.PlateformeNavigation?.Nom_Plateforme
+                </div>
+
+            </div>
+
+            <FormulaireContact />
+        </div>
+    </div>
+
+    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
+        Modifier
+    </button>
+    <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
+        Supprimer
+    </button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Equipement? equipement;
+    private string thematique;
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        equipement = await dataRepository.GetByIdAsync(Id);
+        thematique = equipement.PlateformeNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+    }
+
+    // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
+    private async Task DeleteEquipement(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer cette plateforme ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await dataRepository.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Équipement supprimé avec succès ✅");
+            Navigation.NavigateTo("/", true);
+
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void RetourListe(int idPlateforme)
+    {
+        Navigation.NavigateTo($"/plateforme/{idPlateforme}");
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/equipement/edit/{id}", true);
+    }
+}

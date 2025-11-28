@@ -1,0 +1,115 @@
+﻿@inject NavigationManager Nav
+
+<HeadContent>
+    <link href="css/app.css" rel="stylesheet" />
+</HeadContent>
+
+<header class="usmb-header">
+
+    <!-- Bandeau supérieur -->
+    <div class="usmb-header-top">
+
+        <div class="usmb-header-lang">
+            <button>FR</button>
+        </div>
+
+        <div class="usmb-header-links">
+            <a href="#">Liens directs</a>
+        </div>
+
+        <!-- Icônes + Barre de recherche -->
+        <div class="usmb-header-top-right">
+
+            <!-- ICONES DES RÉSEAUX → ici -->
+            <div class="usmb-header-icons">
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-twitter"></i></a>
+                <a href="#"><i class="bi bi-youtube"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a>
+                <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
+                <button @onclick="@(() => Nav.NavigateTo("/ajouter-plateforme"))" >Ajouter une plateforme</button>
+            </div>
+
+            <!-- BARRE DE RECHERCHE -->
+            <div class="usmb-header-search">
+
+                <input @bind="SearchText"
+                       @bind:event="oninput"
+                       type="text"
+                       placeholder="Rechercher..."
+                       @onkeydown="HandleKeyDown" />
+
+                <!-- Bouton flèche -->
+                <button class="search-toggle @(ShowOptions ? "open" : "")"
+                        @onclick="ToggleOptions">
+                    ▲
+                </button>
+
+                <!-- Bouton loupe -->
+                <button class="search-btn" @onclick="PerformSearch">
+                    <i class="bi bi-search"></i>
+                </button>
+
+                <!-- Options -->
+                <div class="search-options @(ShowOptions ? "open" : "")">
+                    <label>
+                        <input type="checkbox" @bind="SearchMotClef" /> Par mot-clé
+                    </label>
+                    <label>
+                        <input type="checkbox" @bind="SearchThematique" /> Par thématique
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bandeau principal -->
+    <div class="usmb-header-main">
+        <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
+        <NavMenu></NavMenu>
+    </div>
+
+</header>
+
+@code {
+    private string SearchText = "";
+    private bool SearchMotClef = false;
+    private bool SearchThematique = false;
+    private bool ShowOptions = false;
+
+    private void ToggleOptions()
+    {
+        ShowOptions = !ShowOptions;
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            PerformSearch();
+        }
+    }
+
+    private void PerformSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var encodedQuery = Uri.EscapeDataString(SearchText);
+            var mode = "";
+
+            if (SearchMotClef && SearchThematique || !SearchMotClef && !SearchThematique)
+                mode = "motclef_thematique";
+            else if (SearchMotClef)
+                mode = "motclef";
+            else if (SearchThematique)
+                mode = "thematique";
+
+            if (!string.IsNullOrEmpty(mode))
+                Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
+        }
+    }
+}
+
+

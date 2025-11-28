@@ -1,0 +1,197 @@
+﻿@using USMB_TECH_Blazor.Models;
+@using USMB_TECH_Blazor.Service;
+@inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Equipement,int> EquipementService
+@inject IMainService<Prestation,int> PrestationService
+@inject IMainService<Laboratoire,string> LaboratoireService
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+
+<div class="usmb-nav-container">
+    <div class="usmb-nav">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span class=""></span> USMB TECH
+        </NavLink>
+
+        <!-- Dropdown NOS PLATEFORMES -->
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Plateforme"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+            <span class="dropdown-toggle">PLATEFORMES</span>
+
+            <ul class="dropdown-menu @(showDropdown == "Plateforme" ? "show" : "")">
+                @if (plateformes != null)
+                {
+                    @foreach (var pl in plateformes)
+                    {
+                        if (pl.Actif)
+                        {
+                            <li @onclick="() => GoToPlateforme(pl.Id_Plateforme)">
+                                @pl.Nom_Plateforme
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
+
+        <!-- Dropdown NOS EQUIPEMENTS -->
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Equipement"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+            <span class="dropdown-toggle">EQUIPEMENTS</span>
+
+            <ul class="dropdown-menu @(showDropdown == "Equipement" ? "show" : "")">
+                @if (equipements != null)
+                {
+                    @foreach (var eq in equipements)
+                    {
+                        <li @onclick="() => GoToEquipement(eq.Id_Equipement)">
+                            @eq.Nom_Equipement
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+
+        <!-- Dropdown NOS PRESTATIONS -->
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Prestation"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+            <span class="dropdown-toggle">PRESTATIONS</span>
+
+            <ul class="dropdown-menu @(showDropdown == "Prestation" ? "show" : "")">
+                @if (prestations != null)
+                {
+                    @foreach (var pr in prestations)
+                    {
+                        <li @onclick="() => GoToPrestation(pr.Id_Prestation)">
+                            @pr.Intitule_Prestation
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <!-- Dropdown NOS Laboratoires -->
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Laboratoire"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+            <span class="dropdown-toggle">LABORATOIRE</span>
+
+            <ul class="dropdown-menu @(showDropdown == "Laboratoire" ? "show" : "")">
+                @if (laboratoires != null)
+                {
+                    @foreach (var lab in laboratoires)
+                    {
+                        <li @onclick="() => GoToLaboratoire(lab.Nom_Court)">
+                              @lab.Nom_Court
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+@code {
+    private string showDropdown = null;
+    private IEnumerable<Plateforme>? plateformes;
+    private IEnumerable<Equipement>? equipements;
+    private IEnumerable<Prestation>? prestations;
+    private IEnumerable<Laboratoire>? laboratoires;
+    protected override async Task OnInitializedAsync()
+    {
+        plateformes = await PlateformeService.GetAllAsync();
+        equipements = await EquipementService.GetAllAsync();
+        prestations = await PrestationService.GetAllAsync();
+        laboratoires = await LaboratoireService.GetAllAsync();
+
+        // Affichage dans la console
+        if (plateformes != null)
+        {
+            foreach (var p in plateformes)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Plateforme: {p.Nom_Plateforme}, Id: {p.Id_Plateforme}");
+            }
+        }
+
+        if (equipements != null)
+        {
+            foreach (var e in equipements)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Equipement: {e.Nom_Equipement}, Id: {e.Id_Equipement}");
+            }
+        }
+
+        if (prestations != null)
+        {
+            foreach (var e in prestations)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Prestation: {e.Nom_Court}, Id: {e.Id_Prestation}");
+            }
+        }
+    }
+    private void ToggleDropdownPlateforme()
+    {
+        showDropdown = showDropdown == "Plateforme" ? null : "Plateforme";
+    }
+
+    private void ToggleDropdownEquipement()
+    {
+        showDropdown = showDropdown == "Equipement" ? null : "Equipement";
+    }
+
+    private void ToggleDropdownPrestation()
+    {
+        showDropdown = showDropdown == "Prestation" ? null : "Prestation";
+    }
+    private void ToggleDropdownLaboratoire()
+    {
+        showDropdown = showDropdown == "Laboratoire" ? null : "Laboratoire";
+    }
+
+    private void GoToPlateforme(int id)
+    {
+        Nav.NavigateTo($"/plateforme/{id}", true);
+        showDropdown = null;
+    }
+    private void GoToLaboratoire(string id)
+    {
+        Nav.NavigateTo($"/laboratoire/{id}", true);
+        showDropdown = null;
+    }
+
+    private void GoToEquipement(int id)
+    {
+        Nav.NavigateTo($"/equipement/{id}", true);
+        showDropdown = null;
+    }
+
+    private void GoToPrestation(int id)
+    {
+        Nav.NavigateTo($"/prestation/{id}", true);
+        showDropdown = null;
+    }
+
+
+    private void OpenDropdown(string name)
+    {
+        showDropdown = name;
+    }
+
+    private void CloseDropdown()
+    {
+        showDropdown = null;
+    }
+}

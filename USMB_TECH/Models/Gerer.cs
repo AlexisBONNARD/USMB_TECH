@@ -1,17 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-
-    public class Gerer
+    [Table("gerer")]
+    public partial class Gerer
     {
-        [Column("Nom_Court")]  
+        [Column("nom_court")]
+        [MaxLength(25)]
         public string Nom_Court { get; set; }
 
-        [Column("Id_Plateforme")]
+        [Column("id_plateforme")]
         public int Id_Plateforme { get; set; }
 
-        [Column("Pourcentage")]
+        [Column("pourcentage")]
+        [Precision(5, 2)]
         public double Pourcentage { get; set; }
+
+        [ForeignKey("Nom_Court")]
+        [InverseProperty(nameof(Laboratoire.Gerers))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
+
+        [ForeignKey("Id_Plateforme")]
+        [InverseProperty(nameof(Plateforme.Gerers))]
+        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
     }
 }

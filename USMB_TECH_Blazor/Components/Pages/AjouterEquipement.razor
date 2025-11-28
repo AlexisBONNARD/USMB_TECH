@@ -1,0 +1,180 @@
+﻿@page "/ajouterEquipement"
+@inject Service.IMainService<Plateforme,int> plateformeDatas
+@inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
+@inject Service.IMainService<Equipement,int> equipementDatas
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link rel="stylesheet" href="css/addEquipement.css">
+</HeadContent>
+<h3>Ajouter un équipement</h3>
+
+<EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Nom de l'équipement :</label>
+        <InputText @bind-Value="addEquipement.Nom_Equipement" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
+    </div>
+
+    <div class="form-group">
+        <label>Num_Immobilisation :</label>
+        <InputText @bind-Value="addEquipement.Num_Immobilisation" />
+        <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
+    </div>
+
+    <div class="form-group">
+        <label>Description Technique :</label>
+        <InputText @bind-Value="addEquipement.Description_Technique" />
+        <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
+    </div>
+
+    <div class="form-group">
+        <label>Prix Achat :</label>
+        <InputNumber @bind-Value="addEquipement.Prix_Achat" />
+        <ValidationMessage For="@(() => addEquipement.Prix_Achat)" />
+    </div>
+
+    <div class="form-group">
+        <label>Prix Revient :</label>
+        <InputNumber @bind-Value="addEquipement.Prix_Revient" />
+        <ValidationMessage For="@(() => addEquipement.Prix_Revient)" />
+    </div>
+
+    <div class="form-group">
+        <label>Modèle :</label>
+        <InputText @bind-Value="addEquipement.Nom_Modele" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
+    </div>
+
+    <div class="form-group">
+        <label>Marque :</label>
+        <InputText @bind-Value="addEquipement.Nom_Marque" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
+    </div>
+
+    <div class="form-group">
+        <label>Plateforme associée :</label>
+        <InputSelect @bind-Value="addEquipement.Nom_Plateforme">
+            <option>...</option>
+            @foreach (var plateforme in plateformes)
+            {
+                <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
+    </div>
+
+    <div class="form-group">
+        <label>Type Equipement :</label>
+        <InputSelect @bind-Value="addEquipement.Type_Equipement">
+            <option>...</option>
+            @foreach (var type in type_Equipements)
+            {
+                <option value="@type.Nom_Type">@type.Nom_Type</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
+    </div>
+
+    <h4 class="add_platform">Photos</h4>
+    <InputFile OnChange="HandleFileUpload" />
+
+    <div class="checkbox-group">
+        <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+        <label>Autonomie</label>
+    </div>
+
+    <div class="checkbox-group">
+        <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
+        <label>Utilisable chez le client</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+            @message
+        </div>
+    }
+
+</EditForm>
+
+
+    @code {
+    private Equipement addEquipement = new();
+    private List<Plateforme> plateformes = new();
+    private List<Type_Equipement> type_Equipements = new();
+    private Marque marqueequipement = new();
+
+    bool isSubmitted = false;
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        plateformes = (await plateformeDatas.GetAllAsync()).ToList();
+        type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+    }
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+        content.Add(fileContent, "file", file.Name);
+
+        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+            addEquipement.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+        }
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+   
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            addEquipement.Date_Acquisition = DateTime.Now;
+            addEquipement.Actif = true;
+            
+            await equipementDatas.AddAsync(addEquipement);
+
+            isSubmitted = true;
+            message = "Équipement ajouté avec succès !";
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            // message = ex.Message;
+            message = "Il y a eu une erreur lors de l'ajout de l'équipement.";
+
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+
+    }
+    private void PLateformeRotation(string SelectedPlateforme)
+    {
+        addEquipement.Nom_Plateforme = SelectedPlateforme;
+    }
+    private void TypeRotation(string SelectedType)
+    {
+        addEquipement.Type_Equipement = SelectedType;
+    }
+}

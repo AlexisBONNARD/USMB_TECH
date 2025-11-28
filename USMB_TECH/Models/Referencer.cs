@@ -1,9 +1,26 @@
-﻿namespace USMB_TECH.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace USMB_TECH.Models
 {
-    public class Referencer
+    [Table("referencer")]
+    public partial class Referencer
     {
+        [Column("id_contact")]
         public int Id_Contact { get; set; }
+
+        [Column("id_equipement")]
         public int Id_Equipement { get; set; }
+
+        [Column("role")]
         public string Role { get; set; }
+
+        [ForeignKey("Id_Contact")]
+        [InverseProperty(nameof(Contact_USMB.Referencers))]
+        public virtual Contact_USMB? Contact_USMBNavigation { get; set; } = null!;
+
+        [ForeignKey("Id_Equipement")]
+        [InverseProperty(nameof(Equipement.Referencers))]
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
     }
 }

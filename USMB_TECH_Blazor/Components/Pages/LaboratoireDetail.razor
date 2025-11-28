@@ -1,0 +1,60 @@
+﻿@page "/laboratoire/{Id}"
+@inject IMainService<Laboratoire, string> dataRepository
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h1>LaboratoireDetail</h1>
+@if (laboratoire is null)
+{
+    <p>Chargement en cours</p>
+}
+else
+{
+    <h3>@laboratoire.Nom_Long</h3>
+    <p>@laboratoire.Nom_Court</p>
+    <h4>Adresse : </h4>
+    <p>Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
+    <p>Adresse du campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p>
+    if(plateformes is not null)
+    {
+        foreach (var plateforme in plateformes)
+        {
+            <p>@plateforme.Nom_Plateforme</p>
+        }
+    }
+    else
+    {
+        <p>Il n'y a pas de plateforme pour ce laboratoire</p>
+    }
+    
+    <h4>Contacts</h4>
+    @foreach(Contact_USMB contact in laboratoire.Contacts)
+    {
+        <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
+        <p>Mail : @contact.Mail</p>
+        <p>Numéro de téléphone : @contact.Telephone</p>
+    }
+    <h4>Prestations</h4>
+    @foreach (Prestation prestation in laboratoire.Prestations)
+    {
+        <p>@prestation.Intitule_Prestation</p>
+       
+    }
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public Laboratoire laboratoire = new Laboratoire();
+    public Adresse adresseLabo = new Adresse();
+    public Adresse adresseCampus = new Adresse();
+    public IEnumerable<Plateforme> plateformes;
+    protected override async Task OnInitializedAsync()
+    {
+        laboratoire = await dataRepository.GetByIdAsync(Id);
+        adresseCampus = laboratoire.Adresse_campusNavigation;
+        adresseLabo = laboratoire.Adresse_laboNavigation;
+        plateformes = laboratoire.Gerers.Select(g => g.PlateformeNavigation).ToList();
+
+    }
+}

@@ -1,9 +1,25 @@
-﻿namespace USMB_TECH.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace USMB_TECH.Models
 {
-    public class Fonctionalite
+    [Table("fonctionalite")]
+    public partial class Fonctionalite
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id_fonctionalite")]
         public int Id_Fonctionalite { get; set; }
+
+        [Column("nom_fonctionalite")]
+        [MaxLength(50)]
         public string Nom_Fonctionalite { get; set; }
+
+        [Column("description")]
+        [MaxLength(1000)]
         public string Description { get; set; }
+
+        [InverseProperty(nameof(Posseder.FonctionaliteNavigation))]
+        public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
     }
 }

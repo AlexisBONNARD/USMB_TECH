@@ -3,31 +3,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("Adresse")]
-    public class Adresse
+    [Table("adresse")]
+    public partial class Adresse
     {
         [Key]
-        [Column("Id_Adresse")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id_adresse")]
         public int Id_Adresse { get; set; }
 
-        [Column("Rue_Adresse")]
-        [StringLength(200)]
+        [Column("rue_adresse")]
+        [MaxLength(200)]
         public string? Rue_Adresse { get; set; }
 
-        [Column("Complement_Rue_Adresse")]
-        [StringLength(200)]
+        [Column("complement_rue_adresse")]
+        [MaxLength(200)]
         public string? Complement_Rue_Adresse { get; set; }
 
-        [Column("Code_Postal_Adresse")]
-        [StringLength(11)]
+        [Column("code_postal_adresse")]
+        [MaxLength(11)]
         public string? Code_Postal_Adresse { get; set; }
 
-        [Column("Ville_Adresse")]
-        [StringLength(100)]
+        [Column("ville_adresse")]
+        [MaxLength(100)]
         public string? Ville_Adresse { get; set; }
 
-        [Column("Pays_Adresse")]
-        [StringLength(50)]
+        [Column("pays_adresse")]
+        [MaxLength(50)]
         public string? Pays_Adresse { get; set; }
+
+        [InverseProperty(nameof(Laboratoire.Adresse_campusNavigation))]
+        public virtual ICollection<Laboratoire> Laboratoires_campus { get; set; } = new List<Laboratoire>();
+
+        [InverseProperty(nameof(Laboratoire.Adresse_laboNavigation))]
+        public virtual ICollection<Laboratoire> Laboratoires_labo { get; set; } = new List<Laboratoire>();
     }
 }
