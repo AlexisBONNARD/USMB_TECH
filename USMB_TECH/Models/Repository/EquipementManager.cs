@@ -175,7 +175,6 @@ namespace USMB_TECH.Models.Repository
 
         }
 
-
         public async Task UpdateAsync(Equipement entityToUpdate, Equipement updatedEntity)
         {
             // --- Propriétés simples ---
@@ -188,32 +187,32 @@ namespace USMB_TECH.Models.Repository
                     .FirstOrDefault(p => p.Id_Photo == updatedPhoto.Id_Photo);
 
                 if (existingPhoto != null)
-                    _context.Entry(existingPhoto).CurrentValues.SetValues(updatedPhoto);
+                {
+                    // Mise à jour manuelle
+                    existingPhoto.Nom_Photo = updatedPhoto.Nom_Photo;
+                    existingPhoto.Url_Photo = updatedPhoto.Url_Photo;
+                }
                 else
                 {
                     updatedPhoto.Id_Equipement = entityToUpdate.Id_Equipement;
+                    updatedPhoto.Id_Plateforme = null; // ⚡ Respecte la contrainte CK_Photo_EquipementOuPlateforme
                     entityToUpdate.Photos.Add(updatedPhoto);
                 }
-            }
-
-            var photosToRemove = entityToUpdate.Photos
-                .Where(p => !updatedEntity.Photos.Any(up => up.Id_Photo == p.Id_Photo))
-                .ToList();
-
-            foreach (var photo in photosToRemove)
-            {
-                entityToUpdate.Photos.Remove(photo);
-                _context.Photos.Remove(photo);
             }
 
             // --- Exemple_Utilisations ---
             foreach (var updatedEx in updatedEntity.Exemple_Utilisations)
             {
+                Console.WriteLine("ID reçu : " + updatedEx.Id_Exemple_Utilisation);
+
                 var existingEx = entityToUpdate.Exemple_Utilisations
                     .FirstOrDefault(eu => eu.Id_Exemple_Utilisation == updatedEx.Id_Exemple_Utilisation);
 
                 if (existingEx != null)
-                    _context.Entry(existingEx).CurrentValues.SetValues(updatedEx);
+                {
+                    existingEx.Nom_Utilisation = updatedEx.Nom_Utilisation;
+                    existingEx.Description_Utilisation = updatedEx.Description_Utilisation;
+                }
                 else
                 {
                     updatedEx.Id_Equipement = entityToUpdate.Id_Equipement;
@@ -221,17 +220,7 @@ namespace USMB_TECH.Models.Repository
                 }
             }
 
-            var exToRemove = entityToUpdate.Exemple_Utilisations
-                .Where(eu => !updatedEntity.Exemple_Utilisations.Any(ue => ue.Id_Exemple_Utilisation == eu.Id_Exemple_Utilisation))
-                .ToList();
-
-            foreach (var ex in exToRemove)
-            {
-                entityToUpdate.Exemple_Utilisations.Remove(ex);
-                _context.Exemple_Utilisations.Remove(ex);
-            }
-
-            // --- Fournirs (association sans ID) ---
+            // --- Fournirs ---
             foreach (var updatedF in updatedEntity.Fournirs)
             {
                 var existingF = entityToUpdate.Fournirs
@@ -243,29 +232,18 @@ namespace USMB_TECH.Models.Repository
                     updatedF.Id_Equipement = entityToUpdate.Id_Equipement;
                     entityToUpdate.Fournirs.Add(updatedF);
                 }
+                else
+                {
+                    // Mise à jour manuelle si tu as des propriétés scalaires à modifier
+                    // ex: existingF.Quantite = updatedF.Quantite;
+                }
             }
 
-            var fToRemove = entityToUpdate.Fournirs
-                .Where(f => !updatedEntity.Fournirs.Any(uf => uf.Id_Equipement == f.Id_Equipement &&
-                                                              uf.Id_Prestation == f.Id_Prestation))
-                .ToList();
-
-            foreach (var f in fToRemove)
-            {
-                entityToUpdate.Fournirs.Remove(f);
-                _context.Fournirs.Remove(f);
-            }
-
-            // - Posseders
-            // - Consommers
-            // - Referencers
-            // - Prise_Contacts
-            // - Présenter (via Plateforme)
-            // - Spécifier (via Plateforme)
-            // - Exposer (via Plateforme)
+            // ⚠️ Pas de suppression automatique → les données existantes restent en base
 
             await _context.SaveChangesAsync();
         }
+
 
 
 
