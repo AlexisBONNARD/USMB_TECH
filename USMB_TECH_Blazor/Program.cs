@@ -15,8 +15,6 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/")
 });
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
 builder.Services.AddScoped<IMainService<Equipement, int>>(eq => new WebService<Equipement, int>("Equipements"));
 builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebService<Laboratoire, string>("Laboratoires"));
 builder.Services.AddScoped<IMainService<Plateforme, int>>(eq => new WebService<Plateforme, int>("Plateformes"));
