@@ -1,0 +1,114 @@
+﻿@page "/prestation/{Id:int}"
+@inject IMainService<Contact_USMB,int> ContactService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link href="css/PageDetail.css" rel="stylesheet" />
+</HeadContent>
+
+<PageTitle>Visualiser Demande de Contact</PageTitle>
+
+@* @if (prestation == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+        <!-- ========= COLONNE GAUCHE ========= -->
+        <div class="col-left">
+            <section>
+                <h2>Prestation : @prestation.Intitule_Prestation</h2>
+                <p>@prestation.Description_Prestation</p>
+                <p>Laboratoire : @prestation.Nom_Court</p>
+            </section>
+
+            <section>
+                <h3>PRIX</h3>
+                <ul class="list-style">
+                    <p>Revient : @prestation.Prix_Revient €</p>
+                    <p>Vente : @prestation.Prix_Vente €</p>
+                </ul>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE CENTRALE ========= -->
+        <div class="col-center">
+            <section>
+                <h3>NOS PLATEFORMES</h3>
+
+                <div class="center-grid">
+                    @foreach (var plateforme in plateformes)
+                    {
+                        <div class="center-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
+                            @if (plateforme.Photos != null && plateforme.Photos.Any())
+                            {
+                                var photo = plateforme.Photos.First();
+                                <img src="@photo.Url_Photo" alt="photo plateforme" />
+                            }
+                            <p>@plateforme.Nom_Plateforme</p>
+                        </div>
+                    }
+                </div>
+            </section>
+            <section>
+                <h3>NOS ÉQUIPEMENTS</h3>
+
+                <div class="center-grid">
+                    @foreach (var equipement in equipements)
+                    {
+                        <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
+                            @if (equipement.Photos != null && equipement.Photos.Any())
+                            {
+                                var photo = equipement.Photos.First();
+                                <img src="@photo.Url_Photo" alt="photo équipement" />
+                            }
+                            <p>@equipement.Nom_Equipement</p>
+                        </div>
+                    }
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE DROITE ========= -->
+        <div class="col-right">
+
+            <div class="info-block">
+                <h4>Localisation :</h4>
+                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
+            </div>
+
+            <FormulaireContact />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Contact_USMB? contact;
+    private List<Plateforme> plateformes = new List<Plateforme>();
+    private List<Equipement> equipements = new List<Equipement>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        contact = await ContactService.GetByIdAsync(Id);
+        foreach (var plateforme in contact.Presenters)
+        {
+            var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
+            this.plateformes.Add(plat);
+        }
+        foreach (var equipement in prestation.Fournirs)
+        {
+            var equip = await EquipementService.GetByIdAsync(equipement.Id_Equipement);
+            this.equipements.Add(equip);
+        }
+    }
+
+    private void RetourListe(int idEquipement, string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
+    }
+} *@
