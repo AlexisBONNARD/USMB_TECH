@@ -28,7 +28,7 @@
                 <a href="#"><i class="bi bi-instagram"></i></a>
                 <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
                 <button @onclick="@(() => Nav.NavigateTo("/ajouter-plateforme"))">Ajouter une plateforme</button>
-                <button @onclick="@(() => Nav.NavigateTo("/demandeContact"))">Visualiser demande contact</button>
+                @* <button @onclick="@(() => Nav.NavigateTo("/demandeContact"))">Visualiser demande contact</button> *@
             </div>
 
             <!-- BARRE DE RECHERCHE -->
@@ -70,6 +70,10 @@
     <div class="usmb-header-main">
         <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
         <NavMenu></NavMenu>
+    </div>
+    <!-- Bandeau Fil D'Ariane -->
+    <div class="usmb-header-main">
+        <FilDAriane></FilDAriane>
     </div>
 
 </header>
