@@ -21,13 +21,13 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Restore dependencies
-        run: dotnet restore USMB_TECH_API/USMB_TECH_API.csproj
+        run: dotnet restore USMB_TECH/USMB_TECH.csproj
 
       - name: Build solution
-        run: dotnet build USMB_TECH_API/USMB_TECH_API.csproj --configuration Release --no-restore
+        run: dotnet build USMB_TECH/USMB_TECH.csproj --configuration Release --no-restore
 
       - name: Publish API with Blazor front-end
-        run: dotnet publish USMB_TECH_API/USMB_TECH_API.csproj --configuration Release --output publish
+        run: dotnet publish USMB_TECH/USMB_TECH.csproj --configuration Release --output publish
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
