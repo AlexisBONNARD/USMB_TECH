@@ -45,11 +45,12 @@ jobs:
       contents: read
 
     steps:
-      # 1️⃣ Télécharger artifact
+      # 1️⃣ Télécharger l'artifact dans le même dossier "publish"
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: blazor-app
+          path: publish   # 🔹 important : télécharge directement dans ./publish
 
       # 2️⃣ Login Azure
       - name: Login to Azure
@@ -65,4 +66,4 @@ jobs:
         with:
           app-name: 'blazor-usmbtech'
           slot-name: 'Production'
-          package: './publish'
+          package: './publish'   # 🔹 doit correspondre au dossier de l'artifact
