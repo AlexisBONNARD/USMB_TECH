@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
 builder.Services.AddScoped<IMainRepository<Plateforme, int>, PlateformeManager>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(" https://localhost:7093/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();

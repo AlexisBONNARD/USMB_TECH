@@ -13,10 +13,20 @@ namespace USMB_TECH.Mapper
             .ForMember(dest => dest.Type_EquipementNavigation,
                opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
             .ForMember(dest => dest.Id_Plateforme, opt => opt.Ignore())
+            .ForMember(dest => dest.Exemple_Utilisations,
+    opt => opt.MapFrom(src => new List<Exemple_Utilisation>
+    {
+        new Exemple_Utilisation
+        {
+            Nom_Utilisation = src.Nom_Exemple,
+            Description_Utilisation = src.Description_Exemple
+        }
+    }))
             .ForMember(dest => dest.Id_Type_Equipement, opt => opt.Ignore())
-            .ForMember(dest => dest.ModeleNavigation, 
+            .ForMember(dest => dest.ModeleNavigation,
             opt => opt.MapFrom(src => new Modele
-            { Nom_Modele = src.Nom_Modele, 
+            {
+                Nom_Modele = src.Nom_Modele,
                 MarqueNavigation = new Marque
                 {
                     Nom_Marque = src.Nom_Marque

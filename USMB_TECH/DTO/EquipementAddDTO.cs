@@ -18,6 +18,10 @@
         public bool Autonomie { get; set; }
         public bool Utilisable_Chez_Le_Client { get; set; }
 
+        public string Nom_Exemple { get; set; }
+
+        public string Description_Exemple { get; set; }
+
         public List<PhotoDto> Photos { get; set; } = new();
 
     }
