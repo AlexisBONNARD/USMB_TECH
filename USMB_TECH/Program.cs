@@ -41,7 +41,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazor",
         policy =>
         {
-            policy.WithOrigins("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net", "https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
+            policy.WithOrigins("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/", "https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
       .AllowAnyHeader()
       .AllowAnyMethod();
         });
