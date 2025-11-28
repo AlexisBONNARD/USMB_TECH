@@ -6,7 +6,6 @@ using USMB_TECH.Models.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,25 +29,18 @@ builder.Services.AddScoped<MarqueManager>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("UsmbTechDbContext")));
 
-
-// CORRECT CORS CONFIGURATION
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazor",
         policy =>
         {
-            policy.WithOrigins(
-                    "https://localhost:7264" // Blazor app
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-                //.AllowCredentials();
+            policy.WithOrigins("https://localhost:7264")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
         });
-
 });
 
 builder.Services.AddControllers()
@@ -61,26 +53,22 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
-app.MapFallbackToFile("index.html");
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// APPLY CORS
 app.UseCors("AllowBlazor");
 
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
+// IMPORTANT : ordre correct
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.UseDefaultFiles();
-
+// Map API controllers
 app.MapControllers();
 
+// LAST : Blazor fallback
 app.MapFallbackToFile("index.html");
 
 app.Run();
