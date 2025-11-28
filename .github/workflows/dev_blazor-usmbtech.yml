@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core Blazor app to Azure Web App - blazor-usmbtech
+name: Build and Deploy Blazor WASM to Azure Web App - blazor-usmbtech
 
 on:
   push:
@@ -21,10 +21,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build Blazor project
-        run: dotnet build USMB_TECH.Client/USMB_TECH.Client.csproj --configuration Release
+        run: dotnet build USMB_TECH_Blazor/USMB_TECH_Blazor.csproj --configuration Release
 
       - name: Publish Blazor project
-        run: dotnet publish USMB_TECH.Client/USMB_TECH.Client.csproj --configuration Release --output publish
+        run: dotnet publish USMB_TECH_Blazor/USMB_TECH_Blazor.csproj --configuration Release --output publish
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
@@ -44,7 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: blazor-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
