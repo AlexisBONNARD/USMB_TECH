@@ -27,10 +27,8 @@
 	<ItemGroup>
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
-
-	
 	<Target Name="PublishBlazorWasm" AfterTargets="Publish">
-		<Exec Command="dotnet publish ..\USMB_TECH_Blazor\USMB_TECH_Blazor.csproj -c Release -o $(ProjectDir)wwwroot" />
+		<Exec Command="dotnet publish ../USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release -o $(ProjectDir)wwwroot" />
 	</Target>
 
 </Project>
