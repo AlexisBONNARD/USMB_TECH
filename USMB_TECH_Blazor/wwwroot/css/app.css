@@ -105,6 +105,7 @@ code {
 .usmb-header {
     font-family: Arial, sans-serif;
     color: #fff;
+/*    position: fixed;*/
 }
 
 .usmb-header-top {
