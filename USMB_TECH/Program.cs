@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
 builder.Services.AddScoped<IMainRepository<Plateforme, int>, PlateformeManager>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7093/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
@@ -42,12 +42,11 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins(
-                    "https://localhost:7264", // Blazor app
-                    "https://localhost:7093"  // API (dev)
+                    "https://localhost:7264" // Blazor app
                 )
                 .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+                .AllowAnyMethod();
+                //.AllowCredentials();
         });
 });
 
