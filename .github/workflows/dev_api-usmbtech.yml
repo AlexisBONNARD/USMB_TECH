@@ -39,13 +39,14 @@ jobs:
       - name: Publish API + Blazor
         run: dotnet publish USMB_TECH/USMB_TECH.csproj --configuration Release --output publish
 
-      # 7️⃣ Vérifier que icudt_EFIGS.dat existe
+      # 7️⃣ Vérifier que icudt_EFIGS.dat existe (PowerShell)
       - name: Verify icudt_EFIGS.dat exists
+        shell: pwsh
         run: |
-          if [ ! -f "./publish/wwwroot/_framework/icudt_EFIGS.dat" ]; then
-            echo "ERROR: icudt_EFIGS.dat is missing!"
+          if (-Not (Test-Path "./publish/wwwroot/_framework/icudt_EFIGS.dat")) {
+            Write-Error "ERROR: icudt_EFIGS.dat is missing!"
             exit 1
-          fi
+          }
 
       # 8️⃣ Upload artifact
       - name: Upload artifact for deployment
