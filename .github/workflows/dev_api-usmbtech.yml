@@ -13,33 +13,37 @@ jobs:
       contents: read
 
     steps:
-      # Récupération du code
+      # 1️⃣ Récupération du code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Installation de .NET
+      # 2️⃣ Installation de .NET 8
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
-      # Nettoyage des anciens builds
+      # 3️⃣ Nettoyage complet pour éviter les anciens fichiers
       - name: Clean solution
         run: dotnet clean USMB_TECH/USMB_TECH.csproj
 
-      # Restauration des dépendances
+      # 4️⃣ Restauration des dépendances
       - name: Restore dependencies
         run: dotnet restore USMB_TECH/USMB_TECH.csproj
 
-      # Compilation en Release
+      # 5️⃣ Compilation en Release
       - name: Build solution
         run: dotnet build USMB_TECH/USMB_TECH.csproj --configuration Release --no-restore
 
-      # Publication de l'application complète (API + Blazor)
+      # 6️⃣ Publication API + Blazor dans ./publish
       - name: Publish API and Blazor
         run: dotnet publish USMB_TECH/USMB_TECH.csproj --configuration Release --output publish
 
-      # Upload de l'artifact pour le déploiement
+      # 7️⃣ Vérification que les fichiers _framework existent
+      - name: List published files
+        run: dir publish\wwwroot\_framework
+
+      # 8️⃣ Upload de l'artifact pour déploiement
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
@@ -54,14 +58,14 @@ jobs:
       contents: read
 
     steps:
-      # Téléchargement de l'artifact du job build
+      # 1️⃣ Télécharger l'artifact du build
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: full-app
           path: publish
 
-      # Connexion à Azure
+      # 2️⃣ Connexion à Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -69,10 +73,11 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CF49F06B2F244A3DAA092FFFDDF4DF78 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5081036E4D9E46B2ADAF49DD7A106AC6 }}
 
-      # Déploiement complet vers Azure Web App
-      - name: Deploy to Azure Web App
+      # 3️⃣ Déploiement clean vers Azure Web App
+      - name: Deploy to Azure Web App (clean deploy)
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'api-usmbtech'
           slot-name: 'Production'
-          package: ./publish
+          package: './publish'
+          clean: true
