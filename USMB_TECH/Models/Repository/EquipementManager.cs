@@ -203,6 +203,8 @@ namespace USMB_TECH.Models.Repository
             // --- Exemple_Utilisations ---
             foreach (var updatedEx in updatedEntity.Exemple_Utilisations)
             {
+                Console.WriteLine("ID reçu : " + updatedEx.Id_Exemple_Utilisation);
+
                 var existingEx = entityToUpdate.Exemple_Utilisations
                     .FirstOrDefault(eu => eu.Id_Exemple_Utilisation == updatedEx.Id_Exemple_Utilisation);
 
