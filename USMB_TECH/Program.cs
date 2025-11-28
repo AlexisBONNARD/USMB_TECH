@@ -48,6 +48,7 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
                 //.AllowCredentials();
         });
+
 });
 
 builder.Services.AddControllers()
@@ -78,5 +79,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
