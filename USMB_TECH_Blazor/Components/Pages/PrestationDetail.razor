@@ -6,7 +6,7 @@
 @inject IJSRuntime JS
 
 <HeadContent>
-    <link href="css/PlateformeEquipementDetail.css" rel="stylesheet" />
+    <link href="css/PageDetail.css" rel="stylesheet" />
 </HeadContent>
 
 <PageTitle>Détails Plateforme</PageTitle>
@@ -40,10 +40,10 @@ else
             <section>
                 <h3>NOS PLATEFORMES</h3>
 
-                <div class="equipement-grid">
+                <div class="center-grid">
                     @foreach (var plateforme in plateformes)
                     {
-                        <div class="equipement-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
+                        <div class="center-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
                             @if (plateforme.Photos != null && plateforme.Photos.Any())
                             {
                                 var photo = plateforme.Photos.First();
@@ -57,10 +57,10 @@ else
             <section>
                 <h3>NOS ÉQUIPEMENTS</h3>
 
-                <div class="equipement-grid">
+                <div class="center-grid">
                     @foreach (var equipement in equipements)
                     {
-                        <div class="equipement-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
+                        <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
                             @if (equipement.Photos != null && equipement.Photos.Any())
                             {
                                 var photo = equipement.Photos.First();

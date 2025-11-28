@@ -7,9 +7,9 @@ namespace USMB_TECH.Models
     {
         public int Id_Exemple_Utilisation { get; set; }
 
-        public int Id_Equipement { get; set; }
+        public int? Id_Equipement { get; set; }
 
-        public int Id_Plateforme { get; set; }
+        public int? Id_Plateforme { get; set; }
 
         public string Nom_Utilisation { get; set; }
 
