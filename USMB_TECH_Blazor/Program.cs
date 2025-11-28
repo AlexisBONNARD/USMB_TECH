@@ -23,7 +23,7 @@ builder.Services.AddScoped<IMainService<Marque, int>>(eq => new WebService<Marqu
 //builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://localhost:7093/") // URL de ton API
+    BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net") // URL de ton API
 });
 builder.Services.AddScoped<SearchService>();
 await builder.Build().RunAsync();

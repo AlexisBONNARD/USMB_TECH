@@ -41,14 +41,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazor",
         policy =>
         {
-            policy.WithOrigins(
-                    "https://localhost:7264", // Blazor app
-                    "https://localhost:7093"  // API (dev)
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+            policy.WithOrigins("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net", "https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
+      .AllowAnyHeader()
+      .AllowAnyMethod();
         });
+
 });
 
 builder.Services.AddControllers()
