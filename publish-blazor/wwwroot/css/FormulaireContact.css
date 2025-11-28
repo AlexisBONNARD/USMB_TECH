@@ -1,0 +1,61 @@
+﻿/* --- FORMULAIRE --- */
+.contact-section {
+    margin-top: 40px;
+}
+
+    .contact-section h3 {
+        font-size: 14px;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #555;
+    }
+
+.form-container {
+    background-color: #f4f4f4;
+    width: 350px;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4%;
+    margin-bottom: 10px;
+    margin-left: 0!important;
+    margin-right: 0!important;
+}
+
+.input {
+    width: 100%;
+    padding: 12px;
+    background-color: #0b3d78;
+    color: white;
+    border: none;
+    margin-bottom: 10px;
+    border-radius: 2px;
+}
+
+    .input::placeholder {
+        color: #d8e6f8;
+    }
+
+    .input.half {
+        width: 48%;
+    }
+
+.textarea {
+    height: 100px;
+    resize: none;
+}
+
+.submit-btn {
+    width: 120px;
+    background-color: #90c7e5;
+    padding: 10px;
+    border: none;
+    color: #0b3d78;
+    font-weight: bold;
+    border-radius: 3px;
+    cursor: pointer;
+}

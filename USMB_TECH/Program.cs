@@ -61,6 +61,7 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+app.MapFallbackToFile("index.html");
 
 if (app.Environment.IsDevelopment())
 {
@@ -68,19 +69,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// ENABLE STATIC FILES (REQUIRED FOR UPLOAD)
-app.UseStaticFiles();
-
 // APPLY CORS
 app.UseCors("AllowBlazor");
 
 //app.UseHttpsRedirection();
 
 //app.UseAuthorization();
+app.UseStaticFiles();
+
+app.UseDefaultFiles();
 
 app.MapControllers();
-
-app.UseStaticFiles();
 
 app.MapFallbackToFile("index.html");
 
