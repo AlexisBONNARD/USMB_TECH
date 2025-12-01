@@ -49,17 +49,7 @@
         <InputText @bind-Value="addEquipement.Nom_Modele" />
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
     </div>
-    <div>
-        <label>Exemple d'utilisation</label>
-        <div>
-            <label>Nom de l'exemple : </label>
-            <InputText @bind-Value="addEquipement.Nom_Exemple"/>
-        </div>
-        <div>
-            <label>Description : </label>
-            <InputText @bind-Value="addEquipement.Description_Exemple"/>
-        </div>
-    </div>
+
     <div class="form-group">
         <label>Marque :</label>
         <InputText @bind-Value="addEquipement.Nom_Marque" />
@@ -88,6 +78,18 @@
             }
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
+    </div>
+
+    <div>
+        <h4 class="add_platform">Exemple d'utilisation</h4>
+        <div>
+            <label>Nom de l'exemple : </label>
+            <InputText @bind-Value="addEquipement.Nom_Exemple" />
+        </div>
+        <div>
+            <label>Description : </label>
+            <InputText @bind-Value="addEquipement.Description_Exemple" />
+        </div>
     </div>
 
     <h4 class="add_platform">Photos</h4>
