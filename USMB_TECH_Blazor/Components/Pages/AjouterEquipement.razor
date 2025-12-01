@@ -89,14 +89,40 @@
 
         <hr />
         <h4 class="add_equipement">Type d'équipement *</h4>
-        <InputSelect class="form-select mb-2" @bind-Value="addEquipement.Type_Equipement">
+        <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
             <option>...</option>
             @foreach (var type in type_Equipements)
             {
                 <option value="@type.Nom_Type">@type.Nom_Type</option>
             }
+            <option value="ajouter">Ajouter un type</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
+    </div>
+    @if (LastTypeEquipement == "ajouter")
+    {
+        <hr />
+        <h4 class="add_platform">Ajouter un type d’équipement</h4>
+        <form onsubmit="return false;" class="mb-2">
+            <input class="form-control mb-1"
+                   @bind="newTypeEquipement"
+                   @bind:event="oninput"
+                   placeholder="Nom du type"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
+        </form>
+
+        @if (dernierTypeAjoute != null)
+        {
+            <ul class="add_platform">
+                <li class="add_platform">
+                    @dernierTypeAjoute.Nom_Type
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
+                </li>
+            </ul>
+        }
+    }
+
 
         <hr />
         <h4 class="add_equipement">Exemple d'utilisation</h4>
@@ -127,6 +153,7 @@
     private List<Plateforme> plateformes = new();
     private List<Type_Equipement> type_Equipements = new();
     private Marque marqueequipement = new();
+    private Type_Equipement dernierTypeAjoute;
 
     private bool isLoading = false;
     bool isSubmitted = false;
@@ -152,6 +179,25 @@
             }
         }
     }
+
+    private string _lastTypeEquipement;
+    private string LastTypeEquipement
+    {
+        get => _lastTypeEquipement;
+        set
+        {
+            _lastTypeEquipement = value;
+            JS.InvokeVoidAsync("console.log", $"Type sélectionné : {value}");
+
+            if (value != "ajouter")
+            {
+                addEquipement.Type_Equipement = value;
+            }
+        }
+    }
+
+
+    private string newTypeEquipement = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -269,6 +315,31 @@
         addEquipement.Type_Equipement = SelectedType;
     }
 
+    void AddTypeEquipement()
+    {
+        if (!string.IsNullOrWhiteSpace(newTypeEquipement))
+        {
+            var nouveauType = new Type_Equipement { Nom_Type = newTypeEquipement };
+            type_Equipements.Add(nouveauType);
+
+            // Sélectionne automatiquement le type ajouté
+            LastTypeEquipement = newTypeEquipement;
+            addEquipement.Type_Equipement = newTypeEquipement;
+
+            dernierTypeAjoute = nouveauType;
+            newTypeEquipement = "";
+        }
+    }
+
+
+    void RemoveTypeEquipement(Type_Equipement t)
+    {
+        type_Equipements.Remove(t);
+        if (dernierTypeAjoute == t)
+        {
+            dernierTypeAjoute = null;
+        }
+    }
 
 
 }
