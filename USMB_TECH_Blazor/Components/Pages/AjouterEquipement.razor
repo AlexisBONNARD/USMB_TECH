@@ -55,30 +55,29 @@
         <InputText @bind-Value="addEquipement.Nom_Marque" />
         <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
     </div>
-
+    <!-- Champ plateforme -->
     <div class="form-group">
         <label>Plateforme associée :</label>
-        <InputSelect @bind-Value="addEquipement.Nom_Plateforme" id="plateforme">
-            <option>...</option>
+        <InputSelect @bind-Value="LastPlateforme">
+            <option value="">...</option>
             @foreach (var plateforme in plateformes)
             {
                 <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
             }
             <option value="ajouter">Ajouter une plateforme</option>
-
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
     </div>
-    <!-- Modal pour ajouter une plateforme -->
+
+    <!-- Modal -->
     <div id="modalPlateforme" class="modal" style="display: none;">
         <div class="modal-content">
-            <span id="closeModal" class="close">&times;</span>
+            <span class="close" @onclick="CloseModal">&times;</span>
             <h3>Ajouter une plateforme</h3>
-
-            <!-- Composant AddPlateforme intégré dans la modale -->
-            <AddPlateforme/>
+            <AddPlateforme OnPlateformeAdded="OnPlateformeAdded" />
         </div>
     </div>
+
 
     <div class="form-group">
         <label>Type Equipement :</label>
@@ -138,6 +137,27 @@
     bool isSubmitted = false;
     string message = "";
 
+    private string _lastPlateforme;
+
+    private string LastPlateforme
+    {
+        get => _lastPlateforme;
+        set
+        {
+            _lastPlateforme = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModal();
+            }
+            else
+            {
+                addEquipement.Nom_Plateforme = value;
+            }
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         plateformes = (await plateformeDatas.GetAllAsync()).ToList();
@@ -146,31 +166,40 @@
 
     private void OnPlateformeChange(ChangeEventArgs e)
     {
-        if (e.Value.ToString() == "ajouter")
+        var selected = e.Value?.ToString();
+
+        // Affiche côté Visual Studio
+        Console.WriteLine($"Changement détecté : {selected}");
+        System.Diagnostics.Debug.WriteLine($"Changement détecté : {selected}");
+
+        // Affiche côté navigateur (console F12)
+        JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {selected}");
+
+        if (selected == "ajouter")
         {
-            OpenModal(); // Ouvrir la modale pour ajouter une plateforme
+            OpenModal();
         }
     }
 
+
     private void OpenModal()
     {
-        // Utiliser JavaScript Interop pour afficher la modale
-        JS.InvokeVoidAsync("document.getElementById('modalPlateforme').style.display", "block");
+        JS.InvokeVoidAsync("openModal");
     }
 
     private void CloseModal()
     {
-        // Fermer la modale via JavaScript Interop
-        JS.InvokeVoidAsync("document.getElementById('modalPlateforme').style.display", "none");
+        JS.InvokeVoidAsync("closeModal");
     }
 
     // Callback qui sera appelé lorsque la plateforme est ajoutée
     private void OnPlateformeAdded(Plateforme plateforme)
     {
-        plateformes.Add(plateforme);  // Ajouter la nouvelle plateforme à la liste
-        addEquipement.Nom_Plateforme = plateforme.Nom_Plateforme; // Mettre à jour le champ de l'équipement
-        CloseModal(); // Fermer la modale après l'ajout
+        plateformes.Add(plateforme);
+        addEquipement.Nom_Plateforme = plateforme.Nom_Plateforme;
+        CloseModal();
     }
+
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
@@ -229,5 +258,7 @@
     {
         addEquipement.Type_Equipement = SelectedType;
     }
+
+
 
 }

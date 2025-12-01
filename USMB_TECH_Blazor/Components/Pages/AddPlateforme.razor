@@ -190,7 +190,7 @@
     string newExempleDesc = "";
     string newEquipement = "";
     int? selectedPrestationId = null;
-
+    [Parameter] public EventCallback<Plateforme> OnPlateformeAdded { get; set; }
 
     bool isSubmitted = false;
     string message = "";
@@ -254,6 +254,8 @@
             {
                 isSubmitted = true;
                 await ShowAlert("Plateforme créée avec succès ✅");
+                // ✅ Notifie le parent si utilisé dans une modale
+                await OnPlateformeAdded.InvokeAsync(plateforme);
             }
             else
             {
