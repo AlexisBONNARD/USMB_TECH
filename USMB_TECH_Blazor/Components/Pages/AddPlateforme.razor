@@ -7,6 +7,12 @@
 <HeadContent>
     <li class="add_platform" nk href="css/addPlateforms.css" rel="stylesheet" />
 </HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
 
 <h2 class="add_platform">Ajouter une plateforme</h2>
 
@@ -183,7 +189,8 @@
 @code {
     Plateforme plateforme = new Plateforme();
     private List<Prestation> prestations = new();
-    
+    private bool isLoading = false;
+
     string newMot_Clef = "";
     string newThematique = "";
     string newExempleNom = "";
@@ -248,13 +255,17 @@
     {
         try
         {
+            isLoading = true; // active le loader
+            StateHasChanged();
+
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/plateformes", plateforme);
 
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;
                 await ShowAlert("Plateforme créée avec succès ✅");
-                // ✅ Notifie le parent si utilisé dans une modale
+
+                // Notifie le parent si utilisé dans une modale
                 await OnPlateformeAdded.InvokeAsync(plateforme);
             }
             else
@@ -268,7 +279,13 @@
             isSubmitted = false;
             await ShowAlert($"Erreur: {ex.Message}");
         }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
+        }
     }
+
 
 
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------

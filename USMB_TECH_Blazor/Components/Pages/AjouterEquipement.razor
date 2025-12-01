@@ -7,81 +7,89 @@
 @inject IJSRuntime JS
 
 <HeadContent>
-    <link rel="stylesheet" href="css/addEquipement.css">
+    <li class="add_equipement" nk href="css/addEquipement.css" rel="stylesheet" />
 </HeadContent>
-<h3>Ajouter un équipement</h3>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_equipement">Ajouter un équipement</h2>
 
-<EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label>Nom de l'équipement :</label>
-        <InputText @bind-Value="addEquipement.Nom_Equipement" />
+<div class="page-container">
+    <EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h4 class="add_equipement">Infos générales</h4>
+        <label>Nom de l'équipement *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" />
         <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
-    </div>
 
-    <div class="form-group">
-        <label>Num_Immobilisation :</label>
-        <InputText @bind-Value="addEquipement.Num_Immobilisation" />
+        <label>Num_Immobilisation *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" />
         <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
-    </div>
 
-    <div class="form-group">
-        <label>Description Technique :</label>
-        <InputText @bind-Value="addEquipement.Description_Technique" />
+        <label>Description Technique *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" />
         <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
-    </div>
 
-    <div class="form-group">
-        <label>Prix Achat :</label>
-        <InputNumber @bind-Value="addEquipement.Prix_Achat" />
+        <label>Prix Achat *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="addEquipement.Prix_Achat" />
         <ValidationMessage For="@(() => addEquipement.Prix_Achat)" />
-    </div>
 
-    <div class="form-group">
-        <label>Prix Revient :</label>
-        <InputNumber @bind-Value="addEquipement.Prix_Revient" />
+        <label>Prix Revient *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="addEquipement.Prix_Revient" />
         <ValidationMessage For="@(() => addEquipement.Prix_Revient)" />
-    </div>
+        <div class="checkbox-group">
+            <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+            <label>Autonomie</label>
+        </div>
 
-    <div class="form-group">
-        <label>Modèle :</label>
-        <InputText @bind-Value="addEquipement.Nom_Modele" />
+        <div class="checkbox-group">
+            <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
+            <label>Utilisable chez le client</label>
+        </div>
+
+        <hr />
+        <h4 class="add_equipement">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" />
+
+        <hr />
+        <h4 class="add_equipement">Modèle *</h4>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" />
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
-    </div>
 
-    <div class="form-group">
-        <label>Marque :</label>
-        <InputText @bind-Value="addEquipement.Nom_Marque" />
+        <hr />
+        <h4 class="add_equipement">Marque *</h4>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Marque" />
         <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
-    </div>
-    <!-- Champ plateforme -->
-    <div class="form-group">
-        <label>Plateforme associée :</label>
-        <InputSelect @bind-Value="LastPlateforme">
+
+        <hr />
+        <h4 class="add_equipement">Plateforme *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastPlateforme">
             <option value="">...</option>
             @foreach (var plateforme in plateformes)
             {
                 <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
             }
-            <option value="ajouter">Ajouter une plateforme</option>
+            <option value="ajouter" class="alert-info">----- Créer une plateforme -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
-    </div>
 
-    <!-- Modal -->
-    <div id="modalPlateforme" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" @onclick="CloseModal">&times;</span>
-            <h3>Ajouter une plateforme</h3>
-            <AddPlateforme OnPlateformeAdded="OnPlateformeAdded" />
+        <!-- Modal -->
+        <div id="modalPlateforme" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModal">&times;</span>
+                <AddPlateforme OnPlateformeAdded="OnPlateformeAdded" />
+            </div>
         </div>
-    </div>
 
 
-    <div class="form-group">
-        <label>Type Equipement :</label>
-        <InputSelect @bind-Value="addEquipement.Type_Equipement">
+        <hr />
+        <h4 class="add_equipement">Type d'équipement *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="addEquipement.Type_Equipement">
             <option>...</option>
             @foreach (var type in type_Equipements)
             {
@@ -89,51 +97,38 @@
             }
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
-    </div>
 
-    <div>
-        <h4 class="add_platform">Exemple d'utilisation</h4>
+        <hr />
+        <h4 class="add_equipement">Exemple d'utilisation</h4>
         <div>
             <label>Nom de l'exemple : </label>
-            <InputText @bind-Value="addEquipement.Nom_Exemple" />
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" />
         </div>
         <div>
             <label>Description : </label>
-            <InputText @bind-Value="addEquipement.Description_Exemple" />
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" />
         </div>
-    </div>
+        
+        <hr/>
+        <button type="submit" class="btn btn-success mt-3">Ajouter</button>
 
-    <h4 class="add_platform">Photos</h4>
-    <InputFile OnChange="HandleFileUpload" />
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
 
-    <div class="checkbox-group">
-        <InputCheckbox @bind-Value="addEquipement.Autonomie" />
-        <label>Autonomie</label>
-    </div>
+    </EditForm>
+</div>
 
-    <div class="checkbox-group">
-        <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
-        <label>Utilisable chez le client</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Ajouter</button>
-
-    @if (!string.IsNullOrEmpty(message))
-    {
-        <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
-            @message
-        </div>
-    }
-
-</EditForm>
-
-
-    @code {
+@code {
     private Equipement addEquipement = new();
     private List<Plateforme> plateformes = new();
     private List<Type_Equipement> type_Equipements = new();
     private Marque marqueequipement = new();
 
+    private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
 
@@ -196,7 +191,7 @@
     private void OnPlateformeAdded(Plateforme plateforme)
     {
         plateformes.Add(plateforme);
-        addEquipement.Nom_Plateforme = plateforme.Nom_Plateforme;
+        LastPlateforme = plateforme.Nom_Plateforme;
         CloseModal();
     }
 
@@ -217,38 +212,53 @@
         {
             var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
             addEquipement.Photos.Add(new Photo
-                {
-                    Nom_Photo = file.Name,
-                    Url_Photo = result.url
-                });
+            {
+                Nom_Photo = file.Name,
+                Url_Photo = result.url
+            });
         }
     }
     public class UploadResponse
     {
         public string url { get; set; }
     }
-   
+
     private async Task HandleValidSubmit()
     {
         try
         {
+            isLoading = true; // démarre le loader
+            StateHasChanged();
+
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
-            
+
             await equipementDatas.AddAsync(addEquipement);
 
             isSubmitted = true;
-            message = "Équipement ajouté avec succès !";
+            await ShowAlert("Équipement ajouté avec succès ✅");
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            // message = ex.Message;
-            message = "Il y a eu une erreur lors de l'ajout de l'équipement.";
-
+            await ShowAlert("Il y a eu une erreur lors de l'ajout de l'équipement ❌");
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
+        finally
+        {
+            isLoading = false; // stoppe le loader
+            StateHasChanged();
+        }
+    }
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
 
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
     }
     private void PLateformeRotation(string SelectedPlateforme)
     {
