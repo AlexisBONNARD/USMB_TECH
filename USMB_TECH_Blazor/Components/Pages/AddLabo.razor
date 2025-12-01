@@ -1,0 +1,94 @@
+﻿@page "/ajouterLabo"
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject IMainService<Laboratoire, string> laboService   
+
+
+<h3>AddLabo</h3>
+<div>
+    <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+            <label>Nom complet du laboratoire</label>
+            <InputText @bind-Value="labo.Nom_Long"></InputText>
+            <ValidationMessage For="@(() => labo.Nom_Long)" />
+
+            <label>Nom du laboratoire</label>
+            <InputText @bind-Value="labo.Nom_Court"></InputText>
+            <ValidationMessage For="@(() => labo.Nom_Court)" />
+
+            <label>Description</label>
+            <InputText @bind-Value="labo.Description"></InputText>
+            <ValidationMessage For="@(() => labo.Description)" />
+           
+            <h2>Adresses</h2>
+
+            <h3>Adresses du laboratoire</h3>
+
+             <label>Rue du laboratoire</label>
+            <InputText @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
+
+            <label>Ville du laboratoire</label>
+            <InputText @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"></InputText>
+
+            <label>Code postal du laboratoire</label>
+            <InputText maxlength="11"  @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"></InputText>
+
+            <label>Pays du laboratoire</label>
+        <InputText @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
+
+            <h3>Adresse du campus</h3>
+
+            <label>Rue du campus</label>
+            <InputText @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
+
+            <label>Ville du campus</label>
+            <InputText @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux"></InputText>
+
+            <label>Code postal du campus</label>
+            <InputText  minlength="5" maxlength="5" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940"></InputText>
+
+            <label>Pays du campus</label>
+            <InputText @bind-Value="labo.Pays_Adresse_Campus" placeholder="France"></InputText>
+
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+
+    </EditForm>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+            @message
+        </div>
+    }
+</div>
+@code {
+    Laboratoire labo = new Laboratoire();
+    bool isSubmitted = false;
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await laboService.AddAsync(labo);
+
+            isSubmitted = true;
+            message = "Laboratoire ajouté avec succès !";
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            // message = ex.Message;
+            message = "Il y a eu une erreur lors de l'ajout du laboratoire.";
+
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+
+    }
+}

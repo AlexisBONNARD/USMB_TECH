@@ -71,7 +71,7 @@ namespace USMB_TECH.Controllers
         // POST: api/Equipements
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Equipement>> PostEquipement(EquipementAddDTO equipementDto)
+        public async Task<ActionResult<Equipement>> PostEquipement(AddEquipementDTO equipementDto)
         {
             if (!ModelState.IsValid)
             {

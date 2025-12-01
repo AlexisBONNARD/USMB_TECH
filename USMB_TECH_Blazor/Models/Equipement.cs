@@ -19,7 +19,7 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Equipement { get; set; }
         [Required(ErrorMessage = "Le numéro d'immobilisation est obligatoire ou a été mal écrit")]
         public string Num_Immobilisation { get; set; }
-        public DateTime Date_Acquisition { get; set; }
+        public DateTime Date_Acquisition { get; set; } = DateTime.Now;
 
         public string Description_Technique { get; set; }
 
@@ -48,7 +48,7 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Utilisable_Chez_Le_Client { get; set; }
 
-        public bool Actif { get; set; }
+        public bool Actif { get; set; } = true;
         public bool Disponibilite { get; set; }
 
         public string Nom_Contact { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace USMB_TECH.DTO
 {
-    public class EquipementAddDTO
+    public class AddEquipementDTO
     {
         public string Nom_Equipement { get; set; }
         public string Num_Immobilisation { get; set; }
@@ -23,6 +23,5 @@
         public string Description_Exemple { get; set; }
 
         public List<PhotoDto> Photos { get; set; } = new();
-
     }
 }

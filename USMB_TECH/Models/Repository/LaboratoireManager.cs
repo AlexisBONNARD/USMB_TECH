@@ -32,6 +32,51 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Laboratoire entity)
         {
+
+            if(entity.Adresse_laboNavigation != null) 
+            {
+                var AdresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
+                    a.Rue_Adresse == entity.Adresse_laboNavigation.Rue_Adresse &&
+                    a.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse &&
+                    a.Ville_Adresse == entity.Adresse_laboNavigation.Ville_Adresse &&
+                    a.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse);
+                if(AdresseLabo is null) 
+                {
+                    AdresseLabo = new Adresse()
+                    {
+                        Rue_Adresse =  entity.Adresse_laboNavigation.Rue_Adresse,
+                        Code_Postal_Adresse = entity.Adresse_laboNavigation.Code_Postal_Adresse,
+                        Ville_Adresse = entity.Adresse_laboNavigation.Ville_Adresse,
+                        Pays_Adresse = entity.Adresse_laboNavigation.Pays_Adresse
+                    };
+                    _context.Adresses.Add(AdresseLabo);
+                    await _context.SaveChangesAsync();
+                }
+                entity.Id_Adresse_Labo = AdresseLabo.Id_Adresse;
+                entity.Adresse_laboNavigation = AdresseLabo;
+            }
+            if (entity.Adresse_campusNavigation != null)
+            {
+                var AdresseCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
+                    a.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse &&
+                    a.Code_Postal_Adresse == entity.Adresse_campusNavigation.Code_Postal_Adresse &&
+                    a.Ville_Adresse == entity.Adresse_campusNavigation.Ville_Adresse &&
+                    a.Pays_Adresse == entity.Adresse_campusNavigation.Pays_Adresse);
+                if (AdresseCampus is null)
+                {
+                    AdresseCampus = new Adresse()
+                    {
+                        Rue_Adresse = entity.Adresse_campusNavigation.Rue_Adresse,
+                        Code_Postal_Adresse = entity.Adresse_campusNavigation.Code_Postal_Adresse,
+                        Ville_Adresse = entity.Adresse_campusNavigation.Ville_Adresse,
+                        Pays_Adresse = entity.Adresse_campusNavigation.Pays_Adresse
+                    };
+                    _context.Adresses.Add(AdresseCampus);
+                    await _context.SaveChangesAsync();
+                }
+                entity.Id_Adresse_Campus = AdresseCampus.Id_Adresse;
+                entity.Adresse_campusNavigation = AdresseCampus;
+            }
             _context.Laboratoires.Add(entity);
             await _context.SaveChangesAsync();
         }
