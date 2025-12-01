@@ -1,0 +1,62 @@
+﻿/* Fond semi-transparent */
+.modal {
+    display: none; /* cachée par défaut */
+    position: fixed;
+    z-index: 1000; /* au-dessus du reste */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* fond gris transparent */
+    animation: fadeIn 0.3s ease-in-out; /* animation d’apparition */
+}
+
+/* Contenu centré */
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto; /* centré verticalement */
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%; /* largeur de la boîte */
+    max-width: 700px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s ease-in-out; /* animation de descente */
+}
+
+/* Bouton de fermeture */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+    .close:hover {
+        color: #000;
+    }
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
