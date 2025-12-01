@@ -68,14 +68,26 @@
 
     <div class="form-group">
         <label>Plateforme associée :</label>
-        <InputSelect @bind-Value="addEquipement.Nom_Plateforme">
+        <InputSelect @bind-Value="addEquipement.Nom_Plateforme" id="plateforme">
             <option>...</option>
             @foreach (var plateforme in plateformes)
             {
                 <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
             }
+            <option value="ajouter">Ajouter une plateforme</option>
+
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
+    </div>
+    <!-- Modal pour ajouter une plateforme -->
+    <div id="modalPlateforme" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h3>Ajouter une plateforme</h3>
+
+            <!-- Composant AddPlateforme intégré dans la modale -->
+            <AddPlateforme/>
+        </div>
     </div>
 
     <div class="form-group">
@@ -128,6 +140,34 @@
     {
         plateformes = (await plateformeDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+    }
+
+    private void OnPlateformeChange(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() == "ajouter")
+        {
+            OpenModal(); // Ouvrir la modale pour ajouter une plateforme
+        }
+    }
+
+    private void OpenModal()
+    {
+        // Utiliser JavaScript Interop pour afficher la modale
+        JS.InvokeVoidAsync("document.getElementById('modalPlateforme').style.display", "block");
+    }
+
+    private void CloseModal()
+    {
+        // Fermer la modale via JavaScript Interop
+        JS.InvokeVoidAsync("document.getElementById('modalPlateforme').style.display", "none");
+    }
+
+    // Callback qui sera appelé lorsque la plateforme est ajoutée
+    private void OnPlateformeAdded(Plateforme plateforme)
+    {
+        plateformes.Add(plateforme);  // Ajouter la nouvelle plateforme à la liste
+        addEquipement.Nom_Plateforme = plateforme.Nom_Plateforme; // Mettre à jour le champ de l'équipement
+        CloseModal(); // Fermer la modale après l'ajout
     }
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
@@ -187,4 +227,5 @@
     {
         addEquipement.Type_Equipement = SelectedType;
     }
+
 }
