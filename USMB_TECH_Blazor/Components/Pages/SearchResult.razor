@@ -38,8 +38,11 @@ else
 
                 <p><strong>Disponibilité :</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
 
+                <hr />
+
                 @if (e.MotsCles?.Any() == true)
                 {
+                    <p><strong>Mots-clés :</strong></p>
                     <div class="tag-list">
                         @foreach (var mc in e.MotsCles)
                         {
@@ -50,6 +53,7 @@ else
 
                 @if (e.Thematiques?.Any() == true)
                 {
+                    <p><strong>Thématiques :</strong></p>
                     <div class="tag-list">
                         @foreach (var th in e.Thematiques)
                         {
