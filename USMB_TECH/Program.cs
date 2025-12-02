@@ -15,6 +15,7 @@ builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireMana
 builder.Services.AddScoped<IMainRepository<Pole_Expertise, int>, Pole_ExpertiseManager>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(" https://localhost:7093/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
+builder.Services.AddScoped<IMainRepository<Prise_Contact, int>, Prise_ContactManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
@@ -26,6 +27,7 @@ builder.Services.AddScoped<LaboratoireManager>();
 builder.Services.AddScoped<Pole_ExpertiseManager>();
 builder.Services.AddScoped<PrestationManager>();
 builder.Services.AddScoped<ThematiqueManager>();
+builder.Services.AddScoped<Prise_ContactManager>();
 builder.Services.AddScoped<MarqueManager>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
