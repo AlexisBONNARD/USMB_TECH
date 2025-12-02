@@ -32,54 +32,44 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Laboratoire entity)
         {
-
-            if(entity.Adresse_laboNavigation != null) 
+            if (entity.Adresse_laboNavigation != null)
             {
-                var AdresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
+                var adresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
                     a.Rue_Adresse == entity.Adresse_laboNavigation.Rue_Adresse &&
                     a.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse &&
                     a.Ville_Adresse == entity.Adresse_laboNavigation.Ville_Adresse &&
                     a.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse);
-                if(AdresseLabo is null) 
+
+                if (adresseLabo is null)
                 {
-                    AdresseLabo = new Adresse()
-                    {
-                        Rue_Adresse =  entity.Adresse_laboNavigation.Rue_Adresse,
-                        Code_Postal_Adresse = entity.Adresse_laboNavigation.Code_Postal_Adresse,
-                        Ville_Adresse = entity.Adresse_laboNavigation.Ville_Adresse,
-                        Pays_Adresse = entity.Adresse_laboNavigation.Pays_Adresse
-                    };
-                    _context.Adresses.Add(AdresseLabo);
-                    await _context.SaveChangesAsync();
+                    adresseLabo = entity.Adresse_laboNavigation;
+                    _context.Adresses.Add(adresseLabo);
                 }
-                entity.Id_Adresse_Labo = AdresseLabo.Id_Adresse;
-                entity.Adresse_laboNavigation = AdresseLabo;
+
+                entity.Adresse_laboNavigation = adresseLabo;
             }
+
             if (entity.Adresse_campusNavigation != null)
             {
-                var AdresseCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
+                var adresseCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
                     a.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse &&
                     a.Code_Postal_Adresse == entity.Adresse_campusNavigation.Code_Postal_Adresse &&
                     a.Ville_Adresse == entity.Adresse_campusNavigation.Ville_Adresse &&
                     a.Pays_Adresse == entity.Adresse_campusNavigation.Pays_Adresse);
-                if (AdresseCampus is null)
+
+                if (adresseCampus is null)
                 {
-                    AdresseCampus = new Adresse()
-                    {
-                        Rue_Adresse = entity.Adresse_campusNavigation.Rue_Adresse,
-                        Code_Postal_Adresse = entity.Adresse_campusNavigation.Code_Postal_Adresse,
-                        Ville_Adresse = entity.Adresse_campusNavigation.Ville_Adresse,
-                        Pays_Adresse = entity.Adresse_campusNavigation.Pays_Adresse
-                    };
-                    _context.Adresses.Add(AdresseCampus);
-                    await _context.SaveChangesAsync();
+                    adresseCampus = entity.Adresse_campusNavigation;
+                    _context.Adresses.Add(adresseCampus);
                 }
-                entity.Id_Adresse_Campus = AdresseCampus.Id_Adresse;
-                entity.Adresse_campusNavigation = AdresseCampus;
+
+                entity.Adresse_campusNavigation = adresseCampus;
             }
+
             _context.Laboratoires.Add(entity);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(Laboratoire entity) 
         {

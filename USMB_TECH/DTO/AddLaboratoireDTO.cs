@@ -6,10 +6,6 @@ namespace USMB_TECH.DTO
     {
         public string Nom_Court { get; set; }
 
-        public int Id_Adresse_Campus { get; set; }
-
-        public int Id_Adresse_Labo { get; set; }
-
         public string Nom_Long { get; set; }
 
         public string Description { get; set; }
