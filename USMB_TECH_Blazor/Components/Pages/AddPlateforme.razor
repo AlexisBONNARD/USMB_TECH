@@ -7,6 +7,12 @@
 <HeadContent>
     <li class="add_platform" nk href="css/addPlateforms.css" rel="stylesheet" />
 </HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
 
 <h2 class="add_platform">Ajouter un pôle d'expertise</h2>
 
@@ -183,14 +189,15 @@
 @code {
     Pole_Expertise pole_expertise = new Pole_Expertise();
     private List<Prestation> prestations = new();
-    
+    private bool isLoading = false;
+
     string newMot_Clef = "";
     string newThematique = "";
     string newExempleNom = "";
     string newExempleDesc = "";
     string newEquipement = "";
     int? selectedPrestationId = null;
-
+    [Parameter] public EventCallback<Plateforme> OnPlateformeAdded { get; set; }
 
     bool isSubmitted = false;
     string message = "";
@@ -248,6 +255,9 @@
     {
         try
         {
+            isLoading = true; // active le loader
+            StateHasChanged();
+
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/pole_expertises", pole_expertise);
 
             if (response.IsSuccessStatusCode)
@@ -266,7 +276,13 @@
             isSubmitted = false;
             await ShowAlert($"Erreur: {ex.Message}");
         }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
+        }
     }
+
 
 
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------

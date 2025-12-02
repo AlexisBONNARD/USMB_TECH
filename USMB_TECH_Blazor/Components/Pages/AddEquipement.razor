@@ -1,0 +1,345 @@
+﻿@page "/ajouterEquipement"
+@inject Service.IMainService<Plateforme,int> plateformeDatas
+@inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
+@inject Service.IMainService<Equipement,int> equipementDatas
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<HeadContent>
+    <li class="add_equipement" nk href="css/addEquipement.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_equipement">Ajouter un équipement</h2>
+
+<div class="page-container">
+    <EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h4 class="add_equipement">Infos générales</h4>
+        <label>Nom de l'équipement *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
+
+        <label>Num_Immobilisation *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" />
+        <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
+
+        <label>Description Technique *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" />
+        <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
+
+        <label>Prix Achat *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="addEquipement.Prix_Achat" />
+        <ValidationMessage For="@(() => addEquipement.Prix_Achat)" />
+
+        <label>Prix Revient *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="addEquipement.Prix_Revient" />
+        <ValidationMessage For="@(() => addEquipement.Prix_Revient)" />
+        <div class="checkbox-group">
+            <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+            <label>Autonomie</label>
+        </div>
+
+        <div class="checkbox-group">
+            <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
+            <label>Utilisable chez le client</label>
+        </div>
+
+        <hr />
+        <h4 class="add_equipement">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" />
+
+        <hr />
+        <h4 class="add_equipement">Modèle *</h4>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
+
+        <hr />
+        <h4 class="add_equipement">Marque *</h4>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Marque" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
+
+        <hr />
+        <h4 class="add_equipement">Plateforme *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastPlateforme">
+            <option value="">...</option>
+            @foreach (var plateforme in plateformes)
+            {
+                <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer une plateforme -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
+
+        <!-- Modal -->
+        <div id="modalPlateforme" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModal">&times;</span>
+                <AddPlateforme OnPlateformeAdded="OnPlateformeAdded" />
+            </div>
+        </div>
+
+
+        <hr />
+        <h4 class="add_equipement">Type d'équipement *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
+            <option>...</option>
+            @foreach (var type in type_Equipements)
+            {
+                <option value="@type.Nom_Type">@type.Nom_Type</option>
+            }
+            <option value="ajouter">Ajouter un type</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
+    </div>
+    @if (LastTypeEquipement == "ajouter")
+    {
+        <hr />
+        <h4 class="add_platform">Ajouter un type d’équipement</h4>
+        <form onsubmit="return false;" class="mb-2">
+            <input class="form-control mb-1"
+                   @bind="newTypeEquipement"
+                   @bind:event="oninput"
+                   placeholder="Nom du type"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
+        </form>
+
+        @if (dernierTypeAjoute != null)
+        {
+            <ul class="add_platform">
+                <li class="add_platform">
+                    @dernierTypeAjoute.Nom_Type
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
+                </li>
+            </ul>
+        }
+    }
+
+
+        <hr />
+        <h4 class="add_equipement">Exemple d'utilisation</h4>
+        <div>
+            <label>Nom de l'exemple : </label>
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" />
+        </div>
+        <div>
+            <label>Description : </label>
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" />
+        </div>
+        
+        <hr/>
+        <button type="submit" class="btn btn-success mt-3">Ajouter</button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
+
+    </EditForm>
+</div>
+
+@code {
+    private Equipement addEquipement = new();
+    private List<Plateforme> plateformes = new();
+    private List<Type_Equipement> type_Equipements = new();
+    private Marque marqueequipement = new();
+    private Type_Equipement dernierTypeAjoute;
+
+    private bool isLoading = false;
+    bool isSubmitted = false;
+    string message = "";
+
+    private string _lastPlateforme;
+
+    private string LastPlateforme
+    {
+        get => _lastPlateforme;
+        set
+        {
+            _lastPlateforme = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModal();
+            }
+            else
+            {
+                addEquipement.Nom_Plateforme = value;
+            }
+        }
+    }
+
+    private string _lastTypeEquipement;
+    private string LastTypeEquipement
+    {
+        get => _lastTypeEquipement;
+        set
+        {
+            _lastTypeEquipement = value;
+            JS.InvokeVoidAsync("console.log", $"Type sélectionné : {value}");
+
+            if (value != "ajouter")
+            {
+                addEquipement.Type_Equipement = value;
+            }
+        }
+    }
+
+
+    private string newTypeEquipement = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        plateformes = (await plateformeDatas.GetAllAsync()).ToList();
+        type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+    }
+
+    private void OnPlateformeChange(ChangeEventArgs e)
+    {
+        var selected = e.Value?.ToString();
+
+        // Affiche côté Visual Studio
+        Console.WriteLine($"Changement détecté : {selected}");
+        System.Diagnostics.Debug.WriteLine($"Changement détecté : {selected}");
+
+        // Affiche côté navigateur (console F12)
+        JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {selected}");
+
+        if (selected == "ajouter")
+        {
+            OpenModal();
+        }
+    }
+
+
+    private void OpenModal()
+    {
+        JS.InvokeVoidAsync("openModal");
+    }
+
+    private void CloseModal()
+    {
+        JS.InvokeVoidAsync("closeModal");
+    }
+
+    // Callback qui sera appelé lorsque la plateforme est ajoutée
+    private void OnPlateformeAdded(Plateforme plateforme)
+    {
+        plateformes.Add(plateforme);
+        LastPlateforme = plateforme.Nom_Plateforme;
+        CloseModal();
+    }
+
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+        content.Add(fileContent, "file", file.Name);
+
+        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+            addEquipement.Photos.Add(new Photo
+            {
+                Nom_Photo = file.Name,
+                Url_Photo = result.url
+            });
+        }
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true; // démarre le loader
+            StateHasChanged();
+
+            addEquipement.Date_Acquisition = DateTime.Now;
+            addEquipement.Actif = true;
+
+            await equipementDatas.AddAsync(addEquipement);
+
+            isSubmitted = true;
+            await ShowAlert("Équipement ajouté avec succès ✅");
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            await ShowAlert("Il y a eu une erreur lors de l'ajout de l'équipement ❌");
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            isLoading = false; // stoppe le loader
+            StateHasChanged();
+        }
+    }
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+    }
+    private void PLateformeRotation(string SelectedPlateforme)
+    {
+        addEquipement.Nom_Plateforme = SelectedPlateforme;
+    }
+    private void TypeRotation(string SelectedType)
+    {
+        addEquipement.Type_Equipement = SelectedType;
+    }
+
+    void AddTypeEquipement()
+    {
+        if (!string.IsNullOrWhiteSpace(newTypeEquipement))
+        {
+            var nouveauType = new Type_Equipement { Nom_Type = newTypeEquipement };
+            type_Equipements.Add(nouveauType);
+
+            // Sélectionne automatiquement le type ajouté
+            LastTypeEquipement = newTypeEquipement;
+            addEquipement.Type_Equipement = newTypeEquipement;
+
+            dernierTypeAjoute = nouveauType;
+            newTypeEquipement = "";
+        }
+    }
+
+
+    void RemoveTypeEquipement(Type_Equipement t)
+    {
+        type_Equipements.Remove(t);
+        if (dernierTypeAjoute == t)
+        {
+            dernierTypeAjoute = null;
+        }
+    }
+
+
+}

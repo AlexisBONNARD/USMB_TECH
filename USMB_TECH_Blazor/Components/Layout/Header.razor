@@ -1,11 +1,11 @@
 ﻿@inject NavigationManager Nav
+@inject IJSRuntime JS
 
 <HeadContent>
     <link href="css/app.css" rel="stylesheet" />
 </HeadContent>
 
 <header class="usmb-header">
-
     <!-- Bandeau supérieur -->
     <div class="usmb-header-top">
         <div class="usmb-header-lang">
@@ -26,13 +26,13 @@
                 <a href="#"><i class="bi bi-youtube"></i></a>
                 <a href="#"><i class="bi bi-instagram"></i></a>
                 <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
+                <button @onclick="@(() => Nav.NavigateTo("/ajouterLabo"))">Ajouter un laboratoire</button>
                 <button @onclick="@(() => Nav.NavigateTo("/ajouter-pole_expertise"))">Ajouter un pôle d'expertise</button>
                 @* <button @onclick="@(() => Nav.NavigateTo("/demandeContact"))">Visualiser demande contact</button> *@
             </div>
 
             <!-- BARRE DE RECHERCHE -->
             <div class="usmb-header-search">
-
                 <input @bind="SearchText"
                        @bind:event="oninput"
                        type="text"
@@ -59,10 +59,8 @@
                         <input type="checkbox" @bind="SearchThematique" /> Par thématique
                     </label>
                 </div>
-
             </div>
         </div>
-
     </div>
 
     <!-- Bandeau principal -->
@@ -70,11 +68,25 @@
         <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
         <NavMenu></NavMenu>
     </div>
-    @* <!-- Bandeau Fil D'Ariane -->
-    <div class="usmb-header-main">
-        <FilDAriane></FilDAriane>
-    </div> *@
 
+    <!-- Bandeau Fil D'Ariane -->
+    @if (ShouldDisplayBreadcrumbs())
+    {
+        <div class="usmb-header-main">
+            <FilDAriane></FilDAriane>
+            <div class="usmb-header-search">
+                <input @bind="SearchText"
+                       @bind:event="oninput"
+                       type="text"
+                       placeholder="Rechercher..."
+                       @onkeydown="HandleKeyDown" />
+
+                <button class="search-btn" @onclick="MotClefSearch">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    }
 </header>
 
 @code {
@@ -82,6 +94,27 @@
     private bool SearchMotClef = false;
     private bool SearchThematique = false;
     private bool ShowOptions = false;
+
+    // Méthode d'affichage fil d'ariane
+    private bool ShouldDisplayBreadcrumbs()
+    {
+        var currentUrl = Nav.Uri;
+        var currentPath = Nav.ToBaseRelativePath(Nav.Uri);
+        
+        if (string.IsNullOrEmpty(currentPath))
+            return false;
+
+        var pagesExclues = new[]
+        {
+            "ajouter-plateforme",
+            "ajouterEquipement",
+            "search"
+        };
+
+        // return !pagesExclues.Any(page => currentPath.StartsWith(page));
+        return !pagesExclues.Any(page => currentUrl.Contains(page));
+    }
+
 
     private void ToggleOptions()
     {
@@ -112,6 +145,15 @@
 
             if (!string.IsNullOrEmpty(mode))
                 Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
+        }
+    }
+
+    private void MotClefSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var encodedQuery = Uri.EscapeDataString(SearchText);
+            Nav.NavigateTo($"/search/motclef/{encodedQuery}");
         }
     }
 }
