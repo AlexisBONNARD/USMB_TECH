@@ -15,7 +15,7 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LaboratoireController(IMainRepository<Laboratoire, string> dataRepository, IMapper mapper) : ControllerBase
+    public class LaboratoiresController(IMainRepository<Laboratoire, string> dataRepository, IMapper mapper) : ControllerBase
     {
         private readonly IMainRepository<Laboratoire, string> _dataRepository = dataRepository;
         private readonly IMapper _mapper = mapper;

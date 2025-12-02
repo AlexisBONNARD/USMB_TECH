@@ -9,7 +9,7 @@
     <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
-
+        <div>
             <label>Nom complet du laboratoire</label>
             <InputText @bind-Value="labo.Nom_Long"></InputText>
             <ValidationMessage For="@(() => labo.Nom_Long)" />
@@ -21,9 +21,10 @@
             <label>Description</label>
             <InputText @bind-Value="labo.Description"></InputText>
             <ValidationMessage For="@(() => labo.Description)" />
+                </div>
            
             <h2>Adresses</h2>
-
+        <div>
             <h3>Adresses du laboratoire</h3>
 
              <label>Rue du laboratoire</label>
@@ -37,7 +38,9 @@
 
             <label>Pays du laboratoire</label>
         <InputText @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
+        </div>
 
+        <div>
             <h3>Adresse du campus</h3>
 
             <label>Rue du campus</label>
@@ -51,7 +54,7 @@
 
             <label>Pays du campus</label>
             <InputText @bind-Value="labo.Pays_Adresse_Campus" placeholder="France"></InputText>
-
+        </div>
             <button type="submit" class="btn btn-primary">Ajouter</button>
 
     </EditForm>
