@@ -2,6 +2,7 @@
 @inject Service.IMainService<Plateforme,int> plateformeDatas
 @inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
 @inject Service.IMainService<Equipement,int> equipementDatas
+@inject Service.IMainService<Marque,int> marqueService
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -62,9 +63,42 @@
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
 
         <hr />
-        <h4 class="add_equipement">Marque *</h4>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Marque" />
-        <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
+        <div class="form-group">
+            <label>Marque :</label>
+            <InputSelect @bind-Value="LastMarque">
+                <option value="">...</option>
+                @foreach (var marque in marques)
+                {
+                    <option value="@marque.Nom_Marque">@marque.Nom_Marque</option>
+                }
+                <option value="ajouter">Ajouter une marque</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
+        </div>
+        @if (LastMarque == "ajouter")
+        {
+            <hr />
+            <h4 class="add_platform">Ajouter une marque</h4>
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newMarque"
+                       @bind:event="oninput"
+                       placeholder="Nom de la marque"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddMarque(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMarque">Ajouter</button>
+            </form>
+
+            @if (derniereMarqueAjoutee != null)
+            {
+                <ul class="add_platform">
+                    <li class="add_platform">
+                        @derniereMarqueAjoutee.Nom_Marque
+                        <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMarque(derniereMarqueAjoutee)">Supprimer</button>
+                    </li>
+                </ul>
+            }
+        }
+
 
         <hr />
         <h4 class="add_equipement">Plateforme *</h4>
@@ -98,7 +132,7 @@
             <option value="ajouter">Ajouter un type</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
-    </div>
+    
     @if (LastTypeEquipement == "ajouter")
     {
         <hr />
@@ -203,6 +237,7 @@
     {
         plateformes = (await plateformeDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+        marques = (await marqueService.GetAllAsync()).ToList(); // ← AJOUTER CECI
     }
 
     private void OnPlateformeChange(ChangeEventArgs e)
@@ -341,5 +376,47 @@
         }
     }
 
+    private string _lastMarque;
+    private string LastMarque
+    {
+        get => _lastMarque;
+        set
+        {
+            _lastMarque = value;
+            JS.InvokeVoidAsync("console.log", $"Marque sélectionnée : {value}");
+
+            if (value != "ajouter")
+            {
+                addEquipement.Nom_Marque = value;
+            }
+        }
+    }
+
+    private string newMarque = "";
+    private List<Marque> marques = new();
+    private Marque derniereMarqueAjoutee;
+
+    void AddMarque()
+    {
+        if (!string.IsNullOrWhiteSpace(newMarque))
+        {
+            var nouvelleMarque = new Marque { Nom_Marque = newMarque };
+            marques.Add(nouvelleMarque);
+
+            LastMarque = newMarque;
+            addEquipement.Nom_Marque = newMarque;
+            derniereMarqueAjoutee = nouvelleMarque;
+            newMarque = "";
+        }
+    }
+
+    void RemoveMarque(Marque m)
+    {
+        marques.Remove(m);
+        if (derniereMarqueAjoutee == m)
+        {
+            derniereMarqueAjoutee = null;
+        }
+    }
 
 }
