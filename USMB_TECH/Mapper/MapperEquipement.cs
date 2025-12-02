@@ -7,7 +7,7 @@ namespace USMB_TECH.Mapper
     {
         public MapperEquipement()
         {
-            CreateMap<EquipementAddDTO, Equipement>()
+            CreateMap<AddEquipementDTO, Equipement>()
             .ForMember(dest => dest.Pole_ExpertiseNavigation,
                opt => opt.MapFrom(src => new Pole_Expertise { Nom_Pole_Expertise = src.Nom_Pole_Expertise }))
             .ForMember(dest => dest.Type_EquipementNavigation,
