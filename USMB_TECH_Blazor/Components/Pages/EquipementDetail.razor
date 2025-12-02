@@ -77,9 +77,9 @@ else
                 <h3>MOTS CLÉS</h3>
 
                 <ul class="list-style">
-                    @if (equipement.PlateformeNavigation?.Specifiers != null)
+                    @if (equipement.Pole_ExpertiseNavigation?.Specifiers != null)
                     {
-                        @foreach (var spec in equipement.PlateformeNavigation.Specifiers)
+                        @foreach (var spec in equipement.Pole_ExpertiseNavigation.Specifiers)
                         {
                             if (spec.Mot_ClefNavigation != null)
                             {
@@ -116,10 +116,10 @@ else
             </div> *@
 
             <div class="info-block">
-                <h4>Plateforme :</h4>
+                <h4>Pôle d'expertise :</h4>
                 <div class="btn-blue"
-                     @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
-                    @equipement.PlateformeNavigation?.Nom_Plateforme
+                     @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
+                    @equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise
                 </div>
 
             </div>
@@ -150,7 +150,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
-        thematique = equipement.PlateformeNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+        thematique = equipement.Pole_ExpertiseNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
     }
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
@@ -158,7 +158,7 @@ else
     {
         bool confirm = await JS.InvokeAsync<bool>(
             "confirm",
-            "Voulez-vous vraiment supprimer cette plateforme ?"
+            "Voulez-vous vraiment supprimer cette pole_expertise ?"
         );
 
         if (!confirm)
@@ -193,9 +193,9 @@ else
         StateHasChanged();
     }
 
-    private void RetourListe(int idPlateforme)
+    private void RetourListe(int idPole_Expertise)
     {
-        Navigation.NavigateTo($"/plateforme/{idPlateforme}");
+        Navigation.NavigateTo($"/pole_expertise/{idPole_Expertise}");
     }
 
     private void GoToUpdate(int id)

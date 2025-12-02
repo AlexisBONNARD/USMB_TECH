@@ -7,12 +7,12 @@ namespace USMB_TECH.Mapper
     {
         public MapperEquipement()
         {
-            CreateMap<AddEquipementDTO, Equipement>()
-            .ForMember(dest => dest.PlateformeNavigation,
-               opt => opt.MapFrom(src => new Plateforme { Nom_Plateforme = src.Nom_Plateforme }))
+            CreateMap<EquipementAddDTO, Equipement>()
+            .ForMember(dest => dest.Pole_ExpertiseNavigation,
+               opt => opt.MapFrom(src => new Pole_Expertise { Nom_Pole_Expertise = src.Nom_Pole_Expertise }))
             .ForMember(dest => dest.Type_EquipementNavigation,
                opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
-            .ForMember(dest => dest.Id_Plateforme, opt => opt.Ignore())
+            .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.Ignore())
             .ForMember(dest => dest.Exemple_Utilisations,
     opt => opt.MapFrom(src => new List<Exemple_Utilisation>
     {
@@ -36,7 +36,7 @@ namespace USMB_TECH.Mapper
 
             CreateMap<EquipementDTO, Equipement>()
                 .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))
-                .ForMember(dest => dest.Id_Plateforme, opt => opt.MapFrom(src => src.Id_Plateforme))
+                .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.MapFrom(src => src.Id_Pole_Expertise))
                 .ForMember(dest => dest.Id_Modele, opt => opt.MapFrom(src => src.Id_Modele))
                 .ForMember(dest => dest.Id_Type_Equipement, opt => opt.MapFrom(src => src.Id_Type_Equipement))
                 .ForMember(dest => dest.Nom_Equipement, opt => opt.MapFrom(src => src.Nom_Equipement))
@@ -51,13 +51,13 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Actif, opt => opt.MapFrom(src => src.Actif))
 
                 //  Relations ignorées pour l’update (on travaille par ID)
-                .ForMember(dest => dest.PlateformeNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.Pole_ExpertiseNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.Type_EquipementNavigation, opt => opt.Ignore())
                 .ForMember(dest => dest.ModeleNavigation, opt => opt.Ignore());
 
             // Déjà existant
             CreateMap<Equipement, UpdateEquipementDto>()
-                .ForMember(dest => dest.Nom_Plateforme, opt => opt.MapFrom(src => src.PlateformeNavigation.Nom_Plateforme))
+                .ForMember(dest => dest.Nom_Pole_Expertise, opt => opt.MapFrom(src => src.Pole_ExpertiseNavigation.Nom_Pole_Expertise))
                 .ForMember(dest => dest.Nom_Modele, opt => opt.MapFrom(src => src.ModeleNavigation.Nom_Modele))
                 .ForMember(dest => dest.Nom_Marque, opt => opt.MapFrom(src => src.ModeleNavigation.MarqueNavigation.Nom_Marque))
                 .ForMember(dest => dest.Type_Equipement, opt => opt.MapFrom(src => src.Type_EquipementNavigation.Nom_Type))
@@ -68,7 +68,7 @@ namespace USMB_TECH.Mapper
 
             CreateMap<UpdateEquipementDto, Equipement>()
                 .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))
-                .ForMember(dest => dest.Id_Plateforme, opt => opt.MapFrom(src => src.Id_Plateforme))
+                .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.MapFrom(src => src.Id_Pole_Expertise))
                 .ForMember(dest => dest.Id_Modele, opt => opt.MapFrom(src => src.Id_Modele))
                 .ForMember(dest => dest.Id_Type_Equipement, opt => opt.MapFrom(src => src.Id_Type_Equipement))
                 .ForMember(dest => dest.Nom_Equipement, opt => opt.MapFrom(src => src.Nom_Equipement))
@@ -101,7 +101,7 @@ namespace USMB_TECH.Mapper
                         Nom_Photo = p.Nom_Photo,
                         Url_Photo = p.Url_Photo,
                         Id_Equipement = src.Id_Equipement,
-                        Id_Plateforme = null
+                        Id_Pole_Expertise = null
                     }).ToList()
                 ))
 

@@ -1,5 +1,5 @@
 ﻿@page "/ajouterEquipement"
-@inject Service.IMainService<Plateforme,int> plateformeDatas
+@inject Service.IMainService<Pole_Expertise,int> pole_expertiseDatas
 @inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
 @inject Service.IMainService<Equipement,int> equipementDatas
 @inject Service.IMainService<Marque,int> marqueService
@@ -101,22 +101,22 @@
 
 
         <hr />
-        <h4 class="add_equipement">Plateforme *</h4>
-        <InputSelect class="form-select mb-2" @bind-Value="LastPlateforme">
+        <h4 class="add_equipement">Pôle d'expertise' *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
             <option value="">...</option>
-            @foreach (var plateforme in plateformes)
+            @foreach (var pole_expertise in pole_expertises)
             {
-                <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
+                <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
             }
-            <option value="ajouter" class="alert-info">----- Créer une plateforme -----</option>
+            <option value="ajouter" class="alert-info">----- Créer une pole_expertise -----</option>
         </InputSelect>
-        <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Pole_Expertise)" />
 
         <!-- Modal -->
-        <div id="modalPlateforme" class="modal" style="display: none;">
+        <div id="modalPole_Expertise" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" @onclick="CloseModal">&times;</span>
-                <AddPlateforme OnPlateformeAdded="OnPlateformeAdded" />
+                <AddPole_Expertise OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" />
             </div>
         </div>
 
@@ -132,7 +132,6 @@
             <option value="ajouter">Ajouter un type</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
-    
     @if (LastTypeEquipement == "ajouter")
     {
         <hr />
@@ -184,7 +183,7 @@
 
 @code {
     private Equipement addEquipement = new();
-    private List<Plateforme> plateformes = new();
+    private List<Pole_Expertise> pole_expertises = new();
     private List<Type_Equipement> type_Equipements = new();
     private Marque marqueequipement = new();
     private Type_Equipement dernierTypeAjoute;
@@ -193,14 +192,14 @@
     bool isSubmitted = false;
     string message = "";
 
-    private string _lastPlateforme;
+    private string _lastPole_Expertise;
 
-    private string LastPlateforme
+    private string LastPole_Expertise
     {
-        get => _lastPlateforme;
+        get => _lastPole_Expertise;
         set
         {
-            _lastPlateforme = value;
+            _lastPole_Expertise = value;
             JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
 
             if (value == "ajouter")
@@ -209,7 +208,7 @@
             }
             else
             {
-                addEquipement.Nom_Plateforme = value;
+                addEquipement.Nom_Pole_Expertise = value;
             }
         }
     }
@@ -235,12 +234,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        plateformes = (await plateformeDatas.GetAllAsync()).ToList();
+        pole_expertises = (await pole_expertiseDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
         marques = (await marqueService.GetAllAsync()).ToList(); // ← AJOUTER CECI
     }
 
-    private void OnPlateformeChange(ChangeEventArgs e)
+    private void OnPole_ExpertiseChange(ChangeEventArgs e)
     {
         var selected = e.Value?.ToString();
 
@@ -268,11 +267,11 @@
         JS.InvokeVoidAsync("closeModal");
     }
 
-    // Callback qui sera appelé lorsque la plateforme est ajoutée
-    private void OnPlateformeAdded(Plateforme plateforme)
+    // Callback qui sera appelé lorsque la pole_expertise est ajoutée
+    private void OnPole_ExpertiseAdded(Pole_Expertise pole_expertise)
     {
-        plateformes.Add(plateforme);
-        LastPlateforme = plateforme.Nom_Plateforme;
+        pole_expertises.Add(pole_expertise);
+        LastPole_Expertise = pole_expertise.Nom_Pole_Expertise;
         CloseModal();
     }
 
@@ -341,9 +340,9 @@
         message = null;         // efface le message
         StateHasChanged();      // met à jour
     }
-    private void PLateformeRotation(string SelectedPlateforme)
+    private void pole_expertiseRotation(string SelectedPole_Expertise)
     {
-        addEquipement.Nom_Plateforme = SelectedPlateforme;
+        addEquipement.Nom_Pole_Expertise = SelectedPole_Expertise;
     }
     private void TypeRotation(string SelectedType)
     {

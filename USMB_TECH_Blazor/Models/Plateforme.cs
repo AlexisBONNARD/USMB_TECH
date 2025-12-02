@@ -4,15 +4,15 @@ using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
-    public class Plateforme
+    public class Pole_Expertise
     {
-        public int Id_Plateforme { get; set; }
+        public int Id_Pole_Expertise { get; set; }
 
-        [Required(ErrorMessage = "Le nom de la plateforme est obligatoire")]
-        public string Nom_Plateforme { get; set; }
+        [Required(ErrorMessage = "Le nom de la pole_expertise est obligatoire")]
+        public string Nom_Pole_Expertise { get; set; }
 
         [Required(ErrorMessage = "La description est obligatoire")]
-        public string Description_Plateforme { get; set; }
+        public string Description_Pole_Expertise { get; set; }
 
         [Required(ErrorMessage = "Le nom du contenu est obligatoire")]
         public string Nom_Contenu { get; set; }

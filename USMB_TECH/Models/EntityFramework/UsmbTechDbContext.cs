@@ -26,7 +26,7 @@ public partial class UsmbTechDbContext : DbContext
     public DbSet<Modele> Modeles { get; set; }
     public DbSet<Mot_Clef> Mot_Clefs { get; set; }
     public DbSet<Photo> Photos { get; set; }
-    public DbSet<Plateforme> Plateformes { get; set; }
+    public DbSet<Pole_Expertise> Pole_Expertises { get; set; }
     public DbSet<Posseder> Posseders { get; set; }
     public DbSet<Presenter> Presenters { get; set; }
     public DbSet<Prestation> Prestations { get; set; }
@@ -81,7 +81,7 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Associer>(e =>
         {
-            e.HasKey(e => new { e.Id_Contact, e.Id_Plateforme }).HasName("pk_associer");
+            e.HasKey(e => new { e.Id_Contact, e.Id_Pole_Expertise }).HasName("pk_associer");
 
             e.HasOne(d => d.Contact_USMBNavigation)
                 .WithMany(p => p.Associers)
@@ -89,11 +89,11 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_associer_contactUSMB");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Associers)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_associer_plateforme");
+                .HasConstraintName("fk_associer_pole_expertise");
         });
 
         modelBuilder.Entity<Consommable>(e =>
@@ -247,11 +247,11 @@ public partial class UsmbTechDbContext : DbContext
         .OnDelete(DeleteBehavior.Cascade)
         .HasConstraintName("fk_equipement_modele");
 
-    e.HasOne(d => d.PlateformeNavigation)
+    e.HasOne(d => d.Pole_ExpertiseNavigation)
         .WithMany(p => p.Equipements)
-        .HasForeignKey(d => d.Id_Plateforme)
+        .HasForeignKey(d => d.Id_Pole_Expertise)
         .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_plateforme");
+        .HasConstraintName("fk_equipement_pole_expertise");
 });
 
         modelBuilder.Entity<Est_Lier>(e =>
@@ -283,22 +283,22 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_exemple_utilisation_equipement");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Exemple_Utilisations)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_exemple_utilisation_plateforme");
+                .HasConstraintName("fk_exemple_utilisation_pole_expertise");
         });
 
         modelBuilder.Entity<Exposer>(e =>
         {
-            e.HasKey(e => new { e.Id_Plateforme, e.Id_Thematique }).HasName("pk_exposer");
+            e.HasKey(e => new { e.Id_Pole_Expertise, e.Id_Thematique }).HasName("pk_exposer");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Exposers)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_exposer_plateforme");
+                .HasConstraintName("fk_exposer_pole_expertise");
 
             e.HasOne(d => d.ThematiqueNavigation)
                 .WithMany(p => p.Exposers)
@@ -352,13 +352,13 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Gerer>(e =>
         {
-            e.HasKey(e => new { e.Id_Plateforme, e.Nom_Court }).HasName("pk_gerer");
+            e.HasKey(e => new { e.Id_Pole_Expertise, e.Nom_Court }).HasName("pk_gerer");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Gerers)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_gerer_plateforme");
+                .HasConstraintName("fk_gerer_pole_expertise");
 
             e.HasOne(d => d.LaboratoireNavigation)
                 .WithMany(p => p.Gerers)
@@ -477,81 +477,81 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_photo_equipement");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Photos)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_photo_plateforme");
+                .HasConstraintName("fk_photo_pole_expertise");
 
-            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à une plateforme ou à un équipement, pas les deux.
+            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise ou à un équipement, pas les deux.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
-                    "CK_Photo_EquipementOuPlateforme",
-                    "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)"
+                    "CK_Photo_EquipementOuPole_Expertise",
+                    "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)"
                 );
             });
         });
 
-        modelBuilder.Entity<Plateforme>(e =>
+        modelBuilder.Entity<Pole_Expertise>(e =>
         {
-            e.HasKey(e => e.Id_Plateforme).HasName("pk_plateforme");
+            e.HasKey(e => e.Id_Pole_Expertise).HasName("pk_pole_expertise");
 
-            e.Property(e => e.Id_Plateforme).ValueGeneratedOnAdd();
+            e.Property(e => e.Id_Pole_Expertise).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Associers)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_associer");
+                .HasConstraintName("fk_pole_expertise_associer");
 
             e.HasMany(d => d.Exposers)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_exposer");
+                .HasConstraintName("fk_pole_expertise_exposer");
 
             e.HasMany(d => d.Gerers)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_gerer");
+                .HasConstraintName("fk_pole_expertise_gerer");
 
             e.HasMany(d => d.Equipements)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_equipement");
+                .HasConstraintName("fk_pole_expertise_equipement");
 
             e.HasMany(d => d.Exemple_Utilisations)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_exemple_utilisation");
+                .HasConstraintName("fk_pole_expertise_exemple_utilisation");
 
             e.HasMany(d => d.Photos)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_photo");
+                .HasConstraintName("fk_pole_expertise_photo");
 
             e.HasMany(d => d.Presenters)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_presenter");
+                .HasConstraintName("fk_pole_expertise_presenter");
 
             e.HasMany(d => d.Prise_Contacts)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_prise_contact");
+                .HasConstraintName("fk_pole_expertise_prise_contact");
 
             e.HasMany(d => d.Specifiers)
-                .WithOne(p => p.PlateformeNavigation)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .WithOne(p => p.Pole_ExpertiseNavigation)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_plateforme_specifier");
+                .HasConstraintName("fk_pole_expertise_specifier");
         });
 
         modelBuilder.Entity<Posseder>(e =>
@@ -573,13 +573,13 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Presenter>(e =>
         {
-            e.HasKey(e => new { e.Id_Plateforme, e.Id_Prestation }).HasName("pk_presenter");
+            e.HasKey(e => new { e.Id_Pole_Expertise, e.Id_Prestation }).HasName("pk_presenter");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Presenters)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_presenter_plateforme");
+                .HasConstraintName("fk_presenter_pole_expertise");
 
             e.HasOne(d => d.PrestationNavigation)
                 .WithMany(p => p.Presenters)
@@ -643,11 +643,11 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_equipement");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Prise_Contacts)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_prise_contact_plateforme");
+                .HasConstraintName("fk_prise_contact_pole_expertise");
 
             e.HasOne(d => d.Type_ClientNavigation)
                 .WithMany(p => p.Prise_Contacts)
@@ -655,12 +655,12 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_type_client");
 
-            // ✅ Contrainte d’exclusion : Une prise de contact ne peut être liée qu’à une plateforme ou à un équipement, pas les deux.
+            // ✅ Contrainte d’exclusion : Une prise de contact ne peut être liée qu’à un pôle d'expertise ou à un équipement, pas les deux.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
-                    "CK_PriseContact_EquipementOuPlateforme",
-                    "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)"
+                    "CK_PriseContact_EquipementOuPole_Expertise",
+                    "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)"
                 );
             });
         });
@@ -684,7 +684,7 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Specifier>(e =>
         {
-            e.HasKey(e => new { e.Id_Mot_Clef, e.Id_Plateforme }).HasName("pk_specifier");
+            e.HasKey(e => new { e.Id_Mot_Clef, e.Id_Pole_Expertise }).HasName("pk_specifier");
 
             e.HasOne(d => d.Mot_ClefNavigation)
                 .WithMany(p => p.Specifiers)
@@ -692,11 +692,11 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_specifier_mot_clef");
 
-            e.HasOne(d => d.PlateformeNavigation)
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
                 .WithMany(p => p.Specifiers)
-                .HasForeignKey(d => d.Id_Plateforme)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_specifier_plateforme");
+                .HasConstraintName("fk_specifier_pole_expertise");
         });
 
 

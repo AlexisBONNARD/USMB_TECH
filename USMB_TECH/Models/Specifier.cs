@@ -6,15 +6,15 @@ namespace USMB_TECH.Models
     [Table("specifier")]
     public partial class Specifier
     {
-        [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        [Column("id_pole_expertise")]
+        public int Id_Pole_Expertise { get; set; }
 
         [Column("id_mot_clef")]
         public int Id_Mot_Clef { get; set; }
 
-        [ForeignKey("Id_Plateforme")]
-        [InverseProperty(nameof(Plateforme.Specifiers))]
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        [ForeignKey("Id_Pole_Expertise")]
+        [InverseProperty(nameof(Pole_Expertise.Specifiers))]
+        public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
 
         [ForeignKey("Id_Mot_Clef")]
         [InverseProperty(nameof(Mot_Clef.Specifiers))]

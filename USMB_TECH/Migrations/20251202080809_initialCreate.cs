@@ -91,14 +91,14 @@ namespace USMB_TECH.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "plateforme",
+                name: "pole_expertise",
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false)
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nom_plateforme = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    description_plateforme = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    nom_pole_expertise = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    description_pole_expertise = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     nom_contenu = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     url_contenu = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     description_contenu = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
@@ -106,7 +106,7 @@ namespace USMB_TECH.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_plateforme", x => x.id_plateforme);
+                    table.PrimaryKey("pk_pole_expertise", x => x.id_pole_expertise);
                 });
 
             migrationBuilder.CreateTable(
@@ -251,12 +251,12 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false),
                     id_mot_clef = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_specifier", x => new { x.id_mot_clef, x.id_plateforme });
+                    table.PrimaryKey("pk_specifier", x => new { x.id_mot_clef, x.id_pole_expertise });
                     table.ForeignKey(
                         name: "fk_specifier_mot_clef",
                         column: x => x.id_mot_clef,
@@ -265,11 +265,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_mot_clef",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_specifier_plateforme",
-                        column: x => x.id_plateforme,
+                        name: "fk_specifier_pole_expertise",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -278,18 +278,18 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false),
                     id_thematique = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_exposer", x => new { x.id_plateforme, x.id_thematique });
+                    table.PrimaryKey("pk_exposer", x => new { x.id_pole_expertise, x.id_thematique });
                     table.ForeignKey(
-                        name: "fk_plateforme_exposer",
-                        column: x => x.id_plateforme,
+                        name: "fk_pole_expertise_exposer",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_thematique_exposer",
@@ -420,12 +420,12 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false),
                     pourcentage = table.Column<double>(type: "double precision", precision: 5, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_gerer", x => new { x.id_plateforme, x.nom_court });
+                    table.PrimaryKey("pk_gerer", x => new { x.id_pole_expertise, x.nom_court });
                     table.ForeignKey(
                         name: "fk_laboratoire_gerer",
                         column: x => x.nom_court,
@@ -434,11 +434,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "nom_court",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_plateforme_gerer",
-                        column: x => x.id_plateforme,
+                        name: "fk_pole_expertise_gerer",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -449,7 +449,7 @@ namespace USMB_TECH.Migrations
                 {
                     id_equipement = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false),
                     id_modele = table.Column<int>(type: "integer", nullable: false),
                     id_type_equipement = table.Column<int>(type: "integer", nullable: false),
                     nom_equipement = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -474,11 +474,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_modele",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_plateforme_equipement",
-                        column: x => x.id_plateforme,
+                        name: "fk_pole_expertise_equipement",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_type_equipement_equipement",
@@ -494,13 +494,13 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false),
                     id_contact = table.Column<int>(type: "integer", nullable: false),
                     fonction = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_associer", x => new { x.id_contact, x.id_plateforme });
+                    table.PrimaryKey("pk_associer", x => new { x.id_contact, x.id_pole_expertise });
                     table.ForeignKey(
                         name: "fk_contact_USMB_associer",
                         column: x => x.id_contact,
@@ -509,11 +509,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_Contact",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_plateforme_associer",
-                        column: x => x.id_plateforme,
+                        name: "fk_pole_expertise_associer",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -604,7 +604,7 @@ namespace USMB_TECH.Migrations
                     id_exemple_utilisation = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_equipement = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: true),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: true),
                     nom_utilisation = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     description_utilisation = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
@@ -619,11 +619,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_equipement",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_plateforme_exemple_utilisation",
-                        column: x => x.id_plateforme,
+                        name: "fk_pole_expertise_exemple_utilisation",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -635,14 +635,14 @@ namespace USMB_TECH.Migrations
                     id_photo = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_equipement = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: true),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: true),
                     nom_photo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     url_photo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_photo", x => x.id_photo);
-                    table.CheckConstraint("CK_Photo_EquipementOuPlateforme", "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)");
+                    table.CheckConstraint("CK_Photo_EquipementOuPole_Expertise", "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)");
                     table.ForeignKey(
                         name: "fk_photo_equipement",
                         column: x => x.id_equipement,
@@ -651,11 +651,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_equipement",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_plateforme_photo",
-                        column: x => x.id_plateforme,
+                        name: "fk_pole_expertise_photo",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -694,7 +694,7 @@ namespace USMB_TECH.Migrations
                     num_prise_contact = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     id_equipement = table.Column<int>(type: "integer", nullable: true),
-                    id_plateforme = table.Column<int>(type: "integer", nullable: true),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: true),
                     id_type_client = table.Column<int>(type: "integer", nullable: false),
                     nom_contact = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     prenom_contact = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -705,7 +705,7 @@ namespace USMB_TECH.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_prise_contact", x => x.num_prise_contact);
-                    table.CheckConstraint("CK_PriseContact_EquipementOuPlateforme", "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)");
+                    table.CheckConstraint("CK_PriseContact_EquipementOuPole_Expertise", "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)");
                     table.ForeignKey(
                         name: "fk_prise_contact_equipement",
                         column: x => x.id_equipement,
@@ -714,11 +714,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_equipement",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_prise_contact_plateforme",
-                        column: x => x.id_plateforme,
+                        name: "fk_prise_contact_pole_expertise",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_type_client_prise_contact",
@@ -789,18 +789,18 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_plateforme = table.Column<int>(type: "integer", nullable: false),
+                    id_pole_expertise = table.Column<int>(type: "integer", nullable: false),
                     id_prestation = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_presenter", x => new { x.id_plateforme, x.id_prestation });
+                    table.PrimaryKey("pk_presenter", x => new { x.id_pole_expertise, x.id_prestation });
                     table.ForeignKey(
-                        name: "fk_presenter_plateforme",
-                        column: x => x.id_plateforme,
+                        name: "fk_presenter_pole_expertise",
+                        column: x => x.id_pole_expertise,
                         principalSchema: "usmbTech",
-                        principalTable: "plateforme",
-                        principalColumn: "id_plateforme",
+                        principalTable: "pole_expertise",
+                        principalColumn: "id_pole_expertise",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_presenter_prestation",
@@ -812,10 +812,10 @@ namespace USMB_TECH.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_associer_id_plateforme",
+                name: "IX_associer_id_pole_expertise",
                 schema: "usmbTech",
                 table: "associer",
-                column: "id_plateforme");
+                column: "id_pole_expertise");
 
             migrationBuilder.CreateIndex(
                 name: "IX_consommable_id_unite",
@@ -854,10 +854,10 @@ namespace USMB_TECH.Migrations
                 column: "id_modele");
 
             migrationBuilder.CreateIndex(
-                name: "IX_equipement_id_plateforme",
+                name: "IX_equipement_id_pole_expertise",
                 schema: "usmbTech",
                 table: "equipement",
-                column: "id_plateforme");
+                column: "id_pole_expertise");
 
             migrationBuilder.CreateIndex(
                 name: "IX_equipement_id_type_equipement",
@@ -878,10 +878,10 @@ namespace USMB_TECH.Migrations
                 column: "id_equipement");
 
             migrationBuilder.CreateIndex(
-                name: "IX_exemple_utilisation_id_plateforme",
+                name: "IX_exemple_utilisation_id_pole_expertise",
                 schema: "usmbTech",
                 table: "exemple_utilisation",
-                column: "id_plateforme");
+                column: "id_pole_expertise");
 
             migrationBuilder.CreateIndex(
                 name: "IX_exposer_id_thematique",
@@ -926,10 +926,10 @@ namespace USMB_TECH.Migrations
                 column: "id_equipement");
 
             migrationBuilder.CreateIndex(
-                name: "IX_photo_id_plateforme",
+                name: "IX_photo_id_pole_expertise",
                 schema: "usmbTech",
                 table: "photo",
-                column: "id_plateforme");
+                column: "id_pole_expertise");
 
             migrationBuilder.CreateIndex(
                 name: "IX_posseder_id_fonctionalite",
@@ -974,10 +974,10 @@ namespace USMB_TECH.Migrations
                 column: "id_equipement");
 
             migrationBuilder.CreateIndex(
-                name: "IX_prise_contact_id_plateforme",
+                name: "IX_prise_contact_id_pole_expertise",
                 schema: "usmbTech",
                 table: "prise_contact",
-                column: "id_plateforme");
+                column: "id_pole_expertise");
 
             migrationBuilder.CreateIndex(
                 name: "IX_prise_contact_id_type_client",
@@ -992,10 +992,10 @@ namespace USMB_TECH.Migrations
                 column: "id_contact");
 
             migrationBuilder.CreateIndex(
-                name: "IX_specifier_id_plateforme",
+                name: "IX_specifier_id_pole_expertise",
                 schema: "usmbTech",
                 table: "specifier",
-                column: "id_plateforme");
+                column: "id_pole_expertise");
         }
 
         /// <inheritdoc />
@@ -1106,7 +1106,7 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech");
 
             migrationBuilder.DropTable(
-                name: "plateforme",
+                name: "pole_expertise",
                 schema: "usmbTech");
 
             migrationBuilder.DropTable(

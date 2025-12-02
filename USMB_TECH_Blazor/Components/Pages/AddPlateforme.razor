@@ -1,4 +1,4 @@
-@page "/ajouter-plateforme"
+@page "/ajouter-pole_expertise"
 @using USMB_TECH.Models
 @inject HttpClient Http
 @inject Service.IMainService<Prestation,int> prestationDatas
@@ -14,36 +14,36 @@
     </div>
 }
 
-<h2 class="add_platform">Ajouter une plateforme</h2>
+<h2 class="add_platform">Ajouter un pôle d'expertise</h2>
 
 <div class="page-container">
-    <EditForm Model="@plateforme" OnValidSubmit="SubmitPlateforme">
+    <EditForm Model="@pole_expertise" OnValidSubmit="SubmitPole_Expertise">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <h4 class="add_platform">Infos générales</h4>
-        <label>Nom plateforme *</label>
-        <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Plateforme" />
-        <ValidationMessage For="@(() => plateforme.Nom_Plateforme)" />
+        <label>Nom pôle d'expertise *</label>
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" />
+        <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
 
         <label>Description *</label>
-        <InputTextArea class="form-control mb-2" @bind-Value="plateforme.Description_Plateforme" />
-        <ValidationMessage For="@(() => plateforme.Description_Plateforme)" />
+        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" />
+        <ValidationMessage For="@(() => pole_expertise.Description_Pole_Expertise)" />
 
         <label>Nom contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="plateforme.Nom_Contenu" />
-        <ValidationMessage For="@(() => plateforme.Nom_Contenu)" />
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" />
+        <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
 
         <label>URL contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="plateforme.Url_Contenu" />
-        <ValidationMessage For="@(() => plateforme.Url_Contenu)" />
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" />
+        <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
 
         <label>Description contenu *</label>
-        <InputTextArea class="form-control mb-2" @bind-Value="plateforme.Description_Contenu" />
-        <ValidationMessage For="@(() => plateforme.Description_Contenu)" />
+        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" />
+        <ValidationMessage For="@(() => pole_expertise.Description_Contenu)" />
 
         <label class="mt-2">Active ?</label>
-        <InputSelect class="form-control mb-2" @bind-Value="plateforme.Actif">
+        <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Actif">
             <option value="true">Oui</option>
             <option value="false">Non</option>
         </InputSelect>
@@ -63,12 +63,12 @@
 
                 content.Add(fileContent, "file", file.Name);
 
-                var response = await Http.PostAsync("https://localhost:7093/api/plateformes/upload", content);
+                var response = await Http.PostAsync("https://localhost:7093/api/pole_expertises/upload", content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
-                    plateforme.Photos.Add(new Photo
+                    pole_expertise.Photos.Add(new Photo
                     {
                         Nom_Photo = file.Name,
                         Url_Photo = result.url
@@ -94,7 +94,7 @@
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
         </form>
         <ul class="add_platform">
-            @foreach (var mc in plateforme.MotsCles)
+            @foreach (var mc in pole_expertise.MotsCles)
             {
                 <li class="add_platform">
                     @mc.Nom_Mot_Clef
@@ -114,7 +114,7 @@
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
         </form>
         <ul class="add_platform">
-            @foreach (var t in plateforme.Thematiques)
+            @foreach (var t in pole_expertise.Thematiques)
             {
                 <li class="add_platform">
                     @t.Nom_Thematique
@@ -139,7 +139,7 @@
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
         </form>
         <ul class="add_platform">
-            @foreach (var e in plateforme.ExempleUtilisations)
+            @foreach (var e in pole_expertise.ExempleUtilisations)
             {
                 <li class="add_platform">
                     @e.Nom_Utilisation : @e.Description_Utilisation
@@ -164,7 +164,7 @@
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
         </form>
         <ul class="add_platform">
-            @foreach (var pr in plateforme.Presenters)
+            @foreach (var pr in pole_expertise.Presenters)
             {
                 <li class="add_platform">
                     Prestation ID : @pr.Id_Prestation
@@ -175,7 +175,7 @@
 
 
         <hr />
-        <button class="btn btn-success mt-3" type="submit">Créer la plateforme</button>
+        <button class="btn btn-success mt-3" type="submit">Créer la pole_expertise</button>
     </EditForm>
 </div>
 
@@ -187,7 +187,7 @@
 }
 
 @code {
-    Plateforme plateforme = new Plateforme();
+    Pole_Expertise pole_expertise = new Pole_Expertise();
     private List<Prestation> prestations = new();
     private bool isLoading = false;
 
@@ -211,7 +211,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newMot_Clef))
         {
-            plateforme.MotsCles.Add(new Mot_Clef { Nom_Mot_Clef = newMot_Clef });
+            pole_expertise.MotsCles.Add(new Mot_Clef { Nom_Mot_Clef = newMot_Clef });
             newMot_Clef = "";
         }
     }
@@ -220,7 +220,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newThematique))
         {
-            plateforme.Thematiques.Add(new Thematique { Nom_Thematique = newThematique });
+            pole_expertise.Thematiques.Add(new Thematique { Nom_Thematique = newThematique });
             newThematique = "";
         }
     }
@@ -229,7 +229,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
         {
-            plateforme.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            pole_expertise.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
             {
                 Nom_Utilisation = newExempleNom,
                 Description_Utilisation = newExempleDesc
@@ -243,7 +243,7 @@
     {
         if (selectedPrestationId.HasValue)
         {
-            plateforme.Presenters.Add(new Presenter
+            pole_expertise.Presenters.Add(new Presenter
             {
                 Id_Prestation = selectedPrestationId.Value
             });
@@ -251,22 +251,19 @@
         }
     }
 
-    async Task SubmitPlateforme()
+    async Task SubmitPole_Expertise()
     {
         try
         {
             isLoading = true; // active le loader
             StateHasChanged();
 
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/plateformes", plateforme);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/pole_expertises", pole_expertise);
 
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;
-                await ShowAlert("Plateforme créée avec succès ✅");
-
-                // Notifie le parent si utilisé dans une modale
-                await OnPlateformeAdded.InvokeAsync(plateforme);
+                await ShowAlert("Pole_Expertise créée avec succès ✅");
             }
             else
             {
@@ -302,19 +299,19 @@
     }
     void RemoveMotCle(Mot_Clef mc)
     {
-        plateforme.MotsCles.Remove(mc);
+        pole_expertise.MotsCles.Remove(mc);
     }
     void RemoveThematique(Thematique t)
     {
-        plateforme.Thematiques.Remove(t);
+        pole_expertise.Thematiques.Remove(t);
     }
     void RemoveExemple(Exemple_Utilisation e)
     {
-        plateforme.ExempleUtilisations.Remove(e);
+        pole_expertise.ExempleUtilisations.Remove(e);
     }
     void RemovePresenter(Presenter pr)
     {
-        plateforme.Presenters.Remove(pr);
+        pole_expertise.Presenters.Remove(pr);
     }
 
 }

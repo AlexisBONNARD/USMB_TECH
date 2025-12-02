@@ -12,8 +12,8 @@ namespace USMB_TECH.Models
         [Column("id_equipement")]
         public int Id_Equipement { get; set; }
 
-        [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        [Column("id_pole_expertise")]
+        public int Id_Pole_Expertise { get; set; }
 
         [Column("id_modele")]
         public int Id_Modele { get; set; }
@@ -56,9 +56,9 @@ namespace USMB_TECH.Models
         [Column("actif")]
         public bool Actif { get; set; }
 
-        [ForeignKey("Id_Plateforme")]
-        [InverseProperty(nameof(Plateforme.Equipements))]
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        [ForeignKey("Id_Pole_Expertise")]
+        [InverseProperty(nameof(Pole_Expertise.Equipements))]
+        public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
 
         [ForeignKey("Id_Modele")]
         [InverseProperty(nameof(Modele.Equipements))]
