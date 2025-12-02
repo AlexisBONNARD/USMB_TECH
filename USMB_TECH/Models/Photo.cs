@@ -17,6 +17,9 @@ namespace USMB_TECH.Models
         [Column("id_pole_expertise")]
         public int? Id_Pole_Expertise { get; set; }
 
+        [Column("id_domaine_excellence")]
+        public int? Id_Domaine_Excellence { get; set; }
+
         [Column("nom_photo")]
         [MaxLength(100)]
         public string Nom_Photo { get; set; }
@@ -32,5 +35,9 @@ namespace USMB_TECH.Models
         [ForeignKey("Id_Pole_Expertise")]
         [InverseProperty(nameof(Pole_Expertise.Photos))]
         public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
+
+        [ForeignKey("Id_Domaine_Excellence")]
+        [InverseProperty(nameof(Domaine_Excellence.Photos))]
+        public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
     }
 }

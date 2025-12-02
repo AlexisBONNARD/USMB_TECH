@@ -21,7 +21,7 @@
             <label>Description</label>
             <InputText @bind-Value="labo.Description"></InputText>
             <ValidationMessage For="@(() => labo.Description)" />
-                </div>
+        </div>
            
             <h2>Adresses</h2>
         <div>
@@ -92,6 +92,5 @@
 
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
-
     }
 }
