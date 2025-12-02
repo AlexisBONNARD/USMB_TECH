@@ -17,60 +17,60 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlateformesController(IMainRepository<Plateforme, int> dataRepository, UsmbTechDbContext context) : ControllerBase
+    public class Pole_ExpertisesController(IMainRepository<Pole_Expertise, int> dataRepository, UsmbTechDbContext context) : ControllerBase
     {
-        private readonly IMainRepository<Plateforme, int> _dataRepository = dataRepository;
+        private readonly IMainRepository<Pole_Expertise, int> _dataRepository = dataRepository;
         private readonly UsmbTechDbContext _context = context;
 
-        // GET: api/Plateformes
+        // GET: api/Pole_Expertises
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Plateforme>>> GetPlateformes()
+        public async Task<ActionResult<IEnumerable<Pole_Expertise>>> GetPole_Expertises()
         {
-            var plateformes = await _dataRepository.GetAllAsync();
-            return Ok(plateformes);
+            var pole_expertises = await _dataRepository.GetAllAsync();
+            return Ok(pole_expertises);
         }
 
-        // GET: api/Plateformes/{id}
+        // GET: api/Pole_Expertises/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Plateforme>> GetPlateforme(int id)
+        public async Task<ActionResult<Pole_Expertise>> GetPole_Expertise(int id)
         {
-            var plateforme = await _dataRepository.GetByIdAsync(id);
-            return plateforme is null ? NotFound() : Ok(plateforme);
+            var pole_expertise = await _dataRepository.GetByIdAsync(id);
+            return pole_expertise is null ? NotFound() : Ok(pole_expertise);
         }
 
-        // PUT: api/Plateformes/{id}
+        // PUT: api/Pole_Expertises/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutPlateforme(int id, UpdatePlateformeDto dto)
+        public async Task<IActionResult> PutPole_Expertise(int id, UpdatePole_ExpertiseDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != dto.Id_Plateforme)
+            if (id != dto.Id_Pole_Expertise)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Plateforme avec l'id {id} introuvable.");
+                return NotFound($"Pole_Expertise avec l'id {id} introuvable.");
 
             // Mapper le DTO vers l'entité
-            var updatedEntity = PlateformeMapper.ToEntity(dto);
+            var updatedEntity = Pole_ExpertiseMapper.ToEntity(dto);
 
             await _dataRepository.UpdateAsync(existing, updatedEntity);
             return NoContent();
         }
 
-        // POST: api/Plateformes
+        // POST: api/Pole_Expertises
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Plateforme>> PostPlateforme(AddPlateformeDto plateformeDto)
+        public async Task<ActionResult<Pole_Expertise>> PostPole_Expertise(AddPole_ExpertiseDto pole_expertiseDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -81,27 +81,27 @@ namespace USMB_TECH.Controllers
             try
             {
                 // -------------------------
-                // 1) Créer la plateforme (manuellement, pas via mapper pour éviter collections pré-remplies)
+                // 1) Créer la pole_expertise (manuellement, pas via mapper pour éviter collections pré-remplies)
                 // -------------------------
-                var plateforme = new Plateforme
+                var pole_expertise = new Pole_Expertise
                 {
-                    Nom_Plateforme = plateformeDto.Nom_Plateforme?.Trim(),
-                    Description_Plateforme = plateformeDto.Description_Plateforme?.Trim(),
-                    Nom_Contenu = plateformeDto.Nom_Contenu?.Trim(),
-                    Url_Contenu = plateformeDto.Url_Contenu?.Trim(),
-                    Description_Contenu = plateformeDto.Description_Contenu?.Trim(),
-                    Actif = plateformeDto.Actif
+                    Nom_Pole_Expertise = pole_expertiseDto.Nom_Pole_Expertise?.Trim(),
+                    Description_Pole_Expertise = pole_expertiseDto.Description_Pole_Expertise?.Trim(),
+                    Nom_Contenu = pole_expertiseDto.Nom_Contenu?.Trim(),
+                    Url_Contenu = pole_expertiseDto.Url_Contenu?.Trim(),
+                    Description_Contenu = pole_expertiseDto.Description_Contenu?.Trim(),
+                    Actif = pole_expertiseDto.Actif
                 };
 
-                _context.Plateformes.Add(plateforme);
-                await _context.SaveChangesAsync(); // Génère Id_Plateforme
-                var idPlateforme = plateforme.Id_Plateforme;
+                _context.Pole_Expertises.Add(pole_expertise);
+                await _context.SaveChangesAsync(); // Génère Id_Pole_Expertise
+                var idPole_Expertise = pole_expertise.Id_Pole_Expertise;
 
                 // -------------------------
                 // 2) Mots-clés -> Mot_Clef + Specifier
                 // Pour chaque mot : reuse si existe (bd), sinon créer et SaveChanges pour obtenir l'id
                 // -------------------------
-                foreach (var mc in plateformeDto.MotsCles ?? Enumerable.Empty<MotCleDto>())
+                foreach (var mc in pole_expertiseDto.MotsCles ?? Enumerable.Empty<MotCleDto>())
                 {
                     var nomMot = (mc.Nom_Mot_Clef ?? string.Empty).Trim().ToLower();
                     if (string.IsNullOrEmpty(nomMot)) continue;
@@ -144,13 +144,13 @@ namespace USMB_TECH.Controllers
                     // Ajouter la relation Specifier
                     // Eviter doublon : on peut vérifier s'il existe déjà la relation (optionnel)
                     var existsSpecifier = await _context.Specifiers
-                        .AnyAsync(s => s.Id_Plateforme == idPlateforme && s.Id_Mot_Clef == motId);
+                        .AnyAsync(s => s.Id_Pole_Expertise == idPole_Expertise && s.Id_Mot_Clef == motId);
 
                     if (!existsSpecifier)
                     {
                         _context.Specifiers.Add(new Specifier
                         {
-                            Id_Plateforme = idPlateforme,
+                            Id_Pole_Expertise = idPole_Expertise,
                             Id_Mot_Clef = motId
                         });
                     }
@@ -161,7 +161,7 @@ namespace USMB_TECH.Controllers
                 // -------------------------
                 // 3) Thématiques -> Thematique + Exposer
                 // -------------------------
-                foreach (var t in plateformeDto.Thematiques ?? Enumerable.Empty<ThematiqueDto>())
+                foreach (var t in pole_expertiseDto.Thematiques ?? Enumerable.Empty<ThematiqueDto>())
                 {
                     var nomT = (t.Nom_Thematique ?? string.Empty).Trim().ToLower();
                     if (string.IsNullOrEmpty(nomT)) continue;
@@ -204,13 +204,13 @@ namespace USMB_TECH.Controllers
 
                     // Eviter doublon d'association
                     var existsExposer = await _context.Exposers
-                        .AnyAsync(e => e.Id_Plateforme == idPlateforme && e.Id_Thematique == themeId);
+                        .AnyAsync(e => e.Id_Pole_Expertise == idPole_Expertise && e.Id_Thematique == themeId);
 
                     if (!existsExposer)
                     {
                         _context.Exposers.Add(new Exposer
                         {
-                            Id_Plateforme = idPlateforme,
+                            Id_Pole_Expertise = idPole_Expertise,
                             Id_Thematique = themeId
                         });
                     }
@@ -221,13 +221,13 @@ namespace USMB_TECH.Controllers
                 // -------------------------
                 // 4) Exemples d'utilisation
                 // -------------------------
-                foreach (var exDto in plateformeDto.ExempleUtilisations ?? Enumerable.Empty<ExempleUtilisationDto>())
+                foreach (var exDto in pole_expertiseDto.ExempleUtilisations ?? Enumerable.Empty<ExempleUtilisationDto>())
                 {
                     var newEx = new Exemple_Utilisation
                     {
                         Nom_Utilisation = exDto.Nom_Utilisation?.Trim(),
                         Description_Utilisation = exDto.Description_Utilisation?.Trim(),
-                        Id_Plateforme = idPlateforme,
+                        Id_Pole_Expertise = idPole_Expertise,
                         Id_Equipement = null // car ton DTO n’a pas ce champ
                     };
 
@@ -239,13 +239,13 @@ namespace USMB_TECH.Controllers
                 // -------------------------
                 // 5) Photos
                 // -------------------------
-                foreach (var pDto in plateformeDto.Photos ?? Enumerable.Empty<PhotoDto>())
+                foreach (var pDto in pole_expertiseDto.Photos ?? Enumerable.Empty<PhotoDto>())
                 {
                     var newP = new Photo
                     {
                         Nom_Photo = pDto.Nom_Photo?.Trim(),
                         Url_Photo = pDto.Url_Photo?.Trim(),
-                        Id_Plateforme = idPlateforme
+                        Id_Pole_Expertise = idPole_Expertise
                     };
 
                     _context.Photos.Add(newP);
@@ -256,11 +256,11 @@ namespace USMB_TECH.Controllers
                 // -------------------------
                 // 6) Presenter
                 // -------------------------
-                foreach (var presenter in plateformeDto.Presenters ?? Enumerable.Empty<Presenter>())
+                foreach (var presenter in pole_expertiseDto.Presenters ?? Enumerable.Empty<Presenter>())
                 {
                     var newPresenter = new Presenter
                     {
-                        Id_Plateforme = idPlateforme,
+                        Id_Pole_Expertise = idPole_Expertise,
                         Id_Prestation = presenter.Id_Prestation
                     };
 
@@ -272,10 +272,10 @@ namespace USMB_TECH.Controllers
                 // Commit transaction
                 await tx.CommitAsync();
 
-                // Recharger la plateforme (optionnel) pour retourner l'objet complet
-                await _context.Entry(plateforme).ReloadAsync();
+                // Recharger la pole_expertise (optionnel) pour retourner l'objet complet
+                await _context.Entry(pole_expertise).ReloadAsync();
 
-                return CreatedAtAction(nameof(GetPlateforme), new { id = idPlateforme }, plateforme);
+                return CreatedAtAction(nameof(GetPole_Expertise), new { id = idPole_Expertise }, pole_expertise);
             }
             catch (Exception ex)
             {
@@ -285,24 +285,24 @@ namespace USMB_TECH.Controllers
             }
         }
 
-        // DELETE: api/Plateformes/{id}
+        // DELETE: api/Pole_Expertises/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeletePlateforme(int id)
+        public async Task<IActionResult> DeletePole_Expertise(int id)
         {
-            var plateforme = await _dataRepository.GetByIdAsync(id);
-            if (plateforme is null)
-                return NotFound($"Plateforme avec l'id {id} introuvable.");
+            var pole_expertise = await _dataRepository.GetByIdAsync(id);
+            if (pole_expertise is null)
+                return NotFound($"Pole_Expertise avec l'id {id} introuvable.");
 
-            await _dataRepository.DeleteAsync(plateforme);
+            await _dataRepository.DeleteAsync(pole_expertise);
             return NoContent();
         }
 
         [HttpGet("GetByNom/{nom}")]
-        public async Task<ActionResult<IEnumerable<Plateforme>>> GetByNom(string nom)
+        public async Task<ActionResult<IEnumerable<Pole_Expertise>>> GetByNom(string nom)
         {
-            var results = await _dataRepository.GetByKeysAsync(p => p.Nom_Plateforme, nom);
+            var results = await _dataRepository.GetByKeysAsync(p => p.Nom_Pole_Expertise, nom);
             return Ok(results);
         }
 

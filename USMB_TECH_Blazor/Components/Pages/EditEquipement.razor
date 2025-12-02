@@ -54,10 +54,10 @@ else
             <!-- Relations obligatoires -->
             <h5 class="mt-4">Associations obligatoires</h5>
 
-            <!-- Plateforme -->
-            <label>Plateforme associée * @equipement.Id_Plateforme @equipement.Nom_Plateforme</label>
-            <input class="form-control mb-2" type="text" value="@equipement.Nom_Plateforme" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Plateforme" />
+            <!-- Pole_Expertise -->
+            <label>Pole_Expertise associée * @equipement.Id_Pole_Expertise @equipement.Nom_Pole_Expertise</label>
+            <input class="form-control mb-2" type="text" value="@equipement.Nom_Pole_Expertise" readonly />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Pole_Expertise" />
 
 
             <!-- Modèle -->
@@ -140,7 +140,7 @@ else
 
         if (equipement != null)
         {
-            equipement.Nom_Plateforme = equipement.PlateformeNavigation?.Nom_Plateforme ?? "";
+            equipement.Nom_Pole_Expertise = equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise ?? "";
             equipement.Nom_Modele = equipement.ModeleNavigation?.Nom_Modele ?? "";
             equipement.Nom_Marque = equipement.ModeleNavigation?.MarqueNavigation?.Nom_Marque ?? "";
             equipement.Type_Equipement = equipement.Type_EquipementNavigation?.Nom_Type ?? "";

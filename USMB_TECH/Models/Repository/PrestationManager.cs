@@ -22,7 +22,7 @@ namespace USMB_TECH.Models.Repository
         {
             return await _context.Prestations
                 .Include(p => p.Presenters)
-                    .ThenInclude(e => e.PlateformeNavigation)
+                    .ThenInclude(e => e.Pole_ExpertiseNavigation)
 
                 .Include(p => p.Fournirs)
                     .ThenInclude(e => e.EquipementNavigation)

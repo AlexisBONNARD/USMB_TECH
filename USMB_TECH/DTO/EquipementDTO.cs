@@ -9,7 +9,7 @@ namespace USMB_TECH.DTO
     public class EquipementDTO
     {
         public int Id_Equipement { get; set; }
-        public int Id_Plateforme { get; set; }
+        public int Id_Pole_Expertise { get; set; }
         public int Id_Modele { get; set; }
         public int Id_Type_Equipement { get; set; }
         public string Nom_Equipement { get; set; }
@@ -27,7 +27,7 @@ namespace USMB_TECH.DTO
         {
             return obj is EquipementDTO DTO &&
                     Id_Equipement == DTO.Id_Equipement &&
-                    Id_Plateforme == DTO.Id_Plateforme &&
+                    Id_Pole_Expertise == DTO.Id_Pole_Expertise &&
                     Id_Modele == DTO.Id_Modele &&
                     Id_Type_Equipement == DTO.Id_Type_Equipement &&
                     Nom_Equipement == DTO.Nom_Equipement &&
@@ -46,7 +46,7 @@ namespace USMB_TECH.DTO
         {
             HashCode hash = new HashCode();
             hash.Add(Id_Equipement );
-            hash.Add(Id_Plateforme );
+            hash.Add(Id_Pole_Expertise );
             hash.Add(Id_Modele );
             hash.Add(Id_Type_Equipement );
             hash.Add(Nom_Equipement );

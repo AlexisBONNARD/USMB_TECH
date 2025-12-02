@@ -17,10 +17,10 @@ namespace USMB_TECH.Models.Repository
         public async Task<IEnumerable<Equipement>> GetAllAsync()
         {
             return await _context.Equipements
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Specifiers)
                         .ThenInclude(s => s.Mot_ClefNavigation)
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
@@ -40,12 +40,12 @@ namespace USMB_TECH.Models.Repository
         public async Task<Equipement?> GetByIdAsync(int id)
         {
             return await _context.Equipements
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Photos)
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Specifiers)
                         .ThenInclude(s => s.Mot_ClefNavigation)
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
@@ -75,25 +75,25 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Equipement entity)
         {
-            if (entity.PlateformeNavigation != null &&
-                !string.IsNullOrEmpty(entity.PlateformeNavigation.Nom_Plateforme))
+            if (entity.Pole_ExpertiseNavigation != null &&
+                !string.IsNullOrEmpty(entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise))
             {
-                var plateforme = await _context.Plateformes
-                    .FirstOrDefaultAsync(p => p.Nom_Plateforme == entity.PlateformeNavigation.Nom_Plateforme);
+                var pole_expertise = await _context.Pole_Expertises
+                    .FirstOrDefaultAsync(p => p.Nom_Pole_Expertise == entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise);
 
-                if (plateforme == null)
+                if (pole_expertise == null)
                 {
-                    plateforme = new Plateforme
+                    pole_expertise = new Pole_Expertise
                     {
-                        Nom_Plateforme = entity.PlateformeNavigation.Nom_Plateforme
+                        Nom_Pole_Expertise = entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise
                     };
 
-                    _context.Plateformes.Add(plateforme);
+                    _context.Pole_Expertises.Add(pole_expertise);
                     await _context.SaveChangesAsync();
                 }
 
-                entity.Id_Plateforme = plateforme.Id_Plateforme;
-                entity.PlateformeNavigation = plateforme;
+                entity.Id_Pole_Expertise = pole_expertise.Id_Pole_Expertise;
+                entity.Pole_ExpertiseNavigation = pole_expertise;
             }
 
             if (entity.Type_EquipementNavigation != null &&
@@ -181,7 +181,7 @@ namespace USMB_TECH.Models.Repository
                 else
                 {
                     updatedPhoto.Id_Equipement = entityToUpdate.Id_Equipement;
-                    updatedPhoto.Id_Plateforme = null; // ⚡ Respecte la contrainte CK_Photo_EquipementOuPlateforme
+                    updatedPhoto.Id_Pole_Expertise = null; // ⚡ Respecte la contrainte CK_Photo_EquipementOuPole_Expertise
                     entityToUpdate.Photos.Add(updatedPhoto);
                 }
             }

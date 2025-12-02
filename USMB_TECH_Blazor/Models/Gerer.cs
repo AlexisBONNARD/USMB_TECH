@@ -8,11 +8,11 @@ namespace USMB_TECH_Blazor.Models
     {
         public string Nom_Court { get; set; }
 
-        public int Id_Plateforme { get; set; }
+        public int Id_Pole_Expertise { get; set; }
         public double Pourcentage { get; set; }
 
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
     }
 }

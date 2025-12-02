@@ -12,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
-builder.Services.AddScoped<IMainRepository<Plateforme, int>, PlateformeManager>();
+builder.Services.AddScoped<IMainRepository<Pole_Expertise, int>, Pole_ExpertiseManager>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(" https://localhost:7093/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
@@ -23,7 +23,7 @@ builder.Services.AddScoped<IMainRepository<Marque, int>, MarqueManager>();
 
 builder.Services.AddScoped<EquipementManager>();
 builder.Services.AddScoped<LaboratoireManager>();
-builder.Services.AddScoped<PlateformeManager>();
+builder.Services.AddScoped<Pole_ExpertiseManager>();
 builder.Services.AddScoped<PrestationManager>();
 builder.Services.AddScoped<ThematiqueManager>();
 builder.Services.AddScoped<MarqueManager>();

@@ -9,7 +9,7 @@ namespace USMB_TECH.Models
 
         public int? Id_Equipement { get; set; }
 
-        public int? Id_Plateforme { get; set; }
+        public int? Id_Pole_Expertise { get; set; }
 
         public string Nom_Utilisation { get; set; }
 
