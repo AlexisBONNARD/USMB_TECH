@@ -8,15 +8,15 @@ namespace USMB_TECH.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        [Column("id_pole_expertise")]
+        public int Id_Pole_Expertise { get; set; }
 
         [Column("id_thematique")]
         public int Id_Thematique { get; set; }
 
-        [ForeignKey("Id_Plateforme")]
-        [InverseProperty(nameof(Plateforme.Exposers))]
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        [ForeignKey("Id_Pole_Expertise")]
+        [InverseProperty(nameof(Pole_Expertise.Exposers))]
+        public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
 
         [ForeignKey("Id_Thematique")]
         [InverseProperty(nameof(Thematique.Exposers))]

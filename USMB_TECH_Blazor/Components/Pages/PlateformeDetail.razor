@@ -1,5 +1,5 @@
-﻿@page "/plateforme/{Id:int}"
-@inject IMainService<Plateforme,int> PlateformeService
+﻿@page "/pole_expertise/{Id:int}"
+@inject IMainService<Pole_Expertise,int> Pole_ExpertiseService
 @inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
@@ -8,7 +8,7 @@
     <link href="css/PageDetail.css" rel="stylesheet" />
 </HeadContent>
 
-<PageTitle>Détails Plateforme</PageTitle>
+<PageTitle>Détails Pole_Expertise</PageTitle>
 
 @if (!string.IsNullOrEmpty(deleteMessage))
 {
@@ -17,7 +17,7 @@
     </div>
 }
 
-@if (plateforme == null)
+@if (pole_expertise == null)
 {
     <p>Loading...</p>
 }
@@ -27,13 +27,13 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>@plateforme.Nom_Plateforme</h2>
-                <p>@plateforme.Description_Plateforme</p>
+                <h2>@pole_expertise.Nom_Pole_Expertise</h2>
+                <p>@pole_expertise.Description_Pole_Expertise</p>
 
                 <div class="center-item">
-                    @foreach (Photo image in plateforme.Photos)
+                    @foreach (Photo image in pole_expertise.Photos)
                     {
-                        <img src="@image.Url_Photo" alt="photo plateforme" />
+                        <img src="@image.Url_Photo" alt="photo pole_expertise" />
                     }
                 </div>
             </section>
@@ -68,7 +68,7 @@ else
                 <h3>NOS ÉQUIPEMENTS</h3>
 
                 <div class="center-grid">
-                    @foreach (var equipement in plateforme.Equipements)
+                    @foreach (var equipement in pole_expertise.Equipements)
                     {
                         <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement))">
                             @if (equipement.Photos != null && equipement.Photos.Any())
@@ -84,7 +84,7 @@ else
 
             <section>
                 <h3>EXEMPLES DE RÉALISATIONS</h3>
-                <p>@plateforme.Description_Contenu</p>
+                <p>@pole_expertise.Description_Contenu</p>
             </section>
         </div>
 
@@ -105,10 +105,10 @@ else
 
     </div>
 
-    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(plateforme.Id_Plateforme)">
+    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(pole_expertise.Id_Pole_Expertise)">
         Modifier
     </button>
-    <button class="btn btn-danger mb-3" @onclick="() => DeletePlateforme(plateforme.Id_Plateforme)">
+    <button class="btn btn-danger mb-3" @onclick="() => DeletePole_Expertise(pole_expertise.Id_Pole_Expertise)">
         Supprimer
     </button>
 
@@ -118,7 +118,7 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private Plateforme? plateforme;
+    private Pole_Expertise? pole_expertise;
     private List<Prestation> prestations = new();
     private List<Mot_Clef> motsCles = new();
     private string thematique;
@@ -130,28 +130,28 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        plateforme = await PlateformeService.GetByIdAsync(Id);
+        pole_expertise = await Pole_ExpertiseService.GetByIdAsync(Id);
 
-        prestations = plateforme.Presenters
+        prestations = pole_expertise.Presenters
             .Select(p => p.prestationNavigation)
             .ToList();
 
-        motsCles = plateforme.Specifiers
+        motsCles = pole_expertise.Specifiers
             .Select(s => s.Mot_ClefNavigation)
             .ToList();
 
-        thematique = plateforme.Exposers
+        thematique = pole_expertise.Exposers
             .Select(t => t.ThematiqueNavigation.Nom_Thematique)
             .FirstOrDefault();
     }
 
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
-    private async Task DeletePlateforme(int id)
+    private async Task DeletePole_Expertise(int id)
     {
         bool confirm = await JS.InvokeAsync<bool>(
             "confirm",
-            "Voulez-vous vraiment supprimer cette plateforme ?"
+            "Voulez-vous vraiment supprimer cette pole_expertise ?"
         );
 
         if (!confirm)
@@ -159,10 +159,10 @@ else
 
         try
         {
-            await PlateformeService.DeleteAsync(id);
+            await Pole_ExpertiseService.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Plateforme supprimée avec succès ✅");
+            await ShowDeleteAlert("Pole_Expertise supprimée avec succès ✅");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
@@ -193,6 +193,6 @@ else
 
     private void GoToUpdate(int id)
     {
-        Navigation.NavigateTo($"/plateforme/edit/{id}", true);
+        Navigation.NavigateTo($"/pole_expertise/edit/{id}", true);
     }
 }

@@ -3,10 +3,10 @@ using USMB_TECH.Models;
 
 namespace USMB_TECH.DTO
 {
-    public class AddPlateformeDto
+    public class AddPole_ExpertiseDto
     {
-        public string Nom_Plateforme { get; set; }
-        public string Description_Plateforme { get; set; }
+        public string Nom_Pole_Expertise { get; set; }
+        public string Description_Pole_Expertise { get; set; }
         public string Nom_Contenu { get; set; }
         public string Url_Contenu { get; set; }
         public string Description_Contenu { get; set; }

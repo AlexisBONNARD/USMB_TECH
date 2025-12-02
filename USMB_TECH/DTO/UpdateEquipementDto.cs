@@ -5,7 +5,7 @@ namespace USMB_TECH.DTO
     public class UpdateEquipementDto
     {
         public int Id_Equipement { get; set; }          // obligatoire pour identifier l'équipement
-        public int Id_Plateforme { get; set; }          // rattachement à la plateforme
+        public int Id_Pole_Expertise { get; set; }          // rattachement à la pole_expertise
         public int Id_Modele { get; set; }              // rattachement au modèle
         public int Id_Type_Equipement { get; set; }     // rattachement au type
 
@@ -22,7 +22,7 @@ namespace USMB_TECH.DTO
         public bool Utilisable_Chez_Le_Client { get; set; }
         public bool Actif { get; set; }
 
-        public string? Nom_Plateforme { get; set; }
+        public string? Nom_Pole_Expertise { get; set; }
         public string? Nom_Modele { get; set; }
         public string? Nom_Marque { get; set; }
         public string? Type_Equipement { get; set; }
@@ -35,7 +35,7 @@ namespace USMB_TECH.DTO
         {
             return obj is UpdateEquipementDto dto &&
                    Id_Equipement == dto.Id_Equipement &&
-                   Id_Plateforme == dto.Id_Plateforme &&
+                   Id_Pole_Expertise == dto.Id_Pole_Expertise &&
                    Id_Modele == dto.Id_Modele &&
                    Id_Type_Equipement == dto.Id_Type_Equipement &&
                    Nom_Equipement == dto.Nom_Equipement &&
@@ -48,7 +48,7 @@ namespace USMB_TECH.DTO
                    Autonomie == dto.Autonomie &&
                    Utilisable_Chez_Le_Client == dto.Utilisable_Chez_Le_Client &&
                    Actif == dto.Actif &&
-                   Nom_Plateforme == dto.Nom_Plateforme &&
+                   Nom_Pole_Expertise == dto.Nom_Pole_Expertise &&
                    Nom_Modele == dto.Nom_Modele &&
                    Nom_Marque == dto.Nom_Marque &&
                    Type_Equipement == dto.Type_Equipement &&
@@ -61,7 +61,7 @@ namespace USMB_TECH.DTO
         {
             HashCode hash = new HashCode();
             hash.Add(Id_Equipement);
-            hash.Add(Id_Plateforme);
+            hash.Add(Id_Pole_Expertise);
             hash.Add(Id_Modele);
             hash.Add(Id_Type_Equipement);
             hash.Add(Nom_Equipement);
@@ -74,7 +74,7 @@ namespace USMB_TECH.DTO
             hash.Add(Autonomie);
             hash.Add(Utilisable_Chez_Le_Client);
             hash.Add(Actif);
-            hash.Add(Nom_Plateforme);
+            hash.Add(Nom_Pole_Expertise);
             hash.Add(Nom_Modele);
             hash.Add(Nom_Marque);
             hash.Add(Type_Equipement);

@@ -5,25 +5,25 @@ using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
 {
-    public class PlateformeManager : IMainRepository<Plateforme, int>
+    public class Pole_ExpertiseManager : IMainRepository<Pole_Expertise, int>
     {
         private readonly UsmbTechDbContext _context;
         private readonly HttpClient _httpClient;
 
-        public PlateformeManager(UsmbTechDbContext context, HttpClient httpClient)
+        public Pole_ExpertiseManager(UsmbTechDbContext context, HttpClient httpClient)
         {
             _context = context;
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Plateforme>> GetAllAsync()
+        public async Task<IEnumerable<Pole_Expertise>> GetAllAsync()
         {
-            return await _context.Plateformes.ToListAsync();
+            return await _context.Pole_Expertises.ToListAsync();
         }
 
-        public async Task<Plateforme?> GetByIdAsync(int id)
+        public async Task<Pole_Expertise?> GetByIdAsync(int id)
         {
-            return await _context.Plateformes
+            return await _context.Pole_Expertises
                 .Include(p => p.Specifiers)
                     .ThenInclude(s => s.Mot_ClefNavigation)
                 .Include(p => p.Presenters)
@@ -35,17 +35,17 @@ namespace USMB_TECH.Models.Repository
                 .Include(p => p.Equipements)
                     .ThenInclude(e => e.Photos)
 
-                .FirstOrDefaultAsync(p => p.Id_Plateforme == id);
+                .FirstOrDefaultAsync(p => p.Id_Pole_Expertise == id);
 
         }
 
-        public async Task AddAsync(Plateforme entity)
+        public async Task AddAsync(Pole_Expertise entity)
         {
-            _context.Plateformes.Add(entity);
+            _context.Pole_Expertises.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Plateforme entityToUpdate, Plateforme updatedEntity)
+        public async Task UpdateAsync(Pole_Expertise entityToUpdate, Pole_Expertise updatedEntity)
         {
             // Propriétés simples
             _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
@@ -62,7 +62,7 @@ namespace USMB_TECH.Models.Repository
                 }
                 else
                 {
-                    updatedEquip.PlateformeNavigation = entityToUpdate; //  important
+                    updatedEquip.Pole_ExpertiseNavigation = entityToUpdate; //  important
                     entityToUpdate.Equipements.Add(updatedEquip);
                 }
             }
@@ -80,10 +80,10 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Plateforme entity)
+        public async Task DeleteAsync(Pole_Expertise entity)
         {
-            // Récupérer la plateforme avec toutes ses relations
-            var plateforme = await _context.Plateformes
+            // Récupérer la pole_expertise avec toutes ses relations
+            var pole_expertise = await _context.Pole_Expertises
                 .Include(p => p.Associers)
                 .Include(p => p.Exposers)
                 .Include(p => p.Gerers)
@@ -92,32 +92,32 @@ namespace USMB_TECH.Models.Repository
                 .Include(p => p.Photos)
                 .Include(p => p.Exemple_Utilisations)
                 .Include(p => p.Prise_Contacts)
-                .FirstOrDefaultAsync(p => p.Id_Plateforme == entity.Id_Plateforme);
+                .FirstOrDefaultAsync(p => p.Id_Pole_Expertise == entity.Id_Pole_Expertise);
 
-            if (plateforme == null) return;
+            if (pole_expertise == null) return;
 
             // Supprimer les collections explicitement pour éviter tout problème
-            _context.Associers.RemoveRange(plateforme.Associers);
-            _context.Exposers.RemoveRange(plateforme.Exposers);
-            _context.Gerers.RemoveRange(plateforme.Gerers);
-            _context.Presenters.RemoveRange(plateforme.Presenters);
-            _context.Specifiers.RemoveRange(plateforme.Specifiers);
-            _context.Photos.RemoveRange(plateforme.Photos);
-            _context.Exemple_Utilisations.RemoveRange(plateforme.Exemple_Utilisations);
-            _context.Prise_Contacts.RemoveRange(plateforme.Prise_Contacts);
+            _context.Associers.RemoveRange(pole_expertise.Associers);
+            _context.Exposers.RemoveRange(pole_expertise.Exposers);
+            _context.Gerers.RemoveRange(pole_expertise.Gerers);
+            _context.Presenters.RemoveRange(pole_expertise.Presenters);
+            _context.Specifiers.RemoveRange(pole_expertise.Specifiers);
+            _context.Photos.RemoveRange(pole_expertise.Photos);
+            _context.Exemple_Utilisations.RemoveRange(pole_expertise.Exemple_Utilisations);
+            _context.Prise_Contacts.RemoveRange(pole_expertise.Prise_Contacts);
 
-            // Supprimer la plateforme
-            _context.Plateformes.Remove(plateforme);
+            // Supprimer la pole_expertise
+            _context.Pole_Expertises.Remove(pole_expertise);
 
             // EF cascade supprimera automatiquement les Equipements et leurs dépendances
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Plateforme>> GetByKeysAsync<TProperty>(
-            Expression<Func<Plateforme, TProperty>> propertySelector,
+        public async Task<IEnumerable<Pole_Expertise>> GetByKeysAsync<TProperty>(
+            Expression<Func<Pole_Expertise, TProperty>> propertySelector,
             TProperty value)
         {
-            return await _context.Plateformes
+            return await _context.Pole_Expertises
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
         }

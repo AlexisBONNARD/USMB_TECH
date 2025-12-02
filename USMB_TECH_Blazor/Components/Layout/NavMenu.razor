@@ -1,6 +1,6 @@
 ﻿@using USMB_TECH_Blazor.Models;
 @using USMB_TECH_Blazor.Service;
-@inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Pole_Expertise,int> Pole_ExpertiseService
 @inject IMainService<Equipement,int> EquipementService
 @inject IMainService<Prestation,int> PrestationService
 @inject IMainService<Laboratoire,string> LaboratoireService
@@ -14,23 +14,23 @@
             <span class=""></span> USMB TECH
         </NavLink>
 
-        <!-- Dropdown NOS PLATEFORMES -->
+        <!-- Dropdown NOS POLES D'EXPERTISE -->
         <div class="nav-link dropdown"
-             @onmouseenter="@(() => OpenDropdown("Plateforme"))"
+             @onmouseenter="@(() => OpenDropdown("Pole_Expertise"))"
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
 
-            <span class="dropdown-toggle">PLATEFORMES</span>
+            <span class="dropdown-toggle">POLES D'EXPERTISE</span>
 
-            <ul class="dropdown-menu @(showDropdown == "Plateforme" ? "show" : "")">
-                @if (plateformes != null)
+            <ul class="dropdown-menu @(showDropdown == "Pole_Expertise" ? "show" : "")">
+                @if (pole_expertises != null)
                 {
-                    @foreach (var pl in plateformes)
+                    @foreach (var pl in pole_expertises)
                     {
                         if (pl.Actif)
                         {
-                            <li @onclick="() => GoToPlateforme(pl.Id_Plateforme)">
-                                @pl.Nom_Plateforme
+                            <li @onclick="() => GoToPole_Expertise(pl.Id_Pole_Expertise)">
+                                @pl.Nom_Pole_Expertise
                             </li>
                         }
                     }
@@ -106,23 +106,23 @@
 
 @code {
     private string showDropdown = null;
-    private IEnumerable<Plateforme>? plateformes;
+    private IEnumerable<Pole_Expertise>? pole_expertises;
     private IEnumerable<Equipement>? equipements;
     private IEnumerable<Prestation>? prestations;
     private IEnumerable<Laboratoire>? laboratoires;
     protected override async Task OnInitializedAsync()
     {
-        plateformes = await PlateformeService.GetAllAsync();
+        pole_expertises = await Pole_ExpertiseService.GetAllAsync();
         equipements = await EquipementService.GetAllAsync();
         prestations = await PrestationService.GetAllAsync();
         laboratoires = await LaboratoireService.GetAllAsync();
 
         // Affichage dans la console
-        if (plateformes != null)
+        if (pole_expertises != null)
         {
-            foreach (var p in plateformes)
+            foreach (var p in pole_expertises)
             {
-                await JS.InvokeVoidAsync("console.log", $"Plateforme: {p.Nom_Plateforme}, Id: {p.Id_Plateforme}");
+                await JS.InvokeVoidAsync("console.log", $"Pole_Expertise: {p.Nom_Pole_Expertise}, Id: {p.Id_Pole_Expertise}");
             }
         }
 
@@ -142,9 +142,9 @@
             }
         }
     }
-    private void ToggleDropdownPlateforme()
+    private void ToggleDropdownPole_Expertise()
     {
-        showDropdown = showDropdown == "Plateforme" ? null : "Plateforme";
+        showDropdown = showDropdown == "Pole_Expertise" ? null : "Pole_Expertise";
     }
 
     private void ToggleDropdownEquipement()
@@ -161,9 +161,9 @@
         showDropdown = showDropdown == "Laboratoire" ? null : "Laboratoire";
     }
 
-    private void GoToPlateforme(int id)
+    private void GoToPole_Expertise(int id)
     {
-        Nav.NavigateTo($"/plateforme/{id}", true);
+        Nav.NavigateTo($"/pole_expertise/{id}", true);
         showDropdown = null;
     }
     private void GoToLaboratoire(string id)

@@ -4,11 +4,11 @@ using USMB_TECH.Models;
 
 namespace USMB_TECH.Mapper
 {
-    public class MapperPlateforme : Profile
+    public class MapperPole_Expertise : Profile
     {
-        public MapperPlateforme() 
+        public MapperPole_Expertise() 
         {
-            CreateMap<UpdatePlateformeDto, Plateforme>();
+            CreateMap<UpdatePole_ExpertiseDto, Pole_Expertise>();
         }
     }
 }

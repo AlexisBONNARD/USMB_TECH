@@ -1,6 +1,6 @@
 ﻿@page "/"
 @inject IMainService<Thematique,int> ThematiqueService
-@inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Pole_Expertise,int> Pole_ExpertiseService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -56,12 +56,12 @@
                     @foreach (var thematique in thematiques)
                     {
                         var firstExposer = thematique.Exposers.FirstOrDefault();
-                        var plateforme = plateformes.FirstOrDefault(p => p.Id_Plateforme == firstExposer?.Id_Plateforme);
+                        var pole_expertise = pole_expertises.FirstOrDefault(p => p.Id_Pole_Expertise == firstExposer?.Id_Pole_Expertise);
 
                         <div class="domaine" @onclick="@(() => FastShearche(thematique.Nom_Thematique, "thematique"))">
-                            @if (plateforme?.Photos != null && plateforme.Photos.Any())
+                            @if (pole_expertise?.Photos != null && pole_expertise.Photos.Any())
                             {
-                                <img src="@plateforme.Photos.First().Url_Photo" class="domaine-img" />
+                                <img src="@pole_expertise.Photos.First().Url_Photo" class="domaine-img" />
                             }
                             <p class="domaine-title">@thematique.Nom_Thematique</p>
                         </div>
@@ -79,7 +79,7 @@
     private string SearchText = "";
     public int Id { get; set; }
     private IEnumerable<Thematique> thematiques = new List<Thematique>();
-    private List<Plateforme> plateformes = new List<Plateforme>();
+    private List<Pole_Expertise> pole_expertises = new List<Pole_Expertise>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,9 +92,9 @@
 
             if (firstExposer != null)
             {
-                var plat = await PlateformeService.GetByIdAsync(firstExposer.Id_Plateforme);
+                var plat = await Pole_ExpertiseService.GetByIdAsync(firstExposer.Id_Pole_Expertise);
                 if (plat != null)
-                    plateformes.Add(plat);
+                    pole_expertises.Add(plat);
             }
         }
     }

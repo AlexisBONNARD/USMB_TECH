@@ -4,14 +4,14 @@ using USMB_TECH.Models;
 
 namespace USMB_TECH.Mapper
 {
-    public static class PlateformeMapper
+    public static class Pole_ExpertiseMapper
     {
-        public static Plateforme ToEntity(AddPlateformeDto dto)
+        public static Pole_Expertise ToEntity(AddPole_ExpertiseDto dto)
         {
-            var plateforme = new Plateforme
+            var pole_expertise = new Pole_Expertise
             {
-                Nom_Plateforme = dto.Nom_Plateforme,
-                Description_Plateforme = dto.Description_Plateforme,
+                Nom_Pole_Expertise = dto.Nom_Pole_Expertise,
+                Description_Pole_Expertise = dto.Description_Pole_Expertise,
                 Nom_Contenu = dto.Nom_Contenu,
                 Url_Contenu = dto.Url_Contenu,
                 Description_Contenu = dto.Description_Contenu,
@@ -28,16 +28,16 @@ namespace USMB_TECH.Mapper
                 }).ToList(),
             };
 
-            return plateforme;
+            return pole_expertise;
         }
 
-        public static Plateforme ToEntity(UpdatePlateformeDto dto)
+        public static Pole_Expertise ToEntity(UpdatePole_ExpertiseDto dto)
         {
-            var plateforme = new Plateforme
+            var pole_expertise = new Pole_Expertise
             {
-                Id_Plateforme = dto.Id_Plateforme,
-                Nom_Plateforme = dto.Nom_Plateforme,
-                Description_Plateforme = dto.Description_Plateforme,
+                Id_Pole_Expertise = dto.Id_Pole_Expertise,
+                Nom_Pole_Expertise = dto.Nom_Pole_Expertise,
+                Description_Pole_Expertise = dto.Description_Pole_Expertise,
                 Nom_Contenu = dto.Nom_Contenu,
                 Url_Contenu = dto.Url_Contenu,
                 Description_Contenu = dto.Description_Contenu,
@@ -45,34 +45,34 @@ namespace USMB_TECH.Mapper
             };
 
             // --- Collections ---
-            plateforme.Photos = dto.Photos.Select(p => new Photo
+            pole_expertise.Photos = dto.Photos.Select(p => new Photo
             {
                 Id_Photo = p.Id_Photo,
                 Nom_Photo = p.Nom_Photo,
                 Url_Photo = p.Url_Photo,
-                PlateformeNavigation = plateforme
+                Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
-            plateforme.Exemple_Utilisations = dto.ExempleUtilisations.Select(e => new Exemple_Utilisation
+            pole_expertise.Exemple_Utilisations = dto.ExempleUtilisations.Select(e => new Exemple_Utilisation
             {
                 Id_Exemple_Utilisation = e.Id_Exemple_Utilisation,
                 Nom_Utilisation = e.Nom_Utilisation,
                 Description_Utilisation = e.Description_Utilisation,
-                PlateformeNavigation = plateforme
+                Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
-            plateforme.Presenters = dto.Presenters.Select(p => new Presenter
+            pole_expertise.Presenters = dto.Presenters.Select(p => new Presenter
             {
-                Id_Plateforme = dto.Id_Plateforme,
+                Id_Pole_Expertise = dto.Id_Pole_Expertise,
                 Id_Prestation = p.Id_Prestation,
-                PlateformeNavigation = plateforme
+                Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
             // --- Equipements (corrigé) ---
-            plateforme.Equipements = dto.Equipements.Select(e => new Equipement
+            pole_expertise.Equipements = dto.Equipements.Select(e => new Equipement
             {
                 Id_Equipement = e.Id_Equipement,
-                Id_Plateforme = e.Id_Plateforme,
+                Id_Pole_Expertise = e.Id_Pole_Expertise,
                 Id_Modele = e.Id_Modele,
                 Id_Type_Equipement = e.Id_Type_Equipement,
                 Nom_Equipement = e.Nom_Equipement,
@@ -85,22 +85,22 @@ namespace USMB_TECH.Mapper
                 Autonomie = e.Autonomie,
                 Utilisable_Chez_Le_Client = e.Utilisable_Chez_Le_Client,
                 Actif = e.Actif,
-                PlateformeNavigation = plateforme
+                Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
-            plateforme.Specifiers = dto.MotsCles.Select(m => new Specifier
+            pole_expertise.Specifiers = dto.MotsCles.Select(m => new Specifier
             {
                 Id_Mot_Clef = m.Id_Mot_Clef,
-                PlateformeNavigation = plateforme
+                Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
-            plateforme.Exposers = dto.Thematiques.Select(t => new Exposer
+            pole_expertise.Exposers = dto.Thematiques.Select(t => new Exposer
             {
                 Id_Thematique = t.Id_Thematique,
-                PlateformeNavigation = plateforme
+                Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
-            return plateforme;
+            return pole_expertise;
         }
     }
 }

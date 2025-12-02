@@ -1,5 +1,5 @@
 ﻿@page "/ajouterEquipement"
-@inject Service.IMainService<Plateforme,int> plateformeDatas
+@inject Service.IMainService<Pole_Expertise,int> pole_expertiseDatas
 @inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
 @inject Service.IMainService<Equipement,int> equipementDatas
 @inject NavigationManager Navigation
@@ -57,26 +57,26 @@
     </div>
 
     <div class="form-group">
-        <label>Plateforme associée :</label>
-        <InputSelect @bind-Value="addEquipement.Nom_Plateforme" id="plateforme">
+        <label>Pôle d'expertise associée :</label>
+        <InputSelect @bind-Value="addEquipement.Nom_Pole_Expertise" id="pole_expertise">
             <option>...</option>
-            @foreach (var plateforme in plateformes)
+            @foreach (var pole_expertise in pole_expertises)
             {
-                <option value="@plateforme.Nom_Plateforme">@plateforme.Nom_Plateforme</option>
+                <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
             }
-            <option value="ajouter">Ajouter une plateforme</option>
+            <option value="ajouter">Ajouter un pôle d'expertise</option>
 
         </InputSelect>
-        <ValidationMessage For="@(() => addEquipement.Nom_Plateforme)" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Pole_Expertise)" />
     </div>
-    <!-- Modal pour ajouter une plateforme -->
-    <div id="modalPlateforme" class="modal" style="display: none;">
+    <!-- Modal pour ajouter un pôle d'expertise -->
+    <div id="modalPole_Expertise" class="modal" style="display: none;">
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
-            <h3>Ajouter une plateforme</h3>
+            <h3>Ajouter un pôle d'expertise</h3>
 
-            <!-- Composant AddPlateforme intégré dans la modale -->
-            <AddPlateforme/>
+            <!-- Composant AddPole_Expertise intégré dans la modale -->
+            <AddPole_Expertise/>
         </div>
     </div>
 
@@ -131,7 +131,7 @@
 
     @code {
     private Equipement addEquipement = new();
-    private List<Plateforme> plateformes = new();
+    private List<Pole_Expertise> pole_expertises = new();
     private List<Type_Equipement> type_Equipements = new();
     private Marque marqueequipement = new();
 
@@ -140,35 +140,35 @@
 
     protected override async Task OnInitializedAsync()
     {
-        plateformes = (await plateformeDatas.GetAllAsync()).ToList();
+        pole_expertises = (await pole_expertiseDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
     }
 
-    private void OnPlateformeChange(ChangeEventArgs e)
+    private void OnPole_ExpertiseChange(ChangeEventArgs e)
     {
         if (e.Value.ToString() == "ajouter")
         {
-            OpenModal(); // Ouvrir la modale pour ajouter une plateforme
+            OpenModal(); // Ouvrir la modale pour ajouter un pôle d'expertise
         }
     }
 
     private void OpenModal()
     {
         // Utiliser JavaScript Interop pour afficher la modale
-        JS.InvokeVoidAsync("document.getElementById('modalPlateforme').style.display", "block");
+        JS.InvokeVoidAsync("document.getElementById('modalPole_Expertise').style.display", "block");
     }
 
     private void CloseModal()
     {
         // Fermer la modale via JavaScript Interop
-        JS.InvokeVoidAsync("document.getElementById('modalPlateforme').style.display", "none");
+        JS.InvokeVoidAsync("document.getElementById('modalPole_Expertise').style.display", "none");
     }
 
-    // Callback qui sera appelé lorsque la plateforme est ajoutée
-    private void OnPlateformeAdded(Plateforme plateforme)
+    // Callback qui sera appelé lorsque la pole_expertise est ajoutée
+    private void OnPole_ExpertiseAdded(Pole_Expertise pole_expertise)
     {
-        plateformes.Add(plateforme);  // Ajouter la nouvelle plateforme à la liste
-        addEquipement.Nom_Plateforme = plateforme.Nom_Plateforme; // Mettre à jour le champ de l'équipement
+        pole_expertises.Add(pole_expertise);  // Ajouter la nouvelle pole_expertise à la liste
+        addEquipement.Nom_Pole_Expertise = pole_expertise.Nom_Pole_Expertise; // Mettre à jour le champ de l'équipement
         CloseModal(); // Fermer la modale après l'ajout
     }
 
@@ -221,9 +221,9 @@
         }
 
     }
-    private void PLateformeRotation(string SelectedPlateforme)
+    private void PLateformeRotation(string SelectedPole_Expertise)
     {
-        addEquipement.Nom_Plateforme = SelectedPlateforme;
+        addEquipement.Nom_Pole_Expertise = SelectedPole_Expertise;
     }
     private void TypeRotation(string SelectedType)
     {

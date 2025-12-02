@@ -27,7 +27,7 @@ public class SearchController : ControllerBase
         if (mode.Contains("motclef"))
         {
             var motClefResults = allEquip
-                .Where(e => e.PlateformeNavigation.Specifiers.Any(s =>
+                .Where(e => e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
                     s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query)))
                 .Select(e => ToPreviewDTO(e));
 
@@ -37,7 +37,7 @@ public class SearchController : ControllerBase
         if (mode.Contains("thematique"))
         {
             var thematiqueResults = allEquip
-                .Where(e => e.PlateformeNavigation.Exposers.Any(t =>
+                .Where(e => e.Pole_ExpertiseNavigation.Exposers.Any(t =>
                     t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query)))
                 .Select(e => ToPreviewDTO(e));
 
@@ -58,15 +58,15 @@ public class SearchController : ControllerBase
         Id_Equipement = e.Id_Equipement,
         Nom_Equipement = e.Nom_Equipement,
         Description_Technique = e.Description_Technique,
-        Nom_Plateforme = e.PlateformeNavigation?.Nom_Plateforme,
+        Nom_Pole_Expertise = e.Pole_ExpertiseNavigation?.Nom_Pole_Expertise,
         Prix_Achat = e.Prix_Achat,
         Date_Acquisition = e.Date_Acquisition,
         Disponibilite = e.Disponibilite,
-        MotsCles = e.PlateformeNavigation?.Specifiers
+        MotsCles = e.Pole_ExpertiseNavigation?.Specifiers
             .Select(s => s.Mot_ClefNavigation.Nom_Mot_Clef)
             .Distinct()
             .ToList() ?? new List<string>(),
-        Thematiques = e.PlateformeNavigation?.Exposers
+        Thematiques = e.Pole_ExpertiseNavigation?.Exposers
             .Select(t => t.ThematiqueNavigation.Nom_Thematique)
             .Distinct()
             .ToList() ?? new List<string>()

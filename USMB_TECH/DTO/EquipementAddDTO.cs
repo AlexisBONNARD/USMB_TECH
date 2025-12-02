@@ -8,7 +8,7 @@
         public string Description_Technique { get; set; }
         public double Prix_Achat { get; set; }
         public double Prix_Revient { get; set; }
-        public string Nom_Plateforme { get; set; }
+        public string Nom_Pole_Expertise { get; set; }
         public string Nom_Modele { get; set; }
         public string Nom_Marque { get; set; }
         public string Type_Equipement { get; set; }

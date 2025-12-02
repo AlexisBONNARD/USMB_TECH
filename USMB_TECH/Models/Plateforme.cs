@@ -3,21 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("plateforme")]
-    public partial class Plateforme
+    [Table("pole_expertise")]
+    public partial class Pole_Expertise
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        [Column("id_pole_expertise")]
+        public int Id_Pole_Expertise { get; set; }
 
-        [Column("nom_plateforme")]
+        [Column("nom_pole_expertise")]
         [MaxLength(50)]
-        public string Nom_Plateforme { get; set; }
+        public string Nom_Pole_Expertise { get; set; }
 
-        [Column("description_plateforme")]
+        [Column("description_pole_expertise")]
         [MaxLength(250)]
-        public string Description_Plateforme { get; set; }
+        public string Description_Pole_Expertise { get; set; }
 
         [Column("nom_contenu")]
         [MaxLength(50)]
@@ -34,31 +34,31 @@ namespace USMB_TECH.Models
         [Column("actif")]
         public bool Actif {  get; set; }
 
-        [InverseProperty(nameof(Presenter.PlateformeNavigation))]
+        [InverseProperty(nameof(Presenter.Pole_ExpertiseNavigation))]
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
 
-        [InverseProperty(nameof(Equipement.PlateformeNavigation))]
+        [InverseProperty(nameof(Equipement.Pole_ExpertiseNavigation))]
         public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
 
-        [InverseProperty(nameof(Specifier.PlateformeNavigation))]
+        [InverseProperty(nameof(Specifier.Pole_ExpertiseNavigation))]
         public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
 
-        [InverseProperty(nameof(Prise_Contact.PlateformeNavigation))]
+        [InverseProperty(nameof(Prise_Contact.Pole_ExpertiseNavigation))]
         public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
 
-        [InverseProperty(nameof(Gerer.PlateformeNavigation))]
+        [InverseProperty(nameof(Gerer.Pole_ExpertiseNavigation))]
         public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
 
-        [InverseProperty(nameof(Associer.PlateformeNavigation))]
+        [InverseProperty(nameof(Associer.Pole_ExpertiseNavigation))]
         public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
 
-        [InverseProperty(nameof(Exposer.PlateformeNavigation))]
+        [InverseProperty(nameof(Exposer.Pole_ExpertiseNavigation))]
         public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
 
-        [InverseProperty(nameof(Exemple_Utilisation.PlateformeNavigation))]
+        [InverseProperty(nameof(Exemple_Utilisation.Pole_ExpertiseNavigation))]
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 
-        [InverseProperty(nameof(Photo.PlateformeNavigation))]
+        [InverseProperty(nameof(Photo.Pole_ExpertiseNavigation))]
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

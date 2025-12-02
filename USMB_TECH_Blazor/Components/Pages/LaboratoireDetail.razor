@@ -35,26 +35,26 @@ else
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
             <section>
-                <h3>NOS PLATEFORMES</h3>
-                @if(plateformes is not null)
+                <h3>NOS POLEs D'EXPERTISE</h3>
+                @if(pole_expertises is not null)
                 {
                     <div class="center-grid">
-                        @foreach (var plateforme in plateformes)
+                        @foreach (var pole_expertise in pole_expertises)
                         {
-                            <div class="center-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
-                                @if (plateforme.Photos != null && plateforme.Photos.Any())
+                            <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
+                                @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
                                 {
-                                    var photo = plateforme.Photos.First();
-                                    <img src="@photo.Url_Photo" alt="photo plateforme" />
+                                    var photo = pole_expertise.Photos.First();
+                                    <img src="@photo.Url_Photo" alt="photo pole_expertise" />
                                 }
-                                <p>@plateforme.Nom_Plateforme</p>
+                                <p>@pole_expertise.Nom_Pole_Expertise</p>
                             </div>
                         }
                     </div>
                 }
                 else
                 {
-                    <p>Il n'y a pas de plateforme pour ce laboratoire</p>
+                    <p>Il n'y a pas de pôle d'expertise pour ce laboratoire</p>
                 }
             </section>
             <section>
@@ -104,13 +104,13 @@ else
     public Laboratoire laboratoire = new Laboratoire();
     public Adresse adresseLabo = new Adresse();
     public Adresse adresseCampus = new Adresse();
-    public IEnumerable<Plateforme> plateformes;
+    public IEnumerable<Pole_Expertise> pole_expertises;
     protected override async Task OnInitializedAsync()
     {
         laboratoire = await dataRepository.GetByIdAsync(Id);
         adresseCampus = laboratoire.Adresse_campusNavigation;
         adresseLabo = laboratoire.Adresse_laboNavigation;
-        plateformes = laboratoire.Gerers.Select(g => g.PlateformeNavigation).ToList();
+        pole_expertises = laboratoire.Gerers.Select(g => g.Pole_ExpertiseNavigation).ToList();
     }
 
     private void RetourListe(int id, string nomChemin)

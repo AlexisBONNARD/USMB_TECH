@@ -9,7 +9,7 @@ namespace USMB_TECH_Blazor.Models
     {
         public int Id_Equipement { get; set; }
 
-        public int Id_Plateforme { get; set; }
+        public int Id_Pole_Expertise { get; set; }
 
         public int Id_Modele { get; set; }
 
@@ -31,8 +31,8 @@ namespace USMB_TECH_Blazor.Models
         [Range(0, double.MaxValue, ErrorMessage = "Le prix de revient ne peut pas être négatif")]
         public double Prix_Revient { get; set; }
 
-        [Required(ErrorMessage = "Une plateforme doit être obligatoirement associée")]
-        public string Nom_Plateforme { get; set; }
+        [Required(ErrorMessage = "Une pole_expertise doit être obligatoirement associée")]
+        public string Nom_Pole_Expertise { get; set; }
 
 
         [Required(ErrorMessage = "Un modèle doit être obligatoirement associé")]
@@ -67,7 +67,7 @@ namespace USMB_TECH_Blazor.Models
 
         public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
-        public Plateforme? PlateformeNavigation { get; set; }
+        public Pole_Expertise? Pole_ExpertiseNavigation { get; set; }
 
         public Type_Equipement? Type_EquipementNavigation { get; set; }
     }

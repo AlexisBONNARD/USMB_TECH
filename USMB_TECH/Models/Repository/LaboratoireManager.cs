@@ -19,7 +19,7 @@ namespace USMB_TECH.Models.Repository
                 .Include(l => l.Adresse_campusNavigation)
                 .Include(l => l.Adresse_laboNavigation)
                 .Include(l => l.Gerers)
-                    .ThenInclude(plt => plt.PlateformeNavigation)
+                    .ThenInclude(plt => plt.Pole_ExpertiseNavigation)
                 .Include(c => c.Contacts)
                 .Include(l => l.Prestations)
                 .FirstOrDefaultAsync(lab => lab.Nom_Court == id);

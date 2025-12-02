@@ -9,7 +9,7 @@ namespace USMB_TECH_Blazor.Models
 
         public int? Id_Equipement { get; set; }
 
-        public int? Id_Plateforme { get; set; }
+        public int? Id_Pole_Expertise { get; set; }
 
         public int Id_Type_Client { get; set; }
 
@@ -25,7 +25,7 @@ namespace USMB_TECH_Blazor.Models
 
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
 
         //public virtual Type_Client? Type_ClientNavigation { get; set; } = null!;
     }

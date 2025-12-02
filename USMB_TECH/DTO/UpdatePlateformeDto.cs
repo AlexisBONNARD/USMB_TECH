@@ -2,12 +2,12 @@
 
 namespace USMB_TECH.DTO
 {
-    public class UpdatePlateformeDto
+    public class UpdatePole_ExpertiseDto
     {
-        public int Id_Plateforme { get; set; }
+        public int Id_Pole_Expertise { get; set; }
 
-        public string Nom_Plateforme { get; set; }
-        public string Description_Plateforme { get; set; }
+        public string Nom_Pole_Expertise { get; set; }
+        public string Description_Pole_Expertise { get; set; }
         public string Nom_Contenu { get; set; }
         public string Url_Contenu { get; set; }
         public string Description_Contenu { get; set; }
@@ -22,10 +22,10 @@ namespace USMB_TECH.DTO
 
         public override bool Equals(object? obj)
         {
-            return obj is UpdatePlateformeDto dto &&
-                   Id_Plateforme == dto.Id_Plateforme &&
-                   Nom_Plateforme == dto.Nom_Plateforme &&
-                   Description_Plateforme == dto.Description_Plateforme &&
+            return obj is UpdatePole_ExpertiseDto dto &&
+                   Id_Pole_Expertise == dto.Id_Pole_Expertise &&
+                   Nom_Pole_Expertise == dto.Nom_Pole_Expertise &&
+                   Description_Pole_Expertise == dto.Description_Pole_Expertise &&
                    Nom_Contenu == dto.Nom_Contenu &&
                    Url_Contenu == dto.Url_Contenu &&
                    Description_Contenu == dto.Description_Contenu &&
@@ -41,9 +41,9 @@ namespace USMB_TECH.DTO
         public override int GetHashCode()
         {
             HashCode hash = new HashCode();
-            hash.Add(Id_Plateforme);
-            hash.Add(Nom_Plateforme);
-            hash.Add(Description_Plateforme);
+            hash.Add(Id_Pole_Expertise);
+            hash.Add(Nom_Pole_Expertise);
+            hash.Add(Description_Pole_Expertise);
             hash.Add(Nom_Contenu);
             hash.Add(Url_Contenu);
             hash.Add(Description_Contenu);
