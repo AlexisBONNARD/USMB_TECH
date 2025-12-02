@@ -13,77 +13,77 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LaboratoiresController(IMainRepository<Laboratoire, string> dataRepository) : ControllerBase
+    public class marquesController(IMainRepository<Marque, int> dataRepository) : ControllerBase
     {
-        private readonly IMainRepository<Laboratoire, string> _dataRepository = dataRepository;
+        private readonly IMainRepository<Marque, int> _dataRepository = dataRepository;
 
-        // GET: api/Laboratoires
+        // GET: api/marques
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Laboratoire>>> GetLaboratoires()
+        public async Task<ActionResult<IEnumerable<Marque>>> Getmarques()
         {
-            var laboratoires = await _dataRepository.GetAllAsync();
-            return Ok(laboratoires);
+            var marques = await _dataRepository.GetAllAsync();
+            return Ok(marques);
         }
 
-        // GET: api/Laboratoires/{id}
+        // GET: api/marques/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Laboratoire>> GetLaboratoire(string id)
+        public async Task<ActionResult<Marque>> Getmarque(int id)
         {
-            var laboratoire = await _dataRepository.GetByIdAsync(id);
-            return laboratoire is null ? NotFound() : Ok(laboratoire);
+            var marque = await _dataRepository.GetByIdAsync(id);
+            return marque is null ? NotFound() : Ok(marque);
         }
 
-        // PUT: api/Laboratoires/{id}
+        // PUT: api/marques/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutLaboratoire(string id, Laboratoire laboratoire)
+        public async Task<IActionResult> Putmarque(int id, Marque marque)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != laboratoire.Nom_Court)
+            if (id != marque.Id_Marque)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"marque avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, laboratoire);
+            await _dataRepository.UpdateAsync(existing, marque);
             return NoContent();
         }
 
-        // POST: api/Laboratoires
+        // POST: api/marques
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Laboratoire>> PostLaboratoire(Laboratoire laboratoire)
+        public async Task<ActionResult<Marque>> Postmarque(Marque marque)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _dataRepository.AddAsync(laboratoire);
-            return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoire);
+            await _dataRepository.AddAsync(marque);
+            return CreatedAtAction(nameof(Getmarque), new { id = marque.Id_Marque }, marque);
         }
 
-        // DELETE: api/Laboratoires/{id}
+        // DELETE: api/marques/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteLaboratoire(string id)
+        public async Task<IActionResult> Deletemarque(int id)
         {
-            var laboratoire = await _dataRepository.GetByIdAsync(id);
-            if (laboratoire is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+            var marque = await _dataRepository.GetByIdAsync(id);
+            if (marque is null)
+                return NotFound($"marque avec l'id {id} introuvable.");
 
-            await _dataRepository.DeleteAsync(laboratoire);
+            await _dataRepository.DeleteAsync(marque);
             return NoContent();
         }
     }
