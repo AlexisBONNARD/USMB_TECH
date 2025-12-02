@@ -13,6 +13,7 @@ public partial class UsmbTechDbContext : DbContext
     public DbSet<Consommer> Consommers { get; set; }
     public DbSet<Contact_USMB> Contact_USMBs { get; set; }
     public DbSet<Designer> Designers { get; set; }
+    public DbSet<Domaine_Excellence> Domaine_Excellences { get; set; }
     public DbSet<Equipement> Equipements { get; set; }
     public DbSet<Est_Lier> Est_Liers { get; set; }
     public DbSet<Exemple_Utilisation> Exemple_Utilisations { get; set; }
@@ -187,72 +188,92 @@ public partial class UsmbTechDbContext : DbContext
 
         });
 
+        modelBuilder.Entity<Domaine_Excellence>(e =>
+        {
+            e.HasKey(e => e.Id_Domaine_Excellence).HasName("pk_domaine_excellence");
+
+            e.Property(e => e.Id_Domaine_Excellence).ValueGeneratedOnAdd();
+
+            e.HasMany(d => d.Photos)
+                .WithOne(p => p.Domaine_ExcellenceNavigation)
+                .HasForeignKey(d => d.Id_Domaine_Excellence)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_domaine_excellence_photo");
+
+            e.HasMany(d => d.Pole_Expertises)
+                .WithOne(p => p.Domaine_ExcellenceNavigation)
+                .HasForeignKey(d => d.Id_Domaine_Excellence)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_domaine_excellence_pole_expertise");
+
+        });
+
         modelBuilder.Entity<Equipement>(e =>
-{
-    e.HasKey(e => new { e.Id_Equipement }).HasName("pk_equipement");
+        {
+            e.HasKey(e => new { e.Id_Equipement }).HasName("pk_equipement");
 
-    e.Property(e => e.Id_Equipement).ValueGeneratedOnAdd();
+            e.Property(e => e.Id_Equipement).ValueGeneratedOnAdd();
 
-    e.HasMany(d => d.Fournirs)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_fournir");
+            e.HasMany(d => d.Fournirs)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_fournir");
 
-    e.HasMany(d => d.Consommers)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_consommer");
+            e.HasMany(d => d.Consommers)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_consommer");
 
-    e.HasMany(d => d.Posseders)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_posseder");
+            e.HasMany(d => d.Posseders)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_posseder");
 
-    e.HasMany(d => d.Exemple_Utilisations)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_exemple_utilisation");
+            e.HasMany(d => d.Exemple_Utilisations)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_exemple_utilisation");
 
-    e.HasMany(d => d.Referencers)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_referencer");
+            e.HasMany(d => d.Referencers)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_referencer");
 
-    e.HasMany(d => d.Prise_Contacts)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_prise_contact");
+            e.HasMany(d => d.Prise_Contacts)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_prise_contact");
 
-    e.HasMany(d => d.Photos)
-        .WithOne(p => p.EquipementNavigation)
-        .HasForeignKey(d => d.Id_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_photo");
+            e.HasMany(d => d.Photos)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_photo");
 
-    e.HasOne(d => d.Type_EquipementNavigation)
-        .WithMany(p => p.Equipements)
-        .HasForeignKey(d => d.Id_Type_Equipement)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_type_equipement");
+            e.HasOne(d => d.Type_EquipementNavigation)
+                .WithMany(p => p.Equipements)
+                .HasForeignKey(d => d.Id_Type_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_type_equipement");
 
-    e.HasOne(d => d.ModeleNavigation)
-        .WithMany(p => p.Equipements)
-        .HasForeignKey(d => d.Id_Modele)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_modele");
+            e.HasOne(d => d.ModeleNavigation)
+                .WithMany(p => p.Equipements)
+                .HasForeignKey(d => d.Id_Modele)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_modele");
 
-    e.HasOne(d => d.Pole_ExpertiseNavigation)
-        .WithMany(p => p.Equipements)
-        .HasForeignKey(d => d.Id_Pole_Expertise)
-        .OnDelete(DeleteBehavior.Cascade)
-        .HasConstraintName("fk_equipement_pole_expertise");
-});
+            e.HasOne(d => d.Pole_ExpertiseNavigation)
+                .WithMany(p => p.Equipements)
+                .HasForeignKey(d => d.Id_Pole_Expertise)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_pole_expertise");
+        });
 
         modelBuilder.Entity<Est_Lier>(e =>
         {
@@ -483,12 +504,16 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_photo_pole_expertise");
 
-            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise ou à un équipement, pas les deux.
+            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise, à un domaine d'excellence ou à un équipement.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
-                    "CK_Photo_EquipementOuPole_Expertise",
-                    "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)"
+                    "CK_Photo_EquipementOuPole_ExpertiseOuDomaine_Excellence",
+                    @"(
+                        ((id_equipement IS NOT NULL)::int +
+                        (id_pole_expertise IS NOT NULL)::int +
+                        (id_domaine_excellence IS NOT NULL)::int)
+                    ) = 1"
                 );
             });
         });
@@ -748,7 +773,7 @@ public partial class UsmbTechDbContext : DbContext
         modelBuilder.Entity<Type_Equipement>(e =>
         {
             e.HasKey(e => e.Id_Type_Equipement).HasName("pk_type_equipement");
-            
+
             e.Property(e => e.Id_Type_Equipement).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Equipements)
