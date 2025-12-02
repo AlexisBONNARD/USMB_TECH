@@ -32,41 +32,62 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Laboratoire entity)
         {
-            if (entity.Adresse_laboNavigation != null)
+            if(entity.Adresse_laboNavigation.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse 
+                && entity.Adresse_campusNavigation.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse 
+                && entity.Adresse_campusNavigation.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse 
+                && entity.Adresse_laboNavigation.Complement_Rue_Adresse == entity.Adresse_campusNavigation.Complement_Rue_Adresse) 
             {
-                var adresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
-                    a.Rue_Adresse == entity.Adresse_laboNavigation.Rue_Adresse &&
+                var adresses = await _context.Adresses.FirstOrDefaultAsync(a =>
+                    a.Rue_Adresse == entity.Adresse_laboNavigation!.Rue_Adresse &&
                     a.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse &&
                     a.Ville_Adresse == entity.Adresse_laboNavigation.Ville_Adresse &&
                     a.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse);
-
-                if (adresseLabo is null)
+                if (adresses is null)
                 {
-                    adresseLabo = entity.Adresse_laboNavigation;
-                    _context.Adresses.Add(adresseLabo);
+                    adresses = entity.Adresse_laboNavigation;
+                    _context.Adresses.Add(adresses);
                 }
-
-                entity.Adresse_laboNavigation = adresseLabo;
+                entity.Adresse_laboNavigation = adresses;
+                entity.Adresse_campusNavigation = adresses;
             }
-
-            if (entity.Adresse_campusNavigation != null)
+            else 
             {
-                var adresseCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
-                    a.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse &&
-                    a.Code_Postal_Adresse == entity.Adresse_campusNavigation.Code_Postal_Adresse &&
-                    a.Ville_Adresse == entity.Adresse_campusNavigation.Ville_Adresse &&
-                    a.Pays_Adresse == entity.Adresse_campusNavigation.Pays_Adresse);
 
-                if (adresseCampus is null)
+                if (entity.Adresse_laboNavigation != null)
                 {
-                    adresseCampus = entity.Adresse_campusNavigation;
-                    _context.Adresses.Add(adresseCampus);
+                    var adresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
+                        a.Rue_Adresse == entity.Adresse_laboNavigation.Rue_Adresse &&
+                        a.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse &&
+                        a.Ville_Adresse == entity.Adresse_laboNavigation.Ville_Adresse &&
+                        a.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse);
+
+                    if (adresseLabo is null)
+                    {
+                        adresseLabo = entity.Adresse_laboNavigation;
+                        _context.Adresses.Add(adresseLabo);
+                    }
+
+                    entity.Adresse_laboNavigation = adresseLabo;
                 }
 
-                entity.Adresse_campusNavigation = adresseCampus;
-            }
+                if (entity.Adresse_campusNavigation != null)
+                {
+                    var adresseCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
+                        a.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse &&
+                        a.Code_Postal_Adresse == entity.Adresse_campusNavigation.Code_Postal_Adresse &&
+                        a.Ville_Adresse == entity.Adresse_campusNavigation.Ville_Adresse &&
+                        a.Pays_Adresse == entity.Adresse_campusNavigation.Pays_Adresse);
 
-            _context.Laboratoires.Add(entity);
+                    if (adresseCampus is null)
+                    {
+                        adresseCampus = entity.Adresse_campusNavigation;
+                        _context.Adresses.Add(adresseCampus);
+                    }
+
+                    entity.Adresse_campusNavigation = adresseCampus;
+                }
+            }
+                _context.Laboratoires.Add(entity);
             await _context.SaveChangesAsync();
         }
 
