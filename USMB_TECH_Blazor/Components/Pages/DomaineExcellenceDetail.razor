@@ -1,0 +1,138 @@
+﻿@page "/DomaineExcellence/{Id:int}"
+@inject IMainService<Domaine_Excellence,int> DomaineExcellenceService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link href="css/PageDetail.css" rel="stylesheet" />
+</HeadContent>
+
+<PageTitle>Détails Domaine d'excellence</PageTitle>
+
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
+
+@if (domaine == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="container">
+        <!-- ========= COLONNE GAUCHE ========= -->
+        <div class="col-left">
+            <section>
+                <h2>@domaine.intitule_Domaine_Excellence</h2>
+                <p>@domaine.Description_Domaine_Excellence</p>
+
+                <div class="center-item">
+                    @foreach (var photo in domaine.Photos)
+                    {
+                        <img src="@photo.Url_Photo" alt="photo domaine" />
+                    }
+                </div>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE CENTRALE ========= -->
+        <section>
+            <h3>POLES D'EXPERTISE LIÉS</h3>
+            <div class="center-grid">
+                @foreach (var pole in domaine.Pole_Expertises)
+                {
+                    <div class="center-item" @onclick="@(() => GoToPole(pole.Id_Pole_Expertise))">
+                        @if (pole.Photos != null && pole.Photos.Any())
+                        {
+                            var photo = pole.Photos.First();
+                            <img src="@photo.Url_Photo" alt="photo pole expertise" />
+                        }
+                        <p>@pole.Nom_Pole_Expertise</p>
+                        <span>@pole.Description_Pole_Expertise</span>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- ========= COLONNE DROITE ========= -->
+        <div class="col-right">
+            <div class="info-block">
+                <h4>Identifiant :</h4>
+                <div class="btn-blue">@domaine.Id_Domaine_Excellence</div>
+            </div>
+
+            <FormulaireContact />
+        </div>
+    </div>
+
+    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(domaine.Id_Domaine_Excellence)">
+        Modifier
+    </button>
+    <button class="btn btn-danger mb-3" @onclick="() => DeleteDomaine(domaine.Id_Domaine_Excellence)">
+        Supprimer
+    </button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Domaine_Excellence? domaine;
+
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        domaine = await DomaineExcellenceService.GetByIdAsync(Id);
+    }
+
+    private async Task DeleteDomaine(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer ce domaine d'excellence ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await DomaineExcellenceService.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Domaine supprimé avec succès ✅");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void GoToPole(int idPole)
+    {
+        Navigation.NavigateTo($"/pole_expertise/{idPole}");
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/domaine_excellence/edit/{id}", true);
+    }
+}
