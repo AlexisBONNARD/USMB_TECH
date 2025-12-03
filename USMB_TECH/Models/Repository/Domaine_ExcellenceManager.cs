@@ -20,13 +20,15 @@ namespace USMB_TECH.Models.Repository
                 .Include(Pole_Expertise => Pole_Expertise.Pole_Expertises)
                 .ToListAsync();
         }
-        public async Task<Domaine_Excellence?> GetByIdAsync(int id) 
+        public async Task<Domaine_Excellence?> GetByIdAsync(int id)
         {
             return await _context.Domaine_Excellences
-                .Include(Photo => Photo.Photos)
-                .Include(Pole_Expertise => Pole_Expertise.Pole_Expertises)
+                .Include(d => d.Photos) // photos du domaine
+                .Include(d => d.Pole_Expertises) // les pôles liés
+                    .ThenInclude(p => p.Photos) // les photos des pôles
                 .FirstOrDefaultAsync(e => e.Id_Domaine_Excellence == id);
         }
+
 
         public async Task AddAsync(Domaine_Excellence entity)
         {
