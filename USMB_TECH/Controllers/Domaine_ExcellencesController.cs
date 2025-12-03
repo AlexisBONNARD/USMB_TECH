@@ -14,15 +14,15 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Domaine_ExcellenceController(IMainRepository<Domaine_Excellence, int> dataRepository, IMapper mapper) : ControllerBase
+    public class Domaine_ExcellencesController(IMainRepository<Domaine_Excellence, int> dataRepository, IMapper mapper) : ControllerBase
     {
         private readonly IMainRepository<Domaine_Excellence, int> _dataRepository = dataRepository;
         private readonly IMapper _mapper = mapper;
 
-        // GET: api/Domaine_Excellence
+        // GET: api/Domaine_Excellences
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Type_Equipement>>> GetDomaine_Excellences()
+        public async Task<ActionResult<IEnumerable<Domaine_Excellence>>> GetDomaine_Excellences()
         {
             var Domaine_Excellences = await _dataRepository.GetAllAsync();
             return Ok(Domaine_Excellences);
