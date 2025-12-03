@@ -21,6 +21,7 @@ builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManag
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
 builder.Services.AddScoped<IMainRepository<Type_Equipement, int>, Type_EquipementManager>();
 builder.Services.AddScoped<IMainRepository<Marque, int>, MarqueManager>();
+builder.Services.AddScoped<IMainRepository<Domaine_Excellence, int>, Domaine_ExcellenceManager>();
 
 builder.Services.AddScoped<EquipementManager>();
 builder.Services.AddScoped<LaboratoireManager>();
@@ -29,6 +30,7 @@ builder.Services.AddScoped<PrestationManager>();
 builder.Services.AddScoped<ThematiqueManager>();
 builder.Services.AddScoped<Prise_ContactManager>();
 builder.Services.AddScoped<MarqueManager>();
+builder.Services.AddScoped<Domaine_ExcellenceManager>();    
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

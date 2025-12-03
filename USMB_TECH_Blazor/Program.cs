@@ -19,7 +19,7 @@ builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<P
 builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematique"));
 builder.Services.AddScoped<IMainService<Type_Equipement, int>>(eq => new WebService<Type_Equipement, int>("Type_Equipements"));
 builder.Services.AddScoped<IMainService<Marque, int>>(eq => new WebService<Marque, int>("Marques")); 
-
+builder.Services.AddScoped<IMainService<Domaine_Excellence, int>>(eq => new WebService<Domaine_Excellence, int>("Domaine_Excellences"));
 //builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
 builder.Services.AddScoped(sp => new HttpClient
 {
