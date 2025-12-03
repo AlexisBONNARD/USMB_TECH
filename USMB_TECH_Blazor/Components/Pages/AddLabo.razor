@@ -1,10 +1,10 @@
 ﻿@page "/ajouterLabo"
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-@inject IMainService<Laboratoire, string> laboService   
+@inject IMainService<Laboratoire, string> laboService  
+@inject IMainService<Mot_Clef, int> motcleService
 
 
-<h3>AddLabo</h3>
 <div>
     <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -20,7 +20,7 @@
 
             <label>Description</label>
             <InputText @bind-Value="labo.Description"></InputText>
-            <ValidationMessage For="@(() => labo.Description)" />
+
         </div>
            
             <h2>Adresses</h2>
@@ -29,34 +29,67 @@
 
              <label>Rue du laboratoire</label>
             <InputText @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
+            <ValidationMessage For="@(() => labo.Rue_Adresse_Labo)" />
 
             <label>Ville du laboratoire</label>
             <InputText @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"></InputText>
+            <ValidationMessage For="@(() => labo.Ville_Adresse_Labo)" />
 
             <label>Code postal du laboratoire</label>
             <InputText maxlength="11"  @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"></InputText>
+            <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
             <label>Pays du laboratoire</label>
-        <InputText @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
-        </div>
+            <InputText @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
+            <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
 
+        </div>
+        @if(labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
+        {
+            <div>
+                <InputCheckbox @bind-Value="SameAdresse" @oninput="Change" /> Adresses Campus = Labo
+            </div>
+        }
         <div>
             <h3>Adresse du campus</h3>
 
             <label>Rue du campus</label>
-            <InputText @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
+            <InputText @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"></InputText>
+            <ValidationMessage For="@(() => labo.Rue_Adresse_Campus)" />
 
             <label>Ville du campus</label>
-            <InputText @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux"></InputText>
+            <InputText @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"></InputText>
+            <ValidationMessage For="@(() => labo.Ville_Adresse_Campus)" />
 
             <label>Code postal du campus</label>
-            <InputText  minlength="5" maxlength="5" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940"></InputText>
+            <InputText maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"></InputText>
+            <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
             <label>Pays du campus</label>
-            <InputText @bind-Value="labo.Pays_Adresse_Campus" placeholder="France"></InputText>
+            <InputText @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
+            <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
         </div>
-            <button type="submit" class="btn btn-primary">Ajouter</button>
+        <h2>Mots-Clés :</h2>
+        <InputSelect @bind-Value="motcle">
+            <option value="">...</option>
+            @foreach(var motcle in existingMot)
+            {
+                <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+            }
+            <option value="ajouter">Ajouter un nouveau mot-clé</option>
+        </InputSelect>
+        @if(motcle == "ajouter")
+        {
+            <hr/>
+            <h4>Ajouter un mot-clé</h4>
+            <form onsubmit="return false;">
+                <input @bind="new_motcle"
+                    placeholder="Nouveau Mot-clé"/>
 
+            </form>
+        }
+
+        <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
     @if (!string.IsNullOrEmpty(message))
     {
@@ -67,12 +100,21 @@
 </div>
 @code {
     Laboratoire labo = new Laboratoire();
+    string motcle;
+    string new_motcle;
+    private IEnumerable<Mot_Clef> existingMot;
+    ICollection<string> newMotClefs;
+
+
     bool isSubmitted = false;
+    bool SameAdresse = false;
+
+
     string message = "";
 
     protected override async Task OnInitializedAsync()
     {
-        
+        existingMot = await motcleService.GetAllAsync();
     }
 
     private async Task HandleValidSubmit()
@@ -91,6 +133,23 @@
             message = "Il y a eu une erreur lors de l'ajout du laboratoire.";
 
             await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+    }
+    private void Change()
+    {
+        if(SameAdresse is true)
+        {
+            labo.Code_Postal_Adresse_Campus = null;
+            labo.Pays_Adresse_Campus = null;
+            labo.Rue_Adresse_Campus = null;
+            labo.Ville_Adresse_Campus = null;
+        }
+        else
+        {
+            labo.Code_Postal_Adresse_Campus = labo.Code_Postal_Adresse_Labo;
+            labo.Pays_Adresse_Campus = labo.Pays_Adresse_Labo;
+            labo.Rue_Adresse_Campus = labo.Rue_Adresse_Labo;
+            labo.Ville_Adresse_Campus = labo.Ville_Adresse_Labo;
         }
     }
 }

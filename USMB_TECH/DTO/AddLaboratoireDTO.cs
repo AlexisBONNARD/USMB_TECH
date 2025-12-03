@@ -24,5 +24,9 @@ namespace USMB_TECH.DTO
         public string? Ville_Adresse_Campus { get; set; }
 
         public string? Pays_Adresse_Campus { get; set; }
+
+        public ICollection<Thematique> Thematiques { get; set; }
+
+        public ICollection<Mot_Clef> mot_Clefs { get; set; } 
     }
 }

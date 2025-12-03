@@ -19,7 +19,7 @@ namespace USMB_TECH_Blazor.Models
 
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "La rue du labo est obligatoire")]
+        [Required(ErrorMessage = "La rue du laboratoire est obligatoire")]
         public string? Rue_Adresse_Labo { get; set; }
 
         [Required(ErrorMessage = "Le code postal du laboratoire est obligatoire")]
@@ -51,6 +51,8 @@ namespace USMB_TECH_Blazor.Models
         public ICollection<Mot_Clef> mot_Clefs { get; set; } = new List<Mot_Clef>();
 
         public  ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
+
+        public ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
 
         public ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
 
