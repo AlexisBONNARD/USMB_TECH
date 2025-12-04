@@ -15,7 +15,7 @@ namespace USMB_TECH.DTO
         public List<Presenter> Presenters { get; set; } = new();
         public List<PhotoDto> Photos { get; set; } = new();
         public List<MotCleDto> MotsCles { get; set; } = new();
-        public List<ThematiqueDto> Thematiques { get; set; } = new();
+        public List<Domaine_Excellence> DomaineExcellences { get; set; } = new();
         public List<ExempleUtilisationDto> ExempleUtilisations { get; set; } = new();
         public List<EquipementDTO> Equipements { get; set; } = new();
     }
