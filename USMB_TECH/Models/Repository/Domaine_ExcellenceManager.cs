@@ -25,7 +25,13 @@ namespace USMB_TECH.Models.Repository
             return await _context.Domaine_Excellences
                 .Include(d => d.Photos) // photos du domaine
                 .Include(d => d.Pole_Expertises) // les pôles liés
+                    .ThenInclude(p => p.Specifiers) // les spécificateurs des pôles
+                        .ThenInclude(s => s.Mot_ClefNavigation) // les mots-clés des spécificateurs
+
+                .Include(d => d.Pole_Expertises)
                     .ThenInclude(p => p.Photos) // les photos des pôles
+
+
                 .FirstOrDefaultAsync(e => e.Id_Domaine_Excellence == id);
         }
 

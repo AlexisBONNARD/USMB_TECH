@@ -8,6 +8,8 @@
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
         public virtual ICollection<Pole_Expertise> Pole_Expertises { get; set; } = new List<Pole_Expertise>();
         public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
+        public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
+        public virtual ICollection<Mot_Clef> MotsCles { get; set; } = new List<Mot_Clef>();
 
 
     }

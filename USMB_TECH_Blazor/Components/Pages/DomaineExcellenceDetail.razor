@@ -36,6 +36,8 @@ else
                 }
             </div>
             <p>@domaine.Description_Domaine_Excellence</p>
+
+            <h2>Mot-clé</h2>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
@@ -53,6 +55,18 @@ else
                             <h4>@pole.Nom_Pole_Expertise</h4>
                             <p>@pole.Description_Pole_Expertise</p>
                         </div>
+                        @if (pole.Specifiers != null && pole.Specifiers.Any())
+                        {
+                            <div class="mot-clefs">
+                                <strong>Mots-clés :</strong>
+                                <ul>
+                                    @foreach (var spec in pole.Specifiers)
+                                    {
+                                        <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
                     </div>
                 }
             </div>
@@ -63,8 +77,8 @@ else
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
             <div class="info-block">
-                <h4>Identifiant :</h4>
-                <div class="btn-blue">@domaine.Id_Domaine_Excellence</div>
+                <h4>Nombre de pôles d'expertise liés:</h4>
+                <div class="btn-blue">@domaine.Pole_Expertises.Count()</div>
             </div>
 
             <FormulaireContact />
