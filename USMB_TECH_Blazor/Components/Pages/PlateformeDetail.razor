@@ -121,7 +121,7 @@ else
     private Pole_Expertise? pole_expertise;
     private List<Prestation> prestations = new();
     private List<Mot_Clef> motsCles = new();
-    private Domaine_Excellence domaine_excellence;
+    private string domaine_excellence;
 
     // ----------- ALERTES SUPPRESSION -----------
     private string deleteMessage = null;
@@ -140,7 +140,7 @@ else
             .Select(s => s.Mot_ClefNavigation)
             .ToList();
 
-        domaine_excellence = pole_expertise.DomainesExcellence;
+        domaine_excellence = pole_expertise.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence;
     }
 
 
