@@ -92,7 +92,7 @@ else
         <div class="col-right">
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue">@thematique</div>
+                <div class="btn-blue">@domaine_excellence</div>
             </div>
 
           @*   <div class="info-block">
@@ -121,7 +121,7 @@ else
     private Pole_Expertise? pole_expertise;
     private List<Prestation> prestations = new();
     private List<Mot_Clef> motsCles = new();
-    private string thematique;
+    private Domaine_Excellence domaine_excellence;
 
     // ----------- ALERTES SUPPRESSION -----------
     private string deleteMessage = null;
@@ -140,9 +140,7 @@ else
             .Select(s => s.Mot_ClefNavigation)
             .ToList();
 
-        thematique = pole_expertise.Exposers
-            .Select(t => t.ThematiqueNavigation.Nom_Thematique)
-            .FirstOrDefault();
+        domaine_excellence = pole_expertise.DomainesExcellence;
     }
 
 
@@ -151,7 +149,7 @@ else
     {
         bool confirm = await JS.InvokeAsync<bool>(
             "confirm",
-            "Voulez-vous vraiment supprimer cette pole_expertise ?"
+            "Voulez-vous vraiment supprimer ce pole d'expertise ?"
         );
 
         if (!confirm)
@@ -162,7 +160,7 @@ else
             await Pole_ExpertiseService.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Pole_Expertise supprimée avec succès ✅");
+            await ShowDeleteAlert("Pole d'expertise supprimé avec succès ✅");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)

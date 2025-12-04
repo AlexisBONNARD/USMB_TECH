@@ -150,7 +150,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
-        thematique = equipement.Pole_ExpertiseNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+        thematique = equipement.Thematiques.Select(t => t.Nom_Thematique).FirstOrDefault();
     }
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------

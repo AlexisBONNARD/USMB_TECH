@@ -18,6 +18,9 @@ namespace USMB_TECH.Models
         [Column("id_type_prestation")]
         public int Id_Type_Prestation { get; set; }
 
+        [Column("id_domaine_excellence")]
+        public int Id_Domaine_Excellence { get; set; }
+
         [Column("nom_court")]
         [MaxLength(25)]
         public string Nom_Court{ get; set; }
@@ -55,6 +58,10 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Type_Prestation.Prestations))]
         public virtual Type_Prestation? Type_PrestationNavigation { get; set; } = null!;
 
+        [ForeignKey("Id_Domaine_Excellence")]
+        [InverseProperty(nameof(Domaine_Excellence.Prestations))]
+        public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
+
         [ForeignKey("Nom_Court")]
         [InverseProperty(nameof(Laboratoire.Prestations))]
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
@@ -68,6 +75,9 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Fournir.PrestationNavigation))]
         public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
+
+        [InverseProperty(nameof(Preciser.PrestationNavigation))]
+        public virtual ICollection<Preciser> Precisers { get; set; } = new List<Preciser>();
 
 
     }

@@ -158,65 +158,6 @@ namespace USMB_TECH.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // -------------------------
-                // 3) Thématiques -> Thematique + Exposer
-                // -------------------------
-                foreach (var t in pole_expertiseDto.Thematiques ?? Enumerable.Empty<ThematiqueDto>())
-                {
-                    var nomT = (t.Nom_Thematique ?? string.Empty).Trim().ToLower();
-                    if (string.IsNullOrEmpty(nomT)) continue;
-
-                    var existingT = await _context.Thematiques
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(x => x.Nom_Thematique.ToLower() == nomT);
-
-                    int themeId;
-                    if (existingT != null)
-                    {
-                        themeId = existingT.Id_Thematique;
-                    }
-                    else
-                    {
-                        var localT = _context.Thematiques.Local
-                            .FirstOrDefault(x => string.Equals(x.Nom_Thematique, nomT, StringComparison.OrdinalIgnoreCase));
-
-                        if (localT != null && localT.Id_Thematique > 0)
-                        {
-                            themeId = localT.Id_Thematique;
-                        }
-                        else if (localT != null && localT.Id_Thematique == 0)
-                        {
-                            await _context.SaveChangesAsync();
-                            themeId = localT.Id_Thematique;
-                        }
-                        else
-                        {
-                            var newT = new Thematique
-                            {
-                                Nom_Thematique = nomT,
-                                Id_Sous_Thematique = t.Id_Sous_Thematique ?? 0
-                            };
-                            _context.Thematiques.Add(newT);
-                            await _context.SaveChangesAsync();
-                            themeId = newT.Id_Thematique;
-                        }
-                    }
-
-                    // Eviter doublon d'association
-                    var existsExposer = await _context.Exposers
-                        .AnyAsync(e => e.Id_Pole_Expertise == idPole_Expertise && e.Id_Thematique == themeId);
-
-                    if (!existsExposer)
-                    {
-                        _context.Exposers.Add(new Exposer
-                        {
-                            Id_Pole_Expertise = idPole_Expertise,
-                            Id_Thematique = themeId
-                        });
-                    }
-                }
-
-                await _context.SaveChangesAsync();
 
                 // -------------------------
                 // 4) Exemples d'utilisation

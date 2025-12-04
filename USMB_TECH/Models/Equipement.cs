@@ -88,5 +88,11 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Fournir.EquipementNavigation))]
         public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
+
+        [InverseProperty(nameof(Qualifier.EquipementNavigation))]
+        public virtual ICollection<Qualifier> Qualifiers { get; set; } = new List<Qualifier>();
+
+        [InverseProperty(nameof(Exposer.EquipementNavigation))]
+        public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
     }
 }

@@ -104,27 +104,6 @@
         </ul>
 
         <hr />
-        <h4 class="add_platform">Thématiques</h4>
-        <form onsubmit="return false;" class="mb-2">
-            <input class="form-control mb-1"
-                       @bind="newThematique"
-                       placeholder="Ajouter une thématique"
-                       @bind:event="oninput"
-                       @onkeydown="@(e => { if (e.Key == "Enter") { AddThematique(); } })" />
-            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter</button>
-        </form>
-        <ul class="add_platform">
-            @foreach (var t in pole_expertise.Thematiques)
-            {
-                <li class="add_platform">
-                    @t.Nom_Thematique
-                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(t)">Supprimer</button>
-                </li>
-            }
-        </ul>
-
-
-        <hr />
         <h4 class="add_platform">Exemples d’utilisation</h4>
         <form onsubmit="return false;" class="mb-2">
             <InputText class="form-control mb-1"
@@ -192,7 +171,6 @@
     private bool isLoading = false;
 
     string newMot_Clef = "";
-    string newThematique = "";
     string newExempleNom = "";
     string newExempleDesc = "";
     string newEquipement = "";
@@ -215,16 +193,6 @@
             newMot_Clef = "";
         }
     }
-
-    void AddThematique()
-    {
-        if (!string.IsNullOrWhiteSpace(newThematique))
-        {
-            pole_expertise.Thematiques.Add(new Thematique { Nom_Thematique = newThematique });
-            newThematique = "";
-        }
-    }
-
     void AddExemple()
     {
         if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
@@ -300,10 +268,6 @@
     void RemoveMotCle(Mot_Clef mc)
     {
         pole_expertise.MotsCles.Remove(mc);
-    }
-    void RemoveThematique(Thematique t)
-    {
-        pole_expertise.Thematiques.Remove(t);
     }
     void RemoveExemple(Exemple_Utilisation e)
     {

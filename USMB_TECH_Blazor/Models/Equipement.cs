@@ -70,5 +70,8 @@ namespace USMB_TECH_Blazor.Models
         public Pole_Expertise? Pole_ExpertiseNavigation { get; set; }
 
         public Type_Equipement? Type_EquipementNavigation { get; set; }
+
+        public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
+
     }
 }

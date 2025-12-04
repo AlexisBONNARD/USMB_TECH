@@ -17,7 +17,7 @@ namespace USMB_TECH.Models.Repository
         {
             return await _context.Thematiques
                 .Include(p => p.Exposers)
-                    .ThenInclude(e => e.Pole_ExpertiseNavigation)
+                    .ThenInclude(e => e.EquipementNavigation)
                         .ThenInclude(p => p.Photos)
                 .ToListAsync();
         }

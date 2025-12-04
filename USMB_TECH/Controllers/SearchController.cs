@@ -37,7 +37,7 @@ public class SearchController : ControllerBase
         if (mode.Contains("thematique"))
         {
             var thematiqueResults = allEquip
-                .Where(e => e.Pole_ExpertiseNavigation.Exposers.Any(t =>
+                .Where(e => e.Exposers.Any(t =>
                     t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query)))
                 .Select(e => ToPreviewDTO(e));
 
@@ -66,7 +66,7 @@ public class SearchController : ControllerBase
             .Select(s => s.Mot_ClefNavigation.Nom_Mot_Clef)
             .Distinct()
             .ToList() ?? new List<string>(),
-        Thematiques = e.Pole_ExpertiseNavigation?.Exposers
+        Thematiques = e.Exposers
             .Select(t => t.ThematiqueNavigation.Nom_Thematique)
             .Distinct()
             .ToList() ?? new List<string>()

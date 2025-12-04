@@ -94,12 +94,6 @@ namespace USMB_TECH.Mapper
                 Pole_ExpertiseNavigation = pole_expertise
             }).ToList();
 
-            pole_expertise.Exposers = dto.Thematiques.Select(t => new Exposer
-            {
-                Id_Thematique = t.Id_Thematique,
-                Pole_ExpertiseNavigation = pole_expertise
-            }).ToList();
-
             return pole_expertise;
         }
     }

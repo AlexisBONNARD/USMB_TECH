@@ -59,9 +59,6 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Associer.Pole_ExpertiseNavigation))]
         public virtual ICollection<Associer> Associers { get; set; } = new List<Associer>();
 
-        [InverseProperty(nameof(Exposer.Pole_ExpertiseNavigation))]
-        public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
-
         [InverseProperty(nameof(Exemple_Utilisation.Pole_ExpertiseNavigation))]
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 

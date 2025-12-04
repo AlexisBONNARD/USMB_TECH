@@ -28,8 +28,6 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(s => s.Mot_ClefNavigation)
                 .Include(p => p.Presenters)
                     .ThenInclude(pr => pr.PrestationNavigation)
-                .Include(e => e.Exposers)
-                    .ThenInclude(t => t.ThematiqueNavigation)
 
                 .Include(p => p.Photos)
                 .Include(p => p.Equipements)
@@ -85,7 +83,6 @@ namespace USMB_TECH.Models.Repository
             // Récupérer la pole_expertise avec toutes ses relations
             var pole_expertise = await _context.Pole_Expertises
                 .Include(p => p.Associers)
-                .Include(p => p.Exposers)
                 .Include(p => p.Gerers)
                 .Include(p => p.Presenters)
                 .Include(p => p.Specifiers)
@@ -98,7 +95,6 @@ namespace USMB_TECH.Models.Repository
 
             // Supprimer les collections explicitement pour éviter tout problème
             _context.Associers.RemoveRange(pole_expertise.Associers);
-            _context.Exposers.RemoveRange(pole_expertise.Exposers);
             _context.Gerers.RemoveRange(pole_expertise.Gerers);
             _context.Presenters.RemoveRange(pole_expertise.Presenters);
             _context.Specifiers.RemoveRange(pole_expertise.Specifiers);

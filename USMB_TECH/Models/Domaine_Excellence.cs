@@ -24,5 +24,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Pole_Expertise.Domaine_ExcellenceNavigation))]
         public virtual ICollection<Pole_Expertise> Pole_Expertises { get; set; } = new List<Pole_Expertise>();
+
+        [InverseProperty(nameof(Prestation.Domaine_ExcellenceNavigation))]
+        public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
     }
 }

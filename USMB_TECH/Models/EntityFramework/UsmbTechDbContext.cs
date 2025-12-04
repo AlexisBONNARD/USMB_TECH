@@ -29,9 +29,11 @@ public partial class UsmbTechDbContext : DbContext
     public DbSet<Photo> Photos { get; set; }
     public DbSet<Pole_Expertise> Pole_Expertises { get; set; }
     public DbSet<Posseder> Posseders { get; set; }
+    public DbSet<Preciser> Precisers { get; set; }
     public DbSet<Presenter> Presenters { get; set; }
     public DbSet<Prestation> Prestations { get; set; }
     public DbSet<Prise_Contact> Prise_Contacts { get; set; }
+    public DbSet<Qualifier> Qualifiers { get; set; }
     public DbSet<Referencer> Referencers { get; set; }
     public DbSet<Specifier> Specifiers { get; set; }
     public DbSet<Thematique> Thematiques { get; set; }
@@ -206,6 +208,12 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_domaine_excellence_pole_expertise");
 
+            e.HasMany(d => d.Prestations)
+                .WithOne(p => p.Domaine_ExcellenceNavigation)
+                .HasForeignKey(d => d.Id_Domaine_Excellence)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_domaine_excellence_prestation");
+
         });
 
         modelBuilder.Entity<Equipement>(e =>
@@ -273,6 +281,18 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_equipement_pole_expertise");
+
+            e.HasMany(d => d.Qualifiers)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_qualifier");
+
+            e.HasMany(d => d.Exposers)
+                .WithOne(p => p.EquipementNavigation)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_equipement_exposer");
         });
 
         modelBuilder.Entity<Est_Lier>(e =>
@@ -313,13 +333,13 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Exposer>(e =>
         {
-            e.HasKey(e => new { e.Id_Pole_Expertise, e.Id_Thematique }).HasName("pk_exposer");
+            e.HasKey(e => new { e.Id_Equipement, e.Id_Thematique }).HasName("pk_exposer");
 
-            e.HasOne(d => d.Pole_ExpertiseNavigation)
+            e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Exposers)
-                .HasForeignKey(d => d.Id_Pole_Expertise)
+                .HasForeignKey(d => d.Id_Equipement)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_exposer_pole_expertise");
+                .HasConstraintName("fk_exposer_equipement");
 
             e.HasOne(d => d.ThematiqueNavigation)
                 .WithMany(p => p.Exposers)
@@ -484,6 +504,18 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Mot_Clef)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_mot_clef_specifier");
+
+            e.HasMany(d => d.Precisers)
+                .WithOne(p => p.Mot_ClefNavigation)
+                .HasForeignKey(d => d.Id_Mot_Clef)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_mot_clef_preciser");
+
+            e.HasMany(d => d.Qualifiers)
+                .WithOne(p => p.Mot_ClefNavigation)
+                .HasForeignKey(d => d.Id_Mot_Clef)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_mot_clef_qualifier");
         });
 
         modelBuilder.Entity<Photo>(e =>
@@ -529,12 +561,6 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Pole_Expertise)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_pole_expertise_associer");
-
-            e.HasMany(d => d.Exposers)
-                .WithOne(p => p.Pole_ExpertiseNavigation)
-                .HasForeignKey(d => d.Id_Pole_Expertise)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_pole_expertise_exposer");
 
             e.HasMany(d => d.Gerers)
                 .WithOne(p => p.Pole_ExpertiseNavigation)
@@ -596,6 +622,23 @@ public partial class UsmbTechDbContext : DbContext
                 .HasConstraintName("fk_posseder_fonctionalite");
         });
 
+        modelBuilder.Entity<Preciser>(e =>
+        {
+            e.HasKey(e => new { e.Id_Prestation, e.Id_Mot_Clef }).HasName("pk_preciser");
+
+            e.HasOne(d => d.PrestationNavigation)
+                .WithMany(p => p.Precisers)
+                .HasForeignKey(d => d.Id_Prestation)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_preciser_prestation");
+
+            e.HasOne(d => d.Mot_ClefNavigation)
+                .WithMany(p => p.Precisers)
+                .HasForeignKey(d => d.Id_Mot_Clef)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_preciser_mot_clef");
+        });
+
         modelBuilder.Entity<Presenter>(e =>
         {
             e.HasKey(e => new { e.Id_Pole_Expertise, e.Id_Prestation }).HasName("pk_presenter");
@@ -654,6 +697,12 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Contact)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prestation_contact_usmb");
+
+            e.HasOne(d => d.Domaine_ExcellenceNavigation)
+                .WithMany(p => p.Prestations)
+                .HasForeignKey(d => d.Id_Domaine_Excellence)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_prestation_domaine_excellence");
         });
 
         modelBuilder.Entity<Prise_Contact>(e =>
@@ -688,6 +737,23 @@ public partial class UsmbTechDbContext : DbContext
                     "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)"
                 );
             });
+        });
+
+        modelBuilder.Entity<Qualifier>(e =>
+        {
+            e.HasKey(e => new { e.Id_Equipement, e.Id_Mot_Clef }).HasName("pk_qualifier");
+
+            e.HasOne(d => d.EquipementNavigation)
+                .WithMany(p => p.Qualifiers)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_qualifier_equipement");
+
+            e.HasOne(d => d.Mot_ClefNavigation)
+                .WithMany(p => p.Qualifiers)
+                .HasForeignKey(d => d.Id_Mot_Clef)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_qualifier_mot_clef");
         });
 
         modelBuilder.Entity<Referencer>(e =>

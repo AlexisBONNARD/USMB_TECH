@@ -20,5 +20,11 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Specifier.Mot_ClefNavigation))]
         public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
+
+        [InverseProperty(nameof(Preciser.Mot_ClefNavigation))]
+        public virtual ICollection<Preciser> Precisers { get; set; } = new List<Preciser>();
+
+        [InverseProperty(nameof(Qualifier.Mot_ClefNavigation))]
+        public virtual ICollection<Qualifier> Qualifiers { get; set; } = new List<Qualifier>();
     }
 }
