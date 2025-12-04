@@ -16,11 +16,11 @@
         <div class="form-container">
 
             <div class="row">
-                <InputText class="input half" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom*" />
+                <InputText class="input half" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom" />
                 <InputText class="input half" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom" />
             </div>
 
-            <InputText class="input" @bind-Value="prise_contact.Email_Contact" placeholder="Email*" />
+            <InputText class="input" @bind-Value="prise_contact.Email_Contact" placeholder="Email" />
 
             <InputText class="input" @bind-Value="prise_contact.Entreprise_Contact"
                        placeholder="Type d’entité (entreprise, collectivité, association…)" />
@@ -50,52 +50,115 @@
                 </InputSelect>
             </div>
 
-
             <button type="submit" class="submit-btn">ENVOYER</button>
         </div>
     </EditForm>
 
-    @if (message != null)
+    @if (!string.IsNullOrEmpty(message))
     {
-        <div class="success-message">@message</div>
+        <div id="alertMessage"
+             class="alert @(isSuccess ? "alert-success" : "alert-danger") alert-fixed"
+             style="font-size:@(isMultipleErrors ? "18px" : "14px")"
+             @onclick="() => message = null">
+            @((MarkupString)message)
+        </div>
+
     }
 </div>
 
 @code {
     private string? message;
-    private Prise_Contact prise_contact = new();
-    private List<Pole_Expertise> pole_expertises = new List<Pole_Expertise>();
-    private List<Equipement> equipements = new List<Equipement>();
+    private bool isSuccess = false;
+    private bool isMultipleErrors = false;
+
+
+    private Prise_Contact prise_contact = new()
+    {
+        Id_Type_Client = 1 // client par défaut
+    };
+
+    private List<Pole_Expertise> pole_expertises = new();
+    private List<Equipement> equipements = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        pole_expertises = (await Pole_ExpertiseService.GetAllAsync())
+            .Where(x => x != null).ToList()!;
+
+        equipements = (await EquipementService.GetAllAsync())
+            .Where(x => x != null).ToList()!;
+    }
 
     private async Task HandleSubmit()
     {
-        pole_expertises = (await Pole_ExpertiseService.GetAllAsync()).Where(x => x != null).ToList()!;
-        equipements = (await EquipementService.GetAllAsync()).Where(x => x != null).ToList()!;
+        List<string> erreurs = new();
 
+        // ---- VALIDATION DES CHAMPS ----
+        if (string.IsNullOrWhiteSpace(prise_contact.Nom_Contact))
+            erreurs.Add("Veuillez renseigner votre nom.");
 
+        if (string.IsNullOrWhiteSpace(prise_contact.Prenom_Contact))
+            erreurs.Add("Veuillez renseigner votre prénom.");
+
+        if (string.IsNullOrWhiteSpace(prise_contact.Email_Contact))
+            erreurs.Add("Veuillez renseigner votre email.");
+
+        if (string.IsNullOrWhiteSpace(prise_contact.Entreprise_Contact))
+            erreurs.Add("Veuillez renseigner votre type d’entreprise.");
+
+        if (string.IsNullOrWhiteSpace(prise_contact.Description_besoins))
+            erreurs.Add("Veuillez décrire votre besoin.");
+
+        // règle equipement/pôle
         if (prise_contact.Id_Equipement == null && prise_contact.Id_Pole_Expertise == null)
+            erreurs.Add("Vous devez sélectionner un équipement ou un pôle d'expertise.");
+
+        if (prise_contact.Id_Equipement != null && prise_contact.Id_Pole_Expertise != null)
+            erreurs.Add("Sélectionnez uniquement un équipement OU un pôle d'expertise.");
+
+        // ---- SI ERREURS : les afficher toutes ----
+        if (erreurs.Count > 0)
         {
-            message = "Vous devez sélectionner un équipement ou un pôle d'expertise.";
+            string messageErreur =
+                erreurs.Count == 1
+                ? erreurs[0] // 1 seule erreur → message simple
+                : "<b>Veuillez corriger les erreurs suivantes :</b><br><ul>" +
+                  string.Join("", erreurs.Select(e => $"<li>{e}</li>")) +
+                  "</ul>";
+
+            await ShowAlert(messageErreur, false);
+            isMultipleErrors = erreurs.Count > 1;
             return;
         }
-        else
+
+        // ---- SI TOUT EST OK ----
+        try
         {
-            try
-            {
-                await Prise_ContactService.AddAsync(prise_contact);
+            await Prise_ContactService.AddAsync(prise_contact);
+            await ShowAlert("Votre demande a bien été envoyée !", true);
 
-                message = "Votre demande a bien été envoyée !";
-
-                // Reset du formulaire
-                prise_contact = new();
-
-                StateHasChanged(); // facultatif mais ok
-            }
-            catch (Exception ex)
-            {
-                message = "Erreur serveur.";
-                await JS.InvokeVoidAsync("console.error", ex.ToString());
-            }
+            prise_contact = new() { Id_Type_Client = 1 };
         }
+        catch (Exception ex)
+        {
+            await ShowAlert("Erreur serveur.", false);
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+    }
+
+
+    // ============= ALERTES AVEC AUTO-DISPARITION ===================
+
+    private async Task ShowAlert(string msg, bool success)
+    {
+        message = msg;
+        isSuccess = success;
+
+        StateHasChanged();
+
+        await Task.Delay(3000); // 3 secondes
+
+        message = null;
+        StateHasChanged();
     }
 }

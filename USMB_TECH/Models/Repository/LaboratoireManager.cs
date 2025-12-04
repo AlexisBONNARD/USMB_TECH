@@ -32,6 +32,31 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Laboratoire entity)
         {
+            if( await _context.Laboratoires.FirstOrDefaultAsync(m => m.Nom_Court == entity.Nom_Court) is not null) 
+            {
+                throw new InvalidOperationException("Un laboratoire avec un nom court similaire est déjà existant." +
+                    "Essayez un nouveau nom court pour votre laboratoire");
+            }
+            if(entity.Designers != null && entity.Designers.Any())
+            {
+                var designersFinal = new List<Designer>();
+                foreach (var designer in entity.Designers)
+                {
+                    var motClef = await _context.Mot_Clefs.FirstOrDefaultAsync(m => m.Nom_Mot_Clef == designer.Mot_ClefNavigation.Nom_Mot_Clef);
+
+                    if(motClef == null)
+                    {
+                        motClef = designer.Mot_ClefNavigation;
+                        _context.Mot_Clefs.Add(motClef);
+                    }
+                    designersFinal.Add(new Designer
+                    {
+                        Mot_ClefNavigation = motClef,
+                        Nom_Court = entity.Nom_Court,
+                    });
+                }
+                entity.Designers = designersFinal;
+            }
             if(entity.Adresse_laboNavigation.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse 
                 && entity.Adresse_campusNavigation.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse 
                 && entity.Adresse_campusNavigation.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse 
@@ -52,7 +77,6 @@ namespace USMB_TECH.Models.Repository
             }
             else 
             {
-
                 if (entity.Adresse_laboNavigation != null)
                 {
                     var adresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>

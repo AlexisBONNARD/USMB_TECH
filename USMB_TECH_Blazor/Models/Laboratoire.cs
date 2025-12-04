@@ -48,7 +48,7 @@ namespace USMB_TECH_Blazor.Models
         public Adresse? Adresse_campusNavigation { get; set; } = null!;
         public Adresse? Adresse_laboNavigation { get; set; } = null!;
 
-        public ICollection<Mot_Clef> mot_Clefs { get; set; } = new List<Mot_Clef>();
+        public ICollection<string> mot_Clefs { get; set; } = new List<string>();
 
         public  ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
 
