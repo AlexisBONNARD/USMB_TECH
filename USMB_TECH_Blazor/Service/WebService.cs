@@ -15,7 +15,7 @@ namespace USMB_TECH_Blazor.Service
             };
             this._endpoint = endpoint;
         }
-        public async Task AddAsync(TEntity entity) 
+        public async Task AddAsync(TEntity entity)
         {
             var response = await _httpClient.PostAsJsonAsync($"{_endpoint}", entity);
             if (!response.IsSuccessStatusCode) 

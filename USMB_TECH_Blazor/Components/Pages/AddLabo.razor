@@ -70,24 +70,44 @@
             <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
         </div>
         <h2>Mots-Clés :</h2>
-        <InputSelect @bind-Value="motcle">
+        <InputSelect @bind-Value="motCle">
             <option value="">...</option>
-            @foreach(var motcle in existingMot)
+            @if(existingMot is not null)
             {
-                <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+                @foreach (var motcle in existingMot)
+                {
+                    <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+                }
+                <option value="ajouter">Ajouter un nouveau mot-clé</option>
             }
-            <option value="ajouter">Ajouter un nouveau mot-clé</option>
         </InputSelect>
-        @if(motcle == "ajouter")
+        
+        @if(motCle == "ajouter")
         {
             <hr/>
             <h4>Ajouter un mot-clé</h4>
             <form onsubmit="return false;">
-                <input @bind="new_motcle"
+                <input @bind="NewMotCle"
                     placeholder="Nouveau Mot-clé"/>
-
+                <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
         }
+        else
+        {
+            @if(!string.IsNullOrWhiteSpace(motCle))
+            {
+                <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+            }
+        }
+        <ul class="add_platform">
+            @foreach (var mc in labo.mot_Clefs)
+            {
+                <li class="add_platform">
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
 
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
@@ -100,10 +120,13 @@
 </div>
 @code {
     Laboratoire labo = new Laboratoire();
-    string motcle;
-    string new_motcle;
-    private IEnumerable<Mot_Clef> existingMot;
-    ICollection<string> newMotClefs;
+
+    private IEnumerable<Mot_Clef> existingMot = new List<Mot_Clef>();
+
+    string motCle;
+    string NewMotCle;
+    ICollection<string> ListNewMotClefs;
+    private string DernierMotCleAjoute;
 
 
     bool isSubmitted = false;
@@ -134,6 +157,27 @@
 
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
+    }
+    void AddMot_Clef()
+    {
+        if(!string.IsNullOrWhiteSpace(NewMotCle))
+        {
+            labo.mot_Clefs.Add(NewMotCle);
+            NewMotCle = "";
+            motCle = "";
+        }
+        else
+        {
+            if (!labo.mot_Clefs.Contains(motCle))
+            {
+                labo.mot_Clefs.Add(motCle);
+            }
+            motCle = "";
+        }
+    }
+    void RemoveMotCle(string mc)
+    {
+        labo.mot_Clefs.Remove(mc);
     }
     private void Change()
     {

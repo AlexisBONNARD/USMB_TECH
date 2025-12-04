@@ -27,6 +27,6 @@ namespace USMB_TECH.DTO
 
         public ICollection<Thematique> Thematiques { get; set; }
 
-        public ICollection<Mot_Clef> mot_Clefs { get; set; } 
+        public ICollection<string> mot_Clefs { get; set; } 
     }
 }
