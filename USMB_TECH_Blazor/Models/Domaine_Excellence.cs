@@ -10,6 +10,11 @@
         public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
         public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
         public virtual ICollection<Mot_Clef> MotsCles { get; set; } = new List<Mot_Clef>();
+        public virtual ICollection<Preciser> Precisers { get; set; } = new List<Preciser>();
+        public virtual Type_Prestation? Type_PrestationNavigation { get; set; }
+
+
+
 
 
     }

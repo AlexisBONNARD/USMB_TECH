@@ -34,5 +34,9 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
 
         public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
+
+        public virtual ICollection<Preciser> Precisers { get; set; } = new List<Preciser>();
+
+        public virtual Type_Prestation? Type_PrestationNavigation { get; set; } = null!;
     }
 }
