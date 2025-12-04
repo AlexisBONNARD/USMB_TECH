@@ -32,7 +32,7 @@ namespace USMB_TECH.Models.Repository
                 .Include(p => p.Photos)
                 .Include(p => p.Equipements)
                     .ThenInclude(e => e.Photos)
-
+                .Include(Do => Do.Domaine_ExcellenceNavigation)
                 .FirstOrDefaultAsync(p => p.Id_Pole_Expertise == id);
 
         }
