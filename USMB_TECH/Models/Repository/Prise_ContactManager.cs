@@ -37,6 +37,7 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
+
         public async Task UpdateAsync(Prise_Contact entityToUpdate, Prise_Contact entity)
         {
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);

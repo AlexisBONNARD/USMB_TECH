@@ -1,20 +1,101 @@
-﻿<link href="css/FormulaireContact.css" rel="stylesheet" />
+﻿@inject IMainService<Pole_Expertise ,int> Pole_ExpertiseService
+@inject IMainService<Equipement,int> EquipementService
+@inject IMainService<Prise_Contact,int> Prise_ContactService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<link href="css/FormulaireContact.css" rel="stylesheet" />
 
 <div class="contact-section">
     <h3>FORMULAIRE DE CONTACT</h3>
 
-    <div class="form-container">
-        <div class="row">
-            <input class="input half" placeholder="Nom*" />
-            <input class="input half" placeholder="Prénom" />
+    <EditForm Model="@prise_contact" OnValidSubmit="HandleSubmit" key="@prise_contact">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-container">
+
+            <div class="row">
+                <InputText class="input half" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom*" />
+                <InputText class="input half" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom" />
+            </div>
+
+            <InputText class="input" @bind-Value="prise_contact.Email_Contact" placeholder="Email*" />
+
+            <InputText class="input" @bind-Value="prise_contact.Entreprise_Contact"
+                       placeholder="Type d’entité (entreprise, collectivité, association…)" />
+
+            <InputTextArea class="input textarea" @bind-Value="prise_contact.Description_besoins"
+                           placeholder="Votre besoin" />
+
+            <div class="row">
+                <label>Équipement</label>
+                <InputSelect class="input" @bind-Value="prise_contact.Id_Equipement">
+                    <option value="">-- Aucun --</option>
+                    @foreach (var eq in equipements)
+                    {
+                        <option value="@eq.Id_Equipement">@eq.Nom_Equipement</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="row">
+                <label>Pôle d'expertise</label>
+                <InputSelect class="input" @bind-Value="prise_contact.Id_Pole_Expertise">
+                    <option value="">-- Aucun --</option>
+                    @foreach (var p in pole_expertises)
+                    {
+                        <option value="@p.Id_Pole_Expertise">@p.Nom_Pole_Expertise</option>
+                    }
+                </InputSelect>
+            </div>
+
+
+            <button type="submit" class="submit-btn">ENVOYER</button>
         </div>
+    </EditForm>
 
-        <input class="input" placeholder="Email*" />
-
-        <input class="input" placeholder="Type d’entité (entreprise, collectivité, association…)" />
-
-        <textarea class="input textarea" placeholder="Votre besoin"></textarea>
-
-        <button class="submit-btn">ENVOYER</button>
-    </div>
+    @if (message != null)
+    {
+        <div class="success-message">@message</div>
+    }
 </div>
+
+@code {
+    private string? message;
+    private Prise_Contact prise_contact = new();
+    private List<Pole_Expertise> pole_expertises = new List<Pole_Expertise>();
+    private List<Equipement> equipements = new List<Equipement>();
+
+    private async Task HandleSubmit()
+    {
+        pole_expertises = (await Pole_ExpertiseService.GetAllAsync()).Where(x => x != null).ToList()!;
+        equipements = (await EquipementService.GetAllAsync()).Where(x => x != null).ToList()!;
+
+
+        if (prise_contact.Id_Equipement == null && prise_contact.Id_Pole_Expertise == null)
+        {
+            message = "Vous devez sélectionner un équipement ou un pôle d'expertise.";
+            return;
+        }
+        else
+        {
+            try
+            {
+                await Prise_ContactService.AddAsync(prise_contact);
+
+                message = "Votre demande a bien été envoyée !";
+
+                // Reset du formulaire
+                prise_contact = new();
+
+                StateHasChanged(); // facultatif mais ok
+            }
+            catch (Exception ex)
+            {
+                message = "Erreur serveur.";
+                await JS.InvokeVoidAsync("console.error", ex.ToString());
+            }
+        }
+    }
+}
