@@ -430,6 +430,12 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_est_lier");
 
+            e.HasMany(d => d.Photos)
+                .WithOne(p => p.LaboratoireNavigation)
+                .HasForeignKey(d => d.Nom_Court)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_laboratoire_photo");
+
             e.HasMany(d => d.Designers)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
@@ -546,13 +552,13 @@ public partial class UsmbTechDbContext : DbContext
                 .WithMany(p => p.Photos)
                 .HasForeignKey(d => d.Nom_Court)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_photo_pole_expertise");
+                .HasConstraintName("fk_photo_laboratoire");
 
             e.HasOne(d => d.Domaine_ExcellenceNavigation)
                 .WithMany(p => p.Photos)
                 .HasForeignKey(d => d.Id_Domaine_Excellence)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_photo_pole_expertise");
+                .HasConstraintName("fk_photo_domaine_excelence");
 
             // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise, un laboratoire, une prestation, à un domaine d'excellence ou à un équipement.
             e.ToTable(tb =>
