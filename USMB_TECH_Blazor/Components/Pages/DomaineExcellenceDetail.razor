@@ -78,6 +78,14 @@ else
                         {
                             <div class="expertise-card" @onclick="@(() => GoToPresta(prestation.Id_Prestation))">
                                 <div class="card-content">
+                                    @foreach (var photo in prestation.Photos)
+                                    {
+                                        @if (photo != null)
+                                        {
+                                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
+                                        }
+
+                                    }
                                     <h4>@prestation.Intitule_Prestation</h4>
                                     <p>@prestation.Description_Prestation</p>
                                     <p><strong>Prix :</strong> @prestation.Prix_Vente €</p>

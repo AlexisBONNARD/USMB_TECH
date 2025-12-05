@@ -37,7 +37,8 @@ namespace USMB_TECH.Models.Repository
                 .Include(d => d.Prestations)
                     .ThenInclude(Type => Type.Type_PrestationNavigation)
 
-
+                .Include(p=>p.Prestations)
+                        .ThenInclude(pr => pr.Photos) // les photos des prestations
 
                 .FirstOrDefaultAsync(e => e.Id_Domaine_Excellence == id);
         }

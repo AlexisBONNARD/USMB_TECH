@@ -23,6 +23,9 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(plt => plt.Pole_ExpertiseNavigation)
                 .Include(c => c.Contacts)
                 .Include(l => l.Prestations)
+                .Include(l => l.Gerers)
+                    .ThenInclude(plt => plt.Pole_ExpertiseNavigation)
+                        .ThenInclude(p => p.Photos)
                 .FirstOrDefaultAsync(lab => lab.Nom_Court == id);
         }
 
