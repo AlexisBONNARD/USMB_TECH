@@ -126,8 +126,8 @@
                   string.Join("", erreurs.Select(e => $"<li>{e}</li>")) +
                   "</ul>";
 
-            await ShowAlert(messageErreur, false);
             isMultipleErrors = erreurs.Count > 1;
+            await ShowAlert(messageErreur, false);
             return;
         }
 
@@ -156,9 +156,10 @@
 
         StateHasChanged();
 
-        await Task.Delay(3000); // 3 secondes
+        await Task.Delay(5000); // 5 secondes
 
         message = null;
+        isMultipleErrors = false;
         StateHasChanged();
     }
 }
