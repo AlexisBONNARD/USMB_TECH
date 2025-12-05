@@ -71,11 +71,17 @@ namespace USMB_TECH.Controllers
             {
                 return BadRequest(ModelState);
             }
+            try
+            {
+                var laboratoire = _mapper.Map<Laboratoire>(laboratoireDto);
+                await _dataRepository.AddAsync(laboratoire);
 
-            var laboratoire = _mapper.Map<Laboratoire>(laboratoireDto);
-            await _dataRepository.AddAsync(laboratoire);
-
-            return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoireDto);
+                return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoireDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Laboratoires/{id}
