@@ -37,6 +37,26 @@ namespace USMB_TECH.Models.Repository
                 throw new InvalidOperationException("Un laboratoire avec un nom court similaire est déjà existant." +
                     "Essayez un nouveau nom court pour votre laboratoire");
             }
+
+            if (entity.Est_Liers != null && entity.Est_Liers.Any())
+            {
+                var estlieFinal = new List<Est_Lier>();
+                foreach(var estlie in entity.Est_Liers) 
+                {
+                    var thematique = await _context.Thematiques.FirstOrDefaultAsync(t => t.Nom_Thematique == estlie.ThematiqueNavigation.Nom_Thematique);
+                    if (thematique == null) 
+                    {
+                        thematique = estlie.ThematiqueNavigation;
+                        _context.Thematiques.Add(thematique);
+                    }
+                    estlieFinal.Add(new Est_Lier
+                    {
+                        ThematiqueNavigation = thematique,
+                        Nom_Court = entity.Nom_Court,
+                    });
+                }
+                entity.Est_Liers = estlieFinal;
+            }
             if(entity.Designers != null && entity.Designers.Any())
             {
                 var designersFinal = new List<Designer>();
