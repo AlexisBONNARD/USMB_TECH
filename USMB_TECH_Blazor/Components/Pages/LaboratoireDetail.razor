@@ -19,7 +19,7 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>@laboratoire.Nom_Long</h2>
+                <h2>@laboratoire.Nom_Long (@laboratoire.Nom_Court)</h2>
             </section>
             <div class="banner-photo">
                 @foreach (Photo image in laboratoire.Photos)
@@ -46,10 +46,9 @@ else
                         @foreach (var pole_expertise in pole_expertises)
                         {
                             <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
-                                    @foreach (Photo photo in pole_expertise.Photos)
-                                    {
-                                        <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
-                                    }
+
+                                    <img src="@pole_expertise.Photos.First().Url_Photo" alt="@pole_expertise.Photos.First().Nom_Photo" />
+                                
                                 <p>@pole_expertise.Nom_Pole_Expertise</p>
                             </div>
                         }
