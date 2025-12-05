@@ -60,6 +60,5 @@ namespace USMB_TECH_Blazor.Models
         public ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
 
         public ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
-        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

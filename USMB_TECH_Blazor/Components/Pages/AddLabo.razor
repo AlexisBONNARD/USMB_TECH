@@ -152,7 +152,7 @@
         <hr />
         <h4 class="add_equipement">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
-        <input type="submit" class="btn btn-primary" value="Ajouter">
+        <input type="submit" class="btn btn-primary" value="Ajouter" @onclick="GoToPage">
     </EditForm>
     @if (!string.IsNullOrEmpty(message))
     {
@@ -179,6 +179,7 @@
 
 
     string message = "";
+    string exc = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -198,9 +199,8 @@
         catch (Exception ex)
         {
             isSubmitted = false;
-            // message = ex.Message;
-            message = "Il y a eu une erreur lors de l'ajout du laboratoire.";
-
+            message = ex.Message;
+            exc = ex.Message;
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
     }
@@ -290,5 +290,13 @@
     public class UploadResponse
     {
         public string url { get; set; }
+    }
+
+    private void GoToPage()
+    {
+        if(message != exc)
+        {
+            Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
+        }
     }
 }
