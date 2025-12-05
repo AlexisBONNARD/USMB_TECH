@@ -20,6 +20,12 @@ else
         <div class="col-left">
             <section>
                 <h2>Prestation : @prestation.Intitule_Prestation</h2>
+                <div class="banner-photo">
+                    @foreach (Photo image in prestation.Photos)
+                    {
+                        <img src="@image.Url_Photo" alt="photo pole_expertise" />
+                    }
+                </div>
                 <p>@prestation.Description_Prestation</p>
                 <p>Laboratoire : @prestation.Nom_Court</p>
             </section>

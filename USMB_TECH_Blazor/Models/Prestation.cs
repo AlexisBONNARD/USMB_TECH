@@ -38,5 +38,7 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Preciser> Precisers { get; set; } = new List<Preciser>();
 
         public virtual Type_Prestation? Type_PrestationNavigation { get; set; } = null!;
+
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

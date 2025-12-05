@@ -22,7 +22,12 @@ else
                 <h2>Laboratoire : @laboratoire.Nom_Long</h2>
                 <p>@laboratoire.Nom_Court</p>
             </section>
-
+            <div class="banner-photo">
+                @foreach (Photo image in laboratoire.Photos)
+                {
+                    <img src="@image.Url_Photo" alt="photo pole_expertise" />
+                }
+            </div>
             <section>
                 <h3>Adresse</h3>
                 <ul class="list-style">
