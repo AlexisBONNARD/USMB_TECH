@@ -20,6 +20,13 @@ namespace USMB_TECH.Models
         [Column("id_domaine_excellence")]
         public int? Id_Domaine_Excellence { get; set; }
 
+        [Column("id_prestation")]
+        public int? Id_Prestation { get; set; }
+
+        [Column("nom_court")]
+        [MaxLength(25)]
+        public string? Nom_Court { get; set; }
+
         [Column("nom_photo")]
         [MaxLength(100)]
         public string Nom_Photo { get; set; }
@@ -39,5 +46,13 @@ namespace USMB_TECH.Models
         [ForeignKey("Id_Domaine_Excellence")]
         [InverseProperty(nameof(Domaine_Excellence.Photos))]
         public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
+
+        [ForeignKey("Id_Prestation")]
+        [InverseProperty(nameof(Prestation.Photos))]
+        public virtual Prestation? PrestationNavigation { get; set; } = null!;
+
+        [ForeignKey("Nom_Court")]
+        [InverseProperty(nameof(Laboratoire.Photos))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
     }
 }

@@ -16,6 +16,7 @@ namespace USMB_TECH.Models.Repository
         public async Task<Laboratoire?> GetByIdAsync(string id) 
         {
             return await _context.Laboratoires
+                .Include(p=>p.Photos)
                 .Include(l => l.Adresse_campusNavigation)
                 .Include(l => l.Adresse_laboNavigation)
                 .Include(l => l.Gerers)

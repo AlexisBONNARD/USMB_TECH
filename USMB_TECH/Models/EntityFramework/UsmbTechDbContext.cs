@@ -430,6 +430,12 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_laboratoire_est_lier");
 
+            e.HasMany(d => d.Photos)
+                .WithOne(p => p.LaboratoireNavigation)
+                .HasForeignKey(d => d.Nom_Court)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_laboratoire_photo");
+
             e.HasMany(d => d.Designers)
                 .WithOne(p => p.LaboratoireNavigation)
                 .HasForeignKey(d => d.Nom_Court)
@@ -536,7 +542,25 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_photo_pole_expertise");
 
-            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise, à un domaine d'excellence ou à un équipement.
+            e.HasOne(d => d.PrestationNavigation)
+                .WithMany(p => p.Photos)
+                .HasForeignKey(d => d.Id_Prestation)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_photo_prestation");
+
+            e.HasOne(d => d.LaboratoireNavigation)
+                .WithMany(p => p.Photos)
+                .HasForeignKey(d => d.Nom_Court)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_photo_laboratoire");
+
+            e.HasOne(d => d.Domaine_ExcellenceNavigation)
+                .WithMany(p => p.Photos)
+                .HasForeignKey(d => d.Id_Domaine_Excellence)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_photo_domaine_excelence");
+
+            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise, un laboratoire, une prestation, à un domaine d'excellence ou à un équipement.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
@@ -544,6 +568,8 @@ public partial class UsmbTechDbContext : DbContext
                     @"(
                         ((id_equipement IS NOT NULL)::int +
                         (id_pole_expertise IS NOT NULL)::int +
+                        (id_prestation IS NOT NULL)::int +
+                        (nom_court IS NOT NULL)::int +
                         (id_domaine_excellence IS NOT NULL)::int)
                     ) = 1"
                 );
@@ -673,6 +699,12 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Prestation)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_presenter_prestation");
+
+            e.HasMany(d => d.Photos)
+                .WithOne(p => p.PrestationNavigation)
+                .HasForeignKey(d => d.Id_Prestation)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_prestation_photo");
 
             e.HasOne(d => d.Unite_OeuvreNavigation)
                 .WithMany(p => p.Prestations)
