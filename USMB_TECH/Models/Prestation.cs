@@ -79,6 +79,9 @@ namespace USMB_TECH.Models
         [InverseProperty(nameof(Preciser.PrestationNavigation))]
         public virtual ICollection<Preciser> Precisers { get; set; } = new List<Preciser>();
 
+        [InverseProperty(nameof(Photo.PrestationNavigation))]
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
 
     }
 }

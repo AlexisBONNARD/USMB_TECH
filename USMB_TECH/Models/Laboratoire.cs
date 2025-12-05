@@ -47,5 +47,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Gerer.LaboratoireNavigation))]
         public virtual ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
+
+        [InverseProperty(nameof(Photo.LaboratoireNavigation))]
+        public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }
