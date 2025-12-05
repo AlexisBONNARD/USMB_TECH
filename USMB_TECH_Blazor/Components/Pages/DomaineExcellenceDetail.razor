@@ -29,29 +29,8 @@ else
             <section>
                 <h2>@domaine.Intitule_Domaine_Excellence</h2>
             </section>
-            
-            @if (domaine.Photos != null && domaine.Photos.Count > 1)
-            {
-                <div class="carousel-wrapper">
-                    <div class="carousel-track" style="transform:@GetCarouselTransform()">
-                        @foreach (var photo in domaine.Photos)
-                        {
-                            <div class="carousel-slide">
-                                <img src="@photo.Url_Photo" alt="photo domaine" />
-                            </div>
-                        }
-                    </div>
 
-                    <button class="carousel-btn left" @onclick="PreviousSlide">&#10094;</button>
-                    <button class="carousel-btn right" @onclick="NextSlide">&#10095;</button>
-                </div>
-            }
-            else if (domaine.Photos != null && domaine.Photos.Any())
-            {
-                <div class="banner-photo">
-                    <img src="@domaine.Photos.First().Url_Photo" alt="photo domaine" />
-                </div>
-            }
+            <Carousel Photos="@domaine.Photos" />
 
             <p>@domaine.Description_Domaine_Excellence</p>
         </div>
@@ -216,46 +195,5 @@ else
         Navigation.NavigateTo($"/prestation/{id}");
     }
 
-    private int currentIndex = 0;
-    private Timer? _timer;
 
-    private string GetCarouselTransform() => $"translateX(-{currentIndex * 100}%)";
-
-    protected override void OnInitialized()
-    {
-        // Timer toutes les 5 secondes
-        _timer = new Timer(_ =>
-        {
-            InvokeAsync(() => NextSlide());
-        }, null, TimeSpan.FromSeconds(4), TimeSpan.FromSeconds(4));
-    }
-
-    private void NextSlide()
-    {
-        if (domaine?.Photos != null && domaine.Photos.Count > 0)
-        {
-            if (currentIndex < domaine.Photos.Count - 1)
-                currentIndex++;
-            else
-                currentIndex = 0; // repart du début
-            StateHasChanged(); //  refresh
-        }
-    }
-
-    private void PreviousSlide()
-    {
-        if (domaine?.Photos != null && domaine.Photos.Count > 0)
-        {
-            if (currentIndex > 0)
-                currentIndex--;
-            else
-                currentIndex = domaine.Photos.Count - 1; // repart de la fin
-            StateHasChanged();
-        }
-    }
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
-    }
 }
