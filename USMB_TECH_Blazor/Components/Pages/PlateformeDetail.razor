@@ -31,7 +31,7 @@ else
                 <div class="banner-photo">
                     @foreach (Photo image in pole_expertise.Photos)
                     {
-                        <img src="@image.Url_Photo" alt="photo pole_expertise" />
+                        <img src="@image.Url_Photo" alt="@image.Nom_Photo" />
                     }
                 </div>
                 <p>@pole_expertise.Description_Pole_Expertise</p>
@@ -73,7 +73,7 @@ else
                             @if (equipement.Photos != null && equipement.Photos.Any())
                             {
                                 var photo = equipement.Photos.First();
-                                <img src="@photo.Url_Photo" alt="photo équipement" />
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
                             }
                             <p>@equipement.Nom_Equipement</p>
                         </div>

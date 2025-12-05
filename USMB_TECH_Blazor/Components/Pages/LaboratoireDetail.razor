@@ -19,13 +19,12 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>Laboratoire : @laboratoire.Nom_Long</h2>
-                <p>@laboratoire.Nom_Court</p>
+                <h2>@laboratoire.Nom_Long</h2>
             </section>
             <div class="banner-photo">
                 @foreach (Photo image in laboratoire.Photos)
                 {
-                    <img src="@image.Url_Photo" alt="photo pole_expertise" />
+                    <img src="@image.Url_Photo" alt="@image.Nom_Photo" />
                 }
             </div>
             <section>
@@ -40,18 +39,17 @@ else
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
             <section>
-                <h3>NOS POLEs D'EXPERTISE</h3>
+                <h3>NOS POLES D'EXPERTISE</h3>
                 @if(pole_expertises is not null)
                 {
                     <div class="center-grid">
                         @foreach (var pole_expertise in pole_expertises)
                         {
                             <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
-                                @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
-                                {
-                                    var photo = pole_expertise.Photos.First();
-                                    <img src="@photo.Url_Photo" alt="photo pole_expertise" />
-                                }
+                                    @foreach (Photo photo in pole_expertise.Photos)
+                                    {
+                                        <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
+                                    }
                                 <p>@pole_expertise.Nom_Pole_Expertise</p>
                             </div>
                         }

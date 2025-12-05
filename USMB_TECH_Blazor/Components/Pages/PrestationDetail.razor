@@ -23,7 +23,7 @@ else
                 <div class="banner-photo">
                     @foreach (Photo image in prestation.Photos)
                     {
-                        <img src="@image.Url_Photo" alt="photo pole_expertise" />
+                        <img src="@image.Url_Photo" alt="@image.Nom_Photo" />
                     }
                 </div>
                 <p>@prestation.Description_Prestation</p>
