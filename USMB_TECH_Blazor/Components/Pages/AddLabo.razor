@@ -6,7 +6,12 @@
 @inject IMainService<Thematique, int> ThematiqueService
 @inject HttpClient Http
 
-
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
 <div>
     <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -152,11 +157,12 @@
         <hr />
         <h4 class="add_equipement">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
-        <input type="submit" class="btn btn-primary" value="Ajouter" @onclick="GoToPage">
+        <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
+
     @if (!string.IsNullOrEmpty(message))
     {
-        <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+        <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
             @message
         </div>
     }
@@ -173,7 +179,7 @@
     string thematique;
     string NewThematique;
 
-
+    private bool isLoading = false;
     bool isSubmitted = false;
     bool SameAdresse = false;
 
@@ -191,19 +197,40 @@
     {
         try
         {
+            isLoading = true; // active le loader
+            StateHasChanged();
             await laboService.AddAsync(labo);
 
             isSubmitted = true;
-            message = "Laboratoire ajouté avec succès !";
+            ShowAlert("Laboratoire ajouté avec succès !");
+            Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            message = ex.Message;
-            exc = ex.Message;
-            await JS.InvokeVoidAsync("console.error", ex.ToString());
+            var index = ex.Message.IndexOf(':');
+            ShowAlert(index >= 0 ? ex.Message[(index + 1)..].Trim() : ex.Message);
+            await JS.InvokeVoidAsync("console.error", message);
+        }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
         }
     }
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+    }
+
     private void AddMot_Clef()
     {
         if(!string.IsNullOrWhiteSpace(NewMotCle))
@@ -275,7 +302,7 @@
 
         content.Add(fileContent, "file", file.Name);
 
-        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+        var response = await Http.PostAsync("https://localhost:7093/api/laboratoires/upload", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -292,11 +319,4 @@
         public string url { get; set; }
     }
 
-    private void GoToPage()
-    {
-        if(message != exc)
-        {
-            Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
-        }
-    }
 }
