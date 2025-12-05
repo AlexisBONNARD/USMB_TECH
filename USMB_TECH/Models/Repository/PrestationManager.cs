@@ -21,12 +21,13 @@ namespace USMB_TECH.Models.Repository
         public async Task<Prestation?> GetByIdAsync(int id)
         {
             return await _context.Prestations
+                .Include(p => p.Photos)    
                 .Include(p => p.Presenters)
                     .ThenInclude(e => e.Pole_ExpertiseNavigation)
 
                 .Include(p => p.Fournirs)
                     .ThenInclude(e => e.EquipementNavigation)
-
+         
                 .FirstOrDefaultAsync(p => p.Id_Prestation == id);
         }
 
