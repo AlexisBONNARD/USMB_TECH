@@ -88,7 +88,8 @@
             <h4>Ajouter un mot-clé</h4>
             <form onsubmit="return false;">
                 <input @bind="NewMotCle"
-                    placeholder="Nouveau Mot-clé"/>
+                    placeholder="Nouveau Mot-clé"
+                    @onkeydown="@(e => { if (e.Key == "Enter" && NewMotCle != "") { AddMot_Clef(); } })" />
                 <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
         }
@@ -166,7 +167,7 @@
             NewMotCle = "";
             motCle = "";
         }
-        else
+        else if (string.IsNullOrWhiteSpace(NewMotCle)  && motCle != "ajouter")
         {
             if (!labo.mot_Clefs.Contains(motCle))
             {
