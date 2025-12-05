@@ -26,7 +26,11 @@ namespace USMB_TECH.Models.Repository
         {
             return await _context.Prise_Contacts
                 .Include(p => p.EquipementNavigation)
+                    .ThenInclude(e => e.Photos)
+                    .ThenInclude(e => e.Pole_ExpertiseNavigation)
                 .Include(p => p.Pole_ExpertiseNavigation)
+                    .ThenInclude(p => p.Equipements)
+                        .ThenInclude(e => e.Photos)
                 .Include(p => p.Type_ClientNavigation)
                 .FirstOrDefaultAsync(p => p.Num_Prise_Contact == id);
         }

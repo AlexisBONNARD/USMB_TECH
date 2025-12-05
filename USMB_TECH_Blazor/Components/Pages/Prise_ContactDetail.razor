@@ -1,0 +1,100 @@
+﻿@page "/Prise_Contact/{Id}"
+@inject IMainService<Prise_Contact, int> Prise_ContactService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link href="css/PageDetail.css" rel="stylesheet" />
+</HeadContent>
+
+<PageTitle>Détails Prise De Contact</PageTitle>
+
+@if (prise_contact is null)
+{
+    <p>Chargement en cours</p>
+}
+else
+{
+    <div class="container">
+        <!-- ========= COLONNE GAUCHE ========= -->
+        <div class="col-left">
+            <section>
+                <h2>Prise_Contact de @prise_contact.Nom_Contact</h2>
+                <p>@prise_contact.Prenom_Contact</p>
+            </section>
+        </div>
+
+        <div class="col-left">
+            <section>
+                <h2>L'entrprise qui demande le contacte est @prise_contact.Entreprise_Contact'</h2>
+                <p>EMail : @prise_contact.Email_Contact</p>                                                                                  
+            </section>
+        </div>
+
+        <div class="col-left">
+            <section>
+                <h2>Sont besoins : </h2>
+                <p>@prise_contact.Description_besoins'</p>
+            </section
+        </div>
+
+        <!-- ========= COLONNE CENTRALE ========= -->
+        <div class="col-center">
+            <section>
+                @if (prise_contact.Id_Pole_Expertise is not null)
+                {
+                <h3>NOS POLES D'EXPERTISE</h3>
+                    <div class="center-grid">
+                        <div class="center-item" @onclick="@(() => RetourListe(prise_contact.Pole_ExpertiseNavigation.Id_Pole_Expertise, "pole_expertise"))">
+                            @if (prise_contact.Pole_ExpertiseNavigation.Photos != null && prise_contact.Pole_ExpertiseNavigation.Photos.Any())
+                            {
+                                var photo = prise_contact.Pole_ExpertiseNavigation.Photos.First();
+                                <img src="@photo.Url_Photo" alt="photo pole_expertise" />
+                            }
+                            <p>@prise_contact.Pole_ExpertiseNavigation.Nom_Pole_Expertise</p>
+                        </div>
+                    </div>
+                }
+                else if (prise_contact.Id_Equipement is not null)
+                {
+                <h3>NOS EQUIPEMENT</h3>
+                    <div class="center-grid">
+                        <div class="center-item" @onclick="@(() => RetourListe(prise_contact.EquipementNavigation.Id_Equipement, "equipement"))">
+                            @if (prise_contact.EquipementNavigation.Photos != null && prise_contact.EquipementNavigation.Photos.Any())
+                            {
+                                var photo = prise_contact.EquipementNavigation.Photos.First();
+                                <img src="@photo.Url_Photo" alt="photo equipement" />
+                            }
+                            <p>@prise_contact.EquipementNavigation.Nom_Equipement</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Il n'y a un probléme lier à ce contact</p>
+                }
+            </section>
+        </div>
+
+        <!-- ========= COLONNE DROITE ========= -->
+        <div class="col-right">
+
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public Prise_Contact prise_contact;
+
+    protected override async Task OnInitializedAsync()
+    {
+        prise_contact = await Prise_ContactService.GetByIdAsync(Id);
+    }
+
+    private void RetourListe(int id, string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+}

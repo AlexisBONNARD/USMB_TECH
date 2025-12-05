@@ -1,0 +1,60 @@
+﻿@page "/Prise_Contact"
+@inject IMainService<Prise_Contact, int> Prise_ContactService
+@inject NavigationManager Navigation
+
+<h1>Liste des prises de contact</h1>
+
+@if (prise_contacts is null)
+{
+    <p>Chargement...</p>
+}
+else if (!prise_contacts.Any())
+{
+    <p>Aucune prise de contact trouvée.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Entreprise</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var contact in prise_contacts)
+            {
+                <tr>
+                    <td>@contact.Nom_Contact</td>
+                    <td>@contact.Prenom_Contact</td>
+                    <td>@contact.Email_Contact</td>
+                    <td>@contact.Entreprise_Contact</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Num_Prise_Contact, "Prise_Contact"))">
+                            Voir
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Prise_Contact> prise_contacts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        prise_contacts = (await Prise_ContactService.GetAllAsync())
+            .Where(x => x != null).ToList()!;
+    }
+
+    private void RetourListe(int id, string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+}
