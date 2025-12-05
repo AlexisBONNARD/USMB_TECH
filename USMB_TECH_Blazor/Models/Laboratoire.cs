@@ -50,9 +50,12 @@ namespace USMB_TECH_Blazor.Models
 
         public ICollection<string> mot_Clefs { get; set; } = new List<string>();
 
+        public ICollection<string> Thematiques { get; set; } = new List<string>();
+
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
         public  ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
 
-        public ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
 
         public ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
 

@@ -29,8 +29,12 @@ namespace USMB_TECH.Mapper
             {
                 Mot_ClefNavigation = new Mot_Clef { Nom_Mot_Clef = mc },
                 Nom_Court = src.Nom_Court
-            }).ToList())
-            )
+            }).ToList()))
+            .ForMember(dest => dest.Est_Liers, opt => opt.MapFrom(src => src.Thematiques.Select(t => new Est_Lier 
+            {
+                ThematiqueNavigation = new Thematique { Nom_Thematique = t },
+                Nom_Court = src.Nom_Court,
+            }).ToList()))
             .ForMember(dest => dest.Id_Adresse_Labo, opt => opt.Ignore())
             .ForMember(dest => dest.Id_Adresse_Campus, opt => opt.Ignore());
         }

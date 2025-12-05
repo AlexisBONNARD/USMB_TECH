@@ -25,8 +25,10 @@ namespace USMB_TECH.DTO
 
         public string? Pays_Adresse_Campus { get; set; }
 
-        public ICollection<Thematique> Thematiques { get; set; }
+        public ICollection<string> Thematiques { get; set; }
 
-        public ICollection<string> mot_Clefs { get; set; } 
+        public ICollection<string> mot_Clefs { get; set; }
+
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

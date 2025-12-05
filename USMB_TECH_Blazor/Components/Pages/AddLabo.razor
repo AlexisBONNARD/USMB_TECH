@@ -3,6 +3,8 @@
 @inject IJSRuntime JS
 @inject IMainService<Laboratoire, string> laboService  
 @inject IMainService<Mot_Clef, int> motcleService
+@inject IMainService<Thematique, int> ThematiqueService
+@inject HttpClient Http
 
 
 <div>
@@ -69,6 +71,8 @@
             <InputText @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
             <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
         </div>
+
+        @* ///Mots-clés *@
         <h2>Mots-Clés :</h2>
         <InputSelect @bind-Value="motCle">
             <option value="">...</option>
@@ -86,20 +90,17 @@
         {
             <hr/>
             <h4>Ajouter un mot-clé</h4>
-            <form onsubmit="return false;">
+            <form @onsubmit="AddMot_Clef">
                 <input @bind="NewMotCle"
-                    placeholder="Nouveau Mot-clé"
-                    @onkeydown="@(e => { if (e.Key == "Enter" && NewMotCle != "") { AddMot_Clef(); } })" />
+                    placeholder="Nouveau Mot-clé"/>
                 <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
         }
-        else
+        else if (!string.IsNullOrWhiteSpace(motCle))
         {
-            @if(!string.IsNullOrWhiteSpace(motCle))
-            {
-                <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
-            }
+            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
+
         <ul class="add_platform">
             @foreach (var mc in labo.mot_Clefs)
             {
@@ -110,6 +111,47 @@
             }
         </ul>
 
+        @* ///Thematique *@
+        <h2>Thématiques : </h2>
+        <InputSelect @bind-Value="thematique">
+            <option value="">...</option>
+            @if (existingThematique is not null)
+            {
+                @foreach (var thematique in existingThematique)
+                {
+                    <option value="@thematique.Nom_Thematique">@thematique.Nom_Thematique</option>
+                }
+                <option value="ajouter">Ajouter une nouvelle thématique</option>
+            }
+        </InputSelect>
+
+        @if(thematique == "ajouter")
+        {
+            <hr/>
+            <h4></h4>
+            <form @onsubmit="AddThematique">
+                <input @bind="NewThematique" placeholder="Nouvelle thématique"/>
+                <button type="button" @onclick="AddThematique">Ajouter cette nouvelle thématique</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(thematique))
+        {
+              <button type="button" @onclick="AddThematique">Ajouter cette thématique</button>
+        }
+
+        <ul class="add_platform">
+            @foreach (var mc in labo.Thematiques)
+            {
+                <li class="add_platform">
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <hr />
+        <h4 class="add_equipement">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
     @if (!string.IsNullOrEmpty(message))
@@ -123,11 +165,13 @@
     Laboratoire labo = new Laboratoire();
 
     private IEnumerable<Mot_Clef> existingMot = new List<Mot_Clef>();
+    private IEnumerable<Thematique> existingThematique = new List<Thematique>();
 
     string motCle;
     string NewMotCle;
-    ICollection<string> ListNewMotClefs;
-    private string DernierMotCleAjoute;
+
+    string thematique;
+    string NewThematique;
 
 
     bool isSubmitted = false;
@@ -139,6 +183,7 @@
     protected override async Task OnInitializedAsync()
     {
         existingMot = await motcleService.GetAllAsync();
+        existingThematique = await ThematiqueService.GetAllAsync();
     }
 
     private async Task HandleValidSubmit()
@@ -159,7 +204,7 @@
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
     }
-    void AddMot_Clef()
+    private void AddMot_Clef()
     {
         if(!string.IsNullOrWhiteSpace(NewMotCle))
         {
@@ -176,9 +221,31 @@
             motCle = "";
         }
     }
-    void RemoveMotCle(string mc)
+    private void RemoveMotCle(string mc)
     {
         labo.mot_Clefs.Remove(mc);
+    }
+
+    private void AddThematique()
+    {
+        if (!string.IsNullOrWhiteSpace(NewThematique))
+        {
+            labo.Thematiques.Add(NewThematique);
+            NewThematique = "";
+            thematique = "";
+        }
+        else if (string.IsNullOrWhiteSpace(NewThematique) && thematique != "ajouter")
+        {
+            if (!labo.Thematiques.Contains(thematique))
+            {
+                labo.Thematiques.Add(thematique);
+            }
+            thematique = "";
+        }
+    }
+    private void RemoveThematique(string mc)
+    {
+        labo.Thematiques.Remove(mc);
     }
     private void Change()
     {
@@ -196,5 +263,32 @@
             labo.Rue_Adresse_Campus = labo.Rue_Adresse_Labo;
             labo.Ville_Adresse_Campus = labo.Ville_Adresse_Labo;
         }
+    }
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+        content.Add(fileContent, "file", file.Name);
+
+        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+            labo.Photos.Add(new Photo
+            {
+                Nom_Photo = file.Name,
+                Url_Photo = result.url
+            });
+        }
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
     }
 }
