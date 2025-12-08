@@ -1,4 +1,4 @@
-﻿@page "/Prise_Contact"
+﻿@page "/prise_contact"
 @inject IMainService<Prise_Contact, int> Prise_ContactService
 @inject NavigationManager Navigation
 
@@ -34,7 +34,7 @@ else
                     <td>@contact.Email_Contact</td>
                     <td>@contact.Entreprise_Contact</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Num_Prise_Contact, "Prise_Contact"))">
+                        <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Num_Prise_Contact, "prise_contact"))">
                             Voir
                         </button>
                     </td>

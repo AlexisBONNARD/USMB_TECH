@@ -1,4 +1,4 @@
-﻿@page "/Prise_Contact/{Id}"
+﻿@page "/prise_contact/{priseContactId:int}"
 @inject IMainService<Prise_Contact, int> Prise_ContactService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
@@ -26,7 +26,7 @@ else
 
         <div class="col-left">
             <section>
-                <h2>L'entrprise qui demande le contacte est @prise_contact.Entreprise_Contact'</h2>
+                <h2>L'entrprise qui demande le contacte est @prise_contact.Entreprise_Contact</h2>
                 <p>EMail : @prise_contact.Email_Contact</p>                                                                                  
             </section>
         </div>
@@ -34,7 +34,7 @@ else
         <div class="col-left">
             <section>
                 <h2>Sont besoins : </h2>
-                <p>@prise_contact.Description_besoins'</p>
+                <p>@prise_contact.Description_besoins</p>
             </section
         </div>
 
@@ -85,13 +85,21 @@ else
 
 @code {
     [Parameter]
-    public int Id { get; set; }
+    public int? priseContactId { get; set; }
     public Prise_Contact prise_contact;
 
     protected override async Task OnInitializedAsync()
     {
-        prise_contact = await Prise_ContactService.GetByIdAsync(Id);
+        if (priseContactId is null)
+        {
+            Navigation.NavigateTo("/erreur");
+            return;
+        }
+    
+        prise_contact = await Prise_ContactService.GetByIdAsync(priseContactId.Value);
     }
+
+
 
     private void RetourListe(int id, string nomChemin)
     {

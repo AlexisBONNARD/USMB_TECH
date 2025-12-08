@@ -4,6 +4,7 @@
 @inject IMainService<Equipement,int> EquipementService
 @inject IMainService<Prestation,int> PrestationService
 @inject IMainService<Laboratoire,string> LaboratoireService
+@inject IMainService<Prise_Contact, int> Prise_ContactService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -79,7 +80,8 @@
                 }
             </ul>
         </div>
-        <!-- Dropdown NOS Laboratoires -->
+
+        <!-- Dropdown NOS LABORATOIRES -->
         <div class="nav-link dropdown"
              @onmouseenter="@(() => OpenDropdown("Laboratoire"))"
              @onmouseleave="@CloseDropdown"
@@ -99,6 +101,27 @@
                 }
             </ul>
         </div>
+
+        <!-- Dropdown NOS PRISE_CONTACTS -->
+        <div class="nav-link dropdown"
+             @onmouseenter="@(() => OpenDropdown("Prise_Contact"))"
+             @onmouseleave="@CloseDropdown"
+             style="cursor:pointer;">
+
+            <span class="dropdown-toggle">PRISE_CONTACT</span>
+
+            <ul class="dropdown-menu @(showDropdown == "Prise_Contact" ? "show" : "")">
+                @if (prise_contacts != null)
+                {
+                    @foreach (var pc in prise_contacts)
+                    {
+                        <li @onclick="() => GoToPrise_Contact(pc.Num_Prise_Contact)">
+                            @pc.Nom_Contact
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
     </div>
 
 </div>
@@ -110,12 +133,14 @@
     private IEnumerable<Equipement>? equipements;
     private IEnumerable<Prestation>? prestations;
     private IEnumerable<Laboratoire>? laboratoires;
+    private IEnumerable<Prise_Contact>? prise_contacts;
     protected override async Task OnInitializedAsync()
     {
         pole_expertises = await Pole_ExpertiseService.GetAllAsync();
         equipements = await EquipementService.GetAllAsync();
         prestations = await PrestationService.GetAllAsync();
         laboratoires = await LaboratoireService.GetAllAsync();
+        prise_contacts = await Prise_ContactService.GetAllAsync();
 
         // Affichage dans la console
         if (pole_expertises != null)
@@ -141,6 +166,22 @@
                 await JS.InvokeVoidAsync("console.log", $"Prestation: {e.Nom_Court}, Id: {e.Id_Prestation}");
             }
         }
+
+        if (laboratoires != null)
+        {
+            foreach (var e in laboratoires)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Laboratoire: {e.Nom_Long}, Id: {e.Nom_Court}");
+            }
+        }
+
+        if (prise_contacts != null)
+        {
+            foreach (var e in prise_contacts)
+            {
+                await JS.InvokeVoidAsync("console.log", $"Prise_Contact: {e.Nom_Contact}, Id: {e.Num_Prise_Contact}");
+            }
+        }
     }
     private void ToggleDropdownPole_Expertise()
     {
@@ -156,19 +197,20 @@
     {
         showDropdown = showDropdown == "Prestation" ? null : "Prestation";
     }
+
     private void ToggleDropdownLaboratoire()
     {
         showDropdown = showDropdown == "Laboratoire" ? null : "Laboratoire";
     }
 
+    private void ToggleDropdownPrise_Contact()
+    {
+        showDropdown = showDropdown == "Prise_Contact" ? null : "Prise_Contact";
+    }
+
     private void GoToPole_Expertise(int id)
     {
         Nav.NavigateTo($"/pole_expertise/{id}", true);
-        showDropdown = null;
-    }
-    private void GoToLaboratoire(string id)
-    {
-        Nav.NavigateTo($"/laboratoire/{id}", true);
         showDropdown = null;
     }
 
@@ -184,6 +226,17 @@
         showDropdown = null;
     }
 
+    private void GoToLaboratoire(string id)
+    {
+        Nav.NavigateTo($"/laboratoire/{id}", true);
+        showDropdown = null;
+    }
+
+    private void GoToPrise_Contact(int id)
+    {
+        Nav.NavigateTo($"/prise_contact/{id}", true);
+        showDropdown = null;
+    }
 
     private void OpenDropdown(string name)
     {
