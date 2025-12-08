@@ -1,0 +1,69 @@
+﻿@page "/ajouterPrestation"
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject IMainService<Prestation, int> prestationService
+@inject IMainService<Contact_USMB, int> contactService
+
+
+<EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
+    Intitulé de la prestation : 
+    <InputText @bind-Value="prestation.Intitule_Prestation"/>
+
+    Description de la prestation : 
+    <InputText @bind-Value="prestation.Description_Prestation"></InputText>
+
+    Prix de vente de la prestation :
+    <InputNumber @bind-Value="prestation.Prix_Vente"></InputNumber>
+
+    Prix de revient de la prestation :
+    <InputNumber @bind-Value="prestation.Prix_Revient"></InputNumber>
+
+    Peut se réaliser chez le client : 
+    <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client"/>
+
+    <InputSelect @bind-Value="prestation.Id_Contact">
+        <option value="">...</option>
+        @foreach (var contact in contacts)
+        {
+            <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
+        }
+    </InputSelect>
+
+    <input type="submit" value="Ajouter">
+</EditForm>
+@if (!string.IsNullOrEmpty(message))
+{
+    <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+        @message
+    </div>
+}
+
+@code {
+    Prestation prestation = new Prestation();
+    List<Contact_USMB> contacts = new List<Contact_USMB>();
+
+
+    bool isSubmitted = false;
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        contacts = (await contactService.GetAllAsync()).ToList();
+    }
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await prestationService.AddAsync(prestation);
+            isSubmitted = true;
+            message = "La prestation a été ajoutée avec succès.";
+        }
+        catch(Exception ex)
+        {
+            message = "Une erreur est survenue lors de l'ajout de la prestation.";
+            await JS.InvokeVoidAsync("console.log", ex.Message);
+        }
+        
+        
+    }
+}

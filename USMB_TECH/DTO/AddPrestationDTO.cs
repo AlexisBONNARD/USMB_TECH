@@ -1,0 +1,22 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace USMB_TECH.DTO
+{
+    public class AddPrestationDTO
+    {
+        public string Intitule_Prestation { get; set; }
+
+        public string Nom_Contact { get; set; }
+
+        public string Description_Prestation { get; set; }
+
+        public double Prix_Revient { get; set; }
+        public double Prix_Vente { get; set; }
+
+        public bool Peux_Ce_Realiser_Chez_Le_Client { get; set; }
+
+        public bool Actif { get; set; }
+    }
+}

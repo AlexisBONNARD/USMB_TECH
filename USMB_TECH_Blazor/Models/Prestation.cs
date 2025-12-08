@@ -17,6 +17,8 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Contact { get; set; }
 
+        public string Nom_Contact  { get; set; }
+
         public string Intitule_Prestation { get; set; }
 
         public string Description_Prestation { get; set; }
