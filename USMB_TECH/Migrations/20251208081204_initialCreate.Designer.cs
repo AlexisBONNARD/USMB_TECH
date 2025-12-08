@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251205092422_initialCreate")]
+    [Migration("20251208081204_initialCreate")]
     partial class initialCreate
     {
         /// <inheritdoc />
@@ -826,7 +826,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("intitule_prestation");
 
                     b.Property<string>("Nom_Court")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)")
                         .HasColumnName("nom_court");
@@ -1530,7 +1529,6 @@ namespace USMB_TECH.Migrations
                         .WithMany("Prestations")
                         .HasForeignKey("Nom_Court")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_prestation_laboratoire");
 
                     b.Navigation("Contact_USMBNavigation");
