@@ -99,8 +99,6 @@ else
         prise_contact = await Prise_ContactService.GetByIdAsync(priseContactId.Value);
     }
 
-
-
     private void RetourListe(int id, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{id}");
