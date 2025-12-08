@@ -23,7 +23,7 @@ namespace USMB_TECH.Models
 
         [Column("nom_court")]
         [MaxLength(25)]
-        public string Nom_Court{ get; set; }
+        public string? Nom_Court{ get; set; }
 
         [Column("id_contact")]
         public int Id_Contact { get; set; }

@@ -39,7 +39,7 @@ namespace USMB_TECH.Models.Repository
             if( await _context.Laboratoires.FirstOrDefaultAsync(m => m.Nom_Court == entity.Nom_Court) is not null) 
             {
                 throw new InvalidOperationException("Un laboratoire avec un nom court similaire est déjà existant." +
-                    "Essayez un nouveau nom court pour votre laboratoire");
+                    "\nEssayez un nouveau nom court pour votre laboratoire");
             }
 
             if (entity.Est_Liers != null && entity.Est_Liers.Any())

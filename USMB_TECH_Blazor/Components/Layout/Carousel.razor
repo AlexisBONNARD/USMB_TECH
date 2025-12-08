@@ -1,0 +1,63 @@
+﻿@using System.Timers
+
+<div class="carousel-wrapper">
+    <div class="carousel-track" style="transform:@GetCarouselTransform()">
+        @if (Photos != null)
+        {
+            @foreach (var photo in Photos)
+            {
+                <div class="carousel-slide">
+                    <img src="@photo.Url_Photo" alt="photo domaine" />
+                </div>
+            }
+        }
+    </div>
+
+    @if (Photos != null && Photos.Count > 1)
+    {
+        <button class="carousel-btn left" @onclick="PreviousSlide">&#10094;</button>
+        <button class="carousel-btn right" @onclick="NextSlide">&#10095;</button>
+    }
+</div>
+
+@code {
+    [Parameter] public ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
+    private int currentIndex = 0;
+    private Timer? _timer;
+
+    private string GetCarouselTransform() => $"translateX(-{currentIndex * 100}%)";
+
+    protected override void OnInitialized()
+    {
+        if (Photos != null && Photos.Count > 1)
+        {
+            _timer = new Timer(5000); // toutes les 5 secondes
+            _timer.Elapsed += (s, e) => InvokeAsync(NextSlide);
+            _timer.Start();
+        }
+    }
+
+    private void NextSlide()
+    {
+        if (Photos != null && Photos.Count > 0)
+        {
+            currentIndex = (currentIndex + 1) % Photos.Count;
+            StateHasChanged();
+        }
+    }
+
+    private void PreviousSlide()
+    {
+        if (Photos != null && Photos.Count > 0)
+        {
+            currentIndex = (currentIndex - 1 + Photos.Count) % Photos.Count;
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+}

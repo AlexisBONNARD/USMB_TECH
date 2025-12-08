@@ -28,12 +28,7 @@ else
         <div class="col-left">
             <section>
                 <h2>@pole_expertise.Nom_Pole_Expertise</h2>
-                <div class="banner-photo">
-                    @foreach (Photo image in pole_expertise.Photos)
-                    {
-                        <img src="@image.Url_Photo" alt="@image.Nom_Photo" />
-                    }
-                </div>
+                <Carousel Photos="@pole_expertise.Photos" />
                 <p>@pole_expertise.Description_Pole_Expertise</p>
             </section>
 

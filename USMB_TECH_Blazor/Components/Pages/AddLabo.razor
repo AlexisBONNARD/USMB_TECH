@@ -6,75 +6,81 @@
 @inject IMainService<Thematique, int> ThematiqueService
 @inject HttpClient Http
 
+<HeadContent>
+    <li class="add_labo" nk href="css/addPlateforms.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_labo">Ajouter un Laboratoire</h2>
 
-<div>
+<div class="page-container">
     <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <div>
-            <label>Nom complet du laboratoire</label>
-            <InputText @bind-Value="labo.Nom_Long"></InputText>
+        <h4 class="add_labo">Infos générales</h4>
+
+            <label>Nom complet du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long"></InputText>
             <ValidationMessage For="@(() => labo.Nom_Long)" />
 
-            <label>Nom du laboratoire</label>
-            <InputText @bind-Value="labo.Nom_Court"></InputText>
+            <label>Nom du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Court"></InputText>
             <ValidationMessage For="@(() => labo.Nom_Court)" />
 
-            <label>Description</label>
-            <InputText @bind-Value="labo.Description"></InputText>
+            <label>Description *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Description"></InputText>
 
-        </div>
            
-            <h2>Adresses</h2>
-        <div>
-            <h3>Adresses du laboratoire</h3>
+        <h4 class="add_labo">Adresses</h4>
+        <h3 class="add_labo">Adresses du laboratoire</h3>
 
-             <label>Rue du laboratoire</label>
-            <InputText @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
+             <label>Rue du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
             <ValidationMessage For="@(() => labo.Rue_Adresse_Labo)" />
 
-            <label>Ville du laboratoire</label>
-            <InputText @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"></InputText>
+            <label>Ville du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"></InputText>
             <ValidationMessage For="@(() => labo.Ville_Adresse_Labo)" />
 
-            <label>Code postal du laboratoire</label>
-            <InputText maxlength="11"  @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"></InputText>
+            <label>Code postal du laboratoire *</label>
+        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"></InputText>
             <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
-            <label>Pays du laboratoire</label>
-            <InputText @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
+            <label>Pays du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
             <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
 
-        </div>
         @if(labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
         {
             <div>
                 <InputCheckbox @bind-Value="SameAdresse" @oninput="Change" /> Adresses Campus = Labo
-            </div>
+            </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         }
-        <div>
-            <h3>Adresse du campus</h3>
+            <h3 class="add_labo">Adresse du campus</h3>
 
-            <label>Rue du campus</label>
-            <InputText @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"></InputText>
+            <label>Rue du campus *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"></InputText>
             <ValidationMessage For="@(() => labo.Rue_Adresse_Campus)" />
 
-            <label>Ville du campus</label>
-            <InputText @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"></InputText>
+            <label>Ville du campus *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"></InputText>
             <ValidationMessage For="@(() => labo.Ville_Adresse_Campus)" />
 
-            <label>Code postal du campus</label>
-            <InputText maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"></InputText>
+            <label>Code postal du campus *</label>
+        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"></InputText>
             <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
-            <label>Pays du campus</label>
-            <InputText @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
+            <label>Pays du campus *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
             <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
-        </div>
 
         @* ///Mots-clés *@
-        <h2>Mots-Clés :</h2>
-        <InputSelect @bind-Value="motCle">
+        <h4 class="add_labo">Mots-Clés *</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="motCle">
             <option value="">...</option>
             @if(existingMot is not null)
             {
@@ -101,10 +107,10 @@
             <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
 
-        <ul class="add_platform">
+        <ul class="add_labo">
             @foreach (var mc in labo.mot_Clefs)
             {
-                <li class="add_platform">
+                <li class="add_labo">
                     @mc
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
                 </li>
@@ -112,8 +118,8 @@
         </ul>
 
         @* ///Thematique *@
-        <h2>Thématiques : </h2>
-        <InputSelect @bind-Value="thematique">
+        <h4 class="add_labo">Thématiques : </h4>
+        <InputSelect class="form-control mb-2" @bind-Value="thematique">
             <option value="">...</option>
             @if (existingThematique is not null)
             {
@@ -139,10 +145,10 @@
               <button type="button" @onclick="AddThematique">Ajouter cette thématique</button>
         }
 
-        <ul class="add_platform">
+        <ul class="add_labo">
             @foreach (var mc in labo.Thematiques)
             {
-                <li class="add_platform">
+                <li class="add_labo">
                     @mc
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(mc)">Supprimer</button>
                 </li>
@@ -150,13 +156,14 @@
         </ul>
 
         <hr />
-        <h4 class="add_equipement">Photos</h4>
+        <h4 class="add_labo">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
-        <input type="submit" class="btn btn-primary" value="Ajouter" @onclick="GoToPage">
+        <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
+
     @if (!string.IsNullOrEmpty(message))
     {
-        <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
+        <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
             @message
         </div>
     }
@@ -173,7 +180,7 @@
     string thematique;
     string NewThematique;
 
-
+    private bool isLoading = false;
     bool isSubmitted = false;
     bool SameAdresse = false;
 
@@ -191,19 +198,43 @@
     {
         try
         {
+            isLoading = true; // active le loader
+            StateHasChanged();
             await laboService.AddAsync(labo);
 
             isSubmitted = true;
-            message = "Laboratoire ajouté avec succès !";
+            ShowAlert("Laboratoire ajouté avec succès !");
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            message = ex.Message;
-            exc = ex.Message;
-            await JS.InvokeVoidAsync("console.error", ex.ToString());
+            var index = ex.Message.IndexOf(':');
+            ShowAlert(index >= 0 ? ex.Message[(index + 1)..].Trim() : ex.Message);
+            await JS.InvokeVoidAsync("console.error", message);
+        }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
         }
     }
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+        if (isSubmitted)
+        {
+            Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
+        }
+    }
+
     private void AddMot_Clef()
     {
         if(!string.IsNullOrWhiteSpace(NewMotCle))
@@ -275,7 +306,7 @@
 
         content.Add(fileContent, "file", file.Name);
 
-        var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+        var response = await Http.PostAsync("https://localhost:7093/api/laboratoires/upload", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -292,11 +323,4 @@
         public string url { get; set; }
     }
 
-    private void GoToPage()
-    {
-        if(message != exc)
-        {
-            Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
-        }
-    }
 }

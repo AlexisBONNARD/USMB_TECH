@@ -523,7 +523,7 @@ namespace USMB_TECH.Migrations
                     id_unite_oeuvre = table.Column<int>(type: "integer", nullable: false),
                     id_type_prestation = table.Column<int>(type: "integer", nullable: false),
                     id_domaine_excellence = table.Column<int>(type: "integer", nullable: false),
-                    nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     id_contact = table.Column<int>(type: "integer", nullable: false),
                     intitule_prestation = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     description_prestation = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),

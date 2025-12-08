@@ -71,11 +71,17 @@ namespace USMB_TECH.Controllers
             {
                 return BadRequest(ModelState);
             }
+            try
+            {
+                var laboratoire = _mapper.Map<Laboratoire>(laboratoireDto);
+                await _dataRepository.AddAsync(laboratoire);
 
-            var laboratoire = _mapper.Map<Laboratoire>(laboratoireDto);
-            await _dataRepository.AddAsync(laboratoire);
-
-            return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoireDto);
+                return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoireDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Laboratoires/{id}
@@ -90,6 +96,27 @@ namespace USMB_TECH.Controllers
 
             await _dataRepository.DeleteAsync(Laboratoire);
             return NoContent();
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Aucun fichier reçu");
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+
+            if (!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            var filePath = Path.Combine(uploadsPath, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { url = $"/uploads/{file.FileName}" });
         }
     }
 }

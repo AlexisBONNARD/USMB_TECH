@@ -823,7 +823,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("intitule_prestation");
 
                     b.Property<string>("Nom_Court")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)")
                         .HasColumnName("nom_court");
@@ -1527,7 +1526,6 @@ namespace USMB_TECH.Migrations
                         .WithMany("Prestations")
                         .HasForeignKey("Nom_Court")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_prestation_laboratoire");
 
                     b.Navigation("Contact_USMBNavigation");

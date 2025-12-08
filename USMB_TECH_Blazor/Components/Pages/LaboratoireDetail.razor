@@ -22,10 +22,7 @@ else
                 <h2>@laboratoire.Nom_Long (@laboratoire.Nom_Court)</h2>
             </section>
             <div class="banner-photo">
-                @foreach (Photo image in laboratoire.Photos)
-                {
-                    <img src="@image.Url_Photo" alt="@image.Nom_Photo" />
-                }
+                <Carousel Photos="@laboratoire.Photos" />
             </div>
             <section>
                 <h3>Adresse</h3>
@@ -97,6 +94,9 @@ else
             <FormulaireContact />
         </div>
     </div>
+    <button class="btn btn-danger mb-3" @onclick="() => DeleteLaboratoire(laboratoire.Nom_Court)">
+        Supprimer
+    </button>
 }
 
 @code {
@@ -106,6 +106,9 @@ else
     public Adresse adresseLabo = new Adresse();
     public Adresse adresseCampus = new Adresse();
     public IEnumerable<Pole_Expertise> pole_expertises;
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
+
     protected override async Task OnInitializedAsync()
     {
         laboratoire = await dataRepository.GetByIdAsync(Id);
@@ -117,5 +120,41 @@ else
     private void RetourListe(int id, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+
+    private async Task DeleteLaboratoire(string id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer ce domaine d'excellence ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await dataRepository.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Domaine supprimé avec succès ✅");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
     }
 }

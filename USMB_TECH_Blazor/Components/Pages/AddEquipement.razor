@@ -339,6 +339,7 @@
 
         message = null;         // efface le message
         StateHasChanged();      // met à jour
+        Navigation.NavigateTo($"/equipement/{addEquipement.Id_Equipement}");
     }
     private void pole_expertiseRotation(string SelectedPole_Expertise)
     {
