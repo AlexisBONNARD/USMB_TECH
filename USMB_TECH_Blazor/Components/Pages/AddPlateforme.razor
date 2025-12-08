@@ -1,5 +1,6 @@
 @page "/ajouter-pole_expertise"
 @using USMB_TECH.Models
+@inject NavigationManager Navigation
 @inject HttpClient Http
 @inject Service.IMainService<Prestation,int> prestationDatas
 
@@ -264,6 +265,7 @@
 
         message = null;         // efface le message
         StateHasChanged();      // met à jour
+        Navigation.NavigateTo($"/pole_expertise/{pole_expertise.Id_Pole_Expertise}");
     }
     void RemoveMotCle(Mot_Clef mc)
     {
