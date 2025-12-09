@@ -26,18 +26,16 @@ else
             </section>
 
             <section>
-                <h3>PRIX</h3>
-                <ul class="list-style">
-                    <p>Revient : @contact.Mail €</p>
-                    <p>Vente : @contact.LaboratoireNavigation €</p>
-                </ul>
+                <h2>Moyen pour contacter le contact</h2>
+                <p>Mail : @contact.Mail </p>
+                <p>Laboratoire : @contact.Telephone </p>
             </section>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
             <section>
-                <h3>NOS POLES D'EXPERTISE</h3>
+                <h3>NOS LABORATOIRE</h3>
 
                 <div class="center-grid">
                     @if (contact.LaboratoireNavigation != null)

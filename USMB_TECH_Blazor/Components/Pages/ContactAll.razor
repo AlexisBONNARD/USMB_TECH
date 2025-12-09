@@ -34,7 +34,7 @@ else
                     <td>@contact.Mail</td>
                     <td>@contact.Num_Securite_Social</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Nom_Court, "contact"))">
+                        <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Id_Contact, "contact"))">
                             Voir
                         </button>
                     </td>
@@ -53,7 +53,7 @@ else
             .Where(x => x != null).ToList()!;
     }
 
-    private void RetourListe(string id, string nomChemin)
+    private void RetourListe(int id, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{id}");
     }
