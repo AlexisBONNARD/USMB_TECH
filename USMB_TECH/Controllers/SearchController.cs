@@ -41,20 +41,33 @@ public class SearchController : ControllerBase
 
         query = query.ToLower().Trim();
 
-        // 🔍 Équipements
+        // Détection des types activés
+        bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
+        bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
+        bool useTexte = mode.Contains("texte") || mode == "full";
+
+        //                  ÉQUIPEMENTS
         var equipements = (await _equipManager.SearchAsync(e =>
-            ((mode.Contains("motclef") || mode == "global") &&
+            (
+                useMotClef &&
                 e.Pole_ExpertiseNavigation != null &&
                 e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                    s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query)))
+                    s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+            )
             ||
-            ((mode.Contains("thematique") || mode == "global") &&
+            (
+                useThematique &&
                 e.Exposers.Any(t =>
-                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query)))
+                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
+            )
             ||
-            (mode.Contains("texte") &&
-                ((e.Nom_Equipement ?? "").ToLower().Contains(query) ||
-                 (e.Description_Technique ?? "").ToLower().Contains(query)))
+            (
+                useTexte &&
+                (
+                    (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
+                    (e.Description_Technique ?? "").ToLower().Contains(query)
+                )
+            )
         ))
         .GroupBy(e => e.Id_Equipement)
         .Select(g => g.First())
@@ -62,71 +75,96 @@ public class SearchController : ControllerBase
 
         var equipementDtos = _mapper.Map<List<EquipementPreviewDTO>>(equipements);
 
-        // 🔍 Pôles Expertise
+        //                  POLES EXPERTISE
         var poles = (await _poleManager.SearchAsync(p =>
-            (mode.Contains("motclef") || mode == "global") &&
+            (
+                useMotClef &&
                 p.Specifiers.Any(s =>
                     s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+            )
             ||
-            (mode.Contains("texte") &&
-                ((p.Nom_Pole_Expertise ?? "").ToLower().Contains(query) ||
-                 (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)))
+            (
+                useTexte &&
+                (
+                    (p.Nom_Pole_Expertise ?? "").ToLower().Contains(query) ||
+                    (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)
+                )
+            )
         ))
         .ToList();
 
         var poleDtos = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles);
 
-        // 🔍 Prestations
+        //                 PRESTATIONS
         var prestations = (await _prestationManager.SearchAsync(pr =>
-            (mode.Contains("motclef") || mode == "global") &&
+            (
+                useMotClef &&
                 pr.Precisers.Any(p =>
                     p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+            )
             ||
-            (mode.Contains("texte") &&
-                ((pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
-                 (pr.Description_Prestation ?? "").ToLower().Contains(query)))
+            (
+                useTexte &&
+                (
+                    (pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
+                    (pr.Description_Prestation ?? "").ToLower().Contains(query)
+                )
+            )
         ))
         .ToList();
 
         var prestationDtos = _mapper.Map<List<PrestationPreviewDTO>>(prestations);
 
-        // 🔍 Laboratoires
+        //                LABORATOIRES
         var laboratoires = (await _laboratoireManager.SearchAsync(l =>
-            // 🔍 motclef OU global
-            ((mode.Contains("motclef") || mode == "global") &&
+            (
+                useMotClef &&
                 l.Designers.Any(q =>
                     q.Mot_ClefNavigation != null &&
-                    q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query)))
+                    q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+            )
             ||
-            // 🔍 thematique OU global
-            ((mode.Contains("thematique") || mode == "global") &&
+            (
+                useThematique &&
                 l.Est_Liers.Any(t =>
                     t.ThematiqueNavigation != null &&
-                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query)))
+                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
+            )
             ||
-            // 🔍 texte uniquement si mode=texte
-            (mode.Contains("texte") &&
-                ((l.Nom_Long ?? "").ToLower().Contains(query) ||
-                 (l.Description ?? "").ToLower().Contains(query) ||
-                 (l.Adresse_laboNavigation != null &&
-                     ((l.Adresse_laboNavigation.Ville_Adresse ?? "").ToLower().Contains(query) ||
-                      (l.Adresse_laboNavigation.Pays_Adresse ?? "").ToLower().Contains(query)))))
+            (
+                useTexte &&
+                (
+                    (l.Nom_Long ?? "").ToLower().Contains(query) ||
+                    (l.Description ?? "").ToLower().Contains(query) ||
+                    (
+                        l.Adresse_laboNavigation != null &&
+                        (
+                            (l.Adresse_laboNavigation.Ville_Adresse ?? "").ToLower().Contains(query) ||
+                            (l.Adresse_laboNavigation.Pays_Adresse ?? "").ToLower().Contains(query)
+                        )
+                    )
+                )
+            )
         ))
         .ToList();
 
         var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
 
-        // 🔍 Domaines d’Excellence
+        //            DOMAINES D’EXCELLENCE
         var domaines = (await _domaineManager.SearchAsync(d =>
-            (mode.Contains("texte") || mode == "global") &&
-                ((d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
-                 (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query))
+            (
+                useTexte &&
+                (
+                    (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
+                    (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
+                )
+            )
         ))
         .ToList();
 
         var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
 
-        // 🧩 Construction du DTO global
+        //                 RÉSULTAT GLOBAL
         var result = new GlobalSearchResultDTO
         {
             Equipements = equipementDtos,
@@ -135,7 +173,6 @@ public class SearchController : ControllerBase
             Laboratoires = laboratoireDtos,
             DomainesExcellence = domaineDtos
         };
-
 
         return Ok(result);
     }

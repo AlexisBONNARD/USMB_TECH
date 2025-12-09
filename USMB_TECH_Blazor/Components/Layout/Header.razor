@@ -96,23 +96,33 @@
 
     private void PerformSearch()
     {
-        if (!string.IsNullOrWhiteSpace(SearchText))
+        if (string.IsNullOrWhiteSpace(SearchText))
+            return;
+
+        var encodedQuery = Uri.EscapeDataString(SearchText);
+
+        List<string> modes = new();
+        if (SearchMotClef) modes.Add("motclef");
+        if (SearchThematique) modes.Add("thematique");
+        if (SearchTexte) modes.Add("texte");
+
+        string mode;
+
+        if (modes.Count == 0 || modes.Count == 3)
         {
-            var encodedQuery = Uri.EscapeDataString(SearchText);
-            var mode = "";
-
-            // 🔍 Global uniquement si motclef+thematique cochés OU aucun coché
-            if ((SearchMotClef && SearchThematique) || (!SearchMotClef && !SearchThematique && !SearchTexte))
-                mode = "global";
-            else if (SearchMotClef)
-                mode = "motclef";
-            else if (SearchThematique)
-                mode = "thematique";
-            else if (SearchTexte)
-                mode = "texte";   // ✅ recherche texte
-
-            if (!string.IsNullOrEmpty(mode))
-                Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
+            mode = "full"; // aucune case ou toutes les cases
         }
+        else if (modes.Contains("motclef") && modes.Contains("thematique") && modes.Count == 2)
+        {
+            mode = "global"; // combo particulier motclef+thematique
+        }
+        else
+        {
+            mode = string.Join("+", modes); // autres combinaisons
+        }
+
+        Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
     }
+
+
 }
