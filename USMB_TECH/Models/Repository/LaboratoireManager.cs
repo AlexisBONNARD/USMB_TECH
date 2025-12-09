@@ -170,6 +170,8 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(m => m.Mot_ClefNavigation)
                  .Include(el => el.Est_Liers)
                     .ThenInclude(t => t.ThematiqueNavigation)
+                .Include(a=> a.Adresse_laboNavigation)
+                .Include(c=> c.Adresse_campusNavigation)
                 .Where(predicate)
                 .ToListAsync();
         }

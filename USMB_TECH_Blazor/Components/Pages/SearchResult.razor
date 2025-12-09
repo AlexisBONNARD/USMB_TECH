@@ -3,167 +3,190 @@
 @using USMB_TECH_Blazor.Models;
 @inject SearchService SearchService
 @inject NavigationManager Navigation
-<link href="css/SearchResult.css" rel="stylesheet" />
+<body id="pageRecherche">
+    <link href="css/SearchResult.css" rel="stylesheet" />
 
-<h3 class="search-title">
-    Résultats de recherche pour "<strong>@query</strong>"
-</h3>
+    <h3 class="search-title">
+        Résultats de recherche pour "<strong>@query</strong>"
+    </h3>
 
-@if (IsLoading)
-{
-    <p class="search-info">Chargement...</p>
-}
-else if (Result == null ||
-         ((Result.Equipements == null || !Result.Equipements.Any()) &&
-          (Result.Prestations == null || !Result.Prestations.Any()) &&
-          (Result.PolesExpertise == null || !Result.PolesExpertise.Any()) &&
-          (Result.Laboratoires == null || !Result.Laboratoires.Any()) &&
-          (Result.DomainesExcellence == null || !Result.DomainesExcellence.Any())))
-{
-    <p class="search-info">Aucun résultat trouvé.</p>
-}
-else
-{
-    <!-- Section Équipements -->
-    @if (Result.Equipements?.Any() == true)
+    @if (IsLoading)
     {
-        <div class="results-section">
-            <h4 class="sep">Équipements</h4>
-            <div class="results-container">
-                @foreach (var e in Result.Equipements)
-                {
-                    <div @onclick="@(() => VoirDetail(e.Id_Equipement))" class="equipement-card">
-                        <h4>@e.Nom_Equipement</h4>
-                        <p>@e.Description_Technique</p>
-
-                        @if (!string.IsNullOrEmpty(e.Nom_Pole_Expertise))
-                        {
-                            <p><strong>Pôle Expertise :</strong> @e.Nom_Pole_Expertise</p>
-                        }
-
-                        <p><strong>Prix d'achat :</strong> @e.Prix_Achat €</p>
-                        <p><strong>Date d'acquisition :</strong> @e.Date_Acquisition.ToShortDateString()</p>
-                        <p><strong>Disponibilité :</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
-
-                        @if (e.MotsCles?.Any() == true)
-                        {
-                            <p><strong>Mots-clés :</strong></p>
-                            <div class="tag-list">
-                                @foreach (var mc in e.MotsCles)
-                                {
-                                    <span class="tag">@mc</span>
-                                }
-                            </div>
-                        }
-
-                        @if (e.Thematiques?.Any() == true)
-                        {
-                            <p><strong>Thématiques :</strong></p>
-                            <div class="tag-list">
-                                @foreach (var th in e.Thematiques)
-                                {
-                                    <span class="tag">@th</span>
-                                }
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
+        <p class="search-info">Chargement...</p>
     }
-
-    <!-- Section Pôles Expertise -->
-    @if (Result.PolesExpertise?.Any() == true)
+    else if (Result == null ||
+    ((Result.Equipements == null || !Result.Equipements.Any()) &&
+    (Result.Prestations == null || !Result.Prestations.Any()) &&
+    (Result.PolesExpertise == null || !Result.PolesExpertise.Any()) &&
+    (Result.Laboratoires == null || !Result.Laboratoires.Any()) &&
+    (Result.DomainesExcellence == null || !Result.DomainesExcellence.Any())))
     {
-        <div class="results-section">
-            <h4 class="sep">Pôles Expertise</h4>
-            <div class="results-container">
-                @foreach (var p in Result.PolesExpertise)
-                {
-                    <div @onclick="@(() => VoirDetailPoleExpertise(p.Id_Pole_Expertise))" class="equipement-card">
-                        <h4>@p.Nom_Pole_Expertise</h4>
-                        <p>@p.Description</p>
-
-                        @if (p.MotsCles?.Any() == true)
-                        {
-                            <p><strong>Mots-clés :</strong></p>
-                            <div class="tag-list">
-                                @foreach (var mc in p.MotsCles)
-                                {
-                                    <span class="tag">@mc</span>
-                                }
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
+        <p class="search-info">Aucun résultat trouvé.</p>
     }
-
-    <!-- Section Prestations -->
-    @if (Result.Prestations?.Any() == true)
+    else
     {
-        <div class="results-section">
-            <h4 class="sep">Prestations</h4>
-            <div class="results-container">
-                @foreach (var pr in Result.Prestations)
-                {
-                    <div @onclick="@(() => VoirDetailPrestation(pr.Id_Prestation))" class="equipement-card">
-                        <h4>@pr.Intitule_Prestation</h4>
-                        <p>@pr.Description_Prestation</p>
+        <!-- Section Équipements -->
+        @if (Result.Equipements?.Any() == true)
+        {
+            <div class="results-section">
+                <h4 class="sep">Équipements</h4>
+                <div class="results-container">
+                    @foreach (var e in Result.Equipements)
+                    {
+                        <div @onclick="@(() => VoirDetail(e.Id_Equipement))" class="equipement-card">
+                            <h4>@e.Nom_Equipement</h4>
+                            <p>@e.Description_Technique</p>
 
-                        @if (pr.MotsCles?.Any() == true)
-                        {
-                            <p><strong>Mots-clés :</strong></p>
-                            <div class="tag-list">
-                                @foreach (var mc in pr.MotsCles)
-                                {
-                                    <span class="tag">@mc</span>
-                                }
-                            </div>
-                        }
-                    </div>
-                }
+                            @if (!string.IsNullOrEmpty(e.Nom_Pole_Expertise))
+                            {
+                                <p><strong>Pôle Expertise :</strong> @e.Nom_Pole_Expertise</p>
+                            }
+
+                            <p><strong>Prix d'achat :</strong> @e.Prix_Achat €</p>
+                            <p><strong>Date d'acquisition :</strong> @e.Date_Acquisition.ToShortDateString()</p>
+                            <p><strong>Disponibilité :</strong> @(e.Disponibilite ? "Oui" : "Non")</p>
+
+                            @if (e.MotsCles?.Any() == true)
+                            {
+                                <p><strong>Mots-clés :</strong></p>
+                                <div class="tag-list">
+                                    @foreach (var mc in e.MotsCles)
+                                    {
+                                        <span class="tag">@mc</span>
+                                    }
+                                </div>
+                            }
+
+                            @if (e.Thematiques?.Any() == true)
+                            {
+                                <p><strong>Thématiques :</strong></p>
+                                <div class="tag-list">
+                                    @foreach (var th in e.Thematiques)
+                                    {
+                                        <span class="tag">@th</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
-    }
+        }
 
-    <!-- Section Laboratoires -->
-    @if (Result.Laboratoires?.Any() == true)
-    {
-        <div class="results-section">
-            <h4 class="sep">Laboratoires</h4>
-            <div class="results-container">
-                @foreach (var l in Result.Laboratoires)
-                {
-                    <div @onclick="@(() => VoirDetailLabo(l.Nom_Court))" class="equipement-card">
-                        <h4>@l.Nom_Long (@l.Nom_Court)</h4>
-                        <p><strong>Ville :</strong> @l.Ville</p>
-                        <p><strong>Pays :</strong> @l.Pays</p>
-                    </div>
-                }
+        <!-- Section Pôles Expertise -->
+        @if (Result.PolesExpertise?.Any() == true)
+        {
+            <div class="results-section">
+                <h4 class="sep">Pôles Expertise</h4>
+                <div class="results-container">
+                    @foreach (var p in Result.PolesExpertise)
+                    {
+                        <div @onclick="@(() => VoirDetailPoleExpertise(p.Id_Pole_Expertise))" class="equipement-card">
+                            <h4>@p.Nom_Pole_Expertise</h4>
+                            <p>@p.Description</p>
+
+                            @if (p.MotsCles?.Any() == true)
+                            {
+                                <p><strong>Mots-clés :</strong></p>
+                                <div class="tag-list">
+                                    @foreach (var mc in p.MotsCles)
+                                    {
+                                        <span class="tag">@mc</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
-    }
+        }
 
-    <!-- Section Domaines d’Excellence -->
-    @if (Result.DomainesExcellence?.Any() == true)
-    {
-        <div class="results-section">
-            <h4 class="sep">Domaines d’Excellence</h4>
-            <div class="results-container">
-                @foreach (var d in Result.DomainesExcellence)
-                {
-                    <div @onclick="@(() => VoirDetailDomaine(d.Id_Domaine_Excellence))" class="equipement-card">
-                        <h4>@d.Intitule_Domaine_Excellence</h4>
-                        <p>@d.Description_Domaine_Excellence</p>
-                    </div>
-                }
+        <!-- Section Prestations -->
+        @if (Result.Prestations?.Any() == true)
+        {
+            <div class="results-section">
+                <h4 class="sep">Prestations</h4>
+                <div class="results-container">
+                    @foreach (var pr in Result.Prestations)
+                    {
+                        <div @onclick="@(() => VoirDetailPrestation(pr.Id_Prestation))" class="equipement-card">
+                            <h4>@pr.Intitule_Prestation</h4>
+                            <p>@pr.Description_Prestation</p>
+
+                            @if (pr.MotsCles?.Any() == true)
+                            {
+                                <p><strong>Mots-clés :</strong></p>
+                                <div class="tag-list">
+                                    @foreach (var mc in pr.MotsCles)
+                                    {
+                                        <span class="tag">@mc</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
-    }
-}
+        }
 
+        <!-- Section Laboratoires -->
+        @if (Result.Laboratoires?.Any() == true)
+        {
+            <div class="results-section">
+                <h4 class="sep">Laboratoires</h4>
+                <div class="results-container">
+                    @foreach (var l in Result.Laboratoires)
+                    {
+                        <div @onclick="@(() => VoirDetailLabo(l.Nom_Court))" class="equipement-card">
+                            <h4>@l.Nom_Long (@l.Nom_Court)</h4>
+                            <p><strong>Ville :</strong> @l.Ville</p>
+                            <p><strong>Pays :</strong> @l.Pays</p>
+
+                            @if (l.MotsCles?.Any() == true)
+                            {
+                                <p><strong>Mots-clés :</strong></p>
+                                <div class="tag-list">
+                                    @foreach (var mc in l.MotsCles)
+                                    {
+                                        <span class="tag">@mc</span>
+                                    }
+                                </div>
+                            }
+
+                            @if (l.Thematiques?.Any() == true)
+                            {
+                                <p><strong>Thématiques :</strong></p>
+                                <div class="tag-list">
+                                    @foreach (var th in l.Thematiques)
+                                    {
+                                        <span class="tag">@th</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Section Domaines d’Excellence -->
+        @if (Result.DomainesExcellence?.Any() == true)
+        {
+            <div class="results-section">
+                <h4 class="sep">Domaines d’Excellence</h4>
+                <div class="results-container">
+                    @foreach (var d in Result.DomainesExcellence)
+                    {
+                        <div @onclick="@(() => VoirDetailDomaine(d.Id_Domaine_Excellence))" class="equipement-card">
+                            <h4>@d.Intitule_Domaine_Excellence</h4>
+                            <p>@d.Description_Domaine_Excellence</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</body>
 @code {
     [Parameter] public string mode { get; set; }
     [Parameter] public string query { get; set; }
