@@ -117,5 +117,13 @@ namespace USMB_TECH.Models.Repository
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Pole_Expertise>> SearchAsync(Expression<Func<Pole_Expertise, bool>> predicate)
+        {
+            return await _context.Pole_Expertises
+                .Where(predicate)
+                .ToListAsync();
+        }
+
     }
 }
