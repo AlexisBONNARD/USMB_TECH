@@ -33,6 +33,10 @@ namespace USMB_TECH.Models.Repository
                 .Include(p => p.Equipements)
                     .ThenInclude(e => e.Photos)
                 .Include(Do => Do.Domaine_ExcellenceNavigation)
+                .Include(d => d.Presenters)
+                    .ThenInclude(pre => pre.PrestationNavigation)
+                        .ThenInclude(ph => ph.Photos)
+
                 .FirstOrDefaultAsync(p => p.Id_Pole_Expertise == id);
 
         }
