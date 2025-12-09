@@ -1,0 +1,89 @@
+﻿@page "/contact/{contactId:int}"
+@inject IMainService<Contact_USMB,int> ContactService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+
+<HeadContent>
+    <link href="css/PageDetail.css" rel="stylesheet" />
+</HeadContent>
+
+<PageTitle>Détails Contact</PageTitle>
+
+@if (contact == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+        <!-- ========= COLONNE GAUCHE ========= -->
+        <div class="col-left">
+            <section>
+                <h2>Contact : @contact.Prenom_Contact</h2>
+                <p>Nom : @contact.Nom_Contact </p>
+                <p>Prenom : @contact.Prenom_Contact</p>
+            </section>
+
+            <section>
+                <h3>PRIX</h3>
+                <ul class="list-style">
+                    <p>Revient : @contact.Mail €</p>
+                    <p>Vente : @contact.LaboratoireNavigation €</p>
+                </ul>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE CENTRALE ========= -->
+        <div class="col-center">
+            <section>
+                <h3>NOS POLES D'EXPERTISE</h3>
+
+                <div class="center-grid">
+                    @if (contact.LaboratoireNavigation != null)
+                    {
+                        <div class="center-item" @onclick="@(() => RetourListeStr(contact.LaboratoireNavigation.Nom_Court, "laboratoire"))">
+                            <div class="banner-photo">
+                                <Carousel Photos="@contact.LaboratoireNavigation.Photos" />
+                            </div>
+                            <p>@contact.LaboratoireNavigation.Nom_Court</p>
+                            <p>@contact.LaboratoireNavigation.Nom_Long</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>pas de Laboratoire</p>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <!-- ========= COLONNE DROITE ========= -->
+        <div class="col-right">
+
+            @* <div class="info-block">
+                <h4>Localisation :</h4>
+                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
+            </div> *@
+
+            <FormulaireContact />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int contactId { get; set; }
+    private Contact_USMB? contact;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contact = await ContactService.GetByIdAsync(contactId);
+    }
+
+    private void RetourListeStr(string idEquipement, string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
+    }
+}
+
