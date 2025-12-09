@@ -3,6 +3,12 @@
 @inject IJSRuntime JS
 @inject IMainService<Prestation, int> prestationService
 @inject IMainService<Contact_USMB, int> contactService
+@inject IMainService<Domaine_Excellence, int> domaineService
+@inject IMainService<Type_Prestation, int> typeService
+@inject IMainService<Unite_Oeuvre, int> uniteService
+@inject IMainService<Mot_Clef, int> motService
+@inject IMainService<Laboratoire, string> laboratoireService
+@inject IMainService<Pole_Expertise, int> poleService
 
 
 <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
@@ -21,13 +27,106 @@
     Peut se réaliser chez le client : 
     <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client"/>
 
-    <InputSelect @bind-Value="prestation.Id_Contact">
+    Contact à associer : 
+    <InputSelect @bind-Value="prestation.Nom_Contact">
         <option value="">...</option>
         @foreach (var contact in contacts)
         {
             <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
         }
     </InputSelect>
+
+    Domaine d'excellence :
+    <InputSelect @bind-Value="prestation.Nom_Domaine">
+        <option value="">...</option>
+        @foreach (var domaine in domaines)
+        {
+            <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
+        }
+    </InputSelect>
+
+    Type de prestation :
+    <InputSelect @bind-Value="prestation.Type">
+        <option value="">...</option>
+        @foreach (var type in types)
+        {
+            <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
+        }
+    </InputSelect>
+
+    Unite d'oeuvre :
+    <InputSelect @bind-Value="prestation.Unite">
+        <option value="">...</option>
+        @foreach(var unite in unites)
+        {
+            <option value="@unite.Nom_Unite_Oeuvre">@unite.Nom_Unite_Oeuvre</option>
+        }
+    </InputSelect>
+
+    Laboratoire :
+    <InputSelect @bind-Value="prestation.Nom_Court">
+        <option value="">...</option>
+        @foreach (var laboratoire in laboratoires)
+        {
+            <option value="@laboratoire.Nom_Court">@laboratoire.Nom_Long</option>
+        }
+    </InputSelect>
+
+    Pôle Expertise : 
+    <InputSelect @bind-Value="PoleExpertise">
+        <option value="">...</option>
+        @foreach (var pole in existingpoles)
+        {
+            <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
+        }
+    </InputSelect>
+
+    @if (!string.IsNullOrWhiteSpace(PoleExpertise))
+    {
+    <button type="button" @onclick="AddPole">Ajouter Pole</button>
+    }
+    <ul>
+        @foreach (var mc in prestation.Poles)
+        {
+            <li>
+                @mc
+                <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(mc)">Supprimer</button>
+            </li>
+        }
+    </ul>
+
+    Mots-clés :
+    <InputSelect @bind-Value="motCle">
+        <option value="">...</option>
+        @foreach (var motcle in existingMots)
+        {
+            <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+        }
+        <option value="ajouter"> Ajouter un nouveau mot-clé</option>
+    </InputSelect>
+    @if (motCle == "ajouter")
+    {
+        <hr />
+        <h4>Ajouter un mot-clé</h4>
+        <form @onsubmit="AddMot_Clef">
+            <input @bind="NewMotCle"
+                   placeholder="Nouveau Mot-clé" />
+            <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
+        </form>
+    }
+    else if (!string.IsNullOrWhiteSpace(motCle))
+    {
+        <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+    }
+    <ul>
+        @foreach(var mc in prestation.Mots_Clefs)
+        {
+            <li>
+                @mc
+                <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+            </li>
+        }
+    </ul>
 
     <input type="submit" value="Ajouter">
 </EditForm>
@@ -41,7 +140,18 @@
 @code {
     Prestation prestation = new Prestation();
     List<Contact_USMB> contacts = new List<Contact_USMB>();
+    List<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
+    List<Type_Prestation> types = new List<Type_Prestation>();
+    List<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
+    List<Laboratoire> laboratoires = new List<Laboratoire>();
 
+    private IEnumerable<Pole_Expertise> existingpoles = new List<Pole_Expertise>();
+    private IEnumerable<Mot_Clef> existingMots = new List<Mot_Clef>();
+
+    string motCle;
+    string NewMotCle;
+
+    string PoleExpertise;
 
     bool isSubmitted = false;
     string message = "";
@@ -49,6 +159,12 @@
     protected override async Task OnInitializedAsync()
     {
         contacts = (await contactService.GetAllAsync()).ToList();
+        domaines = (await domaineService.GetAllAsync()).ToList();
+        types = (await typeService.GetAllAsync()).ToList();
+        unites = (await uniteService.GetAllAsync()).ToList();
+        existingMots = (await motService.GetAllAsync()).ToList();
+        laboratoires = (await laboratoireService.GetAllAsync()).ToList();
+        existingpoles = (await poleService.GetAllAsync()).ToList();
     }
     private async Task HandleValidSubmit()
     {
@@ -63,7 +179,35 @@
             message = "Une erreur est survenue lors de l'ajout de la prestation.";
             await JS.InvokeVoidAsync("console.log", ex.Message);
         }
-        
-        
+    }
+
+    private void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(NewMotCle))
+        {
+            prestation.Mots_Clefs.Add(NewMotCle);
+            NewMotCle = "";
+            motCle = "";
+        }
+        else if (string.IsNullOrWhiteSpace(NewMotCle) && motCle != "ajouter")
+        {
+            if (!prestation.Mots_Clefs.Contains(motCle))
+            {
+                prestation.Mots_Clefs.Add(motCle);
+            }
+            motCle = "";
+        }
+    }
+    private void AddPole()
+    {
+        PoleExpertise = "";
+    }
+    private void RemovePole(string pole)
+    {
+        prestation.Poles.Remove(pole);
+    }
+    private void RemoveMotCle(string mc)
+    {
+        prestation.Mots_Clefs.Remove(mc);
     }
 }

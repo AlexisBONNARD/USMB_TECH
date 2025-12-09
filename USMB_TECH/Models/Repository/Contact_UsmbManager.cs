@@ -13,7 +13,7 @@ namespace USMB_TECH.Models.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Contact_USMB>> GetAllAsync() 
+        public async Task<IEnumerable<Contact_USMB>> GetAllAsync()
         {
             return await _context.Contact_USMBs.ToListAsync();
         }
@@ -23,20 +23,37 @@ namespace USMB_TECH.Models.Repository
             return await _context.Contact_USMBs.FindAsync(id);
         }
 
-        public async Task AddAsync(Contact_USMB entity) 
+        public async Task AddAsync(Contact_USMB entity)
         {
+            if (entity.FonctionNavigation is not null)
+            {
+                var fonction = await _context.Fonctions.FirstOrDefaultAsync(c => c.Nom_Fonction == entity.FonctionNavigation.Nom_Fonction);
+
+                if (fonction is null)
+                {
+                    fonction = new Fonction
+                    {
+                        Nom_Fonction = entity.FonctionNavigation.Nom_Fonction
+                    };
+                    await _context.Fonctions.AddAsync(fonction);
+                    await _context.SaveChangesAsync();
+                }
+                entity.Id_Fonction = fonction.Id_Fonction;
+                entity.FonctionNavigation = fonction;
+
+            }
             await _context.Contact_USMBs.AddAsync(entity);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Contact_USMB entityToUpdate, Contact_USMB entity) 
+        public async Task UpdateAsync(Contact_USMB entityToUpdate, Contact_USMB entity)
         {
             _context.Contact_USMBs.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Contact_USMB entity) 
+        public async Task DeleteAsync(Contact_USMB entity)
         {
             _context.Contact_USMBs.Remove(entity);
             await _context.SaveChangesAsync();

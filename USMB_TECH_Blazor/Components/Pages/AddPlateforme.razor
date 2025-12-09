@@ -265,7 +265,10 @@
 
         message = null;         // efface le message
         StateHasChanged();      // met à jour
-        Navigation.NavigateTo($"/pole_expertise/{pole_expertise.Id_Pole_Expertise}");
+        if (isSubmitted)
+        {
+            Navigation.NavigateTo($"/pole_expertise/{pole_expertise.Id_Pole_Expertise}");
+        }
     }
     void RemoveMotCle(Mot_Clef mc)
     {
