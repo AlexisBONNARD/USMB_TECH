@@ -56,7 +56,7 @@ namespace USMB_TECH.Models.Repository
                     estlieFinal.Add(new Est_Lier
                     {
                         ThematiqueNavigation = thematique,
-                        Nom_Court = entity.Nom_Court,
+                        Nom_Court = entity.Nom_Court
                     });
                 }
                 entity.Est_Liers = estlieFinal;
