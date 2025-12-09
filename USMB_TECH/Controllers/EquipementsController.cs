@@ -116,5 +116,6 @@ namespace USMB_TECH.Controllers
 
             return Ok(new { url = $"/uploads/{file.FileName}" });
         }
+
     }
 }

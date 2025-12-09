@@ -62,7 +62,6 @@
              @onclick="() => message = null">
             @((MarkupString)message)
         </div>
-
     }
 </div>
 
@@ -71,10 +70,9 @@
     private bool isSuccess = false;
     private bool isMultipleErrors = false;
 
-
     private Prise_Contact prise_contact = new()
     {
-        Id_Type_Client = 1 // client par défaut
+        Id_Type_Client = 1
     };
 
     private List<Pole_Expertise> pole_expertises = new();
@@ -87,13 +85,37 @@
 
         equipements = (await EquipementService.GetAllAsync())
             .Where(x => x != null).ToList()!;
+
+        AutoFillFromUrl();
+    }
+
+    private void AutoFillFromUrl()
+    {
+        var relative = Navigation.ToBaseRelativePath(Navigation.Uri);
+        var segments = relative.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].Equals("pole_expertise", StringComparison.OrdinalIgnoreCase)
+                && i + 1 < segments.Length
+                && int.TryParse(segments[i + 1], out int idPole))
+            {
+                prise_contact.Id_Pole_Expertise = idPole;
+            }
+
+            if (segments[i].Equals("equipement", StringComparison.OrdinalIgnoreCase)
+                && i + 1 < segments.Length
+                && int.TryParse(segments[i + 1], out int idEquip))
+            {
+                prise_contact.Id_Equipement = idEquip;
+            }
+        }
     }
 
     private async Task HandleSubmit()
     {
         List<string> erreurs = new();
 
-        // ---- VALIDATION DES CHAMPS ----
         if (string.IsNullOrWhiteSpace(prise_contact.Nom_Contact))
             erreurs.Add("Veuillez renseigner votre nom.");
 
@@ -109,19 +131,17 @@
         if (string.IsNullOrWhiteSpace(prise_contact.Description_besoins))
             erreurs.Add("Veuillez décrire votre besoin.");
 
-        // règle equipement/pôle
         if (prise_contact.Id_Equipement == null && prise_contact.Id_Pole_Expertise == null)
             erreurs.Add("Vous devez sélectionner un équipement ou un pôle d'expertise.");
 
         if (prise_contact.Id_Equipement != null && prise_contact.Id_Pole_Expertise != null)
             erreurs.Add("Sélectionnez uniquement un équipement OU un pôle d'expertise.");
 
-        // ---- SI ERREURS : les afficher toutes ----
         if (erreurs.Count > 0)
         {
             string messageErreur =
                 erreurs.Count == 1
-                ? erreurs[0] // 1 seule erreur → message simple
+                ? erreurs[0]
                 : "<b>Veuillez corriger les erreurs suivantes :</b><br><ul>" +
                   string.Join("", erreurs.Select(e => $"<li>{e}</li>")) +
                   "</ul>";
@@ -131,7 +151,6 @@
             return;
         }
 
-        // ---- SI TOUT EST OK ----
         try
         {
             await Prise_ContactService.AddAsync(prise_contact);
@@ -146,9 +165,6 @@
         }
     }
 
-
-    // ============= ALERTES AVEC AUTO-DISPARITION ===================
-
     private async Task ShowAlert(string msg, bool success)
     {
         message = msg;
@@ -156,7 +172,7 @@
 
         StateHasChanged();
 
-        await Task.Delay(5000); // 5 secondes
+        await Task.Delay(5000);
 
         message = null;
         isMultipleErrors = false;

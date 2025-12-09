@@ -37,6 +37,28 @@ namespace USMB_TECH.Mapper
             }).ToList()))
             .ForMember(dest => dest.Id_Adresse_Labo, opt => opt.Ignore())
             .ForMember(dest => dest.Id_Adresse_Campus, opt => opt.Ignore());
+
+            CreateMap<Laboratoire, LaboratoirePreviewDTO>()
+            .ForMember(dest => dest.Nom_Court, opt => opt.MapFrom(src => src.Nom_Court))
+            .ForMember(dest => dest.Nom_Long, opt => opt.MapFrom(src => src.Nom_Long))
+            .ForMember(dest => dest.Ville, opt => opt.MapFrom(src => src.Adresse_laboNavigation != null ? src.Adresse_laboNavigation.Ville_Adresse : null))
+            .ForMember(dest => dest.Pays, opt => opt.MapFrom(src => src.Adresse_laboNavigation != null ? src.Adresse_laboNavigation.Pays_Adresse : null))
+            .ForMember(dest => dest.MotsCles, opt => opt.MapFrom(src =>
+                src.Designers != null
+                    ? src.Designers
+                        .Where(d => d.Mot_ClefNavigation != null)
+                        .Select(d => d.Mot_ClefNavigation.Nom_Mot_Clef)
+                        .Distinct()
+                        .ToList()
+                    : new List<string>()))
+            .ForMember(dest => dest.Thematiques, opt => opt.MapFrom(src =>
+                src.Est_Liers != null
+                    ? src.Est_Liers
+                        .Where(t => t.ThematiqueNavigation != null)
+                        .Select(t => t.ThematiqueNavigation.Nom_Thematique)
+                        .Distinct()
+                        .ToList()
+                    : new List<string>()));
         }
     }
 }

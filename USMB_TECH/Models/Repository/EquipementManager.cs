@@ -47,7 +47,7 @@ namespace USMB_TECH.Models.Repository
                 .Include(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
-                    .ThenInclude(m => m.MarqueNavigation)   
+                    .ThenInclude(m => m.MarqueNavigation)
                 .Include(e => e.Type_EquipementNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
@@ -114,18 +114,18 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Type_Equipement = type.Id_Type_Equipement;
                 entity.Type_EquipementNavigation = type;
             }
-            if(entity.ModeleNavigation.MarqueNavigation is not null) 
+            if (entity.ModeleNavigation.MarqueNavigation is not null)
             {
                 var marqueName = entity.ModeleNavigation.MarqueNavigation.Nom_Marque;
                 var existingMarque = await _context.Marques
                     .FirstOrDefaultAsync(m => m.Nom_Marque == marqueName);
 
-                if(existingMarque is not null) 
+                if (existingMarque is not null)
                 {
                     entity.ModeleNavigation.Id_Marque = existingMarque.Id_Marque;
                     entity.ModeleNavigation.MarqueNavigation = existingMarque;
                 }
-                else 
+                else
                 {
                     var newMarque = new Marque
                     {
@@ -261,5 +261,18 @@ namespace USMB_TECH.Models.Repository
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Equipement>> SearchAsync(Expression<Func<Equipement, bool>> predicate)
+        {
+            return await _context.Equipements
+                .Include(e => e.Pole_ExpertiseNavigation)
+                    .ThenInclude(p => p.Specifiers)
+                        .ThenInclude(s => s.Mot_ClefNavigation)
+                .Include(e => e.Exposers)
+                    .ThenInclude(t => t.ThematiqueNavigation)
+                .Where(predicate)
+                .ToListAsync();
+        }
+
     }
 }

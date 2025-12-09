@@ -1,0 +1,60 @@
+﻿@page "/contact"
+@inject IMainService<Contact_USMB,int> ContactService
+@inject NavigationManager Navigation
+
+<h1>Liste des contacts</h1>
+
+@if (contacts is null)
+{
+    <p>Chargement...</p>
+}
+else if (!contacts.Any())
+{
+    <p>Aucune prise de contact trouvée.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Mail</th>
+                <th>Num_Securite_Social</th>
+                <th>Détails</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var contact in contacts)
+            {
+                <tr>
+                    <td>@contact.Nom_Contact</td>
+                    <td>@contact.Prenom_Contact</td>
+                    <td>@contact.Mail</td>
+                    <td>@contact.Num_Securite_Social</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Nom_Court, "contact"))">
+                            Voir
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Contact_USMB> contacts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        contacts = (await ContactService.GetAllAsync())
+            .Where(x => x != null).ToList()!;
+    }
+
+    private void RetourListe(string id, string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+}

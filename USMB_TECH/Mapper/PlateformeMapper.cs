@@ -1,6 +1,8 @@
 using AutoMapper;
 using USMB_TECH.DTO;
 using USMB_TECH.Models;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace USMB_TECH.Mapper
 {
@@ -76,7 +78,7 @@ namespace USMB_TECH.Mapper
                 Id_Modele = e.Id_Modele,
                 Id_Type_Equipement = e.Id_Type_Equipement,
                 Nom_Equipement = e.Nom_Equipement,
-                Num_Immobilisation = e.Num_Immobilisation,   //obligatoire
+                Num_Immobilisation = e.Num_Immobilisation,
                 Date_Acquisition = e.Date_Acquisition,
                 Prix_Achat = e.Prix_Achat,
                 Prix_Revient = e.Prix_Revient,
@@ -95,6 +97,26 @@ namespace USMB_TECH.Mapper
             }).ToList();
 
             return pole_expertise;
+        }
+    }
+
+    //  Nouveau Profile AutoMapper pour PoleExpertisePreviewDTO
+    public class PoleExpertiseProfile : Profile
+    {
+        public PoleExpertiseProfile()
+        {
+            CreateMap<Pole_Expertise, PoleExpertisePreviewDTO>()
+                .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.MapFrom(src => src.Id_Pole_Expertise))
+                .ForMember(dest => dest.Nom_Pole_Expertise, opt => opt.MapFrom(src => src.Nom_Pole_Expertise))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description_Pole_Expertise))
+                .ForMember(dest => dest.MotsCles, opt => opt.MapFrom(src =>
+                    src.Specifiers != null
+                        ? src.Specifiers
+                            .Where(s => s.Mot_ClefNavigation != null)
+                            .Select(s => s.Mot_ClefNavigation.Nom_Mot_Clef)
+                            .Distinct()
+                            .ToList()
+                        : new List<string>()));
         }
     }
 }
