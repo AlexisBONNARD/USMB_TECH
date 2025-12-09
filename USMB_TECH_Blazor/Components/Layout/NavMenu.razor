@@ -5,6 +5,7 @@
 @inject IMainService<Prestation,int> PrestationService
 @inject IMainService<Laboratoire,string> LaboratoireService
 @inject IMainService<Prise_Contact, int> Prise_ContactService
+@inject IMainService<Contact_USMB, int> ContactService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -106,8 +107,14 @@
         <div class="nav-link dropdown"
              @onclick="@(() => RetourListe("prise_contact"))"
              style="cursor:pointer;">
-
             <span class="dropdown-toggle">PRISE_CONTACT</span>
+        </div>
+
+        <!-- Dropdown NOS CONTACTS -->
+        <div class="nav-link dropdown"
+             @onclick="@(() => RetourListe("contact"))"
+             style="cursor:pointer;">
+            <span class="dropdown-toggle">CONTACT</span>
         </div>
     </div>
 
