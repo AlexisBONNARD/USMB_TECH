@@ -101,14 +101,14 @@
 
 
         <hr />
-        <h4 class="add_equipement">Pôle d'expertise' *</h4>
+        <h4 class="add_equipement">Pôle d'expertise *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
             <option value="">...</option>
             @foreach (var pole_expertise in pole_expertises)
             {
                 <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
             }
-            <option value="ajouter" class="alert-info">----- Créer une pole_expertise -----</option>
+            <option value="ajouter" class="alert-info">----- Créer une pole d'expertise -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Nom_Pole_Expertise)" />
 
@@ -116,7 +116,7 @@
         <div id="modalPole_Expertise" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" @onclick="CloseModal">&times;</span>
-                <AddPole_Expertise OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" />
+                <AddPlateforme OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" />
             </div>
         </div>
 
@@ -248,7 +248,7 @@
         System.Diagnostics.Debug.WriteLine($"Changement détecté : {selected}");
 
         // Affiche côté navigateur (console F12)
-        JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {selected}");
+        JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur 2 : {selected}");
 
         if (selected == "ajouter")
         {
@@ -259,12 +259,12 @@
 
     private void OpenModal()
     {
-        JS.InvokeVoidAsync("openModal");
+        JS.InvokeVoidAsync("openModalPole_expertise");
     }
 
     private void CloseModal()
     {
-        JS.InvokeVoidAsync("closeModal");
+        JS.InvokeVoidAsync("closeModalPole_expertise");
     }
 
     // Callback qui sera appelé lorsque la pole_expertise est ajoutée
@@ -339,7 +339,10 @@
 
         message = null;         // efface le message
         StateHasChanged();      // met à jour
-        Navigation.NavigateTo($"/equipement/{addEquipement.Id_Equipement}");
+        if (isSubmitted)
+        {
+            Navigation.NavigateTo($"/equipement/{addEquipement.Id_Equipement}");
+        }
     }
     private void pole_expertiseRotation(string SelectedPole_Expertise)
     {

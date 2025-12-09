@@ -15,6 +15,12 @@ namespace USMB_TECH_Blazor.Models
 
         public string Nom_Court { get; set; }
 
+        public string Nom_Domaine { get; set; }
+
+        public string Type { get; set; }
+
+        public string Unite { get; set; }
+
         public int Id_Contact { get; set; }
 
         public string Nom_Contact  { get; set; }
@@ -29,7 +35,11 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Peux_Ce_Realiser_Chez_Le_Client { get; set; }
 
-        public bool Actif { get; set; }
+        public bool Actif { get; set; } = true;
+
+        public List<string> Mots_Clefs { get; set; } = new List<string>();
+
+        public List<string> Poles { get; set; } = new List<string>();
 
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
