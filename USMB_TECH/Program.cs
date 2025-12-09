@@ -23,6 +23,7 @@ builder.Services.AddScoped<IMainRepository<Type_Equipement, int>, Type_Equipemen
 builder.Services.AddScoped<IMainRepository<Marque, int>, MarqueManager>();
 builder.Services.AddScoped<IMainRepository<Domaine_Excellence, int>, Domaine_ExcellenceManager>();
 builder.Services.AddScoped<IMainRepository<Mot_Clef, int>, MotClefManager>();
+builder.Services.AddScoped<IMainRepository<Fonction, int>, FonctionManager>();
 
 builder.Services.AddScoped<EquipementManager>();
 builder.Services.AddScoped<LaboratoireManager>();

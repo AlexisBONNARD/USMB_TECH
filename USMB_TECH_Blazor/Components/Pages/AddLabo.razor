@@ -7,7 +7,7 @@
 @inject HttpClient Http
 
 <HeadContent>
-    <li class="add_labo" nk href="css/addPlateforms.css" rel="stylesheet" />
+    <li class="add_labo" nk href="css/addLabo.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -170,6 +170,8 @@
 </div>
 @code {
     Laboratoire labo = new Laboratoire();
+    [Parameter] public EventCallback<Laboratoire> OnLaboratoireAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
 
     private IEnumerable<Mot_Clef> existingMot = new List<Mot_Clef>();
     private IEnumerable<Thematique> existingThematique = new List<Thematique>();
@@ -203,6 +205,9 @@
             await laboService.AddAsync(labo);
 
             isSubmitted = true;
+
+            OnLaboratoireAdded.InvokeAsync(labo);
+
             ShowAlert("Laboratoire ajouté avec succès !");
         }
         catch (Exception ex)
@@ -229,7 +234,7 @@
 
         message = null;         // efface le message
         StateHasChanged();      // met à jour
-        if (isSubmitted)
+        if (isSubmitted && EnableRedirect)
         {
             Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
         }

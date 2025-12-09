@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-
+using USMB_TECH.Models;
 using USMB_TECH_Blazor;
 using USMB_TECH_Blazor.Components;
 using USMB_TECH_Blazor.Models;
@@ -22,7 +22,8 @@ builder.Services.AddScoped<IMainService<Type_Equipement, int>>(eq => new WebServ
 builder.Services.AddScoped<IMainService<Marque, int>>(eq => new WebService<Marque, int>("Marques")); 
 builder.Services.AddScoped<IMainService<Domaine_Excellence, int>>(eq => new WebService<Domaine_Excellence, int>("Domaine_Excellences"));
 builder.Services.AddScoped<IMainService<Mot_Clef, int>>(eq => new WebService<Mot_Clef, int>("Mot_Clefs"));
-builder.Services.AddScoped<IMainService<Contact_USMB, int>>(eq => new WebService<Contact_USMB, int>("Contact_USMB"));
+builder.Services.AddScoped<IMainService<Contact_USMB, string>>(eq => new WebService<Contact_USMB, string>("Contact_USMB"));
+builder.Services.AddScoped<IMainService<Fonction, int>>(eq => new WebService<Fonction, int>("Fonction"));
 
 //builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
 builder.Services.AddScoped(sp => new HttpClient

@@ -1,94 +1,93 @@
-﻿using AutoMapper;
+﻿using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
-using USMB_TECH.DTO;
-using USMB_TECH.Mapper;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
+using AutoMapper;
+using USMB_TECH.DTO;
 
 namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Contact_USMBController(IMainRepository<Contact_USMB, int> dataRepository, IMapper mapper) : ControllerBase
+    public class FonctionController(IMainRepository<Fonction, int> dataRepository, IMapper mapper) : ControllerBase
     {
-        private readonly IMainRepository<Contact_USMB, int> _dataRepository = dataRepository;
-
+        private readonly IMainRepository<Fonction, int> _dataRepository = dataRepository;
         private readonly IMapper _mapper = mapper;
 
-        // GET: api/Contact_USMBs
+        // GET: api/Fonctions
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Contact_USMB>>> GetContact_USMBs()
+        public async Task<ActionResult<IEnumerable<Fonction>>> GetFonctions()
         {
-            var contact_USMB = await _dataRepository.GetAllAsync();
-            return Ok(contact_USMB);
+            var Fonctions = await _dataRepository.GetAllAsync();
+            return Ok(Fonctions);
         }
 
-        // GET: api/Contact_USMBs/{id}
+        // GET: api/Fonctions/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Contact_USMB>> GetContact_USMB(int id)
+        public async Task<ActionResult<Fonction>> GetFonction(int id)
         {
-            var contact_USMB = await _dataRepository.GetByIdAsync(id);
-            return contact_USMB is null ? NotFound() : Ok(contact_USMB);
+            var Fonction = await _dataRepository.GetByIdAsync(id);
+            return Fonction is null ? NotFound() : Ok(Fonction);
         }
 
-        // PUT: api/Contact_USMBs/{id}
+        // PUT: api/Fonctions/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutContact_USMB(int id, Contact_USMB contact_USMB)
+        public async Task<IActionResult> PutFonction(int id, Fonction Fonction)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != contact_USMB.Id_Contact)
+            if (id != Fonction.Id_Fonction)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
                 return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, contact_USMB);
+            await _dataRepository.UpdateAsync(existing, Fonction);
             return NoContent();
         }
 
-        // POST: api/Contact_USMBs
+        // POST: api/Fonctions
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Contact_USMB>> PostContact_USMB(AddContactDTO contact_USMB)
+        public async Task<ActionResult<Fonction>> PostFonction(Fonction type)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var contact = _mapper.Map<Contact_USMB>(contact_USMB);
-            await _dataRepository.AddAsync(contact);
-            return CreatedAtAction(nameof(GetContact_USMB), new { id = contact.Id_Contact }, contact);
+            await _dataRepository.AddAsync(type);
+            return CreatedAtAction(nameof(GetFonction), new { id = type.Id_Fonction }, type);
         }
 
-        // DELETE: api/Contact_USMBs/{id}
+        // DELETE: api/Fonctions/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteContact_USMB(int id)
+        public async Task<IActionResult> DeleteFonction(int id)
         {
-            var contact_USMB = await _dataRepository.GetByIdAsync(id);
-            if (contact_USMB is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+            var Fonction = await _dataRepository.GetByIdAsync(id);
+            if (Fonction is null)
+                return NotFound($"La fonction avec l'id {id} est introuvable.");
 
-            await _dataRepository.DeleteAsync(contact_USMB);
+            await _dataRepository.DeleteAsync(Fonction);
             return NoContent();
         }
     }
