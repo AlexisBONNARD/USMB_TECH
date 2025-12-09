@@ -106,3 +106,16 @@
     margin-bottom: 20px;
     grid-column: 1 / -1; /* si jamais le titre était inclus dans la grille */
 }
+
+.sep{
+margin-top: 30px; /* espace avant le titre */
+margin-bottom: 15px; /* espace après le titre */
+padding-bottom: 8px; /* petit espace sous le texte */
+border-bottom: 2px solid #ccc; /* ligne séparatrice */
+font-size: 1.4em; /* taille un peu plus grande */
+color: #2c3e50; /* couleur sobre et lisible */
+font-weight: bold; /* mettre en valeur */
+}
+
+.results-section {
+    margin-bottom: 40px;

@@ -70,5 +70,10 @@ namespace USMB_TECH.Models.Repository
                 .Where(p => EF.Property<TProperty>(p, propertyName).Equals(value))
                 .ToListAsync();
         }
+
+        public Task<IEnumerable<Prise_Contact>> SearchAsync(Expression<Func<Prise_Contact, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

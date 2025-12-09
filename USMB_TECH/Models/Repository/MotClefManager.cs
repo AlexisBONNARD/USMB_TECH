@@ -51,5 +51,10 @@ namespace USMB_TECH.Models.Repository
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
         }
+
+        public Task<IEnumerable<Mot_Clef>> SearchAsync(Expression<Func<Mot_Clef, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

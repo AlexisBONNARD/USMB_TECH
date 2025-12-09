@@ -162,5 +162,17 @@ namespace USMB_TECH.Models.Repository
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Laboratoire>> SearchAsync(Expression<Func<Laboratoire, bool>> predicate)
+        {
+            return await _context.Laboratoires
+                 .Include(d => d.Designers)
+                    .ThenInclude(m => m.Mot_ClefNavigation)
+                 .Include(el => el.Est_Liers)
+                    .ThenInclude(t => t.ThematiqueNavigation)
+                .Where(predicate)
+                .ToListAsync();
+        }
+
     }
 }

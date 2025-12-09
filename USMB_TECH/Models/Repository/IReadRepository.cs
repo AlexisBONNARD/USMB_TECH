@@ -10,5 +10,8 @@ namespace USMB_TECH.Models.Repository
         Task<IEnumerable<TEntity>> GetByKeysAsync<TProperty>(
             Expression<Func<TEntity, TProperty>> propertySelector,
             TProperty value);
+
+        Task<IEnumerable<TEntity>> SearchAsync(
+            Expression<Func<TEntity, bool>> predicate);
     }
 }
