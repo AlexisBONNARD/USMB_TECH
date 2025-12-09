@@ -50,18 +50,6 @@ else
                             <h4>@pole.Nom_Pole_Expertise</h4>
                             <p>@pole.Description_Pole_Expertise</p>
                         </div>
-                        @if (pole.Specifiers != null && pole.Specifiers.Any())
-                        {
-                            <div class="mot-clefs">
-                                <strong>Mots-clés :</strong>
-                                <ul>
-                                    @foreach (var spec in pole.Specifiers)
-                                    {
-                                        <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
-                                    }
-                                </ul>
-                            </div>
-                        }
                     </div>
                 }
             </div>
@@ -85,18 +73,6 @@ else
                                     <p><strong>Prix :</strong> @prestation.Prix_Vente €</p>
                                     <p><strong>Réalisation chez client :</strong> @(prestation.Peux_Ce_Realiser_Chez_Le_Client ? "Oui" : "Non")</p>
                                 </div>
-                                @if (prestation.Precisers != null && prestation.Precisers.Any())
-                                {
-                                    <div class="mot-clefs">
-                                        <strong>Mots-clés :</strong>
-                                        <ul>
-                                            @foreach (var spec in prestation.Precisers)
-                                            {
-                                                <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
-                                            }
-                                        </ul>
-                                    </div>
-                                }
                             </div>
 
                         }
