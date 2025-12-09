@@ -103,15 +103,15 @@
         </div>
 
         <button type="submit" class="btn btn-primary mt-3">Ajouter le contact</button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
     </EditForm>
 </div>
-
-@if (!string.IsNullOrEmpty(message))
-{
-    <div class="alert @(isSubmitted ? "alert-success" : "alert-danger") mt-3">
-        @message
-    </div>
-}
 
 @code {
     private Contact_USMB contact = new();
