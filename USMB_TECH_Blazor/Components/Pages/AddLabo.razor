@@ -1,7 +1,7 @@
 ﻿@page "/ajouterLabo"
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-@inject IMainService<Laboratoire, string> laboService  
+@inject IMainService<Laboratoire, string> laboService
 @inject IMainService<Mot_Clef, int> motcleService
 @inject IMainService<Thematique, int> ThematiqueService
 @inject HttpClient Http
@@ -23,69 +23,69 @@
         <ValidationSummary />
         <h4 class="add_labo">Infos générales</h4>
 
-            <label>Nom complet du laboratoire *</label>
+        <label>Nom complet du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long"></InputText>
-            <ValidationMessage For="@(() => labo.Nom_Long)" />
+        <ValidationMessage For="@(() => labo.Nom_Long)" />
 
-            <label>Nom du laboratoire *</label>
+        <label>Nom du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Nom_Court"></InputText>
-            <ValidationMessage For="@(() => labo.Nom_Court)" />
+        <ValidationMessage For="@(() => labo.Nom_Court)" />
 
-            <label>Description *</label>
+        <label>Description *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Description"></InputText>
 
-           
+
         <h4 class="add_labo">Adresses</h4>
         <h3 class="add_labo">Adresses du laboratoire</h3>
 
-             <label>Rue du laboratoire *</label>
+        <label>Rue du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
-            <ValidationMessage For="@(() => labo.Rue_Adresse_Labo)" />
+        <ValidationMessage For="@(() => labo.Rue_Adresse_Labo)" />
 
-            <label>Ville du laboratoire *</label>
+        <label>Ville du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"></InputText>
-            <ValidationMessage For="@(() => labo.Ville_Adresse_Labo)" />
+        <ValidationMessage For="@(() => labo.Ville_Adresse_Labo)" />
 
-            <label>Code postal du laboratoire *</label>
+        <label>Code postal du laboratoire *</label>
         <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"></InputText>
-            <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
+        <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
-            <label>Pays du laboratoire *</label>
+        <label>Pays du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
-            <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
+        <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
 
-        @if(labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
+        @if (labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
         {
             <div>
                 <InputCheckbox @bind-Value="SameAdresse" @oninput="Change" /> Adresses Campus = Labo
-            </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+            </div>
         }
-            <h3 class="add_labo">Adresse du campus</h3>
+        <h3 class="add_labo">Adresse du campus</h3>
 
-            <label>Rue du campus *</label>
+        <label>Rue du campus *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"></InputText>
-            <ValidationMessage For="@(() => labo.Rue_Adresse_Campus)" />
+        <ValidationMessage For="@(() => labo.Rue_Adresse_Campus)" />
 
-            <label>Ville du campus *</label>
+        <label>Ville du campus *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"></InputText>
-            <ValidationMessage For="@(() => labo.Ville_Adresse_Campus)" />
+        <ValidationMessage For="@(() => labo.Ville_Adresse_Campus)" />
 
-            <label>Code postal du campus *</label>
+        <label>Code postal du campus *</label>
         <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"></InputText>
-            <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
+        <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
-            <label>Pays du campus *</label>
+        <label>Pays du campus *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
-            <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
+        <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
 
 
         <h4 class="add_labo">Pôle d'expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value=""></InputSelect>
+        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise"></InputSelect>
         @* ///Mots-clés *@
         <h4 class="add_labo">Mots-Clés *</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
             <option value="">...</option>
-            @if(existingMot is not null)
+            @if (existingMot is not null)
             {
                 @foreach (var motcle in existingMot)
                 {
@@ -94,14 +94,14 @@
                 <option value="ajouter">Ajouter un nouveau mot-clé</option>
             }
         </InputSelect>
-        
-        @if(motCle == "ajouter")
+
+        @if (motCle == "ajouter")
         {
-            <hr/>
+            <hr />
             <h4>Ajouter un mot-clé</h4>
             <form @onsubmit="AddMot_Clef">
                 <input @bind="NewMotCle"
-                    placeholder="Nouveau Mot-clé"/>
+                       placeholder="Nouveau Mot-clé" />
                 <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
         }
@@ -134,18 +134,18 @@
             }
         </InputSelect>
 
-        @if(thematique == "ajouter")
+        @if (thematique == "ajouter")
         {
-            <hr/>
+            <hr />
             <h4></h4>
             <form @onsubmit="AddThematique">
-                <input @bind="NewThematique" placeholder="Nouvelle thématique"/>
+                <input @bind="NewThematique" placeholder="Nouvelle thématique" />
                 <button type="button" @onclick="AddThematique">Ajouter cette nouvelle thématique</button>
             </form>
         }
         else if (!string.IsNullOrWhiteSpace(thematique))
         {
-              <button type="button" @onclick="AddThematique">Ajouter cette thématique</button>
+            <button type="button" @onclick="AddThematique">Ajouter cette thématique</button>
         }
 
         <ul class="add_labo">
@@ -247,13 +247,13 @@
 
     private void AddMot_Clef()
     {
-        if(!string.IsNullOrWhiteSpace(NewMotCle))
+        if (!string.IsNullOrWhiteSpace(NewMotCle))
         {
             labo.mot_Clefs.Add(NewMotCle);
             NewMotCle = "";
             motCle = "";
         }
-        else if (string.IsNullOrWhiteSpace(NewMotCle)  && motCle != "ajouter")
+        else if (string.IsNullOrWhiteSpace(NewMotCle) && motCle != "ajouter")
         {
             if (!labo.mot_Clefs.Contains(motCle))
             {
@@ -290,7 +290,7 @@
     }
     private void Change()
     {
-        if(SameAdresse is true)
+        if (SameAdresse is true)
         {
             labo.Code_Postal_Adresse_Campus = null;
             labo.Pays_Adresse_Campus = null;
@@ -322,10 +322,10 @@
         {
             var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
             labo.Photos.Add(new Photo
-            {
-                Nom_Photo = file.Name,
-                Url_Photo = result.url
-            });
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
         }
     }
     public class UploadResponse
