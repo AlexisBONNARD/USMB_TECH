@@ -20,7 +20,7 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>Contact : @contact.Prenom_Contact</h2>
+                <h2>Informations générales</h2>
                 <p>Nom : @contact.Nom_Contact </p>
                 <p>Prenom : @contact.Prenom_Contact</p>
             </section>
@@ -28,29 +28,43 @@ else
             <section>
                 <h2>Moyen pour contacter le contact</h2>
                 <p>Mail : @contact.Mail </p>
-                <p>Laboratoire : @contact.Telephone </p>
+                <p>Téléphone : @contact.Telephone </p>
             </section>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
             <section>
-                <h3>NOS LABORATOIRE</h3>
+                <h2>Laboratoire</h2>
 
                 <div class="center-grid">
-                    @if (contact.LaboratoireNavigation != null)
+                    @if (contact.Nom_Court != null)
                     {
-                        <div class="center-item" @onclick="@(() => RetourListeStr(contact.LaboratoireNavigation.Nom_Court, "laboratoire"))">
-                            <div class="banner-photo">
+                        <div class="center-item" @onclick="@(() => RetourListeStr(contact.Nom_Court, "laboratoire"))">
+                            @* <div class="banner-photo">
                                 <Carousel Photos="@contact.LaboratoireNavigation.Photos" />
-                            </div>
-                            <p>@contact.LaboratoireNavigation.Nom_Court</p>
-                            <p>@contact.LaboratoireNavigation.Nom_Long</p>
+                            </div> *@
+                            <p>@contact.Nom_Court</p>
+                            @* <p>@contact.LaboratoireNavigation.Nom_Long</p> *@
                         </div>
                     }
                     else
                     {
                         <p>pas de Laboratoire</p>
+                    }
+                </div>
+                <h2>Fonction</h2>
+
+                <div class="center-grid">
+                    @if (contact.Id_Fonction != null)
+                    {
+                        <div class="center-item">
+                            <p>@contact.Id_Fonction</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>pas de Fonction</p>
                     }
                 </div>
             </section>
@@ -60,9 +74,9 @@ else
         <div class="col-right">
 
             @* <div class="info-block">
-                <h4>Localisation :</h4>
-                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
-            </div> *@
+        <h4>Localisation :</h4>
+        <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
+        </div> *@
 
             <FormulaireContact />
         </div>

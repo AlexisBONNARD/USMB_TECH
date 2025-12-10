@@ -61,8 +61,8 @@
         <ValidationMessage For="@(() => SelectedFonction)" />
         @if (SelectedFonction == "ajouter")
         {
-            <hr />
-            <h4 class="add_contact">Ajouter une fonction</h4>
+            @* <hr /> *@
+            @* <h4 class="add_contact">Ajouter une fonction</h4> *@
             <form onsubmit="return false;" class="mb-2">
                 <input class="form-control mb-1"
                        @bind="newFonction"
