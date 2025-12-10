@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
@@ -42,6 +43,8 @@ namespace USMB_TECH_Blazor.Models
 
         [Required(ErrorMessage = "La fonction du contact est obligatoire.")]
         public string Nom_Fonction { get; set; } = string.Empty;
+
+        public virtual Fonction? FonctionNavigation { get; set; } = null!;
 
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 

@@ -41,11 +41,13 @@ else
                     @if (contact.Nom_Court != null)
                     {
                         <div class="center-item" @onclick="@(() => RetourListeStr(contact.Nom_Court, "laboratoire"))">
-                            @* <div class="banner-photo">
-                                <Carousel Photos="@contact.LaboratoireNavigation.Photos" />
-                            </div> *@
+                            @if (contact.LaboratoireNavigation.Photos != null && contact.LaboratoireNavigation.Photos.Any())
+                            {
+                                <img src="@contact.LaboratoireNavigation.Photos.FirstOrDefault().Url_Photo" alt="@contact.LaboratoireNavigation.Photos.FirstOrDefault().Nom_Photo" />
+                            }
+
                             <p>@contact.Nom_Court</p>
-                            @* <p>@contact.LaboratoireNavigation.Nom_Long</p> *@
+                            <p>@contact.LaboratoireNavigation.Nom_Long</p>
                         </div>
                     }
                     else
@@ -59,7 +61,7 @@ else
                     @if (contact.Id_Fonction != null)
                     {
                         <div class="center-item">
-                            <p>@contact.Id_Fonction</p>
+                            <p>@contact.FonctionNavigation.Nom_Fonction</p>
                         </div>
                     }
                     else
