@@ -78,6 +78,9 @@
         <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
             <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
 
+
+        <h4 class="add_labo">Pôle d'expertise</h4>
+        <InputSelect class="form-control mb-2" @bind-Value=""></InputSelect>
         @* ///Mots-clés *@
         <h4 class="add_labo">Mots-Clés *</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
@@ -181,6 +184,8 @@
 
     string thematique;
     string NewThematique;
+
+    string PoleExpertise;
 
     private bool isLoading = false;
     bool isSubmitted = false;

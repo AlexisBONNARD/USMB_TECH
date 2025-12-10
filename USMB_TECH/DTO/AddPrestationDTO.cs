@@ -10,7 +10,7 @@ namespace USMB_TECH.DTO
         public int Id_Prestation { get; set; }
         public string Intitule_Prestation { get; set; }
 
-        public string Nom_Court { get; set; }
+        public string? Nom_Court { get; set; }
 
         public string Nom_Contact { get; set; }
 

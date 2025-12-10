@@ -13,7 +13,7 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Type_Prestation { get; set; }
 
-        public string Nom_Court { get; set; }
+        public string? Nom_Court { get; set; }
 
         public string Nom_Domaine { get; set; }
 
@@ -40,8 +40,6 @@ namespace USMB_TECH_Blazor.Models
         public List<string> Mots_Clefs { get; set; } = new List<string>();
 
         public List<string> Poles { get; set; } = new List<string>();
-
-        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
 

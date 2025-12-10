@@ -86,11 +86,11 @@
     <button type="button" @onclick="AddPole">Ajouter Pole</button>
     }
     <ul>
-        @foreach (var mc in prestation.Poles)
+        @foreach (var pole in prestation.Poles)
         {
             <li>
-                @mc
-                <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(mc)">Supprimer</button>
+                @pole
+                <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pole)">Supprimer</button>
             </li>
         }
     </ul>
@@ -200,7 +200,12 @@
     }
     private void AddPole()
     {
+        if (!string.IsNullOrWhiteSpace(PoleExpertise) && !prestation.Poles.Contains(PoleExpertise))
+        {
+            prestation.Poles.Add(PoleExpertise);
+        }
         PoleExpertise = "";
+        
     }
     private void RemovePole(string pole)
     {

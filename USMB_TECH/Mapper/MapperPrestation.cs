@@ -30,7 +30,14 @@ namespace USMB_TECH.Mapper
                     Mot_ClefNavigation = new Mot_Clef { Nom_Mot_Clef = mc },
                     Id_Prestation = src.Id_Prestation
                 }).ToList()))
-                .ForMember(dest => dest.LaboratoireNavigation, opt => opt.MapFrom(src => new Laboratoire
+                .ForMember(dest => dest.Presenters, opt => opt.MapFrom(src => src.Poles.Select(pl => new Presenter 
+                {
+                    Pole_ExpertiseNavigation = new Pole_Expertise { Nom_Pole_Expertise = pl},
+                    Id_Prestation = src.Id_Prestation
+                }).ToList()))
+                .ForMember(dest => dest.LaboratoireNavigation, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Nom_Court)
+                ? null 
+                :new Laboratoire
                 {
                     Nom_Court = src.Nom_Court
                 }))
