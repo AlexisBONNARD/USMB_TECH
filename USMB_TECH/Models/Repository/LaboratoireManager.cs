@@ -13,10 +13,10 @@ namespace USMB_TECH.Models.Repository
             _context = context;
         }
 
-        public async Task<Laboratoire?> GetByIdAsync(string id) 
+        public async Task<Laboratoire?> GetByIdAsync(string id)
         {
             return await _context.Laboratoires
-                .Include(p=>p.Photos)
+                .Include(p => p.Photos)
                 .Include(l => l.Adresse_campusNavigation)
                 .Include(l => l.Adresse_laboNavigation)
                 .Include(l => l.Gerers)
@@ -29,14 +29,14 @@ namespace USMB_TECH.Models.Repository
                 .FirstOrDefaultAsync(lab => lab.Nom_Court == id);
         }
 
-        public async Task<IEnumerable<Laboratoire>> GetAllAsync() 
+        public async Task<IEnumerable<Laboratoire>> GetAllAsync()
         {
             return await _context.Laboratoires.ToListAsync();
         }
 
         public async Task AddAsync(Laboratoire entity)
         {
-            if( await _context.Laboratoires.FirstOrDefaultAsync(m => m.Nom_Court == entity.Nom_Court) is not null) 
+            if (await _context.Laboratoires.FirstOrDefaultAsync(m => m.Nom_Court == entity.Nom_Court) is not null)
             {
                 throw new InvalidOperationException("Un laboratoire avec un nom court similaire est déjà existant." +
                     "\nEssayez un nouveau nom court pour votre laboratoire");
@@ -45,10 +45,10 @@ namespace USMB_TECH.Models.Repository
             if (entity.Est_Liers != null && entity.Est_Liers.Any())
             {
                 var estlieFinal = new List<Est_Lier>();
-                foreach(var estlie in entity.Est_Liers) 
+                foreach (var estlie in entity.Est_Liers)
                 {
                     var thematique = await _context.Thematiques.FirstOrDefaultAsync(t => t.Nom_Thematique == estlie.ThematiqueNavigation.Nom_Thematique);
-                    if (thematique == null) 
+                    if (thematique == null)
                     {
                         thematique = estlie.ThematiqueNavigation;
                         _context.Thematiques.Add(thematique);
@@ -61,14 +61,14 @@ namespace USMB_TECH.Models.Repository
                 }
                 entity.Est_Liers = estlieFinal;
             }
-            if(entity.Designers != null && entity.Designers.Any())
+            if (entity.Designers != null && entity.Designers.Any())
             {
                 var designersFinal = new List<Designer>();
                 foreach (var designer in entity.Designers)
                 {
                     var motClef = await _context.Mot_Clefs.FirstOrDefaultAsync(m => m.Nom_Mot_Clef == designer.Mot_ClefNavigation.Nom_Mot_Clef);
 
-                    if(motClef == null)
+                    if (motClef == null)
                     {
                         motClef = designer.Mot_ClefNavigation;
                         _context.Mot_Clefs.Add(motClef);
@@ -81,10 +81,29 @@ namespace USMB_TECH.Models.Repository
                 }
                 entity.Designers = designersFinal;
             }
-            if(entity.Adresse_laboNavigation.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse 
-                && entity.Adresse_campusNavigation.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse 
-                && entity.Adresse_campusNavigation.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse 
-                && entity.Adresse_laboNavigation.Complement_Rue_Adresse == entity.Adresse_campusNavigation.Complement_Rue_Adresse) 
+            if (entity.Gerers != null && entity.Gerers.Any())
+            {
+                var gerersFinal = new List<Gerer>();
+                foreach(var gerer in entity.Gerers) 
+                {
+                    var pole = await _context.Pole_Expertises.FirstOrDefaultAsync(pe => pe.Nom_Pole_Expertise == gerer.Pole_ExpertiseNavigation.Nom_Pole_Expertise);
+                    if(pole == null) 
+                    {
+                        pole = gerer.Pole_ExpertiseNavigation;
+                        _context.Pole_Expertises.Add(pole);
+                    }
+                    gerersFinal.Add(new Gerer
+                    {
+                        Pole_ExpertiseNavigation = pole,
+                        Nom_Court = entity.Nom_Court,
+                    });
+                }
+                entity.Gerers = gerersFinal;
+            }
+            if (entity.Adresse_laboNavigation.Rue_Adresse == entity.Adresse_campusNavigation.Rue_Adresse
+                && entity.Adresse_campusNavigation.Pays_Adresse == entity.Adresse_laboNavigation.Pays_Adresse
+                && entity.Adresse_campusNavigation.Code_Postal_Adresse == entity.Adresse_laboNavigation.Code_Postal_Adresse
+                && entity.Adresse_laboNavigation.Complement_Rue_Adresse == entity.Adresse_campusNavigation.Complement_Rue_Adresse)
             {
                 var adresses = await _context.Adresses.FirstOrDefaultAsync(a =>
                     a.Rue_Adresse == entity.Adresse_laboNavigation!.Rue_Adresse &&
@@ -99,7 +118,7 @@ namespace USMB_TECH.Models.Repository
                 entity.Adresse_laboNavigation = adresses;
                 entity.Adresse_campusNavigation = adresses;
             }
-            else 
+            else
             {
                 if (entity.Adresse_laboNavigation != null)
                 {
@@ -135,18 +154,18 @@ namespace USMB_TECH.Models.Repository
                     entity.Adresse_campusNavigation = adresseCampus;
                 }
             }
-                _context.Laboratoires.Add(entity);
+            _context.Laboratoires.Add(entity);
             await _context.SaveChangesAsync();
         }
 
 
-        public async Task DeleteAsync(Laboratoire entity) 
+        public async Task DeleteAsync(Laboratoire entity)
         {
             _context.Laboratoires.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Laboratoire entityToUpdate, Laboratoire entity) 
+        public async Task UpdateAsync(Laboratoire entityToUpdate, Laboratoire entity)
         {
             _context.Laboratoires.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
@@ -170,8 +189,8 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(m => m.Mot_ClefNavigation)
                  .Include(el => el.Est_Liers)
                     .ThenInclude(t => t.ThematiqueNavigation)
-                .Include(a=> a.Adresse_laboNavigation)
-                .Include(c=> c.Adresse_campusNavigation)
+                .Include(a => a.Adresse_laboNavigation)
+                .Include(c => c.Adresse_campusNavigation)
                 .Where(predicate)
                 .ToListAsync();
         }

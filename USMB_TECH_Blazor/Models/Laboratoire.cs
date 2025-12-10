@@ -43,7 +43,7 @@ namespace USMB_TECH_Blazor.Models
         [Required(ErrorMessage = "Le pays du campus est obligatoire")]
         public string? Pays_Adresse_Campus { get; set; }
 
-
+        public ICollection<string> Pole_Expertises { get; set; } = new List<string>();
 
         public Adresse? Adresse_campusNavigation { get; set; } = null!;
         public Adresse? Adresse_laboNavigation { get; set; } = null!;

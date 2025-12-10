@@ -28,6 +28,7 @@ namespace USMB_TECH.DTO
         public ICollection<string> Thematiques { get; set; }
 
         public ICollection<string> mot_Clefs { get; set; }
+        public ICollection<string> Pole_Expertises { get; set; }
 
         public ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }

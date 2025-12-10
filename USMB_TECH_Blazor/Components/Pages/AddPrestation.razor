@@ -10,174 +10,226 @@
 @inject IMainService<Laboratoire, string> laboratoireService
 @inject IMainService<Pole_Expertise, int> poleService
 
+<HeadContent>
+    <li class="add_prestation" nk href="css/addPrestation.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_prestation">Ajouter une Prestation</h2>
 
 <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
     Intitulé de la prestation : 
     <InputText @bind-Value="prestation.Intitule_Prestation"/>
+    <ValidationMessage For="@(() => prestation.Intitule_Prestation)"
 
-    Description de la prestation : 
-    <InputText @bind-Value="prestation.Description_Prestation"></InputText>
+        <h4 class="add_labo">Infos générales</h4>
+        <label>Intitulé de la prestation *</label>
+        <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" />
 
-    Prix de vente de la prestation :
-    <InputNumber @bind-Value="prestation.Prix_Vente"></InputNumber>
+        <label>Description de la prestation *</label>
+        <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation"></InputText>
 
-    Prix de revient de la prestation :
-    <InputNumber @bind-Value="prestation.Prix_Revient"></InputNumber>
+        <label>Prix de vente de la prestatio *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"></InputNumber>
+        <ValidationMessage For="@(() => prestation.Prix_Vente)" />
 
-    Peut se réaliser chez le client : 
-    <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client"/>
+        <label>Prix de revient de la prestatio *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"></InputNumber>
+    <ValidationMessage For="@(() => prestation.Prix_Revient)" />
 
-    Contact à associer : 
-    <InputSelect @bind-Value="prestation.Nom_Contact">
-        <option value="">...</option>
-        @foreach (var contact in contacts)
-        {
-            <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
-        }
-    </InputSelect>
+        <label>Peut se réaliser chez le client *</label>
+        <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client" />
 
-    Domaine d'excellence :
-    <InputSelect @bind-Value="prestation.Nom_Domaine">
-        <option value="">...</option>
-        @foreach (var domaine in domaines)
-        {
-            <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
-        }
-    </InputSelect>
-
-    Type de prestation :
-    <InputSelect @bind-Value="prestation.Type">
-        <option value="">...</option>
-        @foreach (var type in types)
-        {
-            <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
-        }
-    </InputSelect>
-
-    Unite d'oeuvre :
-    <InputSelect @bind-Value="prestation.Unite">
-        <option value="">...</option>
-        @foreach(var unite in unites)
-        {
-            <option value="@unite.Nom_Unite_Oeuvre">@unite.Nom_Unite_Oeuvre</option>
-        }
-    </InputSelect>
-
-    Laboratoire :
-    <InputSelect @bind-Value="prestation.Nom_Court">
-        <option value="">...</option>
-        @foreach (var laboratoire in laboratoires)
-        {
-            <option value="@laboratoire.Nom_Court">@laboratoire.Nom_Long</option>
-        }
-    </InputSelect>
-
-    Pôle Expertise : 
-    <InputSelect @bind-Value="PoleExpertise">
-        <option value="">...</option>
-        @foreach (var pole in existingpoles)
-        {
-            <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
-        }
-    </InputSelect>
-
-    @if (!string.IsNullOrWhiteSpace(PoleExpertise))
-    {
-    <button type="button" @onclick="AddPole">Ajouter Pole</button>
-    }
-    <ul>
-        @foreach (var pole in prestation.Poles)
-        {
-            <li>
-                @pole
-                <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pole)">Supprimer</button>
-            </li>
-        }
-    </ul>
-
-    Mots-clés :
-    <InputSelect @bind-Value="motCle">
-        <option value="">...</option>
-        @foreach (var motcle in existingMots)
-        {
-            <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
-        }
-        <option value="ajouter"> Ajouter un nouveau mot-clé</option>
-    </InputSelect>
-    @if (motCle == "ajouter")
-    {
         <hr />
-        <h4>Ajouter un mot-clé</h4>
-        <form @onsubmit="AddMot_Clef">
-            <input @bind="NewMotCle"
-                   placeholder="Nouveau Mot-clé" />
-            <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
-        </form>
-    }
-    else if (!string.IsNullOrWhiteSpace(motCle))
-    {
-        <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
-    }
-    <ul>
-        @foreach(var mc in prestation.Mots_Clefs)
-        {
-            <li>
-                @mc
-                <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
-            </li>
-        }
-    </ul>
+        <h4 class="add_contact">Contact à associer</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Contact">
+            <option value="">...</option>
+            @foreach (var contact in contacts)
+            {
+                <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Nom_Contact)" />
 
-    <input type="submit" value="Ajouter">
-</EditForm>
-@if (!string.IsNullOrEmpty(message))
-{
-    <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
-        @message
-    </div>
-}
+        <hr />
+        <h4 class="add_contact">Domaine d'excellence</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
+            <option value="">...</option>
+            @foreach (var domaine in domaines)
+            {
+                <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
+            }
+        </InputSelect>
+    <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
+
+        <hr />
+        <h4 class="add_contact">Type de prestation</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="prestation.Type">
+            <option value="">...</option>
+            @foreach (var type in types)
+            {
+                <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Type)" />
+        <hr />
+        <h4 class="add_contact">Unite d'oeuvre</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="prestation.Unite">
+            <option value="">...</option>
+            @foreach (var unite in unites)
+            {
+                <option value="@unite.Nom_Unite_Oeuvre">@unite.Nom_Unite_Oeuvre</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Unite)" />
+        <hr />
+        <h4 class="add_contact">Laboratoire</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Court">
+            <option value="">...</option>
+            @foreach (var laboratoire in laboratoires)
+            {
+                <option value="@laboratoire.Nom_Court">@laboratoire.Nom_Long</option>
+            }
+        </InputSelect>
+
+        <hr />
+        <h4 class="add_contact">Pôle Expertise</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
+            <option value="">...</option>
+            @foreach (var pole in existingpoles)
+            {
+                <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
+            }
+        </InputSelect>
+
+        @if (!string.IsNullOrWhiteSpace(PoleExpertise))
+        {
+            <button type="button" @onclick="AddPole">Ajouter Pole</button>
+        }
+        <ul>
+            @foreach (var pole in prestation.Poles)
+            {
+                <li>
+                    @pole
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pole)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <hr />
+        <h4 class="add_contact">Mots-clés</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="motCle">
+            <option value="">...</option>
+            @foreach (var motcle in existingMots)
+            {
+                <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+            }
+            <option value="ajouter"> Ajouter un nouveau mot-clé</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Mots_Clefs)" />
+        @if (motCle == "ajouter")
+        {
+            <form @onsubmit="AddMot_Clef">
+                <input @bind="NewMotCle"
+                       placeholder="Nouveau Mot-clé" />
+                <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(motCle))
+        {
+            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+        }
+        <ul>
+            @foreach (var mc in prestation.Mots_Clefs)
+            {
+                <li>
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <input type="submit" value="Ajouter">
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
+    </EditForm>
+</div>
 
 @code {
     Prestation prestation = new Prestation();
-    List<Contact_USMB> contacts = new List<Contact_USMB>();
-    List<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
-    List<Type_Prestation> types = new List<Type_Prestation>();
-    List<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
-    List<Laboratoire> laboratoires = new List<Laboratoire>();
+    IEnumerable<Contact_USMB> contacts = new List<Contact_USMB>();
+    IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
+    IEnumerable<Type_Prestation> types = new List<Type_Prestation>();
+    IEnumerable<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
+    IEnumerable<Laboratoire> laboratoires = new List<Laboratoire>();
 
     private IEnumerable<Pole_Expertise> existingpoles = new List<Pole_Expertise>();
     private IEnumerable<Mot_Clef> existingMots = new List<Mot_Clef>();
+    [Parameter] public EventCallback<Prestation> OnPrestationAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
 
     string motCle;
     string NewMotCle;
 
     string PoleExpertise;
 
+    private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
 
     protected override async Task OnInitializedAsync()
     {
-        contacts = (await contactService.GetAllAsync()).ToList();
-        domaines = (await domaineService.GetAllAsync()).ToList();
-        types = (await typeService.GetAllAsync()).ToList();
-        unites = (await uniteService.GetAllAsync()).ToList();
-        existingMots = (await motService.GetAllAsync()).ToList();
-        laboratoires = (await laboratoireService.GetAllAsync()).ToList();
-        existingpoles = (await poleService.GetAllAsync()).ToList();
+        contacts = await contactService.GetAllAsync();
+        domaines = await domaineService.GetAllAsync();
+        types = await typeService.GetAllAsync();
+        unites = await uniteService.GetAllAsync();
+        existingMots = await motService.GetAllAsync();
+        laboratoires = await laboratoireService.GetAllAsync();
+        existingpoles = await poleService.GetAllAsync();
     }
     private async Task HandleValidSubmit()
     {
         try
         {
+            isLoading = true; // active le loader
+            StateHasChanged();
             await prestationService.AddAsync(prestation);
             isSubmitted = true;
-            message = "La prestation a été ajoutée avec succès.";
+            ShowAlert("La prestation a été ajoutée avec succès.");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            message = "Une erreur est survenue lors de l'ajout de la prestation.";
+            isSubmitted = false;
+            ShowAlert("Une erreur est survenue lors de l'ajout de la prestation.");
             await JS.InvokeVoidAsync("console.log", ex.Message);
+        }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
+        }
+    }
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+        if (isSubmitted && EnableRedirect)
+        {
+            Navigation.NavigateTo($"/prestation/{prestation.Id_Prestation}");
         }
     }
 
@@ -205,7 +257,7 @@
             prestation.Poles.Add(PoleExpertise);
         }
         PoleExpertise = "";
-        
+
     }
     private void RemovePole(string pole)
     {
@@ -215,4 +267,4 @@
     {
         prestation.Mots_Clefs.Remove(mc);
     }
-}
+    }
