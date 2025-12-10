@@ -20,10 +20,16 @@ namespace USMB_TECH.Models.Repository
 
         public async Task<Contact_USMB?> GetByIdAsync(int id)
         {
-            return await _context.Contact_USMBs.FindAsync(id);
+            return await _context.Contact_USMBs
+                .Include(f => f.FonctionNavigation)
+                .Include(l => l.LaboratoireNavigation)
+                .Include(l=>l.LaboratoireNavigation)
+                    .ThenInclude(p => p.Photos)
+                .FirstOrDefaultAsync(contact => contact.Id_Contact == id);
+                
         }
 
-        public async Task AddAsync(Contact_USMB entity)
+            public async Task AddAsync(Contact_USMB entity)
         {
             if (entity.FonctionNavigation is not null)
             {
