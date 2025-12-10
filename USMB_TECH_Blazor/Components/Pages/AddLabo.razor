@@ -4,6 +4,7 @@
 @inject IMainService<Laboratoire, string> laboService  
 @inject IMainService<Mot_Clef, int> motcleService
 @inject IMainService<Thematique, int> ThematiqueService
+@inject IMainService<Pole_Expertise, int> poleService
 @inject HttpClient Http
 
 <HeadContent>
@@ -80,7 +81,26 @@
 
 
         <h4 class="add_labo">Pôle d'expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value=""></InputSelect>
+        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
+            <option value="">...</option>
+            @foreach(var pole in existingPoles)
+            {
+                <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
+            }
+        </InputSelect>
+        @if (!string.IsNullOrWhiteSpace(PoleExpertise))
+        {
+            <button type="button" @onclick="AddPole">Ajouter ce pôle</button>
+        }
+        <ul class="add_labo">
+            @foreach (var pe in labo.Pole_Expertises)
+            {
+                <li class="add_labo">
+                    @pe
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pe)">Supprimer</button>
+                </li>
+            }
+        </ul>
         @* ///Mots-clés *@
         <h4 class="add_labo">Mots-Clés *</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
@@ -178,6 +198,7 @@
 
     private IEnumerable<Mot_Clef> existingMot = new List<Mot_Clef>();
     private IEnumerable<Thematique> existingThematique = new List<Thematique>();
+    private IEnumerable<Pole_Expertise> existingPoles = new List<Pole_Expertise>();
 
     string motCle;
     string NewMotCle;
@@ -199,6 +220,7 @@
     {
         existingMot = await motcleService.GetAllAsync();
         existingThematique = await ThematiqueService.GetAllAsync();
+        existingPoles = await poleService.GetAllAsync();
     }
 
     private async Task HandleValidSubmit()
@@ -288,6 +310,20 @@
     {
         labo.Thematiques.Remove(mc);
     }
+
+    private void AddPole()
+    {
+        if (!string.IsNullOrWhiteSpace(PoleExpertise) && !labo.Pole_Expertises.Contains(PoleExpertise))
+        {
+            labo.Pole_Expertises.Add(PoleExpertise);
+        }
+        PoleExpertise = "";
+    }
+    private void RemovePole(string pe)
+    {
+        labo.Pole_Expertises.Remove(pe);
+    }
+
     private void Change()
     {
         if(SameAdresse is true)

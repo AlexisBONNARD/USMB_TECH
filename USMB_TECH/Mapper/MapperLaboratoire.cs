@@ -35,6 +35,11 @@ namespace USMB_TECH.Mapper
                 ThematiqueNavigation = new Thematique { Nom_Thematique = t },
                 Nom_Court = src.Nom_Court,
             }).ToList()))
+            .ForMember(dest => dest.Gerers, opt => opt.MapFrom(src => src.Pole_Expertises.Select(pe => new Gerer
+            {
+                Nom_Court = src.Nom_Court,
+                Pole_ExpertiseNavigation = new Pole_Expertise { Nom_Pole_Expertise =  pe}
+            }).ToList()))
             .ForMember(dest => dest.Id_Adresse_Labo, opt => opt.Ignore())
             .ForMember(dest => dest.Id_Adresse_Campus, opt => opt.Ignore());
 

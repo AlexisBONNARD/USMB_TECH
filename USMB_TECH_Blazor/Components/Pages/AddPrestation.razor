@@ -12,17 +12,23 @@
 
 
 <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     Intitulé de la prestation : 
     <InputText @bind-Value="prestation.Intitule_Prestation"/>
+    <ValidationMessage For="@(() => prestation.Intitule_Prestation)" />
 
     Description de la prestation : 
     <InputText @bind-Value="prestation.Description_Prestation"></InputText>
 
     Prix de vente de la prestation :
     <InputNumber @bind-Value="prestation.Prix_Vente"></InputNumber>
+    <ValidationMessage For="@(() => prestation.Prix_Vente)" />
 
     Prix de revient de la prestation :
     <InputNumber @bind-Value="prestation.Prix_Revient"></InputNumber>
+    <ValidationMessage For="@(() => prestation.Prix_Revient)" />
 
     Peut se réaliser chez le client : 
     <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client"/>
@@ -35,6 +41,7 @@
             <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
         }
     </InputSelect>
+    <ValidationMessage For="@(() => prestation.Nom_Contact)" />
 
     Domaine d'excellence :
     <InputSelect @bind-Value="prestation.Nom_Domaine">
@@ -44,6 +51,7 @@
             <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
         }
     </InputSelect>
+    <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
 
     Type de prestation :
     <InputSelect @bind-Value="prestation.Type">
@@ -53,6 +61,7 @@
             <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
         }
     </InputSelect>
+    <ValidationMessage For="@(() => prestation.Type)" />
 
     Unite d'oeuvre :
     <InputSelect @bind-Value="prestation.Unite">
@@ -62,6 +71,7 @@
             <option value="@unite.Nom_Unite_Oeuvre">@unite.Nom_Unite_Oeuvre</option>
         }
     </InputSelect>
+    <ValidationMessage For="@(() => prestation.Unite)" />
 
     Laboratoire :
     <InputSelect @bind-Value="prestation.Nom_Court">
@@ -104,6 +114,7 @@
         }
         <option value="ajouter"> Ajouter un nouveau mot-clé</option>
     </InputSelect>
+    <ValidationMessage For="@(() => prestation.Mots_Clefs)" />
     @if (motCle == "ajouter")
     {
         <hr />
@@ -139,11 +150,11 @@
 
 @code {
     Prestation prestation = new Prestation();
-    List<Contact_USMB> contacts = new List<Contact_USMB>();
-    List<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
-    List<Type_Prestation> types = new List<Type_Prestation>();
-    List<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
-    List<Laboratoire> laboratoires = new List<Laboratoire>();
+    IEnumerable<Contact_USMB> contacts = new List<Contact_USMB>();
+    IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
+    IEnumerable<Type_Prestation> types = new List<Type_Prestation>();
+    IEnumerable<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
+    IEnumerable<Laboratoire> laboratoires = new List<Laboratoire>();
 
     private IEnumerable<Pole_Expertise> existingpoles = new List<Pole_Expertise>();
     private IEnumerable<Mot_Clef> existingMots = new List<Mot_Clef>();
@@ -158,13 +169,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        contacts = (await contactService.GetAllAsync()).ToList();
-        domaines = (await domaineService.GetAllAsync()).ToList();
-        types = (await typeService.GetAllAsync()).ToList();
-        unites = (await uniteService.GetAllAsync()).ToList();
-        existingMots = (await motService.GetAllAsync()).ToList();
-        laboratoires = (await laboratoireService.GetAllAsync()).ToList();
-        existingpoles = (await poleService.GetAllAsync()).ToList();
+        contacts = await contactService.GetAllAsync();
+        domaines = await domaineService.GetAllAsync();
+        types = await typeService.GetAllAsync();
+        unites = await uniteService.GetAllAsync();
+        existingMots = await motService.GetAllAsync();
+        laboratoires = await laboratoireService.GetAllAsync();
+        existingpoles = await poleService.GetAllAsync();
     }
     private async Task HandleValidSubmit()
     {
