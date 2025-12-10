@@ -28,13 +28,13 @@ else
             <ValidationMessage For="@(() => equipement.Num_Immobilisation)" />
 
             <label>Date acquisition</label>
-            <InputDate class="form-control mb-2" @bind-value="equipement.Date_Acquisition" />
+            <InputDate class="form-control mb-2" @bind-value="equipement.Date_Acquisition" TValue="DateTime?" />
 
             <label>Prix achat</label>
-            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Achat" />
+            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Achat" TValue="float?" />
 
             <label>Prix revient</label>
-            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Revient" />
+            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Revient" TValue="float?" />
 
             <label>Description technique</label>
             <InputTextArea class="form-control mb-2" @bind-value="equipement.Description_Technique" />
@@ -57,13 +57,13 @@ else
             <!-- Pole_Expertise -->
             <label>Pole_Expertise associée * @equipement.Id_Pole_Expertise @equipement.Nom_Pole_Expertise</label>
             <input class="form-control mb-2" type="text" value="@equipement.Nom_Pole_Expertise" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Pole_Expertise" />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Pole_Expertise" TValue="int?" />
 
 
             <!-- Modèle -->
             <label>Modèle associé *</label>
             <input class="form-control mb-2" type="text" value="@equipement.Nom_Modele" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Modele" />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Modele" TValue="int?" />
 
             <!-- Marque -->
             <label>Marque associée *</label>
@@ -72,7 +72,7 @@ else
             <!-- Type d’équipement -->
             <label>Type d’équipement associé *</label>
             <input class="form-control mb-2" type="text" value="@equipement.Type_Equipement" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Type_Equipement" />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Type_Equipement" TValue="int?" />
 
 
 
@@ -108,7 +108,7 @@ else
             {
                 <div class="mb-3 border p-2">
                     <label>Prestation liée</label>
-                    <InputNumber class="form-control mb-1" @bind-value="f.Id_Prestation" />
+                    <InputNumber class="form-control mb-1" @bind-value="f.Id_Prestation" TValue="int?" />
                 </div>
             }
 
