@@ -14,13 +14,13 @@
 }
 
 /* Titres */
-h2.add_contact {
+h2.add_prestation {
     margin-top: 20px;
     text-align: center;
     font-weight: 700;
 }
 
-h4.add_contact {
+h4.add_prestation {
     border-left: 4px solid #007bff;
     padding-left: 10px;
     margin-top: 30px;
@@ -52,12 +52,12 @@ button.btn-secondary {
 }
 
 /* Listes */
-ul.add_contact {
+ul.add_prestation {
     list-style: none;
     padding-left: 0;
 }
 
-    ul.add_contact li.add_contact {
+    ul.add_prestation li.add_prestation {
         background-color: #eef1f5;
         padding: 6px 12px;
         border-radius: 6px;

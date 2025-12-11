@@ -120,6 +120,8 @@
     private bool isLoading = false;
     private bool isSubmitted = false;
     private string message = "";
+    [Parameter] public EventCallback<Contact_USMB> OnContactAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
 
     private string _selectedFonction;
 
@@ -278,7 +280,7 @@
 
         message = null;         // Efface le message
         StateHasChanged();      // Met à jour
-        if (isSubmitted)
+        if (isSubmitted && EnableRedirect)
         {
             Navigation.NavigateTo($"/contact/{contact.Id_Contact}");
         }
