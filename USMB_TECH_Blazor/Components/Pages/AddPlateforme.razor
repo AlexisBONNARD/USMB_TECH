@@ -6,7 +6,7 @@
 
 
 <HeadContent>
-    <li class="add_platform" nk href="css/addPlateforms.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addPlateforms.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -15,14 +15,14 @@
     </div>
 }
 
-<h2 class="add_platform">Ajouter un pôle d'expertise</h2>
+<h2 class="add_style">Ajouter un pôle d'expertise</h2>
 
 <div class="page-container">
     <EditForm Model="@pole_expertise" OnValidSubmit="SubmitPole_Expertise">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <h4 class="add_platform">Infos générales</h4>
+        <h4 class="add_style">Infos générales</h4>
         <label>Nom pôle d'expertise *</label>
         <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" />
         <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
@@ -50,7 +50,7 @@
         </InputSelect>
 
         <hr />
-        <h4 class="add_platform">Photos</h4>
+        <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
 
         @code {
@@ -85,7 +85,7 @@
 
 
         <hr />
-        <h4 class="add_platform">Mots-clés</h4>
+        <h4 class="add_style">Mots-clés</h4>
         <form onsubmit="return false;" class="mb-2">
             <input class="form-control mb-1"
                        @bind="newMot_Clef"
@@ -94,10 +94,10 @@
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddMot_Clef(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
         </form>
-        <ul class="add_platform">
+        <ul class="add_style">
             @foreach (var mc in pole_expertise.MotsCles)
             {
-                <li class="add_platform">
+                <li class="add_style">
                     @mc.Nom_Mot_Clef
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
                 </li>
@@ -105,7 +105,7 @@
         </ul>
 
         <hr />
-        <h4 class="add_platform">Exemples d’utilisation</h4>
+        <h4 class="add_style">Exemples d’utilisation</h4>
         <form onsubmit="return false;" class="mb-2">
             <InputText class="form-control mb-1"
                        @bind-Value="newExempleNom"
@@ -118,10 +118,10 @@
                            @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
         </form>
-        <ul class="add_platform">
+        <ul class="add_style">
             @foreach (var e in pole_expertise.ExempleUtilisations)
             {
-                <li class="add_platform">
+                <li class="add_style">
                     @e.Nom_Utilisation : @e.Description_Utilisation
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveExemple(e)">Supprimer</button>
                 </li>
@@ -130,7 +130,7 @@
 
 
         <hr />
-        <h4 class="add_platform">Prestations</h4>
+        <h4 class="add_style">Prestations</h4>
         <form onsubmit="return false;" class="mb-2">
             <InputSelect class="form-select mb-1"
                          @bind-Value="selectedPrestationId"
@@ -143,10 +143,10 @@
             </InputSelect>
             <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
         </form>
-        <ul class="add_platform">
+        <ul class="add_style">
             @foreach (var pr in pole_expertise.Presenters)
             {
-                <li class="add_platform">
+                <li class="add_style">
                     Prestation ID : @pr.Id_Prestation
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePresenter(pr)">Supprimer</button>
                 </li>

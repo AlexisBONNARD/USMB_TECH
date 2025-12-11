@@ -11,7 +11,7 @@
 @inject IMainService<Pole_Expertise, int> poleService
 
 <HeadContent>
-    <li class="add_prestation" nk href="css/addPrestation.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addPrestation.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -19,12 +19,12 @@
         <div class="spinner"></div>
     </div>
 }
-<h2 class="add_prestation">Ajouter une Prestation</h2>
+<h2 class="add_style">Ajouter une Prestation</h2>
 
 <div class="page-container">
     <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
     
-        <h4 class="add_labo">Infos générales</h4>
+        <h4 class="add_style">Infos générales</h4>
         <label>Intitulé de la prestation *</label>
         <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" />
 
@@ -43,7 +43,7 @@
         <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client" />
 
         <hr />
-        <h4 class="add_contact">Contact à associer</h4>
+        <h4 class="add_style">Contact à associer</h4>
         <InputSelect class="form-control mb-2" @bind-Value="LastContact">
             <option value="">...</option>
             @foreach (var contact in contacts)
@@ -63,7 +63,7 @@
         </div>
 
         <hr />
-        <h4 class="add_contact">Domaine d'excellence</h4>
+        <h4 class="add_style">Domaine d'excellence</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
             <option value="">...</option>
             @foreach (var domaine in domaines)
@@ -74,7 +74,7 @@
     <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
 
         <hr />
-        <h4 class="add_contact">Type de prestation</h4>
+        <h4 class="add_style">Type de prestation</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Type">
             <option value="">...</option>
             @foreach (var type in types)
@@ -84,7 +84,7 @@
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Type)" />
         <hr />
-        <h4 class="add_contact">Unite d'oeuvre</h4>
+        <h4 class="add_style">Unite d'oeuvre</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Unite">
             <option value="">...</option>
             @foreach (var unite in unites)
@@ -94,8 +94,9 @@
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Unite)" />
         <hr />
-        <h4 class="add_contact">Laboratoire</h4>
+        <h4 class="add_style">Laboratoire</h4>
         <InputSelect class="form-control mb-2" @bind-Value="LastLaboratoire">
+
             <option value="">...</option>
             @foreach (var laboratoire in laboratoires)
             {
@@ -112,8 +113,8 @@
         </div>
 
         <hr />
-        <h4 class="add_contact">Pôle Expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="LastPole_Expertise">
+        <h4 class="add_style">Pôle Expertise</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
             <option value="">...</option>
             @foreach (var pole in existingpoles)
             {
@@ -144,7 +145,7 @@
         </ul>
 
         <hr />
-        <h4 class="add_contact">Mots-clés</h4>
+        <h4 class="add_style">Mots-clés</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
             <option value="">...</option>
             @foreach (var motcle in existingMots)

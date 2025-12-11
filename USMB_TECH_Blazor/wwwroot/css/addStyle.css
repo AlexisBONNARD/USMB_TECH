@@ -14,13 +14,13 @@
 }
 
 /* Titres */
-h2.add_contact {
+h2.add_style {
     margin-top: 20px;
     text-align: center;
     font-weight: 700;
 }
 
-h4.add_contact {
+h4.add_style {
     border-left: 4px solid #007bff;
     padding-left: 10px;
     margin-top: 30px;
