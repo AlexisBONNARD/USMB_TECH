@@ -53,6 +53,14 @@
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Nom_Contact)" />
 
+        <!-- Modal -->
+        <div id="modalContact" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModal">&times;</span>
+                <AddContact OnContact_Added="OnContact_Added" EnableRedirect="false" />
+            </div>
+        </div>
+
         <hr />
         <h4 class="add_contact">Domaine d'excellence</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
@@ -184,6 +192,27 @@
     bool isSubmitted = false;
     string message = "";
 
+    private string _lastContact;
+
+    private string LastContact
+    {
+        get => _lastContact;
+        set
+        {
+            _lastContact = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModal();
+            }
+            else
+            {
+                prestation.Nom_Contact = value;
+            }
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         contacts = await contactService.GetAllAsync();
@@ -265,4 +294,20 @@
     {
         prestation.Mots_Clefs.Remove(mc);
     }
+    private void OpenModal()
+    {
+        JS.InvokeVoidAsync("openModalContact");
     }
+
+    private void CloseModal()
+    {
+        JS.InvokeVoidAsync("closeModalContact");
+    }
+
+    private void OnContact_Added(Contact_USMB contact)
+    {
+        contacts = contacts.Append(contact);
+        LastContact = contact.Nom_Contact;
+        CloseModal();
+    }
+}
