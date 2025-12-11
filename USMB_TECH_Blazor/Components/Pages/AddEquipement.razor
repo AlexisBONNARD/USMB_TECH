@@ -78,7 +78,7 @@
         @if (LastMarque == "ajouter")
         {
             <hr />
-            <h4 class="add_platform">Ajouter une marque</h4>
+            <h4 class="add_equipement">Ajouter une marque</h4>
             <form onsubmit="return false;" class="mb-2">
                 <input class="form-control mb-1"
                        @bind="newMarque"
@@ -90,8 +90,8 @@
 
             @if (derniereMarqueAjoutee != null)
             {
-                <ul class="add_platform">
-                    <li class="add_platform">
+                <ul class="add_equipement">
+                    <li class="add_equipement">
                         @derniereMarqueAjoutee.Nom_Marque
                         <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMarque(derniereMarqueAjoutee)">Supprimer</button>
                     </li>
@@ -108,7 +108,7 @@
             {
                 <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
             }
-            <option value="ajouter" class="alert-info">----- Créer une pole d'expertise -----</option>
+            <option value="ajouter" class="alert-info">----- Créer un pôle d'expertise -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Nom_Pole_Expertise)" />
 
@@ -135,7 +135,7 @@
     @if (LastTypeEquipement == "ajouter")
     {
         <hr />
-        <h4 class="add_platform">Ajouter un type d’équipement</h4>
+        <h4 class="add_equipement">Ajouter un type d’équipement</h4>
         <form onsubmit="return false;" class="mb-2">
             <input class="form-control mb-1"
                    @bind="newTypeEquipement"
@@ -147,8 +147,8 @@
 
         @if (dernierTypeAjoute != null)
         {
-            <ul class="add_platform">
-                <li class="add_platform">
+            <ul class="add_equipement">
+                <li class="add_equipement">
                     @dernierTypeAjoute.Nom_Type
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
                 </li>
