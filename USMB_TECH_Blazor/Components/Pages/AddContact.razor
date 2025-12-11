@@ -8,7 +8,7 @@
 @inject HttpClient Http
 
 <HeadContent>
-    <li class="add_contact" nk href="css/addContact.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addContact.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -16,14 +16,14 @@
         <div class="spinner"></div>
     </div>
 }
-<h2 class="add_contact">Ajouter un Contact</h2>
+<h2 class="add_style">Ajouter un Contact</h2>
 
 <div class="page-container">
     <EditForm Model="contact" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <h4 class="add_contact">Infos générales</h4>
+        <h4 class="add_style">Infos générales</h4>
         <label>Nom *</label>
         <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" />
         <ValidationMessage For="@(() => contact.Nom_Contact)" />
@@ -49,7 +49,7 @@
         <ValidationMessage For="@(() => contact.Telephone)" />
 
         <hr />
-        <h4 class="add_contact">Fonction</h4>
+        <h4 class="add_style">Fonction</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
             <option value="">Sélectionner une fonction</option>
             @foreach (var f in fonctions)
@@ -62,7 +62,7 @@
         @if (SelectedFonction == "ajouter")
         {
             @* <hr /> *@
-            @* <h4 class="add_contact">Ajouter une fonction</h4> *@
+            @* <h4 class="add_style">Ajouter une fonction</h4> *@
             <form onsubmit="return false;" class="mb-2">
                 <input class="form-control mb-1"
                        @bind="newFonction"
@@ -74,8 +74,8 @@
 
             @* @if (derniereFonctionAjoutee != null)
             {
-                <ul class="add_contact">
-                    <li class="add_contact">
+                <ul class="add_style">
+                    <li class="add_style">
                         @derniereFonctionAjoutee.Nom_Fonction
                     </li>
                 </ul>
@@ -83,7 +83,7 @@
         }
 
         <hr />
-        <h4 class="add_contact">Laboratoire</h4>
+        <h4 class="add_style">Laboratoire</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedLaboratoireNomCourt">
             <option value="">-- Choisir un laboratoire --</option>
             @foreach (var labo in laboratoires)
