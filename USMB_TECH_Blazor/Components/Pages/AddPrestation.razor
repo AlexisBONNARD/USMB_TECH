@@ -44,7 +44,7 @@
 
         <hr />
         <h4 class="add_contact">Contact à associer</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Contact">
+        <InputSelect class="form-control mb-2" @bind-Value="LastContact">
             <option value="">...</option>
             @foreach (var contact in contacts)
             {
@@ -58,7 +58,7 @@
         <div id="modalContact" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" @onclick="CloseModal">&times;</span>
-                <AddContact OnContact_Added="OnContact_Added" EnableRedirect="false" />
+                <AddContact OnContactAdded="OnContact_Added" EnableRedirect="false" />
             </div>
         </div>
 
