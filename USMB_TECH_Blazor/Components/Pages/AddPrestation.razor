@@ -21,11 +21,9 @@
 }
 <h2 class="add_prestation">Ajouter une Prestation</h2>
 
+<div class="page-container">
 <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
-    Intitulé de la prestation : 
-    <InputText @bind-Value="prestation.Intitule_Prestation"/>
-    <ValidationMessage For="@(() => prestation.Intitule_Prestation)"
-
+    
         <h4 class="add_labo">Infos générales</h4>
         <label>Intitulé de la prestation *</label>
         <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" />
