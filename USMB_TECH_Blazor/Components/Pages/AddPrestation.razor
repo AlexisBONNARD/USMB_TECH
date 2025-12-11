@@ -23,6 +23,8 @@
 
 <div class="page-container">
     <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
     
         <h4 class="add_labo">Infos générales</h4>
         <label>Intitulé de la prestation *</label>
@@ -42,6 +44,7 @@
         <label>Peut se réaliser chez le client *</label>
         <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client" />
 
+        @* //////Contact *@
         <hr />
         <h4 class="add_contact">Contact à associer</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Contact">
@@ -53,6 +56,7 @@
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Nom_Contact)" />
 
+        @* //////Domaine d'excellence *@
         <hr />
         <h4 class="add_contact">Domaine d'excellence</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
@@ -64,6 +68,7 @@
         </InputSelect>
     <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
 
+        @* //////Type de la prestation *@
         <hr />
         <h4 class="add_contact">Type de prestation</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Type">
@@ -72,8 +77,20 @@
             {
                 <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
             }
+            <option value="ajouter">Ajouter un nouveau type de prestation</option>
         </InputSelect>
+        @if(prestation.Type == "ajouter")
+        {
+            <form @onsubmit="AddType">
+                <input @bind="AddedType"
+                       placeholder="Nouveau type" />
+                <button type="submit">Ajouter ce nouveau type de prestation</button>
+            </form>
+        }
         <ValidationMessage For="@(() => prestation.Type)" />
+
+
+        @* //////Unite *@
         <hr />
         <h4 class="add_contact">Unite d'oeuvre</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Unite">
@@ -84,6 +101,8 @@
             }
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Unite)" />
+
+        @* //////laboratoire *@
         <hr />
         <h4 class="add_contact">Laboratoire</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Court">
@@ -94,6 +113,7 @@
             }
         </InputSelect>
 
+        @* //////Poles *@
         <hr />
         <h4 class="add_contact">Pôle Expertise</h4>
         <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
@@ -118,6 +138,7 @@
             }
         </ul>
 
+        @* //////Mots-clés *@
         <hr />
         <h4 class="add_contact">Mots-clés</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
@@ -136,10 +157,6 @@
                        placeholder="Nouveau Mot-clé" />
                 <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
-        }
-        else if (!string.IsNullOrWhiteSpace(motCle))
-        {
-            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
         <ul>
             @foreach (var mc in prestation.Mots_Clefs)
@@ -165,7 +182,7 @@
     Prestation prestation = new Prestation();
     IEnumerable<Contact_USMB> contacts = new List<Contact_USMB>();
     IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
-    IEnumerable<Type_Prestation> types = new List<Type_Prestation>();
+    ICollection<Type_Prestation> types = new List<Type_Prestation>();
     IEnumerable<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
     IEnumerable<Laboratoire> laboratoires = new List<Laboratoire>();
 
@@ -174,11 +191,13 @@
     [Parameter] public EventCallback<Prestation> OnPrestationAdded { get; set; }
     [Parameter] public bool EnableRedirect { get; set; } = true;
 
-
     string motCle;
     string NewMotCle;
 
     string PoleExpertise;
+
+    string NewType;
+    string AddedType;
 
     private bool isLoading = false;
     bool isSubmitted = false;
@@ -188,7 +207,7 @@
     {
         contacts = await contactService.GetAllAsync();
         domaines = await domaineService.GetAllAsync();
-        types = await typeService.GetAllAsync();
+        types = (await typeService.GetAllAsync()).ToList();
         unites = await uniteService.GetAllAsync();
         existingMots = await motService.GetAllAsync();
         laboratoires = await laboratoireService.GetAllAsync();
@@ -255,7 +274,6 @@
             prestation.Poles.Add(PoleExpertise);
         }
         PoleExpertise = "";
-
     }
     private void RemovePole(string pole)
     {
@@ -265,4 +283,16 @@
     {
         prestation.Mots_Clefs.Remove(mc);
     }
+    private void AddType()
+    {
+        if(!string.IsNullOrWhiteSpace(AddedType) && prestation.Type == "ajouter")
+        {
+            types.Add(new Type_Prestation
+            {
+                Nom_Type_Prestation = AddedType
+            });
+            prestation.Type = AddedType;
+            AddedType = "";
+        }
     }
+}
