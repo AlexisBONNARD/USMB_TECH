@@ -17,3 +17,13 @@ window.closeModalLaboratoire = function () {
     console.log("Fonction closeModal appelée ✅");
     document.getElementById('modalLaboratoire').style.display = 'none';
 }
+
+window.openModalContact = function () {
+    console.log("Fonction openModal appelée ✅");
+    document.getElementById('modalContact').style.display = 'block';
+}
+
+window.closeModalContact = function () {
+    console.log("Fonction closeModal appelée ✅");
+    document.getElementById('modalContact').style.display = 'none';
+}
