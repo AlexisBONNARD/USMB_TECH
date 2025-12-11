@@ -177,6 +177,8 @@
     string newEquipement = "";
     int? selectedPrestationId = null;
     [Parameter] public EventCallback<Pole_Expertise> OnPole_ExpertiseAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
 
     bool isSubmitted = false;
     string message = "";
@@ -265,7 +267,7 @@
 
         message = null;         // efface le message
         StateHasChanged();      // met à jour
-        if (isSubmitted)
+        if (isSubmitted && EnableRedirect)
         {
             Navigation.NavigateTo($"/pole_expertise/{pole_expertise.Id_Pole_Expertise}");
         }
