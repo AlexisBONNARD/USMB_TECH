@@ -12,7 +12,7 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20251212082122_InitialCreate")]
+    [Migration("20251212082308_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -651,7 +651,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("nom_photo");
 
                     b.Property<string>("Url_Photo")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("url_photo");
