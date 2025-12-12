@@ -8,7 +8,7 @@
 @inject HttpClient Http
 
 <HeadContent>
-    <li class="add_labo" nk href="css/addLabo.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addLabo.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -16,13 +16,13 @@
         <div class="spinner"></div>
     </div>
 }
-<h2 class="add_labo">Ajouter un Laboratoire</h2>
+<h2 class="add_style">Ajouter un Laboratoire</h2>
 
 <div class="page-container">
     <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <h4 class="add_labo">Infos générales</h4>
+        <h4 class="add_style">Infos générales</h4>
 
         <label>Nom complet du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long"></InputText>
@@ -36,8 +36,8 @@
         <InputText class="form-control mb-2" @bind-Value="labo.Description"></InputText>
 
 
-        <h4 class="add_labo">Adresses</h4>
-        <h3 class="add_labo">Adresses du laboratoire</h3>
+        <h4 class="add_style">Adresses</h4>
+        <h3 class="add_style">Adresses du laboratoire</h3>
 
         <label>Rue du laboratoire *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
@@ -61,7 +61,7 @@
                 <InputCheckbox @bind-Value="SameAdresse" @oninput="Change" /> Adresses Campus = Labo
             </div>
         }
-        <h3 class="add_labo">Adresse du campus</h3>
+        <h3 class="add_style">Adresse du campus</h3>
 
         <label>Rue du campus *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"></InputText>
@@ -80,7 +80,7 @@
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
 
 
-        <h4 class="add_labo">Pôle d'expertise</h4>
+        <h4 class="add_style">Pôle d'expertise</h4>
         <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
             <option value="">...</option>
             @foreach(var pole in existingPoles)
@@ -92,17 +92,17 @@
         {
             <button type="button" @onclick="AddPole">Ajouter ce pôle</button>
         }
-        <ul class="add_labo">
+        <ul class="add_style">
             @foreach (var pe in labo.Pole_Expertises)
             {
-                <li class="add_labo">
+                <li class="add_style">
                     @pe
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pe)">Supprimer</button>
                 </li>
             }
         </ul>
         @* ///Mots-clés *@
-        <h4 class="add_labo">Mots-Clés *</h4>
+        <h4 class="add_style">Mots-Clés *</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
             <option value="">...</option>
             @if (existingMot is not null)
@@ -130,10 +130,10 @@
             <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
 
-        <ul class="add_labo">
+        <ul class="add_style">
             @foreach (var mc in labo.mot_Clefs)
             {
-                <li class="add_labo">
+                <li class="add_style">
                     @mc
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
                 </li>
@@ -141,7 +141,7 @@
         </ul>
 
         @* ///Thematique *@
-        <h4 class="add_labo">Thématiques : </h4>
+        <h4 class="add_style">Thématiques : </h4>
         <InputSelect class="form-control mb-2" @bind-Value="thematique">
             <option value="">...</option>
             @if (existingThematique is not null)
@@ -168,10 +168,10 @@
             <button type="button" @onclick="AddThematique">Ajouter cette thématique</button>
         }
 
-        <ul class="add_labo">
+        <ul class="add_style">
             @foreach (var mc in labo.Thematiques)
             {
-                <li class="add_labo">
+                <li class="add_style">
                     @mc
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(mc)">Supprimer</button>
                 </li>
@@ -179,7 +179,7 @@
         </ul>
 
         <hr />
-        <h4 class="add_labo">Photos</h4>
+        <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>

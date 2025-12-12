@@ -8,7 +8,7 @@
 @inject IJSRuntime JS
 
 <HeadContent>
-    <li class="add_equipement" nk href="css/addEquipement.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addEquipement.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -16,14 +16,14 @@
         <div class="spinner"></div>
     </div>
 }
-<h2 class="add_equipement">Ajouter un équipement</h2>
+<h2 class="add_style">Ajouter un équipement</h2>
 
 <div class="page-container">
     <EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <h4 class="add_equipement">Infos générales</h4>
+        <h4 class="add_style">Infos générales</h4>
         <label>Nom de l'équipement *</label>
         <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" />
         <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
@@ -54,11 +54,11 @@
         </div>
 
         <hr />
-        <h4 class="add_equipement">Photos</h4>
+        <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
 
         <hr />
-        <h4 class="add_equipement">Modèle *</h4>
+        <h4 class="add_style">Modèle *</h4>
         <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" />
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
 
@@ -78,7 +78,7 @@
         @if (LastMarque == "ajouter")
         {
             <hr />
-            <h4 class="add_platform">Ajouter une marque</h4>
+            <h4 class="add_style">Ajouter une marque</h4>
             <form onsubmit="return false;" class="mb-2">
                 <input class="form-control mb-1"
                        @bind="newMarque"
@@ -90,8 +90,8 @@
 
             @if (derniereMarqueAjoutee != null)
             {
-                <ul class="add_platform">
-                    <li class="add_platform">
+                <ul class="add_style">
+                    <li class="add_style">
                         @derniereMarqueAjoutee.Nom_Marque
                         <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMarque(derniereMarqueAjoutee)">Supprimer</button>
                     </li>
@@ -101,14 +101,14 @@
 
 
         <hr />
-        <h4 class="add_equipement">Pôle d'expertise *</h4>
+        <h4 class="add_style">Pôle d'expertise *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
             <option value="">...</option>
             @foreach (var pole_expertise in pole_expertises)
             {
                 <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
             }
-            <option value="ajouter" class="alert-info">----- Créer une pole d'expertise -----</option>
+            <option value="ajouter" class="alert-info">----- Créer un pôle d'expertise -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Nom_Pole_Expertise)" />
 
@@ -116,13 +116,13 @@
         <div id="modalPole_Expertise" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" @onclick="CloseModal">&times;</span>
-                <AddPlateforme OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" />
+                <AddPlateforme OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" EnableRedirect="false" />
             </div>
         </div>
 
 
         <hr />
-        <h4 class="add_equipement">Type d'équipement *</h4>
+        <h4 class="add_style">Type d'équipement *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
             <option>...</option>
             @foreach (var type in type_Equipements)
@@ -135,7 +135,7 @@
     @if (LastTypeEquipement == "ajouter")
     {
         <hr />
-        <h4 class="add_platform">Ajouter un type d’équipement</h4>
+        <h4 class="add_style">Ajouter un type d’équipement</h4>
         <form onsubmit="return false;" class="mb-2">
             <input class="form-control mb-1"
                    @bind="newTypeEquipement"
@@ -147,8 +147,8 @@
 
         @if (dernierTypeAjoute != null)
         {
-            <ul class="add_platform">
-                <li class="add_platform">
+            <ul class="add_style">
+                <li class="add_style">
                     @dernierTypeAjoute.Nom_Type
                     <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
                 </li>
@@ -158,7 +158,7 @@
 
 
         <hr />
-        <h4 class="add_equipement">Exemple d'utilisation</h4>
+        <h4 class="add_style">Exemple d'utilisation</h4>
         <div>
             <label>Nom de l'exemple : </label>
             <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" />

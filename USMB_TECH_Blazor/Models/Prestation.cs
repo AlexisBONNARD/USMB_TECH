@@ -15,6 +15,8 @@ namespace USMB_TECH_Blazor.Models
 
         public string? Nom_Court { get; set; }
 
+        public string Nom_Pole_Expertise { get; set; }
+
         [Required(ErrorMessage = "Un domaine d'expertise est obligatoire")]
         public string Nom_Domaine { get; set; }
 

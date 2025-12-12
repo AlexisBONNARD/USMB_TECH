@@ -11,7 +11,7 @@
 @inject IMainService<Pole_Expertise, int> poleService
 
 <HeadContent>
-    <li class="add_prestation" nk href="css/addPrestation.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addPrestation.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -19,12 +19,14 @@
         <div class="spinner"></div>
     </div>
 }
-<h2 class="add_prestation">Ajouter une Prestation</h2>
+<h2 class="add_style">Ajouter une Prestation</h2>
 
 <div class="page-container">
     <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
     
-        <h4 class="add_labo">Infos générales</h4>
+        <h4 class="add_style">Infos générales</h4>
         <label>Intitulé de la prestation *</label>
         <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" />
 
@@ -42,17 +44,28 @@
         <label>Peut se réaliser chez le client *</label>
         <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client" />
 
+        @* //////Contact *@
         <hr />
-        <h4 class="add_contact">Contact à associer</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Contact">
+        <h4 class="add_style">Contact à associer</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="LastContact">
             <option value="">...</option>
             @foreach (var contact in contacts)
             {
                 <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
             }
+            <option value="ajouter" class="alert-info">----- Créer un contact -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Nom_Contact)" />
 
+        <!-- Modal -->
+        <div id="modalContact" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalContact">&times;</span>
+                <AddContact OnContactAdded="OnContact_Added" EnableRedirect="false" />
+            </div>
+        </div>
+
+         @* //////Domaine d'excellence *@
         <hr />
         <h4 class="add_contact">Domaine d'excellence</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
@@ -64,18 +77,31 @@
         </InputSelect>
     <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
 
+        @* //////Type de la prestation *@
         <hr />
-        <h4 class="add_contact">Type de prestation</h4>
+        <h4 class="add_style">Type de prestation</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Type">
             <option value="">...</option>
             @foreach (var type in types)
             {
                 <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
             }
+            <option value="ajouter">Ajouter un nouveau type de prestation</option>
         </InputSelect>
+        @if(prestation.Type == "ajouter")
+        {
+            <form @onsubmit="AddType">
+                <input @bind="AddedType"
+                       placeholder="Nouveau type" />
+                <button type="submit">Ajouter ce nouveau type de prestation</button>
+            </form>
+        }
         <ValidationMessage For="@(() => prestation.Type)" />
+
+
+        @* //////Unite *@
         <hr />
-        <h4 class="add_contact">Unite d'oeuvre</h4>
+        <h4 class="add_style">Unite d'oeuvre</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Unite">
             <option value="">...</option>
             @foreach (var unite in unites)
@@ -84,25 +110,45 @@
             }
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Unite)" />
+
+        @* //////laboratoire *@
         <hr />
-        <h4 class="add_contact">Laboratoire</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Court">
+        <h4 class="add_style">Laboratoire</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="LastLaboratoire">
+
             <option value="">...</option>
             @foreach (var laboratoire in laboratoires)
             {
                 <option value="@laboratoire.Nom_Court">@laboratoire.Nom_Long</option>
             }
+            <option value="ajouter" class="alert-info">----- Créer un Laboratorie -----</option>
         </InputSelect>
 
+        <div id="modalLaboratoirePrestation" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalLaboratoire">&times;</span>
+                <AddLabo OnLaboratoireAdded="OnLaboratoireAdded" EnableRedirect="false" />
+            </div>
+        </div>
+
+        @* //////Poles *@
         <hr />
-        <h4 class="add_contact">Pôle Expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
+        <h4 class="add_style">Pôle Expertise</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="LastPole_Expertise">
             <option value="">...</option>
             @foreach (var pole in existingpoles)
             {
                 <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
             }
+            <option value="ajouter" class="alert-info">----- Créer un Pôle d'expertise -----</option>
         </InputSelect>
+
+        <div id="modalPole_Expertise" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalPole_Expertise">&times;</span>
+                <AddPlateforme OnPole_ExpertiseAdded="OnPole_ExpetiseAdded" EnableRedirect="false" />
+            </div>
+        </div>
 
         @if (!string.IsNullOrWhiteSpace(PoleExpertise))
         {
@@ -118,8 +164,9 @@
             }
         </ul>
 
+        @* //////Mots-clés *@
         <hr />
-        <h4 class="add_contact">Mots-clés</h4>
+        <h4 class="add_style">Mots-clés</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
             <option value="">...</option>
             @foreach (var motcle in existingMots)
@@ -136,10 +183,6 @@
                        placeholder="Nouveau Mot-clé" />
                 <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
-        }
-        else if (!string.IsNullOrWhiteSpace(motCle))
-        {
-            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
         <ul>
             @foreach (var mc in prestation.Mots_Clefs)
@@ -165,30 +208,94 @@
     Prestation prestation = new Prestation();
     IEnumerable<Contact_USMB> contacts = new List<Contact_USMB>();
     IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
-    IEnumerable<Type_Prestation> types = new List<Type_Prestation>();
+    ICollection<Type_Prestation> types = new List<Type_Prestation>();
     IEnumerable<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
     IEnumerable<Laboratoire> laboratoires = new List<Laboratoire>();
 
-    private IEnumerable<Pole_Expertise> existingpoles = new List<Pole_Expertise>();
+    IEnumerable<Pole_Expertise> existingpoles = new List<Pole_Expertise>();
     private IEnumerable<Mot_Clef> existingMots = new List<Mot_Clef>();
     [Parameter] public EventCallback<Prestation> OnPrestationAdded { get; set; }
     [Parameter] public bool EnableRedirect { get; set; } = true;
-
 
     string motCle;
     string NewMotCle;
 
     string PoleExpertise;
 
+    string AddedType;
+
     private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
+
+    private string _lastContact;
+
+    private string LastContact
+    {
+        get => _lastContact;
+        set
+        {
+            _lastContact = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalContact();
+            }
+            else
+            {
+                prestation.Nom_Contact = value;
+            }
+        }
+    }
+
+    private string _lastPole_Expertise;
+
+    private string LastPole_Expertise
+    {
+        get => _lastPole_Expertise;
+        set
+        {
+            _lastPole_Expertise = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalPole_Expertise();
+            }
+            else
+            {
+                prestation.Nom_Pole_Expertise = value;
+            }
+        }
+    }
+
+    private string _lastLaboratoire;
+
+    private string LastLaboratoire
+    {
+        get => _lastLaboratoire;
+        set
+        {
+            _lastLaboratoire = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalLaboratoire();
+            }
+            else
+            {
+                prestation.Nom_Court = value;
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         contacts = await contactService.GetAllAsync();
         domaines = await domaineService.GetAllAsync();
-        types = await typeService.GetAllAsync();
+        types = (await typeService.GetAllAsync()).ToList();
         unites = await uniteService.GetAllAsync();
         existingMots = await motService.GetAllAsync();
         laboratoires = await laboratoireService.GetAllAsync();
@@ -255,7 +362,6 @@
             prestation.Poles.Add(PoleExpertise);
         }
         PoleExpertise = "";
-
     }
     private void RemovePole(string pole)
     {
@@ -265,4 +371,67 @@
     {
         prestation.Mots_Clefs.Remove(mc);
     }
+    private void AddType()
+    {
+        if(!string.IsNullOrWhiteSpace(AddedType) && prestation.Type == "ajouter")
+        {
+            types.Add(new Type_Prestation
+            {
+                Nom_Type_Prestation = AddedType
+            });
+            prestation.Type = AddedType;
+            AddedType = "";
+        }
     }
+
+    private void OpenModalContact()
+    {
+        JS.InvokeVoidAsync("openModalContact");
+    }
+
+    private void CloseModalContact()
+    {
+        JS.InvokeVoidAsync("closeModalContact");
+    }
+
+    private void OpenModalPole_Expertise()
+    {
+        JS.InvokeVoidAsync("openModalPole_expertise");
+    }
+
+    private void CloseModalPole_Expertise()
+    {
+        JS.InvokeVoidAsync("closeModalPole_expertise");
+    }
+
+    private void OpenModalLaboratoire()
+    {
+        JS.InvokeVoidAsync("openModalLaboratoirePrestation");
+    }
+
+    private void CloseModalLaboratoire()
+    {
+        JS.InvokeVoidAsync("closeModalLaboratoirePrestation");
+    }
+
+    private void OnContact_Added(Contact_USMB contact)
+    {
+        contacts = contacts.Append(contact);
+        LastContact = contact.Nom_Contact;
+        CloseModalContact();
+    }
+
+    private void OnPole_ExpetiseAdded(Pole_Expertise poleExpertise)
+    {
+        existingpoles = existingpoles.Append(poleExpertise);
+        LastPole_Expertise = poleExpertise.Nom_Pole_Expertise;
+        CloseModalPole_Expertise();
+    }
+
+    private void OnLaboratoireAdded(Laboratoire laboratoire)
+    {
+        laboratoires = laboratoires.Append(laboratoire);
+        LastLaboratoire = laboratoire.Nom_Court;
+        CloseModalLaboratoire();
+    }
+}
