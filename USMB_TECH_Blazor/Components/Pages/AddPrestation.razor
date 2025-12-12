@@ -33,11 +33,11 @@
         <label>Description de la prestation *</label>
         <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation"></InputText>
 
-        <label>Prix de vente de la prestatio *</label>
+        <label>Prix de vente de la prestation *</label>
         <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"></InputNumber>
         <ValidationMessage For="@(() => prestation.Prix_Vente)" />
 
-        <label>Prix de revient de la prestatio *</label>
+        <label>Prix de revient de la prestation *</label>
         <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"></InputNumber>
     <ValidationMessage For="@(() => prestation.Prix_Revient)" />
 
@@ -86,16 +86,7 @@
             {
                 <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
             }
-            <option value="ajouter">Ajouter un nouveau type de prestation</option>
         </InputSelect>
-        @if(prestation.Type == "ajouter")
-        {
-            <form @onsubmit="AddType">
-                <input @bind="AddedType"
-                       placeholder="Nouveau type" />
-                <button type="submit">Ajouter ce nouveau type de prestation</button>
-            </form>
-        }
         <ValidationMessage For="@(() => prestation.Type)" />
 
 
@@ -222,7 +213,6 @@
 
     string PoleExpertise;
 
-    string AddedType;
 
     private bool isLoading = false;
     bool isSubmitted = false;
@@ -370,18 +360,6 @@
     private void RemoveMotCle(string mc)
     {
         prestation.Mots_Clefs.Remove(mc);
-    }
-    private void AddType()
-    {
-        if(!string.IsNullOrWhiteSpace(AddedType) && prestation.Type == "ajouter")
-        {
-            types.Add(new Type_Prestation
-            {
-                Nom_Type_Prestation = AddedType
-            });
-            prestation.Type = AddedType;
-            AddedType = "";
-        }
     }
 
     private void OpenModalContact()
