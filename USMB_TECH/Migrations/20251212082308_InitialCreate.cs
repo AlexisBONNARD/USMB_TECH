@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace USMB_TECH.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -824,7 +824,7 @@ namespace USMB_TECH.Migrations
                     id_prestation = table.Column<int>(type: "integer", nullable: true),
                     nom_court = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     nom_photo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    url_photo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                    url_photo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {

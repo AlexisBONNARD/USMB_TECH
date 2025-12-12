@@ -1,8 +1,7 @@
 ﻿@page "/equipement/{Id:int}"
-@inject Service.IMainService<Equipement,int> dataRepository
+@inject Service.IMainService<Equipement, int> dataRepository
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-
 
 <HeadContent>
     <link href="css/PageDetail.css" rel="stylesheet" />
@@ -16,7 +15,6 @@
         @deleteMessage
     </div>
 }
-
 
 @if (equipement == null)
 {
@@ -38,16 +36,23 @@ else
                 <div class="center-item">
                     @foreach (Photo photo in equipement.Photos)
                     {
-
                         <img src=@photo.Url_Photo alt="photo équipement" />
                     }
                 </div>
             </section>
 
+            @* <!-- Ajout du modèle 3D avec Blazor3D -->
+            <section>
+                <h3>Modèle 3D de l'Équipement</h3>
+                <Blazor3D.Model3DViewer 
+                    ModelUrl="https://skfb.ly/pEunL"
+                    Width="100%" 
+                    Height="500px" />
+            </section> *@
+
             <!-- Utilisation -->
             <section>
                 <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
-
                 @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                 {
                     @foreach (var exemple in equipement.Exemple_Utilisations)
@@ -67,15 +72,12 @@ else
                 <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
                 <p>@equipement.Description_Technique</p>
             </section>
-
         </div>
 
         <!-- ========== COLONNE CENTRALE ========== -->
         <div class="col-center">
-
             <section>
                 <h3>MOTS CLÉS</h3>
-
                 <ul class="list-style">
                     @if (equipement.Pole_ExpertiseNavigation?.Specifiers != null)
                     {
@@ -90,38 +92,32 @@ else
                 </ul>
 
                 <h3>TYPE EQUIPEMENTS</h3>
-
-                <ul class="list-style
-">
+                <ul class="list-style">
                     @if (equipement.Type_EquipementNavigation != null)
                     {
                         <li>@equipement.Type_EquipementNavigation.Nom_Type</li>
                     }
                 </ul>
             </section>
-
         </div>
 
         <!-- ========== COLONNE DROITE ========== -->
         <div class="col-right">
-
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
                 <div class="btn-blue">@thematique</div>
             </div>
 
-          @*   <div class="info-block">
+            @*   <div class="info-block">
                 <h4>Localisation :</h4>
                 <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)'</div>
             </div> *@
 
             <div class="info-block">
                 <h4>Pôle d'expertise :</h4>
-                <div class="btn-blue"
-                     @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
+                <div class="btn-blue" @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
                     @equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise
                 </div>
-
             </div>
 
             <FormulaireContact />
@@ -158,7 +154,7 @@ else
     {
         bool confirm = await JS.InvokeAsync<bool>(
             "confirm",
-            "Voulez-vous vraiment supprimer cette pole_expertise ?"
+            "Voulez-vous vraiment supprimer cet équipement ?"
         );
 
         if (!confirm)
@@ -167,28 +163,23 @@ else
         try
         {
             await dataRepository.DeleteAsync(id);
-
             deleteSuccess = true;
-            await ShowDeleteAlert("Équipement supprimé avec succès ✅");
+            await ShowDeleteAlert("Équipement supprimé avec succès");
             Navigation.NavigateTo("/", true);
-
         }
         catch (Exception ex)
         {
             deleteSuccess = false;
-            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
         }
     }
-
 
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------
     private async Task ShowDeleteAlert(string msg)
     {
         deleteMessage = msg;
         StateHasChanged();
-
         await Task.Delay(3000);
-
         deleteMessage = null;
         StateHasChanged();
     }

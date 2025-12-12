@@ -1,0 +1,29 @@
+﻿@page "/3d-viewer"
+
+<link href="css/Affichage3D.css" rel="stylesheet" />
+
+<div style="height:500px;width:100%;">
+    <Viewer @ref="viewer" ViewerSettings="@settings" Scene="@scene" />
+</div>
+
+@code {
+    private Viewer viewer;
+    private readonly ViewerSettings settings = new ViewerSettings
+    {
+        // id du container ou settings supplémentaires
+    };
+    private Scene scene = new Scene();
+
+    protected override void OnInitialized()
+    {
+        // Lumière
+        scene.Add(new AmbientLight());
+        scene.Add(new PointLight { Position = new Vector3 { X = 1, Y = 3, Z = 0 } });
+
+        //⇨ Ici ajoute d'un loader pour charger un nouveaux modèle 3D
+        // Exemple : importer un objet .glb
+        // voir les exemples du repo pour le code d'import
+
+        base.OnInitialized();
+    }
+}

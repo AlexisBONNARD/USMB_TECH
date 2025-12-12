@@ -64,21 +64,19 @@
 
         <hr />
         <div class="form-group">
-            <label>Marque :</label>
-            <InputSelect @bind-Value="LastMarque">
+            <h4 class="add_style">Marque *</h4>
+            <InputSelect class="form-select mb-2" @bind-Value="LastMarque">
                 <option value="">...</option>
                 @foreach (var marque in marques)
                 {
                     <option value="@marque.Nom_Marque">@marque.Nom_Marque</option>
                 }
-                <option value="ajouter">Ajouter une marque</option>
+                <option value="ajouter" class="alert-info">----- Créer une marque -----</option>
             </InputSelect>
             <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
         </div>
         @if (LastMarque == "ajouter")
         {
-            <hr />
-            <h4 class="add_style">Ajouter une marque</h4>
             <form onsubmit="return false;" class="mb-2">
                 <input class="form-control mb-1"
                        @bind="newMarque"
@@ -129,13 +127,11 @@
             {
                 <option value="@type.Nom_Type">@type.Nom_Type</option>
             }
-            <option value="ajouter">Ajouter un type</option>
+            <option value="ajouter" class="alert-info">----- Créer un type -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
     @if (LastTypeEquipement == "ajouter")
     {
-        <hr />
-        <h4 class="add_style">Ajouter un type d’équipement</h4>
         <form onsubmit="return false;" class="mb-2">
             <input class="form-control mb-1"
                    @bind="newTypeEquipement"
@@ -158,7 +154,7 @@
 
 
         <hr />
-        <h4 class="add_style">Exemple d'utilisation</h4>
+        <h4 class="add_style">Exemple d'utilisation *</h4>
         <div>
             <label>Nom de l'exemple : </label>
             <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" />

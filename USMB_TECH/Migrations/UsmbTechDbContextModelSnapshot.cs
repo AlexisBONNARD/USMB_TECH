@@ -648,7 +648,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("nom_photo");
 
                     b.Property<string>("Url_Photo")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("url_photo");

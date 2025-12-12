@@ -33,7 +33,7 @@ namespace USMB_TECH.Models
 
         [Column("url_photo")]
         [MaxLength(500)]
-        public string Url_Photo { get; set; }
+        public string? Url_Photo { get; set; } = "/images/No_image_available.png";
 
         [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Photos))]
