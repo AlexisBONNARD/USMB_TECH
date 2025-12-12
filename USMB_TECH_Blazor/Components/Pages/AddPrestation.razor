@@ -67,7 +67,7 @@
 
          @* //////Domaine d'excellence *@
         <hr />
-        <h4 class="add_contact">Domaine d'excellence</h4>
+        <h4 class="add_style">Domaine d'excellence</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
             <option value="">...</option>
             @foreach (var domaine in domaines)
@@ -173,7 +173,7 @@
             {
                 <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
             }
-            <option value="ajouter"> Ajouter un nouveau mot-clé</option>
+            <option value="ajouter" class="alert-info">----- Créer un mot-clé -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Mots_Clefs)" />
         @if (motCle == "ajouter")
