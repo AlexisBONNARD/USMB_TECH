@@ -1,5 +1,6 @@
 ﻿@page "/ajouterPrestation"
 @inject NavigationManager Navigation
+@inject HttpClient Http
 @inject IJSRuntime JS
 @inject IMainService<Prestation, int> prestationService
 @inject IMainService<Contact_USMB, int> contactService
@@ -28,17 +29,17 @@
     
         <h4 class="add_style">Infos générales</h4>
         <label>Intitulé de la prestation *</label>
-        <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" />
+        <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" placeholder="Prestation exemple"/>
 
         <label>Description de la prestation *</label>
-        <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation" placeholder="Prestation pour montrer l'exemple"/>
 
-        <label>Prix de vente de la prestatio *</label>
-        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"></InputNumber>
+        <label>Prix de vente de la prestation *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"/>
         <ValidationMessage For="@(() => prestation.Prix_Vente)" />
 
-        <label>Prix de revient de la prestatio *</label>
-        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"></InputNumber>
+        <label>Prix de revient de la prestation *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"/>
     <ValidationMessage For="@(() => prestation.Prix_Revient)" />
 
         <label>Peut se réaliser chez le client *</label>
@@ -67,7 +68,7 @@
 
          @* //////Domaine d'excellence *@
         <hr />
-        <h4 class="add_contact">Domaine d'excellence</h4>
+        <h4 class="add_style">Domaine d'excellence</h4>
         <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
             <option value="">...</option>
             @foreach (var domaine in domaines)
@@ -86,16 +87,7 @@
             {
                 <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
             }
-            <option value="ajouter">Ajouter un nouveau type de prestation</option>
         </InputSelect>
-        @if(prestation.Type == "ajouter")
-        {
-            <form @onsubmit="AddType">
-                <input @bind="AddedType"
-                       placeholder="Nouveau type" />
-                <button type="submit">Ajouter ce nouveau type de prestation</button>
-            </form>
-        }
         <ValidationMessage For="@(() => prestation.Type)" />
 
 
@@ -173,7 +165,7 @@
             {
                 <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
             }
-            <option value="ajouter"> Ajouter un nouveau mot-clé</option>
+            <option value="ajouter" class="alert-info">----- Créer un mot-clé -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => prestation.Mots_Clefs)" />
         @if (motCle == "ajouter")
@@ -222,7 +214,6 @@
 
     string PoleExpertise;
 
-    string AddedType;
 
     private bool isLoading = false;
     bool isSubmitted = false;
@@ -307,7 +298,24 @@
         {
             isLoading = true; // active le loader
             StateHasChanged();
-            await prestationService.AddAsync(prestation);
+
+            // Si aucune photo uploadée → photo par défaut
+            if (prestation.Photos == null || !prestation.Photos.Any())
+            {
+                prestation.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Prestations", prestation);
+            var createdprestation = await response.Content.ReadFromJsonAsync<Prestation>();
+
+            prestation = createdprestation;
             isSubmitted = true;
             ShowAlert("La prestation a été ajoutée avec succès.");
         }
@@ -370,18 +378,6 @@
     private void RemoveMotCle(string mc)
     {
         prestation.Mots_Clefs.Remove(mc);
-    }
-    private void AddType()
-    {
-        if(!string.IsNullOrWhiteSpace(AddedType) && prestation.Type == "ajouter")
-        {
-            types.Add(new Type_Prestation
-            {
-                Nom_Type_Prestation = AddedType
-            });
-            prestation.Type = AddedType;
-            AddedType = "";
-        }
     }
 
     private void OpenModalContact()

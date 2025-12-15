@@ -3,10 +3,11 @@
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject Service.IMainService<Prestation,int> prestationDatas
+@inject Service.IMainService<Domaine_Excellence,int> domaineDatas
 
 
 <HeadContent>
-    <li class="add_style" nk href="css/addPlateforms.css" rel="stylesheet" />
+    <li class="add_style" nk href="css/addStyle.css" rel="stylesheet" />
 </HeadContent>
 @if (isLoading)
 {
@@ -24,23 +25,23 @@
 
         <h4 class="add_style">Infos générales</h4>
         <label>Nom pôle d'expertise *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" />
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" placeholder="Santé & Sport"/>
         <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
 
         <label>Description *</label>
-        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" />
+        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" placeholder="Pôle d'expertise dédiée à la Santé & au Sport" />
         <ValidationMessage For="@(() => pole_expertise.Description_Pole_Expertise)" />
 
         <label>Nom contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" />
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" placeholder="Présentation laboratoire" />
         <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
 
         <label>URL contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" />
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" placeholder="https://www.univ-smb.fr"/>
         <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
 
         <label>Description contenu *</label>
-        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" />
+        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" placeholder="Présentation de ce laboratoire" />
         <ValidationMessage For="@(() => pole_expertise.Description_Contenu)" />
 
         <label class="mt-2">Active ?</label>
@@ -153,6 +154,17 @@
             }
         </ul>
 
+        <label>Domaine d'excellence *</label>
+        <InputSelect class="form-control mb-2"
+                     @bind-Value="pole_expertise.Id_Domaine_Excellence">
+            <option value="">-- Sélectionner un domaine --</option>
+            @foreach (var d in domaines)
+            {
+                <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => pole_expertise.Id_Domaine_Excellence)" />
+
 
         <hr />
         <button class="btn btn-success mt-3" type="submit">Créer le pôle d'expertise</button>
@@ -169,6 +181,7 @@
 @code {
     Pole_Expertise pole_expertise = new Pole_Expertise();
     private List<Prestation> prestations = new();
+    private List<Domaine_Excellence> domaines = new();
     private bool isLoading = false;
 
     string newMot_Clef = "";
@@ -186,6 +199,7 @@
     protected override async Task OnInitializedAsync()
     {
         prestations = (await prestationDatas.GetAllAsync()).ToList();
+        domaines = (await domaineDatas.GetAllAsync()).ToList();
     }
 
     void AddMot_Clef()
@@ -229,8 +243,23 @@
             isLoading = true; // active le loader
             StateHasChanged();
 
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/pole_expertises", pole_expertise);
+            // Si aucune photo uploadée → photo par défaut
+            if (pole_expertise.Photos == null || !pole_expertise.Photos.Any())
+            {
+                pole_expertise.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
 
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Pole_Expertises", pole_expertise);
+            var createdpole= await response.Content.ReadFromJsonAsync<Pole_Expertise>();
+
+            pole_expertise = createdpole;
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;

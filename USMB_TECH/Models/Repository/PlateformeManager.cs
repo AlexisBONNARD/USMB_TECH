@@ -18,7 +18,19 @@ namespace USMB_TECH.Models.Repository
 
         public async Task<IEnumerable<Pole_Expertise>> GetAllAsync()
         {
-            return await _context.Pole_Expertises.ToListAsync();
+            return await _context.Pole_Expertises
+                                .Include(p => p.Specifiers)
+                    .ThenInclude(s => s.Mot_ClefNavigation)
+                .Include(p => p.Presenters)
+                    .ThenInclude(pr => pr.PrestationNavigation)
+
+                .Include(p => p.Photos)
+                .Include(p => p.Equipements)
+                    .ThenInclude(e => e.Photos)
+                .Include(Do => Do.Domaine_ExcellenceNavigation)
+                .Include(d => d.Presenters)
+                    .ThenInclude(pre => pre.PrestationNavigation)
+                        .ThenInclude(ph => ph.Photos).ToListAsync();
         }
 
         public async Task<Pole_Expertise?> GetByIdAsync(int id)

@@ -18,6 +18,7 @@ namespace USMB_TECH.Mapper
                 Url_Contenu = dto.Url_Contenu,
                 Description_Contenu = dto.Description_Contenu,
                 Actif = dto.Actif,
+                Id_Domaine_Excellence = dto.Id_Domaine_Excellence,
                 Photos = dto.Photos.Select(p => new Photo
                 {
                     Nom_Photo = p.Nom_Photo,

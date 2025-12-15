@@ -25,15 +25,15 @@
 
         <h4 class="add_style">Infos générales</h4>
         <label>Nom de l'équipement *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" placeholder="Serveur"/>
         <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
 
-        <label>Num_Immobilisation *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" />
+        <label>Numéro d'immobilisation *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" placeholder="IT-2024-00157"/>
         <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
 
         <label>Description Technique *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" placeholder="Serveur permettant de stocker les données"/>
         <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
 
         <label>Prix Achat *</label>
@@ -59,26 +59,24 @@
 
         <hr />
         <h4 class="add_style">Modèle *</h4>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" placeholder="LDLC PC SERVPRO 2U PRO Ultra 5" />
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
 
         <hr />
         <div class="form-group">
-            <label>Marque :</label>
-            <InputSelect @bind-Value="LastMarque">
+            <h4 class="add_style">Marque *</h4>
+            <InputSelect class="form-select mb-2" @bind-Value="LastMarque" placeholder="LDLC">
                 <option value="">...</option>
                 @foreach (var marque in marques)
                 {
                     <option value="@marque.Nom_Marque">@marque.Nom_Marque</option>
                 }
-                <option value="ajouter">Ajouter une marque</option>
+                <option value="ajouter" class="alert-info">----- Créer une marque -----</option>
             </InputSelect>
             <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
         </div>
         @if (LastMarque == "ajouter")
         {
-            <hr />
-            <h4 class="add_style">Ajouter une marque</h4>
             <form onsubmit="return false;" class="mb-2">
                 <input class="form-control mb-1"
                        @bind="newMarque"
@@ -124,51 +122,49 @@
         <hr />
         <h4 class="add_style">Type d'équipement *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
-            <option>...</option>
+            <option value="">Sélectionner un type</option>
             @foreach (var type in type_Equipements)
             {
                 <option value="@type.Nom_Type">@type.Nom_Type</option>
             }
-            <option value="ajouter">Ajouter un type</option>
+            <option value="ajouter" class="alert-info">----- Créer un type -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
-    @if (LastTypeEquipement == "ajouter")
-    {
-        <hr />
-        <h4 class="add_style">Ajouter un type d’équipement</h4>
-        <form onsubmit="return false;" class="mb-2">
-            <input class="form-control mb-1"
-                   @bind="newTypeEquipement"
-                   @bind:event="oninput"
-                   placeholder="Nom du type"
-                   @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
-            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
-        </form>
-
-        @if (dernierTypeAjoute != null)
+        @if (LastTypeEquipement == "ajouter")
         {
-            <ul class="add_style">
-                <li class="add_style">
-                    @dernierTypeAjoute.Nom_Type
-                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
-                </li>
-            </ul>
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newTypeEquipement"
+                       @bind:event="oninput"
+                       placeholder="Nom du type"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
+            </form>
+
+            @if (dernierTypeAjoute != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @dernierTypeAjoute.Nom_Type
+                        <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
+                    </li>
+                </ul>
+            }
         }
-    }
 
 
         <hr />
-        <h4 class="add_style">Exemple d'utilisation</h4>
+        <h4 class="add_style">Exemple d'utilisation *</h4>
         <div>
             <label>Nom de l'exemple : </label>
-            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" />
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" placeholder="Stockage"/>
         </div>
         <div>
             <label>Description : </label>
-            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" />
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" placeholder="la base de données est stockée sur ce serveur" />
         </div>
-        
-        <hr/>
+
+        <hr />
         <button type="submit" class="btn btn-success mt-3">Ajouter</button>
 
         @if (!string.IsNullOrEmpty(message))
@@ -177,7 +173,6 @@
                 @message
             </div>
         }
-
     </EditForm>
 </div>
 
@@ -310,11 +305,27 @@
             isLoading = true; // démarre le loader
             StateHasChanged();
 
+            // Si aucune photo uploadée → photo par défaut
+            if (addEquipement.Photos == null || !addEquipement.Photos.Any())
+            {
+                addEquipement.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
+
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
 
-            await equipementDatas.AddAsync(addEquipement);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Equipements", addEquipement);
+            var createdeqipement = await response.Content.ReadFromJsonAsync<Equipement>();
 
+            addEquipement = createdeqipement;
             isSubmitted = true;
             await ShowAlert("Équipement ajouté avec succès ✅");
         }

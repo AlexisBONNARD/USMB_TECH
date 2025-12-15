@@ -25,34 +25,34 @@
         <h4 class="add_style">Infos générales</h4>
 
         <label>Nom complet du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long" placeholder="Laboratoires de France" />
         <ValidationMessage For="@(() => labo.Nom_Long)" />
 
         <label>Nom du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Court"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Court" placeholder="LABO" />
         <ValidationMessage For="@(() => labo.Nom_Court)" />
 
         <label>Description *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Description"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Description" placeholder="Description des laboratoires de France" />
 
 
         <h4 class="add_style">Adresses</h4>
         <h3 class="add_style">Adresses du laboratoire</h3>
 
         <label>Rue du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"/>
         <ValidationMessage For="@(() => labo.Rue_Adresse_Labo)" />
 
         <label>Ville du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"/>
         <ValidationMessage For="@(() => labo.Ville_Adresse_Labo)" />
 
         <label>Code postal du laboratoire *</label>
-        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"></InputText>
+        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"/>
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
         <label>Pays du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"/>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
 
         @if (labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
@@ -64,19 +64,19 @@
         <h3 class="add_style">Adresse du campus</h3>
 
         <label>Rue du campus *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"/>
         <ValidationMessage For="@(() => labo.Rue_Adresse_Campus)" />
 
         <label>Ville du campus *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"/>
         <ValidationMessage For="@(() => labo.Ville_Adresse_Campus)" />
 
         <label>Code postal du campus *</label>
-        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"></InputText>
+        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"/>
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
         <label>Pays du campus *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"/>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
 
 
@@ -229,6 +229,20 @@
         {
             isLoading = true; // active le loader
             StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (labo.Photos == null || !labo.Photos.Any())
+            {
+                labo.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
             await laboService.AddAsync(labo);
 
             isSubmitted = true;
