@@ -13,6 +13,8 @@ namespace USMB_TECH.DTO
         public string Description_Contenu { get; set; }
         public bool Actif { get; set; }
 
+        public int Id_Domaine_Excellence { get; set; }
+
         public List<PhotoDto> Photos { get; set; } = new();
         public List<ExempleUtilisationDto> ExempleUtilisations { get; set; } = new();
         public List<Presenter> Presenters { get; set; } = new();

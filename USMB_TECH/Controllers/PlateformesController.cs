@@ -90,7 +90,8 @@ namespace USMB_TECH.Controllers
                     Nom_Contenu = pole_expertiseDto.Nom_Contenu?.Trim(),
                     Url_Contenu = pole_expertiseDto.Url_Contenu?.Trim(),
                     Description_Contenu = pole_expertiseDto.Description_Contenu?.Trim(),
-                    Actif = pole_expertiseDto.Actif
+                    Actif = pole_expertiseDto.Actif,
+                    Id_Domaine_Excellence = pole_expertiseDto.Id_Domaine_Excellence
                 };
 
                 _context.Pole_Expertises.Add(pole_expertise);
