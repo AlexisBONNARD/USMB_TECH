@@ -40,6 +40,7 @@ namespace USMB_TECH.Models
 
         [Column("telephone")]
         [MaxLength(50)]
+        [Phone]
         public string? Telephone { get; set; }
 
         [ForeignKey("Id_Fonction")]

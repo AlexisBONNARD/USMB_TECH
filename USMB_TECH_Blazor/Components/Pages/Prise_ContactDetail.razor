@@ -1,6 +1,7 @@
 ﻿@page "/prise_contact/{priseContactId:int}"
 @inject IMainService<Prise_Contact, int> Prise_ContactService
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
 
 <HeadContent>
@@ -19,23 +20,21 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>Prise Contact de @prise_contact.Nom_Contact</h2>
-                <p>@prise_contact.Prenom_Contact</p>
+                <h2>Informations générales</h2>
+                <p>Nom : @prise_contact.Nom_Contact </p>
+                <p>Prénom : @prise_contact.Prenom_Contact</p>
             </section>
-        </div>
 
-        <div class="col-left">
             <section>
                 <h2>L'entreprise qui demande le contacte est @prise_contact.Entreprise_Contact</h2>
-                <p>EMail : @prise_contact.Email_Contact</p>                                                                                  
+                <p>EMail : @prise_contact.Email_Contact</p>
+                <p>Pole Expertise nav : @prise_contact.Pole_ExpertiseNavigation</p>
             </section>
-        </div>
 
-        <div class="col-left">
             <section>
                 <h2>Son besoins : </h2>
                 <p>@prise_contact.Description_besoins</p>
-            </section
+            </section>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
@@ -43,7 +42,7 @@ else
             <section>
                 @if (prise_contact.Id_Pole_Expertise is not null)
                 {
-                <h3>NOS POLES D'EXPERTISE</h3>
+                <h2>NOS POLES D'EXPERTISE</h2>
                     <div class="center-grid">
                         <div class="center-item" @onclick="@(() => RetourListe(prise_contact.Pole_ExpertiseNavigation.Id_Pole_Expertise, "pole_expertise"))">
                             @if (prise_contact.Pole_ExpertiseNavigation.Photos != null && prise_contact.Pole_ExpertiseNavigation.Photos.Any())
@@ -57,7 +56,7 @@ else
                 }
                 else if (prise_contact.Id_Equipement is not null)
                 {
-                <h3>NOS EQUIPEMENT</h3>
+                <h2>NOS EQUIPEMENT</h2>
                     <div class="center-grid">
                         <div class="center-item" @onclick="@(() => RetourListe(prise_contact.EquipementNavigation.Id_Equipement, "equipement"))">
                             @if (prise_contact.EquipementNavigation.Photos != null && prise_contact.EquipementNavigation.Photos.Any())
@@ -78,7 +77,7 @@ else
 
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
-
+            <p>à ajouter la Gestion des réservations</p>
         </div>
     </div>
 }
