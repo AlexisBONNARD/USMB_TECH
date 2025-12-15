@@ -25,15 +25,15 @@
 
         <h4 class="add_style">Infos générales</h4>
         <label>Nom de l'équipement *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" placeholder="Serveur"/>
         <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
 
         <label>Numéro d'immobilisation *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" placeholder="IT-2024-00157"/>
         <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
 
         <label>Description Technique *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" placeholder="Serveur permettant de stocker les données"/>
         <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
 
         <label>Prix Achat *</label>
@@ -59,13 +59,13 @@
 
         <hr />
         <h4 class="add_style">Modèle *</h4>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" />
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" placeholder="LDLC PC SERVPRO 2U PRO Ultra 5" />
         <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
 
         <hr />
         <div class="form-group">
             <h4 class="add_style">Marque *</h4>
-            <InputSelect class="form-select mb-2" @bind-Value="LastMarque">
+            <InputSelect class="form-select mb-2" @bind-Value="LastMarque" placeholder="LDLC">
                 <option value="">...</option>
                 @foreach (var marque in marques)
                 {
@@ -122,7 +122,7 @@
         <hr />
         <h4 class="add_style">Type d'équipement *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
-            <option>...</option>
+            <option value="">Sélectionner un type</option>
             @foreach (var type in type_Equipements)
             {
                 <option value="@type.Nom_Type">@type.Nom_Type</option>
@@ -157,11 +157,11 @@
         <h4 class="add_style">Exemple d'utilisation *</h4>
         <div>
             <label>Nom de l'exemple : </label>
-            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" />
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" placeholder="Stockage"/>
         </div>
         <div>
             <label>Description : </label>
-            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" />
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" placeholder="la base de données est stockée sur ce serveur" />
         </div>
 
         <hr />
@@ -173,7 +173,6 @@
                 @message
             </div>
         }
-
     </EditForm>
 </div>
 
