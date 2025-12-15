@@ -1,4 +1,6 @@
 ﻿@inject NavigationManager Nav
+@implements IDisposable
+@inject AdminState AdminState
 @inject IJSRuntime JS
 
 <HeadContent>
@@ -16,6 +18,8 @@
             <a href="#">Liens directs</a>
         </div>
 
+        <AdminAccess />
+
         <!-- Icônes + Barre de recherche -->
         <div class="usmb-header-top-right">
 
@@ -25,12 +29,15 @@
                 <a href="#"><i class="bi bi-twitter"></i></a>
                 <a href="#"><i class="bi bi-youtube"></i></a>
                 <a href="#"><i class="bi bi-instagram"></i></a>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouterLabo"))">Ajouter un laboratoire</button>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouter-pole_expertise"))">Ajouter un pôle d'expertise</button>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouterPrestation"))">Ajouter une prestation</button>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouterContact"))">Ajouter un contact</button>
-                @* <button @onclick="@(() => Nav.NavigateTo("/demandeContact"))">Visualiser demande contact</button> *@
+                @if (AdminState.IsAdmin)
+                {
+                    <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
+                    <button @onclick="@(() => Nav.NavigateTo("/ajouterLabo"))">Ajouter un laboratoire</button>
+                    <button @onclick="@(() => Nav.NavigateTo("/ajouter-pole_expertise"))">Ajouter un pôle d'expertise</button>
+                    <button @onclick="@(() => Nav.NavigateTo("/ajouterPrestation"))">Ajouter une prestation</button>
+                    <button @onclick="@(() => Nav.NavigateTo("/ajouterContact"))">Ajouter un contact</button>
+                    <button @onclick="AdminState.DisableAdmin">Quitter le mode admin</button>
+                }
             </div>
 
             <!-- BARRE DE RECHERCHE -->
@@ -80,7 +87,7 @@
     private string SearchText = "";
     private bool SearchMotClef = false;
     private bool SearchThematique = false;
-    private bool SearchTexte = false;   // ✅ nouvelle option
+    private bool SearchTexte = false;
     private bool ShowOptions = false;
 
     private void ToggleOptions()
@@ -126,5 +133,14 @@
         Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
     }
 
+    protected override void OnInitialized()
+    {
+        AdminState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AdminState.OnChange -= StateHasChanged;
+    }
 
 }

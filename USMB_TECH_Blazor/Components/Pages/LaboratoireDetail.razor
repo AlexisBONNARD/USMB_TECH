@@ -1,6 +1,7 @@
 ﻿@page "/laboratoire/{Id}"
 @inject IMainService<Laboratoire, string> dataRepository
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
 
 <HeadContent>
@@ -57,6 +58,18 @@ else
                 }
             </section>
             <section>
+                <h3>NOS PRESTATIONS</h3>
+
+                <div class="center-grid">
+                    @foreach (Prestation prestation in laboratoire.Prestations)
+                    {
+                        <div class="center-item" @onclick="@(() => RetourListe(prestation.Id_Prestation, "prestation"))">
+                            <p>@prestation.Intitule_Prestation</p>
+                        </div>
+                    }
+                </div>
+            </section>
+            <section>
                 <h3>NOS CONTACTS</h3>
 
                 <div class="center-grid">
@@ -66,18 +79,6 @@ else
                             <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
                             <p>Mail : @contact.Mail</p>
                             <p>Numéro de téléphone : @contact.Telephone</p>
-                        </div>
-                    }
-                </div>
-            </section>
-            <section>
-                <h3>NOS PRESTATIONS</h3>
-
-                <div class="center-grid">
-                    @foreach (Prestation prestation in laboratoire.Prestations)
-                    {
-                        <div class="center-item" @onclick="@(() => RetourListe(prestation.Id_Prestation, "prestation"))">
-                            <p>@prestation.Intitule_Prestation</p>
                         </div>
                     }
                 </div>
