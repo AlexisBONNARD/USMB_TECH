@@ -130,27 +130,27 @@
             <option value="ajouter" class="alert-info">----- Créer un type -----</option>
         </InputSelect>
         <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
-    @if (LastTypeEquipement == "ajouter")
-    {
-        <form onsubmit="return false;" class="mb-2">
-            <input class="form-control mb-1"
-                   @bind="newTypeEquipement"
-                   @bind:event="oninput"
-                   placeholder="Nom du type"
-                   @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
-            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
-        </form>
-
-        @if (dernierTypeAjoute != null)
+        @if (LastTypeEquipement == "ajouter")
         {
-            <ul class="add_style">
-                <li class="add_style">
-                    @dernierTypeAjoute.Nom_Type
-                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
-                </li>
-            </ul>
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newTypeEquipement"
+                       @bind:event="oninput"
+                       placeholder="Nom du type"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
+            </form>
+
+            @if (dernierTypeAjoute != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @dernierTypeAjoute.Nom_Type
+                        <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
+                    </li>
+                </ul>
+            }
         }
-    }
 
 
         <hr />
@@ -163,8 +163,8 @@
             <label>Description : </label>
             <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" />
         </div>
-        
-        <hr/>
+
+        <hr />
         <button type="submit" class="btn btn-success mt-3">Ajouter</button>
 
         @if (!string.IsNullOrEmpty(message))
@@ -305,6 +305,20 @@
         {
             isLoading = true; // démarre le loader
             StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (addEquipement.Photos == null || !addEquipement.Photos.Any())
+            {
+                addEquipement.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
 
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;

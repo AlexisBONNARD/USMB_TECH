@@ -229,6 +229,20 @@
         {
             isLoading = true; // active le loader
             StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (labo.Photos == null || !labo.Photos.Any())
+            {
+                labo.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
             await laboService.AddAsync(labo);
 
             isSubmitted = true;
