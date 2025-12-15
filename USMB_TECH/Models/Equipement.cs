@@ -27,6 +27,7 @@ namespace USMB_TECH.Models
 
         [Column("num_immobilisation")]
         [MaxLength(50)]
+        [RegularExpression(@"[a-zA-Z0-9-]{1,50}")]
         public string Num_Immobilisation { get; set; }
 
         [Column("date_acquisition", TypeName = "date")]

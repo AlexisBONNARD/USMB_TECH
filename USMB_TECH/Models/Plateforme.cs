@@ -28,6 +28,7 @@ namespace USMB_TECH.Models
 
         [Column("url_contenu")]
         [MaxLength(150)]
+        [RegularExpression(@"^https?://[^\s/$.?#].[^\s]*$")]
         public string Url_Contenu { get; set; }
 
         [Column("description_contenu")]
