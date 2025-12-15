@@ -1,5 +1,6 @@
 ﻿@page "/ajouterPrestation"
 @inject NavigationManager Navigation
+@inject HttpClient Http
 @inject IJSRuntime JS
 @inject IMainService<Prestation, int> prestationService
 @inject IMainService<Contact_USMB, int> contactService
@@ -305,14 +306,16 @@
                 {
                     new Photo
                     {
-                        Nom_Photo = "default-equipement.png",
-                        Url_Photo = "/images/default-equipement.png"
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
                     }
                 };
             }
 
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Prestations", prestation);
+            var createdprestation = await response.Content.ReadFromJsonAsync<Prestation>();
 
-            await prestationService.AddAsync(prestation);
+            prestation = createdprestation;
             isSubmitted = true;
             ShowAlert("La prestation a été ajoutée avec succès.");
         }

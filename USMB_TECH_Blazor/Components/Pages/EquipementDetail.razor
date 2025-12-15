@@ -1,6 +1,7 @@
 ﻿@page "/equipement/{Id:int}"
 @inject Service.IMainService<Equipement, int> dataRepository
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
 
 <HeadContent>
@@ -105,7 +106,9 @@ else
         <div class="col-right">
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue">@thematique</div>
+                <div class="btn-blue" @onclick="@(() => RetourDomaineExcellence(equipement.Pole_ExpertiseNavigation.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
+                    @equipement.Pole_ExpertiseNavigation?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
+                </div>
             </div>
 
             @*   <div class="info-block">
@@ -124,12 +127,15 @@ else
         </div>
     </div>
 
-    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
-        Modifier
-    </button>
-    <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
-        Supprimer
-    </button>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
+            Supprimer
+        </button>
+    }
 }
 
 @code {
@@ -192,5 +198,11 @@ else
     private void GoToUpdate(int id)
     {
         Navigation.NavigateTo($"/equipement/edit/{id}", true);
+    }
+
+
+    private void RetourDomaineExcellence(int idDomaineExcellence)
+    {
+        Navigation.NavigateTo($"/DomaineExcellence/{idDomaineExcellence}");
     }
 }

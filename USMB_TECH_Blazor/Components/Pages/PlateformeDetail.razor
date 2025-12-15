@@ -2,6 +2,7 @@
 @inject IMainService<Pole_Expertise,int> Pole_ExpertiseService
 @inject IMainService<Prestation,int> PrestationService
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
 
 <HeadContent>
@@ -113,12 +114,15 @@ else
 
     </div>
 
-    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(pole_expertise.Id_Pole_Expertise)">
-        Modifier
-    </button>
-    <button class="btn btn-danger mb-3" @onclick="() => DeletePole_Expertise(pole_expertise.Id_Pole_Expertise)">
-        Supprimer
-    </button>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(pole_expertise.Id_Pole_Expertise)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeletePole_Expertise(pole_expertise.Id_Pole_Expertise)">
+            Supprimer
+        </button>
+    }
 
 }
 
@@ -195,6 +199,11 @@ else
     private void RetourListe(int idEquipement)
     {
         Navigation.NavigateTo($"/equipement/{idEquipement}");
+    }
+
+    private void GoToDomaine(int idDomaine)
+    {
+        Navigation.NavigateTo($"/domaine/{idDomaine}");
     }
 
     private void GoToUpdate(int id)

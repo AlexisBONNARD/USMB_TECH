@@ -6,6 +6,7 @@
 @inject IMainService<Laboratoire,string> LaboratoireService
 @inject IMainService<Prise_Contact, int> Prise_ContactService
 @inject IMainService<Contact_USMB, int> ContactService
+@inject AdminState AdminState
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -13,7 +14,7 @@
 <div class="usmb-nav-container">
     <div class="usmb-nav">
         <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-            <span class=""></span> USMB TECH
+            <span class="" >USMB TECH</span>
         </NavLink>
 
         <!-- Dropdown NOS POLES D'EXPERTISE -->
@@ -102,20 +103,22 @@
                 }
             </ul>
         </div>
-
-        <!-- Dropdown NOS PRISE_CONTACTS -->
-        <div class="nav-link dropdown"
-             @onclick="@(() => RetourListe("prise_contact"))"
-             style="cursor:pointer;">
-            <span class="dropdown-toggle">PRISE_CONTACT</span>
-        </div>
+        
+        @if (AdminState.IsAdmin)
+        {
+            <!-- Dropdown NOS PRISE_CONTACTS -->
+            <span class="nav-link dropdown"
+                 @onclick="@(() => RetourListe("prise_contact"))"
+                 style="cursor:pointer;">
+                <span class="dropdown-toggle">PRISE_CONTACT</span>
+            </span>
+        }
 
         <!-- Dropdown NOS CONTACTS -->
-        <div class="nav-link dropdown"
-             @onclick="@(() => RetourListe("contact"))"
-             style="cursor:pointer;">
-            <span class="dropdown-toggle">CONTACT</span>
-        </div>
+        <span class="nav-link"
+             @onclick="@(() => RetourListe("contact"))">
+            <span class="">CONTACT</span>
+        </span>
     </div>
 
 </div>

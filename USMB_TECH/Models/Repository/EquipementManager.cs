@@ -58,7 +58,8 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
-
+                .Include(p => p.Pole_ExpertiseNavigation)
+                    .ThenInclude(de => de.Domaine_ExcellenceNavigation)
                 .Include(e => e.Exemple_Utilisations)
 
                 // ✅ Fournirs with their Prestation

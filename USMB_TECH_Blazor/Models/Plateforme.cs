@@ -25,6 +25,7 @@ namespace USMB_TECH_Blazor.Models
         public string Description_Contenu { get; set; }
         public bool Actif { get; set; }
 
+        public int Id_Domaine_Excellence { get; set; }
         public virtual ICollection<Specifier> Specifiers { get; set; } = new List<Specifier>();
 
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
@@ -37,6 +38,6 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Mot_Clef> MotsCles { get; set; } = new List<Mot_Clef>();
 
         public virtual ICollection<Exemple_Utilisation> ExempleUtilisations { get; set; } = new List<Exemple_Utilisation>();
-        public virtual Domaine_Excellence Domaine_ExcellenceNavigation { get; set; }
+        public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
     }
 }

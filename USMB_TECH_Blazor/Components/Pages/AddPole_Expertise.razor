@@ -3,6 +3,7 @@
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject Service.IMainService<Prestation,int> prestationDatas
+@inject Service.IMainService<Domaine_Excellence,int> domaineDatas
 
 
 <HeadContent>
@@ -153,6 +154,17 @@
             }
         </ul>
 
+        <label>Domaine d'excellence *</label>
+        <InputSelect class="form-control mb-2"
+                     @bind-Value="pole_expertise.Id_Domaine_Excellence">
+            <option value="">-- Sélectionner un domaine --</option>
+            @foreach (var d in domaines)
+            {
+                <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => pole_expertise.Id_Domaine_Excellence)" />
+
 
         <hr />
         <button class="btn btn-success mt-3" type="submit">Créer le pôle d'expertise</button>
@@ -169,6 +181,7 @@
 @code {
     Pole_Expertise pole_expertise = new Pole_Expertise();
     private List<Prestation> prestations = new();
+    private List<Domaine_Excellence> domaines = new();
     private bool isLoading = false;
 
     string newMot_Clef = "";
@@ -186,6 +199,7 @@
     protected override async Task OnInitializedAsync()
     {
         prestations = (await prestationDatas.GetAllAsync()).ToList();
+        domaines = (await domaineDatas.GetAllAsync()).ToList();
     }
 
     void AddMot_Clef()
@@ -236,14 +250,16 @@
                 {
                     new Photo
                     {
-                        Nom_Photo = "default-equipement.png",
-                        Url_Photo = "/images/default-equipement.png"
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
                     }
                 };
             }
 
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/pole_expertises", pole_expertise);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Pole_Expertises", pole_expertise);
+            var createdpole= await response.Content.ReadFromJsonAsync<Pole_Expertise>();
 
+            pole_expertise = createdpole;
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;
