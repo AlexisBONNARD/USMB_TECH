@@ -297,6 +297,21 @@
         {
             isLoading = true; // active le loader
             StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (prestation.Photos == null || !prestation.Photos.Any())
+            {
+                prestation.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/default-equipement.png"
+                    }
+                };
+            }
+
+
             await prestationService.AddAsync(prestation);
             isSubmitted = true;
             ShowAlert("La prestation a été ajoutée avec succès.");

@@ -10,6 +10,15 @@ a, .btn-link {
     color: #0071c1;
 }
 
+.addButton {
+    background-color: #1E5AA8;
+    color: white;
+    border-radius: 6px;
+}
+
+    .addButton:hover {
+        background-color: #174A8A;
+    }
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;

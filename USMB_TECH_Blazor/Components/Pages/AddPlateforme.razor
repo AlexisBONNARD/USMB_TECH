@@ -229,6 +229,19 @@
             isLoading = true; // active le loader
             StateHasChanged();
 
+            // Si aucune photo uploadée → photo par défaut
+            if (pole_expertise.Photos == null || !pole_expertise.Photos.Any())
+            {
+                pole_expertise.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/default-equipement.png"
+                    }
+                };
+            }
+
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/pole_expertises", pole_expertise);
 
             if (response.IsSuccessStatusCode)
