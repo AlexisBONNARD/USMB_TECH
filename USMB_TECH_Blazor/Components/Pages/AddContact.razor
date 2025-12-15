@@ -25,27 +25,27 @@
 
         <h4 class="add_style">Infos générales</h4>
         <label>Nom *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" />
+        <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" placeholder="LeBrun"/>
         <ValidationMessage For="@(() => contact.Nom_Contact)" />
 
         <label>Prénom *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" />
+        <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" placeholder="Jacques"/>
         <ValidationMessage For="@(() => contact.Prenom_Contact)" />
 
         <label>Numéro de Sécurité Sociale *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" />
+        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" placeholder="1 85 05 78 006 084 36"/>
         <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
 
         <label>Code RH *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" />
+        <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" placeholder="56321"/>
         <ValidationMessage For="@(() => contact.Code_RH)" />
 
         <label>Adresse e-mail *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Mail" />
+        <InputText class="form-control mb-2" @bind-Value="contact.Mail" placeholder="Adresseexample@gmail.com"/>
         <ValidationMessage For="@(() => contact.Mail)" />
 
         <label>Téléphone *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Telephone" />
+        <InputText class="form-control mb-2" @bind-Value="contact.Telephone" placeholder="0689563214"/>
         <ValidationMessage For="@(() => contact.Telephone)" />
 
         <hr />

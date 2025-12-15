@@ -197,6 +197,11 @@ else
         Navigation.NavigateTo($"/equipement/{idEquipement}");
     }
 
+    private void GoToDomaine(int idDomaine)
+    {
+        Navigation.NavigateTo($"/domaine/{idDomaine}");
+    }
+
     private void GoToUpdate(int id)
     {
         Navigation.NavigateTo($"/pole_expertise/edit/{id}", true);

@@ -1,5 +1,6 @@
 ﻿@page "/ajouterPrestation"
 @inject NavigationManager Navigation
+@inject HttpClient Http
 @inject IJSRuntime JS
 @inject IMainService<Prestation, int> prestationService
 @inject IMainService<Contact_USMB, int> contactService
@@ -28,17 +29,17 @@
     
         <h4 class="add_style">Infos générales</h4>
         <label>Intitulé de la prestation *</label>
-        <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" />
+        <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" placeholder="Prestation exemple"/>
 
         <label>Description de la prestation *</label>
-        <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation"></InputText>
+        <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation" placeholder="Prestation pour montrer l'exemple"/>
 
         <label>Prix de vente de la prestation *</label>
-        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"></InputNumber>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"/>
         <ValidationMessage For="@(() => prestation.Prix_Vente)" />
 
         <label>Prix de revient de la prestation *</label>
-        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"></InputNumber>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"/>
     <ValidationMessage For="@(() => prestation.Prix_Revient)" />
 
         <label>Peut se réaliser chez le client *</label>
@@ -311,8 +312,10 @@
                 };
             }
 
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Prestations", prestation);
+            var createdprestation = await response.Content.ReadFromJsonAsync<Prestation>();
 
-            await prestationService.AddAsync(prestation);
+            prestation = createdprestation;
             isSubmitted = true;
             ShowAlert("La prestation a été ajoutée avec succès.");
         }
