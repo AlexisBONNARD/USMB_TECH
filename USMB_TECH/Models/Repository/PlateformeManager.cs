@@ -61,10 +61,18 @@ namespace USMB_TECH.Models.Repository
 
         public async Task UpdateAsync(Pole_Expertise entityToUpdate, Pole_Expertise updatedEntity)
         {
-            // Propriétés simples
+            // -------------------------
+            // 1️ Mettre à jour les propriétés simples
+            // -------------------------
+            // EF suit déjà la navigation, donc on peut utiliser CurrentValues
             _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
 
-            // --- Gestion incrémentale des Equipements ---
+            // -------------------------
+            // 2️ Gestion incrémentale des Equipements
+            // -------------------------
+            updatedEntity.Equipements ??= new List<Equipement>();
+
+            // Parcours des Equipements envoyés
             foreach (var updatedEquip in updatedEntity.Equipements)
             {
                 var existingEquip = entityToUpdate.Equipements
@@ -72,15 +80,24 @@ namespace USMB_TECH.Models.Repository
 
                 if (existingEquip != null)
                 {
+                    // Mise à jour des propriétés de l'équipement existant
                     _context.Entry(existingEquip).CurrentValues.SetValues(updatedEquip);
+
+                    // ⚠️ Sécuriser la FK vers Pole_Expertise
+                    existingEquip.Id_Pole_Expertise = entityToUpdate.Id_Pole_Expertise;
                 }
                 else
                 {
-                    updatedEquip.Pole_ExpertiseNavigation = entityToUpdate; //  important
+                    // Nouvel équipement : on lie la navigation et la FK
+                    updatedEquip.Id_Pole_Expertise = entityToUpdate.Id_Pole_Expertise;
+                    updatedEquip.Pole_ExpertiseNavigation = entityToUpdate;
                     entityToUpdate.Equipements.Add(updatedEquip);
                 }
             }
 
+            // -------------------------
+            // 3️ Supprimer les équipements qui ne sont plus présents
+            // -------------------------
             var toRemove = entityToUpdate.Equipements
                 .Where(e => !updatedEntity.Equipements.Any(ue => ue.Id_Equipement == e.Id_Equipement))
                 .ToList();
@@ -88,11 +105,19 @@ namespace USMB_TECH.Models.Repository
             foreach (var equip in toRemove)
             {
                 entityToUpdate.Equipements.Remove(equip);
-                _context.Equipements.Remove(equip); //  pour supprimer en base
+                _context.Equipements.Remove(equip); // Supprime en base
             }
 
+            // -------------------------
+            // 4️ Sauvegarde
+            // -------------------------
             await _context.SaveChangesAsync();
         }
+
+
+
+
+
 
         public async Task DeleteAsync(Pole_Expertise entity)
         {

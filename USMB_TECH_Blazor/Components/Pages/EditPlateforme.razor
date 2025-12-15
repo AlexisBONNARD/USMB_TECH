@@ -2,6 +2,8 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject Service.IMainService<Prestation,int> prestationDatas
+@inject Service.IMainService<Domaine_Excellence,int> domaineExcellenceDatas
+@inject Service.IMainService<Pole_Expertise,int> poleExpertiseDatas
 @using USMB_TECH.Models
 
 
@@ -49,7 +51,17 @@ else
             <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Actif">
                 <option value="true">Oui</option>
                 <option value="false">Non</option>
+
             </InputSelect>
+            <h4 class="add_platform">Domaine d'excellence *</h4>
+            <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Id_Domaine_Excellence">
+                <option value="">-- Sélectionner --</option>
+                @foreach (var de in domainesExcellence)
+                {
+                    <option value="@de.Id_Domaine_Excellence">@de.Intitule_Domaine_Excellence</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => pole_expertise.Id_Domaine_Excellence)" />
 
             <hr />
             <h4 class="add_platform">Équipements</h4>
@@ -106,11 +118,13 @@ else
     // ----------- ALERTES SUPPRESSION -----------
     private string deleteMessage = null;
     private bool deleteSuccess = false;
+    private List<Domaine_Excellence> domainesExcellence = new();
 
     protected override async Task OnInitializedAsync()
     {
         prestations = (await prestationDatas.GetAllAsync()).ToList();
-        pole_expertise = await Http.GetFromJsonAsync<Pole_Expertise>($"https://localhost:7093/api/pole_expertises/{Id}");
+        pole_expertise = await poleExpertiseDatas.GetByIdAsync(Id);
+        domainesExcellence = (await domaineExcellenceDatas.GetAllAsync()).ToList();
     }
 
     async Task SubmitPole_Expertise()
