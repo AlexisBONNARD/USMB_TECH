@@ -37,6 +37,6 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Mot_Clef> MotsCles { get; set; } = new List<Mot_Clef>();
 
         public virtual ICollection<Exemple_Utilisation> ExempleUtilisations { get; set; } = new List<Exemple_Utilisation>();
-        public virtual Domaine_Excellence Domaine_ExcellenceNavigation { get; set; }
+        public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
     }
 }

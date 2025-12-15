@@ -105,7 +105,9 @@ else
         <div class="col-right">
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue">@thematique</div>
+                <div class="btn-blue" @onclick="@(() => RetourDomaineExcellence(equipement.Pole_ExpertiseNavigation.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
+                    @equipement.Pole_ExpertiseNavigation?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
+                </div>
             </div>
 
             @*   <div class="info-block">
@@ -192,5 +194,11 @@ else
     private void GoToUpdate(int id)
     {
         Navigation.NavigateTo($"/equipement/edit/{id}", true);
+    }
+
+
+    private void RetourDomaineExcellence(int idDomaineExcellence)
+    {
+        Navigation.NavigateTo($"/DomaineExcellence/{idDomaineExcellence}");
     }
 }
