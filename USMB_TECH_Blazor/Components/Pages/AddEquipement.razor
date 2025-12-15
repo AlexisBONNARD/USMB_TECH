@@ -322,8 +322,10 @@
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
 
-            await equipementDatas.AddAsync(addEquipement);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Equipements", addEquipement);
+            var createdeqipement = await response.Content.ReadFromJsonAsync<Equipement>();
 
+            addEquipement = createdeqipement;
             isSubmitted = true;
             await ShowAlert("Équipement ajouté avec succès ✅");
         }

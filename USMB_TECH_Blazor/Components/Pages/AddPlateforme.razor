@@ -242,8 +242,10 @@
                 };
             }
 
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/pole_expertises", pole_expertise);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Pole_Expertises", pole_expertise);
+            var createdpole= await response.Content.ReadFromJsonAsync<Pole_Expertise>();
 
+            pole_expertise = createdpole;
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;
