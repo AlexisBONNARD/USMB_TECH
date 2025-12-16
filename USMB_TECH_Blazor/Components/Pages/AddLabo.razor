@@ -55,7 +55,13 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
         <label>Pays du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"/>
+        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
+            <option value=""></option>
+            @foreach(var country in countries)
+            {
+                <option value="@country">@country</option>
+            }
+        </InputSelect>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
 
         @if (labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
@@ -80,8 +86,15 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
         <label>Pays du campus *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"/>
+        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
+            <option value=""></option>
+            @foreach (var country in countries)
+            {
+                <option value="@country">@country</option>
+            }
+        </InputSelect>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
+
 
         <h4 class="add_style">Infos générales du contact</h4>
         <label>Nom *</label>
@@ -334,9 +347,14 @@
     {
         try
         {
+
             isLoading = true; // active le loader
             StateHasChanged();
-
+            if (string.IsNullOrWhiteSpace(contact.Nom_Contact) || string.IsNullOrWhiteSpace(contact.Prenom_Contact) || string.IsNullOrWhiteSpace(contact.Mail) || string.IsNullOrWhiteSpace(contact.Num_Securite_Social) || string.IsNullOrWhiteSpace(contact.Code_RH))
+            {
+                message = "Tous les champs du contact doivent être remplis.";
+                throw new Exception("Tous les champs du contact doivent être remplis.");
+            }
             // Si aucune photo uploadée → photo par défaut
             if (labo.Photos == null || !labo.Photos.Any())
             {
@@ -492,5 +510,36 @@
     {
         public string url { get; set; }
     }
+    List<string> countries = new List<string>
+{
+    "Afghanistan", "Albania", "Germany", "Andorra", "Angola", "Antigua and Barbuda", "Saudi Arabia",
+    "Algeria", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bangladesh",
+    "Barbados", "Bahrain", "Belgium", "Belize", "Benin", "Belarus", "Burma", "Bolivia",
+    "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+    "Bhutan", "Cape Verde", "Cambodia", "Cameroon", "Canada", "Qatar", "Chad", "Chile", "China",
+    "Cyprus", "Vatican City", "Colombia", "Comoros", "North Korea", "South Korea", "Ivory Coast",
+    "Costa Rica", "Croatia", "Cuba", "Denmark", "Dominica", "Ecuador", "Egypt", "El Salvador",
+    "United Arab Emirates", "Eritrea", "Slovakia", "Slovenia", "Spain", "United States", "Estonia",
+    "Ethiopia", "Philippines", "Finland", "Fiji", "France", "Gabon", "Gambia", "Georgia", "Ghana",
+    "Grenada", "Greece", "Guatemala", "Guyana", "Guinea", "Equatorial Guinea", "Guinea-Bissau",
+    "Haiti", "Honduras", "Hungary", "India", "Indonesia", "Iraq", "Iran", "Ireland", "Iceland",
+    "Marshall Islands", "Solomon Islands", "Israel", "Italy", "Jamaica", "Japan", "Jordan",
+    "Kazakhstan", "Kenya", "Kyrgyzstan", "Kiribati", "Kuwait", "Laos", "Lesotho", "Latvia",
+    "Lebanon", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "North Macedonia",
+    "Madagascar", "Malaysia", "Malawi", "Maldives", "Mali", "Malta", "Morocco", "Mauritius",
+    "Mauritania", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+    "Mozambique", "Namibia", "Nauru", "Nepal", "Nicaragua", "Niger", "Nigeria", "Norway",
+    "New Zealand", "Oman", "Netherlands", "Pakistan", "Palau", "Panama", "Papua New Guinea",
+    "Paraguay", "Peru", "Poland", "Portugal", "United Kingdom", "Central African Republic",
+    "Czech Republic", "Republic of the Congo", "Democratic Republic of the Congo",
+    "Dominican Republic", "Rwanda", "Romania", "Russia", "Samoa", "Saint Kitts and Nevis",
+    "San Marino", "Saint Vincent and the Grenadines", "Saint Lucia", "Sao Tome and Principe",
+    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Syria", "Somalia",
+    "Sri Lanka", "Swaziland", "South Africa", "Sudan", "South Sudan", "Sweden", "Switzerland",
+    "Suriname", "Thailand", "Tanzania", "Tajikistan", "East Timor", "Togo", "Tonga",
+    "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Turkey", "Tuvalu", "Ukraine", "Uganda",
+    "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Djibouti", "Zambia",
+    "Zimbabwe"
+};
 
 }

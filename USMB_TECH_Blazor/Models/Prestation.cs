@@ -34,6 +34,7 @@ namespace USMB_TECH_Blazor.Models
         [Required(ErrorMessage = "La prestation actuelle n'a pas reçu de nom")]
         public string Intitule_Prestation { get; set; }
 
+        [Required(ErrorMessage = "Une description doit être donnée pour la prestation")]
         public string Description_Prestation { get; set; }
 
         [Required(ErrorMessage = "Vous devez renseigner un prix de revient")]
