@@ -37,6 +37,12 @@
         <InputFile OnChange="HandleFileUpload" />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+            @message
+        </div>
+    }
 </div>
 
 @code {
@@ -52,8 +58,19 @@
         try
         {
             isLoading = true;
-
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Domaine_Excellence", domaineExcellence);
+            // Si aucune photo uploadée → photo par défaut
+            if (domaineExcellence.Photos == null || !domaineExcellence.Photos.Any())
+            {
+                domaineExcellence.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Domaine_Excellences", domaineExcellence);
             var createdDomaine = await response.Content.ReadFromJsonAsync<Domaine_Excellence>();
 
             domaineExcellence = createdDomaine;
