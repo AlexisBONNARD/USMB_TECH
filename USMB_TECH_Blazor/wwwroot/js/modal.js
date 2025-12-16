@@ -18,6 +18,16 @@ window.closeModalLaboratoire = function () {
     document.getElementById('modalLaboratoire').style.display = 'none';
 }
 
+window.openModalDomaineExcellence = function () {
+    console.log("Fonction openModalDomaineExcellence appelée ✅");
+    document.getElementById('modalDomaine').style.display = 'block';
+}
+
+window.closeModalDomaineExcellence = function () {
+    console.log("Fonction closeModalDomaineExcellence appelée ✅");
+    document.getElementById('modalDomaine').style.display = 'none';
+}
+
 window.openModalLaboratoirePrestation = function () {
     console.log("Fonction openModalLaboratoirePrestation appelée ✅");
     document.getElementById('modalLaboratoirePrestation').style.display = 'block';

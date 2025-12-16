@@ -5,6 +5,7 @@
 @inject Service.IMainService<Prestation,int> prestationService
 @inject Service.IMainService<Domaine_Excellence,int> domaineService
 @inject Service.IMainService<Mot_Clef,int> motService
+@inject IJSRuntime JS
 
 
 <HeadContent>
@@ -146,15 +147,23 @@
 
         <h4 class="add_style">Domaine d'excellence *</h4>
         <InputSelect class="form-select mb-1"
-                     @bind-Value="pole_expertise.Id_Domaine_Excellence">
+                     @bind-Value="LastDomaineExcellence">
             <option value="">-- Sélectionner un domaine --</option>
             @foreach (var d in domaines)
             {
                 <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
             }
+            <option value="ajouter" class="alert-info">----- Créer un domaine d'excellence -----</option>
         </InputSelect>
-        <ValidationMessage For="@(() => pole_expertise.Id_Domaine_Excellence)" />
+        <ValidationMessage For="@(() => LastDomaineExcellence)" />
 
+        <!-- Modal -->
+        <div id="modalDomaine" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalDomaineExcellence">&times;</span>
+                <AddDomaineExcellence OnDomaineExcellenceAdded="OnDomaineExcellenceAdded" EnableRedirect="false" />
+            </div>
+        </div>
 
         <hr />
         <button class="btn btn-success mt-3" type="submit">Créer le pôle d'expertise</button>
@@ -171,7 +180,7 @@
 @code {
     Pole_Expertise pole_expertise = new Pole_Expertise();
     private List<Prestation> prestations = new();
-    private List<Domaine_Excellence> domaines = new();
+    IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
     private List<Mot_Clef> existingMot = new();
     private bool isLoading = false;
 
@@ -188,6 +197,27 @@
 
     bool isSubmitted = false;
     string message = "";
+
+    private string _lastDomaineExcellence;
+
+    private string LastDomaineExcellence
+    {
+        get => _lastDomaineExcellence;
+        set
+        {
+            _lastDomaineExcellence = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalDomaineExcellence();
+            }
+            else
+            {
+                pole_expertise.Id_Domaine_Excellence = 1;
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -305,6 +335,14 @@
             Navigation.NavigateTo($"/pole_expertise/{pole_expertise.Id_Pole_Expertise}");
         }
     }
+
+    private void OnDomaineExcellenceAdded(Domaine_Excellence domaine)
+    {
+        domaines = domaines.Append(domaine);
+        LastDomaineExcellence = domaine.Intitule_Domaine_Excellence;
+        CloseModalDomaineExcellence();
+    }
+
     void RemoveMotCle(string mc)
     {
         pole_expertise.MotsCles.Remove(mc);
@@ -316,6 +354,16 @@
     void RemovePresenter(Presenter pr)
     {
         pole_expertise.Presenters.Remove(pr);
+    }
+
+    private void OpenModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("openModalDomaineExcellence");
+    }
+
+    private void CloseModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("closeModalDomaineExcellence");
     }
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)

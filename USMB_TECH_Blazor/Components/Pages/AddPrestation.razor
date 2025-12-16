@@ -69,15 +69,23 @@
          @* //////Domaine d'excellence *@
         <hr />
         <h4 class="add_style">Domaine d'excellence</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
+        <InputSelect class="form-control mb-2" @bind-Value="LastDomaineExcellence">
             <option value="">...</option>
             @foreach (var domaine in domaines)
             {
                 <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
             }
+            <option value="ajouter" class="alert-info">----- Créer un domaine d'excellence -----</option>
         </InputSelect>
-    <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
+        <ValidationMessage For="@(() => LastDomaineExcellence)" />
 
+        <!-- Modal -->
+        <div id="modalDomaine" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalDomaineExcellence">&times;</span>
+                <AddDomaineExcellence OnDomaineExcellenceAdded="OnDomaineExcellenceAdded" EnableRedirect="false" />
+            </div>
+        </div>
         @* //////Type de la prestation *@
         <hr />
         <h4 class="add_style">Type de prestation</h4>
@@ -261,6 +269,27 @@
         }
     }
 
+    private string _lastDomaineExcellence;
+
+    private string LastDomaineExcellence
+    {
+        get => _lastDomaineExcellence;
+        set
+        {
+            _lastDomaineExcellence = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalDomaineExcellence();
+            }
+            else
+            {
+                prestation.Nom_Domaine = value;
+            }
+        }
+    }
+
     private string _lastLaboratoire;
 
     private string LastLaboratoire
@@ -400,6 +429,16 @@
         JS.InvokeVoidAsync("closeModalPole_expertise");
     }
 
+    private void OpenModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("openModalDomaineExcellence");
+    }
+
+    private void CloseModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("closeModalDomaineExcellence");
+    }
+
     private void OpenModalLaboratoire()
     {
         JS.InvokeVoidAsync("openModalLaboratoirePrestation");
@@ -415,6 +454,13 @@
         contacts = contacts.Append(contact);
         LastContact = contact.Nom_Contact;
         CloseModalContact();
+    }
+
+    private void OnDomaineExcellenceAdded(Domaine_Excellence domaine)
+    {
+        domaines = domaines.Append(domaine);
+        LastDomaineExcellence = domaine.Intitule_Domaine_Excellence;
+        CloseModalDomaineExcellence();
     }
 
     private void OnPole_ExpetiseAdded(Pole_Expertise poleExpertise)
