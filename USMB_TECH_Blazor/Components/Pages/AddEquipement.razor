@@ -323,6 +323,10 @@
             addEquipement.Actif = true;
 
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Equipements", addEquipement);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Erreur lors de l'ajout de l'équipement ❌");
+            }
             var createdeqipement = await response.Content.ReadFromJsonAsync<Equipement>();
 
             addEquipement = createdeqipement;
