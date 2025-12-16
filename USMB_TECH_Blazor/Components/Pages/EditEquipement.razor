@@ -161,7 +161,6 @@ else
             {
                 isSubmitted = true;
                 await ShowAlert("Équipement mis à jour avec succès ✅");
-                NavigationManager.NavigateTo($"/equipement/{Id}");
             }
             else
             {
@@ -176,10 +175,18 @@ else
         }
     }
 
-    async Task ShowAlert(string msg)
+    private async Task ShowAlert(string msg)
     {
         message = msg;
-        await Task.Delay(3000);
-        message = "";
+        StateHasChanged();
+
+        await Task.Delay(3000); // Attend 3 secondes
+
+        message = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (isSubmitted)
+        {
+            NavigationManager.NavigateTo($"/equipement/{Id}");
+        }
     }
 }

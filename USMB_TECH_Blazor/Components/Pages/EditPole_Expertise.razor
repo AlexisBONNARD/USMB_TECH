@@ -137,7 +137,6 @@ else
             {
                 deleteSuccess = true;
                 await ShowDeleteAlert("Pole_Expertise mise à jour avec succès ✅");
-                NavigationManager.NavigateTo($"/pole_expertise/{Id}");
             }
             else
             {
@@ -158,9 +157,13 @@ else
         deleteMessage = msg;
         StateHasChanged();
 
-        await Task.Delay(3000);
+        await Task.Delay(3000); // Attend 3 secondes
 
-        deleteMessage = null;
-        StateHasChanged();
+        deleteMessage = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (deleteSuccess)
+        {
+            NavigationManager.NavigateTo($"/pole_expertise/{Id}");
+        }
     }
 }
