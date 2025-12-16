@@ -1,0 +1,116 @@
+﻿@page "/ajouterDomaineExcellence"
+@using USMB_TECH.Models
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject IMainService<Contact_USMB, string> contactService
+@inject IMainService<Fonction, int> fonctionService
+@inject IMainService<Laboratoire, string> laboService
+@inject HttpClient Http
+
+<HeadContent>
+    <li class="add_style" nk href="css/addStyle.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_style">Ajouter un domaine d'excellence'</h2>
+
+<div class="page-container">
+    <EditForm Model="domaineExcellence" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h4 class="add_style">Infos générales</h4>
+        <label>Intitulé *</label>
+        <InputText class="form-control mb-2" @bind-Value="domaineExcellence.Intitule_Domaine_Excellence" placeholder="Service et industrie du futur" />
+        <ValidationMessage For="@(() => domaineExcellence.Intitule_Domaine_Excellence)" />
+
+        <label>Description *</label>
+        <InputText class="form-control mb-2" @bind-Value="domaineExcellence.Description_Domaine_Excellence" placeholder="Ce domaine d'excellence est focalisé sur l'industrie et les services du futur" />
+        <ValidationMessage For="@(() => domaineExcellence.Description_Domaine_Excellence)" />
+
+        <hr />
+        <h4 class="add_style">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" />
+        <input type="submit" class="btn btn-primary" value="Ajouter">
+    </EditForm>
+</div>
+
+@code {
+    private Domaine_Excellence domaineExcellence= new();
+    private bool isLoading = false;
+    private bool isSubmitted = false;
+    private string message = "";
+    [Parameter] public EventCallback<Domaine_Excellence> OnDomaineExcellenceAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true;
+
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Domaine_Excellence", domaineExcellence);
+            var createdDomaine = await response.Content.ReadFromJsonAsync<Domaine_Excellence>();
+
+            domaineExcellence = createdDomaine;
+            isSubmitted = true;
+            ShowAlert("Domaine d'excellence ajouté avec succès ✅");
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            ShowAlert("Erreur lors de l'ajout du domaine d'excellence ❌");
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // Attend 3 secondes
+
+        message = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (isSubmitted && EnableRedirect)
+        {
+            Navigation.NavigateTo($"/DomaineExcellence/{domaineExcellence.Id_Domaine_Excellence}");
+        }
+    }
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+        content.Add(fileContent, "file", file.Name);
+
+        var response = await Http.PostAsync("https://localhost:7093/api/Domaine_Excellence/upload", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+            domaineExcellence.Photos.Add(new Photo
+            {
+                Nom_Photo = file.Name,
+                Url_Photo = result.url
+            });
+        }
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+}
