@@ -1,6 +1,8 @@
 ﻿@page "/contact"
 @inject IMainService<Contact_USMB,int> ContactService
 @inject NavigationManager Navigation
+@inject AdminState AdminState
+@inject IJSRuntime JS
 
 <h1>Liste des contacts</h1>
 
@@ -38,6 +40,16 @@ else
                             Voir
                         </button>
                     </td>
+                    <td>
+                        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(contact.Id_Contact)">
+                            Modifier
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(contact.Id_Contact)">
+                            Supprimer
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -46,6 +58,10 @@ else
 
 @code {
     private List<Contact_USMB> contacts = new();
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,5 +72,50 @@ else
     private void RetourListe(int id, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+
+    // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
+    private async Task DeleteEquipement(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer cet équipement ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await ContactService.DeleteAsync(id);
+            deleteSuccess = true;
+            await ShowDeleteAlert("Équipement supprimé avec succès");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
+        }
+    }
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+        await Task.Delay(3000);
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void RetourListe(int idPole_Expertise)
+    {
+        Navigation.NavigateTo($"/pole_expertise/{idPole_Expertise}");
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/equipement/edit/{id}", true);
     }
 }
