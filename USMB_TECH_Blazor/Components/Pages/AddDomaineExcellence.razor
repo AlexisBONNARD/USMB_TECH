@@ -19,7 +19,7 @@
 <h2 class="add_style">Ajouter un domaine d'excellence</h2>
 
 <div class="page-container">
-    <EditForm Model="domaineExcellence" OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="@domaineExcellence" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -35,6 +35,7 @@
         <hr />
         <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
+        <hr />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
     @if (!string.IsNullOrEmpty(message))
@@ -46,7 +47,10 @@
 </div>
 
 @code {
-    private Domaine_Excellence domaineExcellence= new();
+    private Domaine_Excellence domaineExcellence = new Domaine_Excellence
+    {
+        Photos = new List<Photo>()
+    };
     private bool isLoading = false;
     private bool isSubmitted = false;
     private string message = "";
@@ -114,7 +118,7 @@
 
         content.Add(fileContent, "file", file.Name);
 
-        var response = await Http.PostAsync("https://localhost:7093/api/Domaine_Excellence/upload", content);
+        var response = await Http.PostAsync("https://localhost:7093/api/Domaine_Excellences/upload", content);
 
         if (response.IsSuccessStatusCode)
         {
