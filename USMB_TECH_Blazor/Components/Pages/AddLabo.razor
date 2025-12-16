@@ -8,6 +8,8 @@
 @inject IMainService<Mot_Clef, int> motcleService
 @inject IMainService<Thematique, int> ThematiqueService
 @inject IMainService<Pole_Expertise, int> poleService
+@inject AdminState AdminState
+
 @inject HttpClient Http
 
 <HeadContent>
@@ -111,7 +113,7 @@
         <hr />
         <h4 class="add_style">Fonction</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
-            <option value="">Sélectionner une fonction</option>
+            <option value="">----- Sélectionner une fonction -----</option>
             @foreach (var f in fonctions)
             {
                 <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
@@ -256,7 +258,9 @@
             @message
         </div>
     }
+
 </div>
+
 @code {
     Laboratoire labo = new Laboratoire();
     private Contact_USMB contact = new();

@@ -38,15 +38,15 @@ else
         <div class="col-center">
             <section>
                 <h3>NOS POLES D'EXPERTISE</h3>
-                @if(pole_expertises is not null)
+                @if (pole_expertises is not null)
                 {
                     <div class="center-grid">
                         @foreach (var pole_expertise in pole_expertises)
                         {
                             <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
 
-                                    <img src="@pole_expertise.Photos.First().Url_Photo" alt="@pole_expertise.Photos.First().Nom_Photo" />
-                                
+                                <img src="@pole_expertise.Photos.First().Url_Photo" alt="@pole_expertise.Photos.First().Nom_Photo" />
+
                                 <p>@pole_expertise.Nom_Pole_Expertise</p>
                             </div>
                         }
@@ -95,9 +95,12 @@ else
             <FormulaireContact />
         </div>
     </div>
-    <button class="btn btn-danger mb-3" @onclick="() => DeleteLaboratoire(laboratoire.Nom_Court)">
-        Supprimer
-    </button>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteLaboratoire(laboratoire.Nom_Court)">
+            Supprimer
+        </button>
+    }
 }
 
 @code {
