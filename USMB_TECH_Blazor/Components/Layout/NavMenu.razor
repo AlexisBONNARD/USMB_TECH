@@ -36,6 +36,12 @@
                                 @pl.Nom_Pole_Expertise
                             </li>
                         }
+                        @if (AdminState.IsAdmin && !pl.Actif)
+                        {
+                            <li @onclick="() => GoToPole_Expertise(pl.Id_Pole_Expertise)" style="background-color: lightgray">
+                                @pl.Nom_Pole_Expertise
+                            </li>
+                        }
                     }
                 }
             </ul>
@@ -110,7 +116,7 @@
             <span class="nav-link dropdown"
                  @onclick="@(() => RetourListe("prise_contact"))"
                  style="cursor:pointer;">
-                <span class="dropdown-toggle">PRISE_CONTACT</span>
+                <span class="">PRISE_CONTACT</span>
             </span>
         }
 
