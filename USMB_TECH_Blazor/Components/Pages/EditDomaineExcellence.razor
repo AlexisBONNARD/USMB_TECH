@@ -1,0 +1,110 @@
+﻿@page "/domaine_excellence/edit/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using USMB_TECH.Models
+@inject IJSRuntime JS
+@using System.Text.Json;
+<h2 class="add_style">Modifier le domaine d'excellence</h2>
+
+@if (domaineExcellence == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="@domaineExcellence" OnValidSubmit="SubmitDomaine">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <h4 class="add_style">Infos générales</h4>
+            <label>Intitulé *</label>
+            <InputText class="form-control mb-2" @bind-Value="domaineExcellence.Intitule_Domaine_Excellence" placeholder="Service et industrie du futur" />
+            <ValidationMessage For="@(() => domaineExcellence.Intitule_Domaine_Excellence)" />
+
+            <label>Description *</label>
+            <InputText class="form-control mb-2" @bind-Value="domaineExcellence.Description_Domaine_Excellence" placeholder="Ce domaine d'excellence est focalisé sur l'industrie et les services du futur" />
+            <ValidationMessage For="@(() => domaineExcellence.Description_Domaine_Excellence)" />
+
+            <hr />
+            <h4 class="add_style">Photos</h4>
+            @foreach (var photo in domaineExcellence.Photos)
+            {
+                <div class="mb-3 border p-2">
+                    <label>Nom photo</label>
+                    <InputText class="form-control mb-1" @bind-value="photo.Nom_Photo" />
+
+                    <label>URL photo</label>
+                    <InputText class="form-control mb-1" @bind-value="photo.Url_Photo" />
+                </div>
+            }
+                <hr />
+            <button class="btn btn-primary mt-3" type="submit">Mettre à jour</button>
+        </EditForm>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+        @message
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    Domaine_Excellence? domaineExcellence;
+
+    bool isSubmitted = false;
+    string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        domaineExcellence = await Http.GetFromJsonAsync<Domaine_Excellence>($"https://localhost:7093/api/Domaine_Excellences/{Id}");
+
+        var json = JsonSerializer.Serialize(domaineExcellence);
+        await JS.InvokeVoidAsync("console.log", json);
+
+    }
+
+    async Task SubmitDomaine()
+    {
+        try
+        {
+            var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/Domaine_Excellences/{Id}", domaineExcellence);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isSubmitted = true;
+                await ShowAlert("Domaine d'excellence mis à jour avec succès ✅");
+            }
+            else
+            {
+                isSubmitted = false;
+                await ShowAlert("Erreur lors de la mise à jour ❌");
+            }
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            await ShowAlert($"Erreur: {ex.Message}");
+        }
+    }
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // Attend 3 secondes
+
+        message = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (isSubmitted)
+        {
+            NavigationManager.NavigateTo($"/DomaineExcellence/{Id}");
+        }
+    }
+}

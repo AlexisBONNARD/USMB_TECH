@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Metrics;
+using System.Runtime.CompilerServices;
 using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
@@ -23,6 +24,7 @@ namespace USMB_TECH_Blazor.Models
         public string? Rue_Adresse_Labo { get; set; }
 
         [Required(ErrorMessage = "Le code postal du laboratoire est obligatoire")]
+        [RegularExpression(@"^[0-9A-Za-z\- ]{1,11}$")]
         public string? Code_Postal_Adresse_Labo { get; set; }
 
         [Required(ErrorMessage = "La ville du laboratoire est obligatoire")]
@@ -35,6 +37,7 @@ namespace USMB_TECH_Blazor.Models
         public string? Rue_Adresse_Campus { get; set; }
 
         [Required(ErrorMessage = "Le code postal du campus est obligatoire")]
+        [RegularExpression(@"^[0-9A-Za-z\- ]{1,11}$")]
         public string? Code_Postal_Adresse_Campus { get; set; }
 
         [Required(ErrorMessage = "La ville du campus est obligatoire")]
@@ -55,7 +58,6 @@ namespace USMB_TECH_Blazor.Models
         public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
         public  ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
-
 
         public ICollection<Contact_USMB> Contacts { get; set; } = new List<Contact_USMB>();
 

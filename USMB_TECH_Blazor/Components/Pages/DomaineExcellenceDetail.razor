@@ -2,6 +2,8 @@
 @inject IMainService<Domaine_Excellence,int> DomaineExcellenceService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject AdminState AdminState
+
 
 <HeadContent>
     <link href="css/PageDetail.css" rel="stylesheet" />
@@ -65,9 +67,9 @@ else
                                 <div class="card-content">
 
                                     <img src="@prestation.Photos.First().Url_Photo" alt="@prestation.Photos.First().Nom_Photo" />
-                                        
 
-                                    
+
+
                                     <h4>@prestation.Intitule_Prestation</h4>
                                     <p>@prestation.Description_Prestation</p>
                                     <p><strong>Prix :</strong> @prestation.Prix_Vente €</p>
@@ -93,13 +95,15 @@ else
             <FormulaireContact />
         </div>
     </div>
-
-    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(domaine.Id_Domaine_Excellence)">
-        Modifier
-    </button>
-    <button class="btn btn-danger mb-3" @onclick="() => DeleteDomaine(domaine.Id_Domaine_Excellence)">
-        Supprimer
-    </button>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(domaine.Id_Domaine_Excellence)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteDomaine(domaine.Id_Domaine_Excellence)">
+            Supprimer
+        </button>
+    }
 }
 
 @code {

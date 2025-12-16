@@ -21,7 +21,6 @@ namespace USMB_TECH_Blazor.Models
 
         [Required(ErrorMessage = "Le code RH est obligatoire.")]
         [StringLength(50, ErrorMessage = "Le code RH ne peut pas dépasser 50 caractères.")]
-        //[RegularExpression(@"^[a-zA-Z0-9]{1,25}$",ErrorMessage ="Le format du code RH n'a pas été respecté")]
         public string Code_RH { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le numéro de sécurité sociale est obligatoire.")]
