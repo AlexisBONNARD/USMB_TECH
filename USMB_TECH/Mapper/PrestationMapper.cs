@@ -22,6 +22,18 @@ namespace USMB_TECH.Mapper
                             .Distinct()
                             .ToList()
                         : new List<string>()));
+
+            CreateMap<PrestationUpdateDto, Prestation>()
+                .ForMember(dest => dest.Id_Prestation, opt => opt.MapFrom(src => src.Id_Prestation))
+                .ForMember(dest => dest.Intitule_Prestation, opt => opt.MapFrom(src => src.Intitule_Prestation))
+                .ForMember(dest => dest.Description_Prestation, opt => opt.MapFrom(src => src.Description_Prestation))
+                .ForMember(dest => dest.Nom_Court, opt => opt.MapFrom(src => src.Nom_Court))
+                .ForMember(dest => dest.Actif, opt => opt.MapFrom(src => src.Actif))
+                .ForMember(dest => dest.Id_Type_Prestation, opt => opt.MapFrom(src => src.Id_Type_Prestation))
+                .ForMember(dest => dest.Id_Domaine_Excellence, opt => opt.MapFrom(src => src.Id_Domaine_Excellence))
+                .ForPath(dest => dest.Unite_OeuvreNavigation.Nom_Unite_Oeuvre, opt => opt.MapFrom(src => src.UniteOeuvre))
+                .ForMember(dest => dest.Contact_USMBNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.Precisers, opt => opt.Ignore());
         }
     }
 }

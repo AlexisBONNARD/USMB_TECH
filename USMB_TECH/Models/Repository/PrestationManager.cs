@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using USMB_TECH.DTO;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
@@ -7,6 +8,7 @@ namespace USMB_TECH.Models.Repository
     public class PrestationManager : IMainRepository<Prestation, int>
     {
         private readonly UsmbTechDbContext _context;
+        private readonly AutoMapper.IMapper _mapper;
 
         public PrestationManager(UsmbTechDbContext context)
         {
@@ -149,12 +151,57 @@ namespace USMB_TECH.Models.Repository
             _context.Prestations.Add(entity);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateAsync(Prestation entityToUpdate, Prestation entity)
+        public async Task UpdateAsync(Prestation entityToUpdate, Prestation updatedEntity)
         {
-            _context.Prestations.Attach(entityToUpdate);
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            // -------------------------
+            // 1️ Mettre à jour les propriétés simples
+            // -------------------------
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // -------------------------
+            // 2️ Mise à jour du contact (si navigation 1-1)
+            // -------------------------
+            if (updatedEntity.Contact_USMBNavigation != null)
+            {
+                entityToUpdate.Contact_USMBNavigation = updatedEntity.Contact_USMBNavigation;
+            }
+
+            // -------------------------
+            // 3️ Gestion incrémentale des mots-clés via Preciser
+            // -------------------------
+            updatedEntity.Precisers ??= new List<Preciser>();
+
+            foreach (var updatedPreciser in updatedEntity.Precisers)
+            {
+                var existingPreciser = entityToUpdate.Precisers
+                    .FirstOrDefault(p => p.Id_Mot_Clef == updatedPreciser.Id_Mot_Clef);
+
+                if (existingPreciser == null)
+                {
+                    updatedPreciser.Id_Prestation = entityToUpdate.Id_Prestation;
+                    updatedPreciser.PrestationNavigation = entityToUpdate;
+                    entityToUpdate.Precisers.Add(updatedPreciser);
+                }
+            }
+
+            var precisersToRemove = entityToUpdate.Precisers
+                .Where(p => !updatedEntity.Precisers.Any(up => up.Id_Mot_Clef == p.Id_Mot_Clef))
+                .ToList();
+
+            foreach (var preciser in precisersToRemove)
+            {
+                entityToUpdate.Precisers.Remove(preciser);
+                _context.Precisers.Remove(preciser);
+            }
+
+            // -------------------------
+            // 4️ Sauvegarde
+            // -------------------------
             await _context.SaveChangesAsync();
         }
+
+
+
 
         public async Task DeleteAsync(Prestation entity)
         {
