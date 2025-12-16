@@ -95,16 +95,16 @@ namespace USMB_TECH.Controllers
                 };
 
                 _context.Pole_Expertises.Add(pole_expertise);
-                await _context.SaveChangesAsync(); // Génère Id_Pole_Expertise
+                await _context.SaveChangesAsync(); 
                 var idPole_Expertise = pole_expertise.Id_Pole_Expertise;
 
                 // -------------------------
                 // 2) Mots-clés -> Mot_Clef + Specifier
                 // Pour chaque mot : reuse si existe (bd), sinon créer et SaveChanges pour obtenir l'id
                 // -------------------------
-                foreach (var mc in pole_expertiseDto.MotsCles ?? Enumerable.Empty<MotCleDto>())
+                foreach (var mc in pole_expertiseDto.MotsCles ?? Enumerable.Empty<string>())
                 {
-                    var nomMot = (mc.Nom_Mot_Clef ?? string.Empty).Trim().ToLower();
+                    var nomMot = (mc ?? string.Empty).Trim().ToLower();
                     if (string.IsNullOrEmpty(nomMot)) continue;
 
                     // Cherche en base (no tracking)
@@ -163,7 +163,7 @@ namespace USMB_TECH.Controllers
                 // -------------------------
                 // 4) Exemples d'utilisation
                 // -------------------------
-                foreach (var exDto in pole_expertiseDto.ExempleUtilisations ?? Enumerable.Empty<ExempleUtilisationDto>())
+                foreach (var exDto in pole_expertiseDto.ExempleUtilisations ?? Enumerable.Empty<Exemple_Utilisation>())
                 {
                     var newEx = new Exemple_Utilisation
                     {
@@ -181,7 +181,7 @@ namespace USMB_TECH.Controllers
                 // -------------------------
                 // 5) Photos
                 // -------------------------
-                foreach (var pDto in pole_expertiseDto.Photos ?? Enumerable.Empty<PhotoDto>())
+                foreach (var pDto in pole_expertiseDto.Photos ?? Enumerable.Empty<Photo>())
                 {
                     var newP = new Photo
                     {

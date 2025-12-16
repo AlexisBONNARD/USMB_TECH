@@ -29,6 +29,11 @@ namespace USMB_TECH.Mapper
                     Nom_Utilisation = e.Nom_Utilisation,
                     Description_Utilisation = e.Description_Utilisation
                 }).ToList(),
+                Specifiers = dto.Specifiers.Select(s => new Specifier
+                {
+                    Id_Mot_Clef = s.Id_Mot_Clef,
+                    Id_Pole_Expertise = s.Id_Pole_Expertise
+                }).ToList()
             };
 
             return pole_expertise;
