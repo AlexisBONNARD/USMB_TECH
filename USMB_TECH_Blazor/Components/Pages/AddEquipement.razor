@@ -66,7 +66,7 @@
         <div class="form-group">
             <h4 class="add_style">Marque *</h4>
             <InputSelect class="form-select mb-2" @bind-Value="LastMarque" placeholder="LDLC">
-                <option value="">...</option>
+                <option value="">----- Sélectionner une marque -----</option>
                 @foreach (var marque in marques)
                 {
                     <option value="@marque.Nom_Marque">@marque.Nom_Marque</option>
@@ -101,7 +101,7 @@
         <hr />
         <h4 class="add_style">Pôle d'expertise *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
-            <option value="">...</option>
+            <option value="">----- Sélectionner un pôle d'expertise -----</option>
             @foreach (var pole_expertise in pole_expertises)
             {
                 <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
@@ -122,7 +122,7 @@
         <hr />
         <h4 class="add_style">Type d'équipement *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
-            <option value="">Sélectionner un type</option>
+            <option value="">----- Sélectionner un type d'équipement -----</option>
             @foreach (var type in type_Equipements)
             {
                 <option value="@type.Nom_Type">@type.Nom_Type</option>
