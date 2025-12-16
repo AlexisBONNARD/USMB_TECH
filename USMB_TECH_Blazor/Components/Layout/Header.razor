@@ -25,10 +25,10 @@
 
             <!-- ICONES DES RÉSEAUX -->
             <div class="usmb-header-icons">
-                <a href="#"><i class="bi bi-facebook"></i></a>
+                @* <a href="#"><i class="bi bi-facebook"></i></a>
                 <a href="#"><i class="bi bi-twitter"></i></a>
                 <a href="#"><i class="bi bi-youtube"></i></a>
-                <a href="#"><i class="bi bi-instagram"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a> *@
                 @if (AdminState.IsAdmin)
                 {
                     <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
@@ -36,6 +36,7 @@
                     <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouter-pole_expertise"))">Ajouter un pôle d'expertise</button>
                     <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterPrestation"))">Ajouter une prestation</button>
                     <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterContact"))">Ajouter un contact</button>
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterDomaineExcellence"))">Ajouter un domaine d'excellence</button>
                 }
             </div>
 

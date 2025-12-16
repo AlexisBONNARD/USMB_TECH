@@ -16,10 +16,10 @@
         <div class="spinner"></div>
     </div>
 }
-<h2 class="add_style">Ajouter un domaine d'excellence'</h2>
+<h2 class="add_style">Ajouter un domaine d'excellence</h2>
 
 <div class="page-container">
-    <EditForm Model="domaineExcellence" OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="@domaineExcellence" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -35,12 +35,22 @@
         <hr />
         <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
+        <hr />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+            @message
+        </div>
+    }
 </div>
 
 @code {
-    private Domaine_Excellence domaineExcellence= new();
+    private Domaine_Excellence domaineExcellence = new Domaine_Excellence
+    {
+        Photos = new List<Photo>()
+    };
     private bool isLoading = false;
     private bool isSubmitted = false;
     private string message = "";
@@ -52,8 +62,19 @@
         try
         {
             isLoading = true;
-
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Domaine_Excellence", domaineExcellence);
+            // Si aucune photo uploadée → photo par défaut
+            if (domaineExcellence.Photos == null || !domaineExcellence.Photos.Any())
+            {
+                domaineExcellence.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Domaine_Excellences", domaineExcellence);
             var createdDomaine = await response.Content.ReadFromJsonAsync<Domaine_Excellence>();
 
             domaineExcellence = createdDomaine;
@@ -97,7 +118,7 @@
 
         content.Add(fileContent, "file", file.Name);
 
-        var response = await Http.PostAsync("https://localhost:7093/api/Domaine_Excellence/upload", content);
+        var response = await Http.PostAsync("https://localhost:7093/api/Domaine_Excellences/upload", content);
 
         if (response.IsSuccessStatusCode)
         {

@@ -4,6 +4,7 @@
 @inject AdminState AdminState
 @inject IJSRuntime JS
 
+
 <h1>Liste des contacts</h1>
 
 @if (contacts is null)
@@ -40,16 +41,19 @@ else
                             Voir
                         </button>
                     </td>
-                    <td>
-                        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(contact.Id_Contact)">
-                            Modifier
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(contact.Id_Contact)">
-                            Supprimer
-                        </button>
-                    </td>
+                    @if (AdminState.IsAdmin)
+                    {
+                        <td>
+                            <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(contact.Id_Contact)">
+                                Modifier
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(contact.Id_Contact)">
+                                Supprimer
+                            </button>
+                        </td>
+        }
                 </tr>
             }
         </tbody>

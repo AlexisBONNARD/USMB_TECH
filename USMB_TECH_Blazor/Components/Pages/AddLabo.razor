@@ -8,6 +8,8 @@
 @inject IMainService<Mot_Clef, int> motcleService
 @inject IMainService<Thematique, int> ThematiqueService
 @inject IMainService<Pole_Expertise, int> poleService
+@inject AdminState AdminState
+
 @inject HttpClient Http
 
 <HeadContent>
@@ -124,7 +126,7 @@
         <hr />
         <h4 class="add_style">Fonction</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
-            <option value="">Sélectionner une fonction</option>
+            <option value="">----- Sélectionner une fonction -----</option>
             @foreach (var f in fonctions)
             {
                 <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
@@ -157,8 +159,8 @@
 
         <hr />
         <h4 class="add_style">Pôle d'expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="PoleExpertise">
+            <option value="">----- Sélectionner un pôle d'expertise -----</option>
             @foreach(var pole in existingPoles)
             {
                 <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
@@ -180,8 +182,8 @@
         @* ///Mots-clés *@
         <hr />
         <h4 class="add_style">Mots-Clés *</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="motCle">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
             @if (existingMot is not null)
             {
                 @foreach (var motcle in existingMot)
@@ -189,7 +191,7 @@
                     <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
                 }
             }
-            <option value="ajouter">Ajouter un nouveau mot-clé</option>
+            <option value="ajouter" class="alert-info">----- Créer un mot clé -----</option>
         </InputSelect>
 
         @if (motCle == "ajouter")
@@ -220,15 +222,15 @@
         @* ///Thematique *@ 
         <hr />
         <h4 class="add_style">Thématiques : </h4>
-        <InputSelect class="form-control mb-2" @bind-Value="thematique">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="thematique">
+            <option value="">----- Sélectionner une thématique -----</option>
             @if (existingThematique is not null)
             {
                 @foreach (var thematique in existingThematique)
                 {
                     <option value="@thematique.Nom_Thematique">@thematique.Nom_Thematique</option>
                 }
-                <option value="ajouter" class="alert-info">----- Créer une thématique</option>
+                <option value="ajouter" class="alert-info">----- Créer une thématique -----</option>
             }
         </InputSelect>
 
@@ -269,7 +271,9 @@
             @message
         </div>
     }
+
 </div>
+
 @code {
     Laboratoire labo = new Laboratoire();
     private Contact_USMB contact = new();
