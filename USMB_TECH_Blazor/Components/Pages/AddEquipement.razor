@@ -158,10 +158,12 @@
         <div>
             <label>Nom de l'exemple : </label>
             <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" placeholder="Stockage"/>
+            <ValidationMessage For="@(() => addEquipement.Nom_Exemple)" />
         </div>
         <div>
             <label>Description : </label>
             <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" placeholder="la base de données est stockée sur ce serveur" />
+            <ValidationMessage For="@(() => addEquipement.Description_Exemple)" />
         </div>
 
         <hr />

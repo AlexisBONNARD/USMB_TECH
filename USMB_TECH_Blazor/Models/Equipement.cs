@@ -21,6 +21,7 @@ namespace USMB_TECH_Blazor.Models
         public string Num_Immobilisation { get; set; }
         public DateTime Date_Acquisition { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage ="La description technique de votre équipement est obligatoire")]
         public string Description_Technique { get; set; }
 
         [Required(ErrorMessage = "Un prix d'achat est obligatoire")]
@@ -53,8 +54,10 @@ namespace USMB_TECH_Blazor.Models
 
         public string Nom_Contact { get; set; }
 
+        [Required(ErrorMessage = "il est nécessaire de renseigner un Nom pour l'exemple d'utilisation")]
         public string Nom_Exemple { get; set; }
 
+        [Required(ErrorMessage = "l'exemple d'utilisation doit avoir une description")]
         public string Description_Exemple { get; set; }
 
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
