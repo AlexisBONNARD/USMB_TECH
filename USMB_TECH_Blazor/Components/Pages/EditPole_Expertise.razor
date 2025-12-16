@@ -7,7 +7,7 @@
 @using USMB_TECH.Models
 
 
-<h2 class="add_platform">Modifier le pôle d'expertise</h2>
+<h2 class="add_style">Modifier le pôle d'expertise</h2>
 @if (!string.IsNullOrEmpty(deleteMessage))
 {
     <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
@@ -26,7 +26,7 @@ else
             <ValidationSummary />
 
             <!-- Infos générales -->
-            <h4 class="add_platform">Infos générales</h4>
+            <h4 class="add_style">Infos générales</h4>
             <label>Nom pôle d'expertise *</label>
             <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" />
             <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
@@ -53,7 +53,7 @@ else
                 <option value="false">Non</option>
 
             </InputSelect>
-            <h4 class="add_platform">Domaine d'excellence *</h4>
+            <h4 class="add_style">Domaine d'excellence *</h4>
             <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Id_Domaine_Excellence">
                 <option value="">-- Sélectionner --</option>
                 @foreach (var de in domainesExcellence)
@@ -64,7 +64,7 @@ else
             <ValidationMessage For="@(() => pole_expertise.Id_Domaine_Excellence)" />
 
             <hr />
-            <h4 class="add_platform">Équipements</h4>
+            <h4 class="add_style">Équipements</h4>
             @foreach (var eq in pole_expertise.Equipements)
             {
                 <div class="mb-3 border p-2">

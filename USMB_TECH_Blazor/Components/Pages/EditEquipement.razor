@@ -4,7 +4,7 @@
 @using USMB_TECH.Models
 @inject IJSRuntime JS
 @using System.Text.Json;
-<h2 class="add_platform">Modifier l'équipement</h2>
+<h2 class="add_style">Modifier l'équipement</h2>
 
 @if (equipement == null)
 {
@@ -18,7 +18,7 @@ else
             <ValidationSummary />
 
             <!-- Infos générales -->
-            <h4 class="add_platform">Infos générales</h4>
+            <h4 class="add_style">Infos générales</h4>
             <label>Nom équipement *</label>
             <InputText class="form-control mb-2" @bind-value="equipement.Nom_Equipement" />
             <ValidationMessage For="@(() => equipement.Nom_Equipement)" />
@@ -77,7 +77,7 @@ else
 
 
             <hr />
-            <h4 class="add_platform">Photos</h4>
+            <h4 class="add_style">Photos</h4>
             @foreach (var photo in equipement.Photos)
             {
                 <div class="mb-3 border p-2">
@@ -90,7 +90,7 @@ else
             }
 
             <hr />
-            <h4 class="add_platform">Exemples d'utilisation</h4>
+            <h4 class="add_style">Exemples d'utilisation</h4>
             @foreach (var ex in equipement.Exemple_Utilisations)
             {
                 <div class="mb-3 border p-2">
@@ -103,7 +103,7 @@ else
             }
 
             <hr />
-            <h4 class="add_platform">Fournisseurs</h4>
+            <h4 class="add_style">Fournisseurs</h4>
             @foreach (var f in equipement.Fournirs)
             {
                 <div class="mb-3 border p-2">
