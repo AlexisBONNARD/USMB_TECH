@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutPrestation(int id, Prestation prestations)
+        public async Task<IActionResult> PutPrestation(int id, PrestationUpdateDto prestations)
         {
             if (!ModelState.IsValid)
             {
@@ -56,9 +57,12 @@ namespace USMB_TECH.Controllers
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"Équipement avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, prestations);
+            //  passage par AutoMapper
+            var mappedEntity = _mapper.Map<Prestation>(prestations);
+
+            await _dataRepository.UpdateAsync(existing, mappedEntity);
             return NoContent();
         }
 
