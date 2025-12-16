@@ -1,7 +1,10 @@
 ﻿@page "/ajouterLabo"
+@using USMB_TECH.Models
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject IMainService<Fonction, int> fonctionService
 @inject IMainService<Laboratoire, string> laboService
+@inject IMainService<Contact_USMB, string> contactService
 @inject IMainService<Mot_Clef, int> motcleService
 @inject IMainService<Thematique, int> ThematiqueService
 @inject IMainService<Pole_Expertise, int> poleService
@@ -61,7 +64,8 @@
                 <InputCheckbox @bind-Value="SameAdresse" @oninput="Change" /> Adresses Campus = Labo
             </div>
         }
-        <h3 class="add_style">Adresse du campus</h3>
+        <hr />
+        <h4 class="add_style">Adresse du campus</h4>
 
         <label>Rue du campus *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"/>
@@ -79,7 +83,66 @@
         <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"/>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
 
+        <h4 class="add_style">Infos générales du contact</h4>
+        <label>Nom *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" placeholder="LeBrun" />
+        <ValidationMessage For="@(() => contact.Nom_Contact)" />
 
+        <label>Prénom *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" placeholder="Jacques" />
+        <ValidationMessage For="@(() => contact.Prenom_Contact)" />
+
+        <label>Numéro de Sécurité Sociale *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" placeholder="1 85 05 78 006 084 36" />
+        <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
+
+        <label>Code RH *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" placeholder="56321" />
+        <ValidationMessage For="@(() => contact.Code_RH)" />
+
+        <label>Adresse e-mail *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Mail" placeholder="Adresseexample@gmail.com" />
+        <ValidationMessage For="@(() => contact.Mail)" />
+
+        <label>Téléphone *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Telephone" placeholder="0689563214" />
+        <ValidationMessage For="@(() => contact.Telephone)" />
+
+        <hr />
+        <h4 class="add_style">Fonction</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
+            <option value="">Sélectionner une fonction</option>
+            @foreach (var f in fonctions)
+            {
+                <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer une fonction -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => SelectedFonction)" />
+        @if (SelectedFonction == "ajouter")
+        {
+            @* <hr /> *@
+            @* <h4 class="add_style">Ajouter une fonction</h4> *@
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newFonction"
+                       @bind:event="oninput"
+                       placeholder="Nom de la fonction"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddFonction(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddFonction">Ajouter</button>
+            </form>
+
+            @* @if (derniereFonctionAjoutee != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @derniereFonctionAjoutee.Nom_Fonction
+                    </li>
+                </ul>
+            } *@
+        }
+
+        <hr />
         <h4 class="add_style">Pôle d'expertise</h4>
         <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
             <option value="">...</option>
@@ -102,6 +165,7 @@
             }
         </ul>
         @* ///Mots-clés *@
+        <hr />
         <h4 class="add_style">Mots-Clés *</h4>
         <InputSelect class="form-control mb-2" @bind-Value="motCle">
             <option value="">...</option>
@@ -140,7 +204,8 @@
             }
         </ul>
 
-        @* ///Thematique *@
+        @* ///Thematique *@ 
+        <hr />
         <h4 class="add_style">Thématiques : </h4>
         <InputSelect class="form-control mb-2" @bind-Value="thematique">
             <option value="">...</option>
@@ -193,6 +258,7 @@
 </div>
 @code {
     Laboratoire labo = new Laboratoire();
+    private Contact_USMB contact = new();
     [Parameter] public EventCallback<Laboratoire> OnLaboratoireAdded { get; set; }
     [Parameter] public bool EnableRedirect { get; set; } = true;
 
@@ -202,6 +268,7 @@
 
     string motCle;
     string NewMotCle;
+    private List<Fonction> fonctions = new();
 
     string thematique;
     string NewThematique;
@@ -214,10 +281,49 @@
 
 
     string message = "";
-    string exc = "";
+    string exc = ""; 
+    
+    private string _selectedFonction;
+
+    private string SelectedFonction
+    {
+        get => _selectedFonction;
+        set
+        {
+            _selectedFonction = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value != "ajouter")
+            {
+                contact.Nom_Fonction = value;
+            }
+        }
+    }
+
+    private string newFonction = "";
+    private List<Fonction> lesFonctions = new();
+    private Fonction derniereFonctionAjoutee;
+
+    void AddFonction()
+    {
+        if (!string.IsNullOrWhiteSpace(newFonction))
+        {
+            var nouvelleFonction = new Fonction { Nom_Fonction = newFonction };
+
+            // 👉 Ajoute dans la liste de la dropdown
+            fonctions.Add(nouvelleFonction);
+
+            SelectedFonction = newFonction;
+            contact.Nom_Fonction = newFonction;
+
+            derniereFonctionAjoutee = nouvelleFonction;
+            newFonction = "";
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
+        fonctions = (await fonctionService.GetAllAsync()).ToList();
         existingMot = await motcleService.GetAllAsync();
         existingThematique = await ThematiqueService.GetAllAsync();
         existingPoles = await poleService.GetAllAsync();
@@ -244,6 +350,9 @@
             }
 
             await laboService.AddAsync(labo);
+            contact.Nom_Court = labo.Nom_Court;
+            await contactService.AddAsync(contact);
+
 
             isSubmitted = true;
 
