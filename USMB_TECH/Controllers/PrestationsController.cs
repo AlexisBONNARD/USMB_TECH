@@ -48,23 +48,31 @@ namespace USMB_TECH.Controllers
         public async Task<IActionResult> PutPrestation(int id, PrestationUpdateDto prestations)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             if (id != prestations.Id_Prestation)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Équipement avec l'id {id} introuvable.");
+                return NotFound($"Prestation avec l'id {id} introuvable.");
 
-            //  passage par AutoMapper
+            // Mapping DTO → Entity
             var mappedEntity = _mapper.Map<Prestation>(prestations);
 
+            // Mots-clés → Preciser
+            mappedEntity.Precisers = prestations.MotCleIds
+                .Select(idMotCle => new Preciser
+                {
+                    Id_Mot_Clef = idMotCle
+                })
+                .ToList();
+
             await _dataRepository.UpdateAsync(existing, mappedEntity);
+
             return NoContent();
         }
+
 
         // POST: api/Prestations
         [HttpPost]

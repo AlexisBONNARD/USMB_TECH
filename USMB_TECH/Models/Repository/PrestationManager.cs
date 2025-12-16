@@ -29,7 +29,12 @@ namespace USMB_TECH.Models.Repository
 
                 .Include(p => p.Fournirs)
                     .ThenInclude(e => e.EquipementNavigation)
-         
+                 .Include(p => p.Type_PrestationNavigation)
+                .Include(p => p.Unite_OeuvreNavigation)
+                .Include(p => p.Domaine_ExcellenceNavigation)
+                .Include(p => p.Contact_USMBNavigation)
+                .Include(p => p.Precisers)
+                    .ThenInclude(pr => pr.Mot_ClefNavigation)
                 .FirstOrDefaultAsync(p => p.Id_Prestation == id);
         }
 
@@ -154,51 +159,63 @@ namespace USMB_TECH.Models.Repository
         public async Task UpdateAsync(Prestation entityToUpdate, Prestation updatedEntity)
         {
             // -------------------------
-            // 1️ Mettre à jour les propriétés simples
+            // 1️ Mise à jour des champs simples + FK
             // -------------------------
             _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
 
             // -------------------------
-            // 2️ Mise à jour du contact (si navigation 1-1)
+            // 2️ Contact (1–1)
             // -------------------------
             if (updatedEntity.Contact_USMBNavigation != null)
             {
-                entityToUpdate.Contact_USMBNavigation = updatedEntity.Contact_USMBNavigation;
+                if (entityToUpdate.Contact_USMBNavigation == null)
+                {
+                    entityToUpdate.Contact_USMBNavigation = updatedEntity.Contact_USMBNavigation;
+                }
+                else
+                {
+                    _context.Entry(entityToUpdate.Contact_USMBNavigation)
+                            .CurrentValues
+                            .SetValues(updatedEntity.Contact_USMBNavigation);
+                }
             }
 
             // -------------------------
-            // 3️ Gestion incrémentale des mots-clés via Preciser
+            // 3️ Mots-clés (N–N via Preciser)
             // -------------------------
             updatedEntity.Precisers ??= new List<Preciser>();
 
+            // AJOUT
             foreach (var updatedPreciser in updatedEntity.Precisers)
             {
-                var existingPreciser = entityToUpdate.Precisers
-                    .FirstOrDefault(p => p.Id_Mot_Clef == updatedPreciser.Id_Mot_Clef);
+                var exists = entityToUpdate.Precisers
+                    .Any(p => p.Id_Mot_Clef == updatedPreciser.Id_Mot_Clef);
 
-                if (existingPreciser == null)
+                if (!exists)
                 {
                     updatedPreciser.Id_Prestation = entityToUpdate.Id_Prestation;
-                    updatedPreciser.PrestationNavigation = entityToUpdate;
                     entityToUpdate.Precisers.Add(updatedPreciser);
                 }
             }
 
-            var precisersToRemove = entityToUpdate.Precisers
-                .Where(p => !updatedEntity.Precisers.Any(up => up.Id_Mot_Clef == p.Id_Mot_Clef))
+            // SUPPRESSION
+            var toRemove = entityToUpdate.Precisers
+                .Where(p => !updatedEntity.Precisers
+                    .Any(up => up.Id_Mot_Clef == p.Id_Mot_Clef))
                 .ToList();
 
-            foreach (var preciser in precisersToRemove)
+            foreach (var preciser in toRemove)
             {
                 entityToUpdate.Precisers.Remove(preciser);
                 _context.Precisers.Remove(preciser);
             }
 
             // -------------------------
-            // 4️ Sauvegarde
+            // 4️ Save
             // -------------------------
             await _context.SaveChangesAsync();
         }
+
 
 
 

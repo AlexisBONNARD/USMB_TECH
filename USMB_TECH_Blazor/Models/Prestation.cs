@@ -13,6 +13,8 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Type_Prestation { get; set; }
 
+        public int Id_Domaine_Excellence { get; set; }  
+
         public string? Nom_Court { get; set; }
 
         public string Nom_Pole_Expertise { get; set; }

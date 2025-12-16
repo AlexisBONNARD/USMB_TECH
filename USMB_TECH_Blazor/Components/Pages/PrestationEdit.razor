@@ -1,0 +1,251 @@
+﻿@page "/prestation/edit/{Id:int}"
+
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IMainService<Prestation, int> prestationService
+@inject IMainService<Domaine_Excellence, int> domaineService
+@inject IMainService<Type_Prestation, int> typeService
+@inject IMainService<Unite_Oeuvre, int> uniteService
+@inject IMainService<Mot_Clef, int> motCleService
+@inject IMainService<Contact_USMB, int> contactService
+
+@using USMB_TECH_Blazor.Models
+
+<h2 class="add_style">Modifier la prestation</h2>
+
+@if (prestationUpdate == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="@prestationUpdate" OnValidSubmit="Submit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <h4 class="add_style">Informations générales</h4>
+
+            <label>Intitulé *</label>
+            <InputText class="form-control mb-2"
+                       @bind-Value="prestationUpdate.Intitule_Prestation" />
+
+            <label>Description</label>
+            <InputTextArea class="form-control mb-2"
+                           @bind-Value="prestationUpdate.Description_Prestation" />
+
+            <label>Nom court</label>
+            <InputText class="form-control mb-2"
+                       @bind-Value="prestationUpdate.Nom_Court" />
+
+            <label>Active ?</label>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Actif">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+            </InputSelect>
+
+            <h4 class="add_style">Références</h4>
+
+            <label>Domaine *</label>
+            <InputSelect class="form-control mb-2"
+                         @bind-Value="prestationUpdate.Nom_Domaine">
+                <option value="">...</option>
+                @foreach (var d in domaines)
+                {
+                    <option value="@d.Intitule_Domaine_Excellence"
+                            selected="@prestationUpdate.Nom_Domaine == d.Intitule_Domaine_Excellence">
+                        @d.Intitule_Domaine_Excellence
+                    </option>
+                }
+            </InputSelect>
+
+            <label>Type *</label>
+            <InputSelect class="form-control mb-2"
+                         @bind-Value="prestationUpdate.Type">
+                <option value="">...</option>
+                @foreach (var t in types)
+                {
+                    <option value="@t.Nom_Type_Prestation"
+                            selected="@prestationUpdate.Type == t.Nom_Type_Prestation">
+                        @t.Nom_Type_Prestation
+                    </option>
+                }
+            </InputSelect>
+
+            <label>Unité *</label>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Unite">
+                <option value="">...</option>
+                @foreach (var u in unites)
+                {
+                    <option value="@u.Nom_Unite_Oeuvre"
+                            selected="@prestationUpdate.Unite == u.Nom_Unite_Oeuvre">
+                        @u.Nom_Unite_Oeuvre
+                    </option>
+                }
+            </InputSelect>
+
+            <hr />
+            <h4 class="add_style">Contact associé</h4>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Id_Contact">
+                <option value="0">...</option>
+                @foreach (var c in contacts)
+                {
+                    <option value="@c.Id_Contact">
+                        @c.Prenom_Contact @c.Nom_Contact
+                    </option>
+                }
+            </InputSelect>
+
+            <hr />
+            <h4 class="add_style">Mots-clés *</h4>
+
+            <InputSelect class="form-control mb-2"
+                         @bind-Value="selectedMotCle">
+                <option value="">...</option>
+                @foreach (var mc in motsClesExistants)
+                {
+                    <option value="@mc.Nom_Mot_Clef">@mc.Nom_Mot_Clef</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@string.IsNullOrWhiteSpace(selectedMotCle)"
+                    @onclick="AddMotCle">
+                Ajouter ce mot-clé
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var mc in prestationUpdate.Mots_Clefs)
+                {
+                    <li>
+                        @mc
+                        <button type="button"
+                                class="btn btn-sm btn-danger ms-2"
+                                @onclick="() => RemoveMotCle(mc)">
+                            Supprimer
+                        </button>
+                    </li>
+                }
+            </ul>
+
+            <hr />
+            <button type="submit" class="btn btn-primary mt-3">
+                Mettre à jour
+            </button>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private PrestationUpdateModel? prestationUpdate;
+
+    private List<Domaine_Excellence> domaines = new();
+    private List<Type_Prestation> types = new();
+    private List<Unite_Oeuvre> unites = new();
+    private List<Mot_Clef> motsClesExistants = new();
+    private List<Contact_USMB> contacts = new();
+
+    private string? selectedMotCle;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var prestation = await prestationService.GetByIdAsync(Id);
+
+        prestationUpdate = new PrestationUpdateModel
+        {
+            Id_Prestation = prestation.Id_Prestation,
+            Nom_Court = prestation.Nom_Court,
+            Nom_Pole_Expertise = prestation.Nom_Pole_Expertise,
+            Nom_Domaine = prestation.Nom_Domaine,
+            Type = prestation.Type_PrestationNavigation?.Nom_Type_Prestation,
+            Unite = prestation.Unite,
+            Id_Contact = prestation.Id_Contact,
+            Nom_Contact = prestation.Nom_Contact,
+            Intitule_Prestation = prestation.Intitule_Prestation,
+            Description_Prestation = prestation.Description_Prestation,
+            Prix_Revient = prestation.Prix_Revient,
+            Prix_Vente = prestation.Prix_Vente,
+            Peux_Ce_Realiser_Chez_Le_Client = prestation.Peux_Ce_Realiser_Chez_Le_Client,
+            Actif = prestation.Actif,
+            Mots_Clefs = prestation.Precisers?.Select(p => p.Mot_ClefNavigation?.Nom_Mot_Clef ?? string.Empty)
+                           .Where(mc => !string.IsNullOrEmpty(mc))
+                           .ToList() ?? new List<string>()
+        };
+
+        domaines = (await domaineService.GetAllAsync()).ToList();
+        types = (await typeService.GetAllAsync()).ToList();
+        unites = (await uniteService.GetAllAsync()).ToList();
+        motsClesExistants = (await motCleService.GetAllAsync()).ToList();
+        contacts = (await contactService.GetAllAsync()).ToList();
+    }
+
+    private void AddMotCle()
+    {
+        if (!string.IsNullOrWhiteSpace(selectedMotCle)
+            && prestationUpdate != null
+            && !prestationUpdate.Mots_Clefs.Contains(selectedMotCle))
+        {
+            prestationUpdate.Mots_Clefs.Add(selectedMotCle);
+            selectedMotCle = null;
+        }
+    }
+
+    private void RemoveMotCle(string nomMot)
+    {
+        prestationUpdate?.Mots_Clefs.Remove(nomMot);
+    }
+
+    private async Task Submit()
+    {
+        if (prestationUpdate == null)
+            return;
+
+        var original = await prestationService.GetByIdAsync(prestationUpdate.Id_Prestation);
+        if (original == null)
+            return;
+
+        original.Intitule_Prestation = prestationUpdate.Intitule_Prestation;
+        original.Description_Prestation = prestationUpdate.Description_Prestation;
+        original.Nom_Court = prestationUpdate.Nom_Court;
+        original.Actif = prestationUpdate.Actif;
+        original.Id_Contact = prestationUpdate.Id_Contact;
+        var test = unites.FirstOrDefault(u => u.Nom_Unite_Oeuvre == prestationUpdate.Unite)?.Id_Unite_Oeuvre;
+        var test2 = original.Id_Unite_Oeuvre;
+        original.Id_Unite_Oeuvre = unites.FirstOrDefault(u => u.Nom_Unite_Oeuvre == prestationUpdate.Unite)?.Id_Unite_Oeuvre ?? original.Id_Unite_Oeuvre;
+        original.Id_Type_Prestation = types.FirstOrDefault(t => t.Nom_Type_Prestation == prestationUpdate.Type)?.Id_Type_Prestation ?? original.Id_Type_Prestation;
+        original.Id_Domaine_Excellence = domaines.FirstOrDefault(d => d.Intitule_Domaine_Excellence == prestationUpdate.Nom_Domaine)?.Id_Domaine_Excellence ?? original.Id_Domaine_Excellence;
+
+        original.Precisers ??= new List<Preciser>();
+        original.Fournirs ??= new List<Fournir>();
+        original.Presenters ??= new List<Presenter>();
+        original.Photos ??= new List<Photo>();
+
+        original.Precisers.Clear();
+        foreach (var mc in prestationUpdate.Mots_Clefs)
+        {
+            var mot = motsClesExistants.FirstOrDefault(m => m.Nom_Mot_Clef == mc);
+            if (mot != null)
+            {
+                original.Precisers.Add(new Preciser
+                {
+                    Id_Mot_Clef = mot.Id_Mot_Clef,
+                    Mot_ClefNavigation = null
+                });
+            }
+        }
+
+        await prestationService.UpdateAsync(original);
+
+        Navigation.NavigateTo($"/prestation/{Id}");
+    }
+
+
+
+
+}
