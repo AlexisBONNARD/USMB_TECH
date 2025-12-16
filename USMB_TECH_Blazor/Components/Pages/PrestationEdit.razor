@@ -49,42 +49,34 @@ else
 
             <label>Domaine *</label>
             <InputSelect class="form-control mb-2"
-                         @bind-Value="prestationUpdate.Nom_Domaine">
-                <option value="">...</option>
+                         @bind-Value="prestationUpdate.Id_Domaine_Excellence">
+                <option value="0">...</option>
                 @foreach (var d in domaines)
                 {
-                    <option value="@d.Intitule_Domaine_Excellence"
-                            selected="@prestationUpdate.Nom_Domaine == d.Intitule_Domaine_Excellence">
-                        @d.Intitule_Domaine_Excellence
-                    </option>
+                    <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
                 }
             </InputSelect>
 
             <label>Type *</label>
             <InputSelect class="form-control mb-2"
-                         @bind-Value="prestationUpdate.Type">
-                <option value="">...</option>
+                         @bind-Value="prestationUpdate.Id_Type_Prestation">
+                <option value="0">...</option>
                 @foreach (var t in types)
                 {
-                    <option value="@t.Nom_Type_Prestation"
-                            selected="@prestationUpdate.Type == t.Nom_Type_Prestation">
-                        @t.Nom_Type_Prestation
-                    </option>
+                    <option value="@t.Id_Type_Prestation">@t.Nom_Type_Prestation</option>
                 }
             </InputSelect>
 
             <label>Unité *</label>
             <InputSelect class="form-control mb-3"
-                         @bind-Value="prestationUpdate.Unite">
-                <option value="">...</option>
+                         @bind-Value="prestationUpdate.Id_Unite_Oeuvre">
+                <option value="0">...</option>
                 @foreach (var u in unites)
                 {
-                    <option value="@u.Nom_Unite_Oeuvre"
-                            selected="@prestationUpdate.Unite == u.Nom_Unite_Oeuvre">
-                        @u.Nom_Unite_Oeuvre
-                    </option>
+                    <option value="@u.Id_Unite_Oeuvre">@u.Nom_Unite_Oeuvre</option>
                 }
             </InputSelect>
+
 
             <hr />
             <h4 class="add_style">Contact associé</h4>
@@ -162,9 +154,9 @@ else
             Id_Prestation = prestation.Id_Prestation,
             Nom_Court = prestation.Nom_Court,
             Nom_Pole_Expertise = prestation.Nom_Pole_Expertise,
-            Nom_Domaine = prestation.Nom_Domaine,
-            Type = prestation.Type_PrestationNavigation?.Nom_Type_Prestation,
-            Unite = prestation.Unite,
+            Id_Domaine_Excellence = prestation.Id_Domaine_Excellence,
+            Id_Type_Prestation = prestation.Id_Type_Prestation,
+            Id_Unite_Oeuvre = prestation.Id_Unite_Oeuvre,
             Id_Contact = prestation.Id_Contact,
             Nom_Contact = prestation.Nom_Contact,
             Intitule_Prestation = prestation.Intitule_Prestation,
@@ -177,6 +169,7 @@ else
                            .Where(mc => !string.IsNullOrEmpty(mc))
                            .ToList() ?? new List<string>()
         };
+
 
         domaines = (await domaineService.GetAllAsync()).ToList();
         types = (await typeService.GetAllAsync()).ToList();

@@ -6,6 +6,7 @@ namespace USMB_TECH_Blazor.Models
     {
         public int Id_Prestation { get; set; }
 
+        public int Id_Domaine_Excellence { get; set; }
         public int Id_Unite_Oeuvre { get; set; }
 
         public int Id_Type_Prestation { get; set; }
