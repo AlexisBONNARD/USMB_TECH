@@ -25,7 +25,7 @@ namespace USMB_TECH_Blazor.Models
         public string Code_RH { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le numéro de sécurité sociale est obligatoire.")]
-        [StringLength(50, ErrorMessage = "Le numéro de sécurité sociale ne peut pas dépasser 50 caractères.")]
+        [StringLength(15, ErrorMessage = "Le numéro de sécurité sociale ne peut pas dépasser 50 caractères.")]
         //[RegularExpression(@"[12][0-9]{2}(0[1-9]|1[0-2])(2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}([0-9]{2})$",ErrorMessage ="Le format du numéro de sécurité sociale n'a pas été respecté")]
         public string Num_Securite_Social { get; set; } = string.Empty;
 
