@@ -35,6 +35,27 @@ else
             <InputTextArea class="form-control mb-2"
                            @bind-Value="prestationUpdate.Description_Prestation" />
 
+            <label>Prix de vente de la prestation *</label>
+            <InputNumber class="form-control mb-2" @bind-Value="prestationUpdate.Prix_Vente" />
+
+            <label>Prix de revient de la prestation *</label>
+            <InputNumber class="form-control mb-2" @bind-Value="prestationUpdate.Prix_Revient" />
+
+            <label>Active ?</label>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Actif">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+            </InputSelect>
+
+            <label>Peut ce réaliser chez le client ?</label>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Peut_Realiser_Chez_Client">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+            </InputSelect>
+                           
+            <h4 class="add_style">Laboratoire associé</h4>
             <label>Nom court</label>
             <InputSelect class="form-control mb-2"
                          @bind-Value="prestationUpdate.Nom_Court">
@@ -43,13 +64,6 @@ else
                 {
                     <option value="@lab.Nom_Court">@lab.Nom_Court</option>
                 }
-            </InputSelect>
-
-            <label>Active ?</label>
-            <InputSelect class="form-control mb-3"
-                         @bind-Value="prestationUpdate.Actif">
-                <option value="true">Oui</option>
-                <option value="false">Non</option>
             </InputSelect>
 
             <h4 class="add_style">Références</h4>

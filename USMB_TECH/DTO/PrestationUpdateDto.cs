@@ -7,8 +7,8 @@ namespace USMB_TECH.DTO
         public int Id_Prestation { get; set; }
         public string Intitule_Prestation { get; set; }
         public string Description_Prestation { get; set; }
-        public decimal Prix_Ht { get; set; }
-        public decimal Prix_Tva { get; set; }
+        public double Prix_Revient { get; set; }
+        public double Prix_Vente { get; set; }
         public bool Peut_Realiser_Chez_Client { get; set; }
         public bool Actif { get; set; }
 

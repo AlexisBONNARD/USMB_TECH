@@ -14,7 +14,7 @@ namespace USMB_TECH_Blazor.Models
         public string Description_Prestation { get; set; } = string.Empty;
         public double Prix_Revient { get; set; }
         public double Prix_Vente { get; set; }
-        public bool Peux_Ce_Realiser_Chez_Le_Client { get; set; }
+        public bool Peut_Realiser_Chez_Client { get; set; }
         public bool Actif { get; set; }
 
         public List<int> MotCleIds { get; set; } = new();
