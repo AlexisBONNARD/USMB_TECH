@@ -29,6 +29,7 @@ builder.Services.AddScoped<IMainService<Mot_Clef, int>>(eq => new WebService<Mot
 builder.Services.AddScoped<IMainService<Contact_USMB, string>>(eq => new WebService<Contact_USMB, string>("Contact_USMB"));
 builder.Services.AddScoped<IMainService<Fonction, int>>(eq => new WebService<Fonction, int>("Fonction"));
 builder.Services.AddScoped<IMainService<Contact_USMB, int>>(eq => new WebService<Contact_USMB, int>("Contact_USMB"));
+builder.Services.AddScoped<IMainService<Contact_USMBUpdateModel, int>>(eq => new WebService<Contact_USMBUpdateModel, int>("Contact_USMB"));
 builder.Services.AddScoped<IMainService<Unite_Oeuvre,int>>(eq => new WebService<Unite_Oeuvre, int>("Unite_Oeuvres"));
 //builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
 builder.Services.AddScoped(sp => new HttpClient
