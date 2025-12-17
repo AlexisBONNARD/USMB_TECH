@@ -104,7 +104,7 @@
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
 
 
-        <h4 class="add_style">Infos générales du contact</h4>
+        <h4 class="add_style">Infos liées au contact</h4>
         <label>Nom *</label>
         <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" placeholder="LeBrun" />
         <ValidationMessage For="@(() => contact.Nom_Contact)" />
@@ -129,8 +129,7 @@
         <InputText class="form-control mb-2" @bind-Value="contact.Telephone" placeholder="0689563214" />
         <ValidationMessage For="@(() => contact.Telephone)" />
 
-        <hr />
-        <h4 class="add_style">Fonction</h4>
+        <label>Fonction</label>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
             <option value="">----- Sélectionner une fonction -----</option>
             @foreach (var f in fonctions)
