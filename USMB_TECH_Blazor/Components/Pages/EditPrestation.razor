@@ -208,9 +208,9 @@ else
 
             <h4 class="add_style">Pôles d'expertise associés *</h4>
 
-            <InputSelect class="form-control mb-2"
+            <InputSelect class="form-select mb-2"
                          @bind-Value="selectedPoleExpertiseId">
-                <option value="0">...</option>
+                <option value="0">----- Sélectionner un pôle d'expertise -----</option>
                 @foreach (var pe in polesExpertise)
                 {
                     <option value="@pe.Id_Pole_Expertise">@pe.Nom_Pole_Expertise</option>
