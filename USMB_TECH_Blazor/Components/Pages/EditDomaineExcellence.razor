@@ -4,6 +4,7 @@
 @using USMB_TECH.Models
 @inject IJSRuntime JS
 @using System.Text.Json;
+
 <h2 class="add_style">Modifier le domaine d'excellence</h2>
 
 @if (domaineExcellence == null)
@@ -28,17 +29,24 @@ else
 
             <hr />
             <h4 class="add_style">Photos</h4>
-            @foreach (var photo in domaineExcellence.Photos)
+            <InputFile OnChange="HandleFileUpload" multiple />
+            @if (domaineExcellence.Photos != null && domaineExcellence.Photos.Any())
             {
-                <div class="mb-3 border p-2">
-                    <label>Nom photo</label>
-                    <InputText class="form-control mb-1" @bind-value="photo.Nom_Photo" />
-
-                    <label>URL photo</label>
-                    <InputText class="form-control mb-1" @bind-value="photo.Url_Photo" />
+                <div class="uploaded-photos">
+                    <h5>Photos sélectionnées :</h5>
+                    <ul>
+                        @foreach (var photo in domaineExcellence.Photos)
+                        {
+                            <li>
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                            </li>
+                        }
+                    </ul>
                 </div>
             }
-                <hr />
+
+            <hr />
             <button class="btn btn-primary mt-3" type="submit">Mettre à jour</button>
         </EditForm>
     </div>
@@ -66,13 +74,65 @@ else
 
         var json = JsonSerializer.Serialize(domaineExcellence);
         await JS.InvokeVoidAsync("console.log", json);
+    }
 
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Prendre en charge plusieurs fichiers
+
+        // Réinitialiser les photos existantes avant d'ajouter les nouvelles
+        domaineExcellence.Photos.Clear();  // Supprimer les anciennes photos de l'objet
+
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("https://localhost:7093/api/Domaine_Excellences/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                domaineExcellence.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+
+    private void RemovePhoto(Photo photo)
+    {
+        domaineExcellence.Photos.Remove(photo);
+    }
+
+    public class UploadResponse
+    {
+        public string url { get; set; }
     }
 
     async Task SubmitDomaine()
     {
         try
         {
+            // Si aucune photo uploadée → photo par défaut
+            if (domaineExcellence.Photos == null || !domaineExcellence.Photos.Any())
+            {
+                domaineExcellence.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
             var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/Domaine_Excellences/{Id}", domaineExcellence);
 
             if (response.IsSuccessStatusCode)
@@ -104,6 +164,9 @@ else
         StateHasChanged();      // Met à jour
         if (isSubmitted)
         {
+            // Recharger les informations du domaine d'excellence mis à jour, y compris les photos.
+            domaineExcellence = await Http.GetFromJsonAsync<Domaine_Excellence>($"https://localhost:7093/api/Domaine_Excellences/{Id}");
+            StateHasChanged();
             NavigationManager.NavigateTo($"/DomaineExcellence/{Id}");
         }
     }

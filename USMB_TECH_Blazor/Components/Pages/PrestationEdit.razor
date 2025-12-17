@@ -2,7 +2,7 @@
 
 @inject NavigationManager Navigation
 @inject HttpClient Http
-@inject IMainService<Prestation, int> prestationService
+@inject IMainService<PrestationUpdateModel, int> prestationService
 @inject IMainService<Domaine_Excellence, int> domaineService
 @inject IMainService<Type_Prestation, int> typeService
 @inject IMainService<Unite_Oeuvre, int> uniteService
@@ -95,34 +95,39 @@ else
             <h4 class="add_style">Mots-clés *</h4>
 
             <InputSelect class="form-control mb-2"
-                         @bind-Value="selectedMotCle">
-                <option value="">...</option>
+                         @bind-Value="selectedMotCleId">
+                <option value="0">...</option>
                 @foreach (var mc in motsClesExistants)
                 {
-                    <option value="@mc.Nom_Mot_Clef">@mc.Nom_Mot_Clef</option>
+                    <option value="@mc.Id_Mot_Clef">@mc.Nom_Mot_Clef</option>
                 }
             </InputSelect>
 
             <button type="button"
                     class="btn btn-secondary btn-sm"
-                    disabled="@string.IsNullOrWhiteSpace(selectedMotCle)"
+                    disabled="@(selectedMotCleId == 0)"
                     @onclick="AddMotCle">
                 Ajouter ce mot-clé
             </button>
 
             <ul class="add_style mt-2">
-                @foreach (var mc in prestationUpdate.Mots_Clefs)
+                @foreach (var id in prestationUpdate.MotCleIds)
                 {
-                    <li>
-                        @mc
-                        <button type="button"
-                                class="btn btn-sm btn-danger ms-2"
-                                @onclick="() => RemoveMotCle(mc)">
-                            Supprimer
-                        </button>
-                    </li>
+                    var mc = motsClesExistants.FirstOrDefault(m => m.Id_Mot_Clef == id);
+                    if (mc != null)
+                    {
+                        <li>
+                            @mc.Nom_Mot_Clef
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemoveMotCle(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
                 }
             </ul>
+
 
             <hr />
             <button type="submit" class="btn btn-primary mt-3">
@@ -143,33 +148,16 @@ else
     private List<Mot_Clef> motsClesExistants = new();
     private List<Contact_USMB> contacts = new();
 
-    private string? selectedMotCle;
+
 
     protected override async Task OnInitializedAsync()
     {
-        var prestation = await prestationService.GetByIdAsync(Id);
+        prestationUpdate = await prestationService.GetByIdAsync(Id);
 
-        prestationUpdate = new PrestationUpdateModel
-        {
-            Id_Prestation = prestation.Id_Prestation,
-            Nom_Court = prestation.Nom_Court,
-            Nom_Pole_Expertise = prestation.Nom_Pole_Expertise,
-            Id_Domaine_Excellence = prestation.Id_Domaine_Excellence,
-            Id_Type_Prestation = prestation.Id_Type_Prestation,
-            Id_Unite_Oeuvre = prestation.Id_Unite_Oeuvre,
-            Id_Contact = prestation.Id_Contact,
-            Nom_Contact = prestation.Nom_Contact,
-            Intitule_Prestation = prestation.Intitule_Prestation,
-            Description_Prestation = prestation.Description_Prestation,
-            Prix_Revient = prestation.Prix_Revient,
-            Prix_Vente = prestation.Prix_Vente,
-            Peux_Ce_Realiser_Chez_Le_Client = prestation.Peux_Ce_Realiser_Chez_Le_Client,
-            Actif = prestation.Actif,
-            Mots_Clefs = prestation.Precisers?.Select(p => p.Mot_ClefNavigation?.Nom_Mot_Clef ?? string.Empty)
-                           .Where(mc => !string.IsNullOrEmpty(mc))
-                           .ToList() ?? new List<string>()
-        };
-
+        // synchroniser les IDs avec les Precisers
+        prestationUpdate.MotCleIds = prestationUpdate.Precisers?
+            .Select(p => p.Id_Mot_Clef)
+            .ToList() ?? new List<int>();
 
         domaines = (await domaineService.GetAllAsync()).ToList();
         types = (await typeService.GetAllAsync()).ToList();
@@ -178,65 +166,33 @@ else
         contacts = (await contactService.GetAllAsync()).ToList();
     }
 
+
+    private int selectedMotCleId;
+
     private void AddMotCle()
     {
-        if (!string.IsNullOrWhiteSpace(selectedMotCle)
-            && prestationUpdate != null
-            && !prestationUpdate.Mots_Clefs.Contains(selectedMotCle))
+        if (selectedMotCleId != 0 && prestationUpdate != null && !prestationUpdate.MotCleIds.Contains(selectedMotCleId))
         {
-            prestationUpdate.Mots_Clefs.Add(selectedMotCle);
-            selectedMotCle = null;
+            prestationUpdate.MotCleIds.Add(selectedMotCleId);
+            selectedMotCleId = 0;
         }
     }
 
-    private void RemoveMotCle(string nomMot)
+    private void RemoveMotCle(int id)
     {
-        prestationUpdate?.Mots_Clefs.Remove(nomMot);
+        prestationUpdate?.MotCleIds.Remove(id);
     }
+
 
     private async Task Submit()
     {
-        if (prestationUpdate == null)
-            return;
-
-        var original = await prestationService.GetByIdAsync(prestationUpdate.Id_Prestation);
-        if (original == null)
-            return;
-
-        original.Intitule_Prestation = prestationUpdate.Intitule_Prestation;
-        original.Description_Prestation = prestationUpdate.Description_Prestation;
-        original.Nom_Court = prestationUpdate.Nom_Court;
-        original.Actif = prestationUpdate.Actif;
-        original.Id_Contact = prestationUpdate.Id_Contact;
-        var test = unites.FirstOrDefault(u => u.Nom_Unite_Oeuvre == prestationUpdate.Unite)?.Id_Unite_Oeuvre;
-        var test2 = original.Id_Unite_Oeuvre;
-        original.Id_Unite_Oeuvre = unites.FirstOrDefault(u => u.Nom_Unite_Oeuvre == prestationUpdate.Unite)?.Id_Unite_Oeuvre ?? original.Id_Unite_Oeuvre;
-        original.Id_Type_Prestation = types.FirstOrDefault(t => t.Nom_Type_Prestation == prestationUpdate.Type)?.Id_Type_Prestation ?? original.Id_Type_Prestation;
-        original.Id_Domaine_Excellence = domaines.FirstOrDefault(d => d.Intitule_Domaine_Excellence == prestationUpdate.Nom_Domaine)?.Id_Domaine_Excellence ?? original.Id_Domaine_Excellence;
-
-        original.Precisers ??= new List<Preciser>();
-        original.Fournirs ??= new List<Fournir>();
-        original.Presenters ??= new List<Presenter>();
-        original.Photos ??= new List<Photo>();
-
-        original.Precisers.Clear();
-        foreach (var mc in prestationUpdate.Mots_Clefs)
+        if (prestationUpdate != null)
         {
-            var mot = motsClesExistants.FirstOrDefault(m => m.Nom_Mot_Clef == mc);
-            if (mot != null)
-            {
-                original.Precisers.Add(new Preciser
-                {
-                    Id_Mot_Clef = mot.Id_Mot_Clef,
-                    Mot_ClefNavigation = null
-                });
-            }
+            await prestationService.UpdateAsync(prestationUpdate);
+            Navigation.NavigateTo($"/prestation/{Id}");
         }
-
-        await prestationService.UpdateAsync(original);
-
-        Navigation.NavigateTo($"/prestation/{Id}");
     }
+
 
 
 

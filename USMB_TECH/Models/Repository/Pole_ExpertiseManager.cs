@@ -107,7 +107,26 @@ namespace USMB_TECH.Models.Repository
                 entityToUpdate.Equipements.Remove(equip);
                 _context.Equipements.Remove(equip); // Supprime en base
             }
+            // Supprimer les photos existantes associées au domaine
+            var existingPhotos = await _context.Photos
+                .Where(p => p.Id_Domaine_Excellence == entityToUpdate.Id_Domaine_Excellence)
+                .ToListAsync();
 
+            _context.Photos.RemoveRange(existingPhotos);
+
+            // Mettre à jour le domaine d'excellence
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // Ajouter les nouvelles photos (si elles existent dans l'entité mise à jour)
+            foreach (var photo in updatedEntity.Photos)
+            {
+                _context.Photos.Add(new Photo
+                {
+                    Nom_Photo = photo.Nom_Photo,
+                    Url_Photo = photo.Url_Photo,
+                    Id_Domaine_Excellence = entityToUpdate.Id_Domaine_Excellence // Associer la photo au domaine
+                });
+            }
             // -------------------------
             // 4️ Sauvegarde
             // -------------------------

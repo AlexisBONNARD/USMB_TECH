@@ -57,7 +57,9 @@ namespace USMB_TECH.Controllers
             if (existing is null)
                 return NotFound($"Domaine Excellence avec l'id {id} introuvable.");
 
+            // Mise à jour du domaine d'excellence
             await _dataRepository.UpdateAsync(existing, Domaine_Excellence);
+
             return NoContent();
         }
 

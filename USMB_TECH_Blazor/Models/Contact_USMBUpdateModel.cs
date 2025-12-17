@@ -4,9 +4,8 @@ using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
-    public class Contact_USMB
+    public class Contact_USMBUpdateModel
     {
-        [Key]
         public int Id_Contact { get; set; }
 
         public int Id_Fonction { get; set; }
@@ -24,8 +23,8 @@ namespace USMB_TECH_Blazor.Models
         public string Code_RH { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le numéro de sécurité sociale est obligatoire.")]
-        [StringLength(15, ErrorMessage = "Le numéro de sécurité sociale ne peut pas dépasser 15 caractères.")]
-        [RegularExpression(@"^[12][0-9]{2}(0[1-9]|1[0-2])(2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$",ErrorMessage = "Le format du numéro de sécurité sociale n'a pas été respecté")]
+        [StringLength(15, ErrorMessage = "Le numéro de sécurité sociale ne peut pas dépasser 50 caractères.")]
+        [RegularExpression(@"^[12][0-9]{2}(0[1-9]|1[0-2])(2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$", ErrorMessage = "Le format du numéro de sécurité sociale n'a pas été respecté")]
         public string Num_Securite_Social { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "L'adresse e-mail est obligatoire.")]
@@ -42,7 +41,6 @@ namespace USMB_TECH_Blazor.Models
         [ForeignKey("LaboratoireNavigation")]
         public string Nom_Court { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La fonction du contact est obligatoire.")] //car si non EditContact afiche l'ErrorMessage = "La fonction du contact est obligatoire."
         public string Nom_Fonction { get; set; } = string.Empty;
 
         public virtual Fonction? FonctionNavigation { get; set; } = null!;
@@ -52,3 +50,4 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Prestation> Prestations { get; set; } = new List<Prestation>();
     }
 }
+
