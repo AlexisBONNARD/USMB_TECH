@@ -57,11 +57,14 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
         <label>Pays du laboratoire *</label>
-        <InputSelect class="form-select mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
-            <option value="">----- Sélectionner un pays -----</option>
-            @foreach(var country in countries)
+        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
+            <option value=""></option>
+            @if(countries is not null)
             {
-                <option value="@country">@country</option>
+                @foreach(var country in countries)
+                {
+                    <option value="@country">@country</option>
+                }
             }
         </InputSelect>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
@@ -88,11 +91,14 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
         <label>Pays du campus *</label>
-        <InputSelect class="form-select mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
-            <option value="">----- Sélectionner un pays -----</option>
-            @foreach (var country in countries)
+        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
+            <option value=""></option>
+             @if(countries is not null)
             {
-                <option value="@country">@country</option>
+                @foreach (var country in countries)
+                {
+                    <option value="@country">@country</option>
+                }
             }
         </InputSelect>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
@@ -312,9 +318,9 @@
     bool isSubmitted = false;
     bool SameAdresse = false;
 
+    private List<string> countries;
 
     string message = "";
-    string exc = ""; 
 
     private string _selectedFonction;
 
@@ -360,6 +366,11 @@
         existingMot = await motcleService.GetAllAsync();
         existingThematique = await ThematiqueService.GetAllAsync();
         existingPoles = await poleService.GetAllAsync();
+        var client = new HttpClient();
+        var json = await client.GetStringAsync("https://data.enseignementsup-recherche.gouv.fr/api/records/1.0/search/?dataset=curiexplore-pays&rows=300");
+        var root = JsonNode.Parse(json);
+        countries = root["records"].AsArray().Select(r => (string)r["fields"]["name_fr"]).OrderBy(name => name).ToList();
+
     }
 
     private async Task HandleValidSubmit()
@@ -535,36 +546,36 @@
     {
         public string url { get; set; }
     }
-    List<string> countries = new List<string>
-{
-    "Afghanistan", "Albania", "Germany", "Andorra", "Angola", "Antigua and Barbuda", "Saudi Arabia",
-    "Algeria", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bangladesh",
-    "Barbados", "Bahrain", "Belgium", "Belize", "Benin", "Belarus", "Burma", "Bolivia",
-    "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
-    "Bhutan", "Cape Verde", "Cambodia", "Cameroon", "Canada", "Qatar", "Chad", "Chile", "China",
-    "Cyprus", "Vatican City", "Colombia", "Comoros", "North Korea", "South Korea", "Ivory Coast",
-    "Costa Rica", "Croatia", "Cuba", "Denmark", "Dominica", "Ecuador", "Egypt", "El Salvador",
-    "United Arab Emirates", "Eritrea", "Slovakia", "Slovenia", "Spain", "United States", "Estonia",
-    "Ethiopia", "Philippines", "Finland", "Fiji", "France", "Gabon", "Gambia", "Georgia", "Ghana",
-    "Grenada", "Greece", "Guatemala", "Guyana", "Guinea", "Equatorial Guinea", "Guinea-Bissau",
-    "Haiti", "Honduras", "Hungary", "India", "Indonesia", "Iraq", "Iran", "Ireland", "Iceland",
-    "Marshall Islands", "Solomon Islands", "Israel", "Italy", "Jamaica", "Japan", "Jordan",
-    "Kazakhstan", "Kenya", "Kyrgyzstan", "Kiribati", "Kuwait", "Laos", "Lesotho", "Latvia",
-    "Lebanon", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "North Macedonia",
-    "Madagascar", "Malaysia", "Malawi", "Maldives", "Mali", "Malta", "Morocco", "Mauritius",
-    "Mauritania", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
-    "Mozambique", "Namibia", "Nauru", "Nepal", "Nicaragua", "Niger", "Nigeria", "Norway",
-    "New Zealand", "Oman", "Netherlands", "Pakistan", "Palau", "Panama", "Papua New Guinea",
-    "Paraguay", "Peru", "Poland", "Portugal", "United Kingdom", "Central African Republic",
-    "Czech Republic", "Republic of the Congo", "Democratic Republic of the Congo",
-    "Dominican Republic", "Rwanda", "Romania", "Russia", "Samoa", "Saint Kitts and Nevis",
-    "San Marino", "Saint Vincent and the Grenadines", "Saint Lucia", "Sao Tome and Principe",
-    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Syria", "Somalia",
-    "Sri Lanka", "Swaziland", "South Africa", "Sudan", "South Sudan", "Sweden", "Switzerland",
-    "Suriname", "Thailand", "Tanzania", "Tajikistan", "East Timor", "Togo", "Tonga",
-    "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Turkey", "Tuvalu", "Ukraine", "Uganda",
-    "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Djibouti", "Zambia",
-    "Zimbabwe"
-};
+//     List<string> countries = new List<string>
+// {
+//     "Afghanistan", "Albania", "Germany", "Andorra", "Angola", "Antigua and Barbuda", "Saudi Arabia",
+//     "Algeria", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bangladesh",
+//     "Barbados", "Bahrain", "Belgium", "Belize", "Benin", "Belarus", "Burma", "Bolivia",
+//     "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+//     "Bhutan", "Cape Verde", "Cambodia", "Cameroon", "Canada", "Qatar", "Chad", "Chile", "China",
+//     "Cyprus", "Vatican City", "Colombia", "Comoros", "North Korea", "South Korea", "Ivory Coast",
+//     "Costa Rica", "Croatia", "Cuba", "Denmark", "Dominica", "Ecuador", "Egypt", "El Salvador",
+//     "United Arab Emirates", "Eritrea", "Slovakia", "Slovenia", "Spain", "United States", "Estonia",
+//     "Ethiopia", "Philippines", "Finland", "Fiji", "France", "Gabon", "Gambia", "Georgia", "Ghana",
+//     "Grenada", "Greece", "Guatemala", "Guyana", "Guinea", "Equatorial Guinea", "Guinea-Bissau",
+//     "Haiti", "Honduras", "Hungary", "India", "Indonesia", "Iraq", "Iran", "Ireland", "Iceland",
+//     "Marshall Islands", "Solomon Islands", "Israel", "Italy", "Jamaica", "Japan", "Jordan",
+//     "Kazakhstan", "Kenya", "Kyrgyzstan", "Kiribati", "Kuwait", "Laos", "Lesotho", "Latvia",
+//     "Lebanon", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "North Macedonia",
+//     "Madagascar", "Malaysia", "Malawi", "Maldives", "Mali", "Malta", "Morocco", "Mauritius",
+//     "Mauritania", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+//     "Mozambique", "Namibia", "Nauru", "Nepal", "Nicaragua", "Niger", "Nigeria", "Norway",
+//     "New Zealand", "Oman", "Netherlands", "Pakistan", "Palau", "Panama", "Papua New Guinea",
+//     "Paraguay", "Peru", "Poland", "Portugal", "United Kingdom", "Central African Republic",
+//     "Czech Republic", "Republic of the Congo", "Democratic Republic of the Congo",
+//     "Dominican Republic", "Rwanda", "Romania", "Russia", "Samoa", "Saint Kitts and Nevis",
+//     "San Marino", "Saint Vincent and the Grenadines", "Saint Lucia", "Sao Tome and Principe",
+//     "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Syria", "Somalia",
+//     "Sri Lanka", "Swaziland", "South Africa", "Sudan", "South Sudan", "Sweden", "Switzerland",
+//     "Suriname", "Thailand", "Tanzania", "Tajikistan", "East Timor", "Togo", "Tonga",
+//     "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Turkey", "Tuvalu", "Ukraine", "Uganda",
+//     "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Djibouti", "Zambia",
+//     "Zimbabwe"
+// };
 
 }
