@@ -201,6 +201,10 @@
                 <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
         }
+        else if (!string.IsNullOrWhiteSpace(motCle))
+        {
+            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+        }
         <ul>
             @foreach (var mc in prestation.Mots_Clefs)
             {
