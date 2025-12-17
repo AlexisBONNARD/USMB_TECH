@@ -27,7 +27,7 @@
 
         <h4 class="add_style">Infos générales</h4>
         <label>Nom pôle d'expertise *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" placeholder="Santé & Sport"/>
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" placeholder="Santé & Sport" />
         <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
 
         <label>Description *</label>
@@ -39,7 +39,7 @@
         <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
 
         <label>URL contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" placeholder="https://www.univ-smb.fr"/>
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" placeholder="https://www.univ-smb.fr" />
         <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
 
         <label>Description contenu *</label>
@@ -76,14 +76,14 @@
             <option value="">----- Sélectionner un mot clé -----</option>
             @if (existingMot is not null)
             {
-                @foreach(var mot in existingMot)
+                @foreach (var mot in existingMot)
                 {
                     <option value="@mot.Nom_Mot_Clef">@mot.Nom_Mot_Clef</option>
                 }
             }
             <option value="ajouter" class="alert-info">----- Créer un mot clé -----</option>
         </InputSelect>
-        @if(motCle == "ajouter")
+        @if (motCle == "ajouter")
         {
             <h4>Ajouter un mot-clé</h4>
             <form @onsubmit="AddMot_Clef" class="mb-2">
@@ -98,7 +98,7 @@
         {
             <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
-        
+
         <ul class="add_style">
             @foreach (var mc in pole_expertise.MotsCles)
             {
@@ -117,11 +117,14 @@
                        placeholder="Nom exemple"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
             <input class="form-control mb-1"
-                           @bind="newExempleDesc"
-                           @bind:event="oninput"
-                           placeholder="Description exemple"
-                           @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
-            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
+                   @bind="newExempleDesc"
+                   @bind:event="oninput"
+                   placeholder="Description exemple"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            @if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
+            {
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
+            }
         </form>
         <ul class="add_style">
             @foreach (var e in pole_expertise.ExempleUtilisations)
@@ -146,7 +149,10 @@
                     <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
                 }
             </InputSelect>
-            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
+            @if (!selectedPrestationId == null)
+            {
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
+            }
         </form>
         <ul class="add_style">
             @foreach (var pr in pole_expertise.Presenters)
@@ -248,9 +254,9 @@
             newMot_Clef = "";
             motCle = "";
         }
-        else if(string.IsNullOrWhiteSpace(newMot_Clef) && motCle != "ajouter")
+        else if (string.IsNullOrWhiteSpace(newMot_Clef) && motCle != "ajouter")
         {
-            if(!pole_expertise.MotsCles.Contains(motCle))
+            if (!pole_expertise.MotsCles.Contains(motCle))
             {
                 pole_expertise.MotsCles.Add(motCle);
             }
@@ -304,7 +310,7 @@
             }
 
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Pole_Expertises", pole_expertise);
-            var createdpole= await response.Content.ReadFromJsonAsync<Pole_Expertise>();
+            var createdpole = await response.Content.ReadFromJsonAsync<Pole_Expertise>();
 
             pole_expertise = createdpole;
             if (response.IsSuccessStatusCode)
@@ -396,10 +402,10 @@
             {
                 var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
                 pole_expertise.Photos.Add(new Photo
-                    {
-                        Nom_Photo = file.Name,
-                        Url_Photo = result.url
-                    });
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
             }
         }
     }
