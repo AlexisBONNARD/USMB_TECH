@@ -174,7 +174,7 @@ else
 
             <InputSelect class="form-select mb-2"
                          @bind-Value="selectedEquipementId">
-                <option value="">----- Sélectionner un équipement -----</option>
+                <option value="0">----- Sélectionner un équipement -----</option>
                 @foreach (var mc in equipements)
                 {
                     <option value="@mc.Id_Equipement">@mc.Nom_Equipement</option>
