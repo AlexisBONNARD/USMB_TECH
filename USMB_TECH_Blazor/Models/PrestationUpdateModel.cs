@@ -20,6 +20,8 @@ namespace USMB_TECH_Blazor.Models
         public List<int> MotCleIds { get; set; } = new();
 
         public List<Preciser> Precisers { get; set; } = new();
+
+        public ICollection<Photo>? Photos { get; set; }
     }
 
 }

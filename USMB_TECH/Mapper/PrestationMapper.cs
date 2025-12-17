@@ -40,6 +40,7 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Id_Type_Prestation, opt => opt.MapFrom(src => src.Id_Type_Prestation))
                 .ForMember(dest => dest.Id_Domaine_Excellence, opt => opt.MapFrom(src => src.Id_Domaine_Excellence))
                 .ForMember(dest => dest.Nom_Court, opt => opt.MapFrom(src => src.Nom_Court))
+                .ForMember(destinationMember => destinationMember.Photos, opt => opt.MapFrom(src => src.Photos))
 
 
                 .ForMember(dest => dest.Precisers, opt => opt.MapFrom(src => src.Precisers))
