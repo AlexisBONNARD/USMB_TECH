@@ -44,7 +44,24 @@
 
         <label>Peut se réaliser chez le client *</label>
         <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client" />
-
+        <hr />
+        <h4 class="add_style">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" multiple />
+        @if (prestation.Photos != null && prestation.Photos.Any())
+        {
+            <div class="uploaded-photos">
+                <h5>Photos sélectionnées :</h5>
+                <ul>
+                    @foreach (var photo in prestation.Photos)
+                    {
+                        <li>
+                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
         @* //////Contact *@
         <hr />
         <h4 class="add_style">Contact à associer</h4>
@@ -475,5 +492,37 @@
         laboratoires = laboratoires.Append(laboratoire);
         LastLaboratoire = laboratoire.Nom_Court;
         CloseModalLaboratoire();
+    }
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("https://localhost:7093/api/prestations/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                prestation.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+    private void RemovePhoto(Photo photo)
+    {
+        prestation.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
     }
 }
