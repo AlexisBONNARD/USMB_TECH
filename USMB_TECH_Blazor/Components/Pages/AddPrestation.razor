@@ -150,33 +150,33 @@
 
         @* //////Poles *@
         <hr />
-        <h4 class="add_style">Pôle Expertise</h4>
-        <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
-            <option value="">----- Sélectionner un pôle d'expertise -----</option>
+        <h4 class="add_style">Pôles d’expertise</h4>
+
+        <InputSelect class="form-select mb-2" @bind-Value="SelectedPole">
+            <option value="">----- Sélectionner un pôle -----</option>
             @foreach (var pole in existingpoles)
             {
                 <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
             }
-            <option value="ajouter" class="alert-info">----- Créer un Pôle d'expertise -----</option>
         </InputSelect>
-
-        <div id="modalPole_Expertise" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close" @onclick="CloseModalPole_Expertise">&times;</span>
-                <AddPole_Expertise OnPole_ExpertiseAdded="OnPole_ExpetiseAdded" EnableRedirect="false" />
-            </div>
-        </div>
-
-        @if (!string.IsNullOrWhiteSpace(PoleExpertise))
+        @if (!string.IsNullOrWhiteSpace(SelectedPole))
         {
-            <button type="button" @onclick="AddPole">Ajouter Pole</button>
+        <button type="button"
+                @onclick="AddPole"
+                class="btn btn-secondary btn-sm mt-1">
+            Ajouter ce pôle
+        </button>
         }
-        <ul>
+        <ul class="mt-2">
             @foreach (var pole in prestation.Poles)
             {
                 <li>
                     @pole
-                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pole)">Supprimer</button>
+                    <button class="btn btn-sm btn-danger ms-2"
+                            type="button"
+                            @onclick="() => RemovePole(pole)">
+                        Supprimer
+                    </button>
                 </li>
             }
         </ul>
@@ -198,12 +198,12 @@
             <form @onsubmit="AddMot_Clef">
                 <input @bind="NewMotCle"
                        placeholder="Nouveau Mot-clé" />
-                <button type="button" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
             </form>
         }
         else if (!string.IsNullOrWhiteSpace(motCle))
         {
-            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
         <ul>
             @foreach (var mc in prestation.Mots_Clefs)
@@ -241,9 +241,6 @@
     string motCle;
     string NewMotCle;
 
-    string PoleExpertise;
-
-
     private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
@@ -265,27 +262,6 @@
             else
             {
                 prestation.Nom_Contact = value;
-            }
-        }
-    }
-
-    private string _lastPole_Expertise;
-
-    private string LastPole_Expertise
-    {
-        get => _lastPole_Expertise;
-        set
-        {
-            _lastPole_Expertise = value;
-            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
-
-            if (value == "ajouter")
-            {
-                OpenModalPole_Expertise();
-            }
-            else
-            {
-                prestation.Nom_Pole_Expertise = value;
             }
         }
     }
@@ -413,18 +389,23 @@
             motCle = "";
         }
     }
+    private string SelectedPole;
+
     private void AddPole()
     {
-        if (!string.IsNullOrWhiteSpace(PoleExpertise) && !prestation.Poles.Contains(PoleExpertise))
+        if (!string.IsNullOrWhiteSpace(SelectedPole) &&
+            !prestation.Poles.Contains(SelectedPole))
         {
-            prestation.Poles.Add(PoleExpertise);
+            prestation.Poles.Add(SelectedPole);
         }
-        PoleExpertise = "";
+
+        SelectedPole = string.Empty;
     }
     private void RemovePole(string pole)
     {
         prestation.Poles.Remove(pole);
     }
+
     private void RemoveMotCle(string mc)
     {
         prestation.Mots_Clefs.Remove(mc);
@@ -439,17 +420,6 @@
     {
         JS.InvokeVoidAsync("closeModalContact");
     }
-
-    private void OpenModalPole_Expertise()
-    {
-        JS.InvokeVoidAsync("openModalPole_expertise");
-    }
-
-    private void CloseModalPole_Expertise()
-    {
-        JS.InvokeVoidAsync("closeModalPole_expertise");
-    }
-
     private void OpenModalDomaineExcellence()
     {
         JS.InvokeVoidAsync("openModalDomaineExcellence");
@@ -482,13 +452,6 @@
         domaines = domaines.Append(domaine);
         LastDomaineExcellence = domaine.Intitule_Domaine_Excellence;
         CloseModalDomaineExcellence();
-    }
-
-    private void OnPole_ExpetiseAdded(Pole_Expertise poleExpertise)
-    {
-        existingpoles = existingpoles.Append(poleExpertise);
-        LastPole_Expertise = poleExpertise.Nom_Pole_Expertise;
-        CloseModalPole_Expertise();
     }
 
     private void OnLaboratoireAdded(Laboratoire laboratoire)
