@@ -260,7 +260,22 @@
 
         <hr />
         <h4 class="add_style">Photos</h4>
-        <InputFile OnChange="HandleFileUpload" />
+        <InputFile OnChange="HandleFileUpload" multiple />
+        @if (labo.Photos != null && labo.Photos.Any())
+        {
+            <div class="uploaded-photos">
+                <h5>Photos sélectionnées :</h5>
+                <ul>
+                    @foreach (var photo in labo.Photos)
+                    {
+                        <li>
+                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
         <hr />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
@@ -300,7 +315,7 @@
 
     string message = "";
     string exc = ""; 
-    
+
     private string _selectedFonction;
 
     private string SelectedFonction
@@ -490,25 +505,31 @@
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
-        var file = e.File;
-
-        using var content = new MultipartFormDataContent();
-        var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
-        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
-
-        content.Add(fileContent, "file", file.Name);
-
-        var response = await Http.PostAsync("https://localhost:7093/api/laboratoires/upload", content);
-
-        if (response.IsSuccessStatusCode)
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
         {
-            var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
-            labo.Photos.Add(new Photo
-                {
-                    Nom_Photo = file.Name,
-                    Url_Photo = result.url
-                });
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("https://localhost:7093/api/laboratoires/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                labo.Photos.Add(new Photo
+                    {
+                        Nom_Photo = file.Name,
+                        Url_Photo = result.url
+                    });
+            }
         }
+    }
+    private void RemovePhoto(Photo photo)
+    {
+        labo.Photos.Remove(photo);
     }
     public class UploadResponse
     {

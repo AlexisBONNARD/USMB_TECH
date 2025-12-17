@@ -78,14 +78,20 @@ else
 
             <hr />
             <h4 class="add_style">Photos</h4>
-            @foreach (var photo in equipement.Photos)
+            <InputFile OnChange="HandleFileUpload" multiple />
+            @if (equipement.Photos != null && equipement.Photos.Any())
             {
-                <div class="mb-3 border p-2">
-                    <label>Nom photo</label>
-                    <InputText class="form-control mb-1" @bind-value="photo.Nom_Photo" />
-
-                    <label>URL photo</label>
-                    <InputText class="form-control mb-1" @bind-value="photo.Url_Photo" />
+                <div class="uploaded-photos">
+                    <h5>Photos sélectionnées :</h5>
+                    <ul>
+                        @foreach (var photo in equipement.Photos)
+                        {
+                            <li>
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                            </li>
+                        }
+                    </ul>
                 </div>
             }
 
@@ -151,10 +157,57 @@ else
 
     }
 
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Récupère tous les fichiers sélectionnés
+
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                equipement.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+    private void RemovePhoto(Photo photo)
+    {
+        equipement.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+
     async Task SubmitEquipement()
     {
         try
         {
+            // Si aucune photo uploadée → photo par défaut
+            if (equipement.Photos == null || !equipement.Photos.Any())
+            {
+                equipement.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
             var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/equipements/{Id}", equipement);
 
             if (response.IsSuccessStatusCode)
