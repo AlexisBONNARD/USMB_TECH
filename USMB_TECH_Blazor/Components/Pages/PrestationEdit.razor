@@ -8,6 +8,7 @@
 @inject IMainService<Unite_Oeuvre, int> uniteService
 @inject IMainService<Mot_Clef, int> motCleService
 @inject IMainService<Contact_USMB, int> contactService
+@inject IMainService<Laboratoire, string> laboratoireService
 
 @using USMB_TECH_Blazor.Models
 
@@ -35,8 +36,14 @@ else
                            @bind-Value="prestationUpdate.Description_Prestation" />
 
             <label>Nom court</label>
-            <InputText class="form-control mb-2"
-                       @bind-Value="prestationUpdate.Nom_Court" />
+            <InputSelect class="form-control mb-2"
+                         @bind-Value="prestationUpdate.Nom_Court">
+                <option value="0">...</option>
+                @foreach (var lab in laboratoires)
+                {
+                    <option value="@lab.Nom_Court">@lab.Nom_Court</option>
+                }
+            </InputSelect>
 
             <label>Active ?</label>
             <InputSelect class="form-control mb-3"
@@ -147,6 +154,7 @@ else
     private List<Unite_Oeuvre> unites = new();
     private List<Mot_Clef> motsClesExistants = new();
     private List<Contact_USMB> contacts = new();
+    private List<Laboratoire> laboratoires = new();
 
 
 
@@ -164,6 +172,7 @@ else
         unites = (await uniteService.GetAllAsync()).ToList();
         motsClesExistants = (await motCleService.GetAllAsync()).ToList();
         contacts = (await contactService.GetAllAsync()).ToList();
+        laboratoires = (await laboratoireService.GetAllAsync()).ToList();
     }
 
 
