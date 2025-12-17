@@ -42,7 +42,7 @@ namespace USMB_TECH_Blazor.Models
         [ForeignKey("LaboratoireNavigation")]
         public string Nom_Court { get; set; } = string.Empty;
 
-        //[Required(ErrorMessage = "La fonction du contact est obligatoire.")] //car si non EditContact afiche l'ErrorMessage = "La fonction du contact est obligatoire."
+        [Required(ErrorMessage = "La fonction du contact est obligatoire.")] //car si non EditContact afiche l'ErrorMessage = "La fonction du contact est obligatoire."
         public string Nom_Fonction { get; set; } = string.Empty;
 
         public virtual Fonction? FonctionNavigation { get; set; } = null!;
