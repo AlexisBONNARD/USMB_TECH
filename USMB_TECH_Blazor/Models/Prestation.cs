@@ -25,7 +25,7 @@ namespace USMB_TECH_Blazor.Models
         [Required(ErrorMessage = "Une prestation doit obligatoirement avoir un type")]
         public string Type { get; set; }
 
-        [Required(ErrorMessage = "Un unité de mesure de temps doit être attribué")]
+        [Required(ErrorMessage = "Une unité de mesure de temps doit être attribué")]
         public string Unite { get; set; }
 
         public int Id_Contact { get; set; }
