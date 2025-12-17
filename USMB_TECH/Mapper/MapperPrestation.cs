@@ -41,6 +41,11 @@ namespace USMB_TECH.Mapper
                 {
                     Nom_Court = src.Nom_Court
                 }))
+                .ForMember(dest =>dest.Photos , opt => opt.MapFrom(src => src.Photos.Select(photoDto => new Photo
+                {
+                    Url_Photo = photoDto.Url_Photo,
+                    Nom_Photo = photoDto.Nom_Photo
+                }).ToList()))
                 .ForMember(dest => dest.Id_Contact, opt => opt.Ignore())
                 .ForMember(dest => dest.Id_Type_Prestation, opt => opt.Ignore())
                 .ForMember(dest => dest.Id_Domaine_Excellence, opt => opt.Ignore());
