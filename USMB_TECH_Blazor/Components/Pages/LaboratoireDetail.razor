@@ -97,6 +97,9 @@ else
     </div>
     @if (AdminState.IsAdmin)
     {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(laboratoire.Nom_Court)">
+            Modifier
+        </button>
         <button class="btn btn-danger mb-3" @onclick="() => DeleteLaboratoire(laboratoire.Nom_Court)">
             Supprimer
         </button>
@@ -149,6 +152,11 @@ else
             deleteSuccess = false;
             await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
         }
+    }
+
+    private void GoToUpdate(string id)
+    {
+        Navigation.NavigateTo($"/laboratoire/edit/{id}", true);
     }
 
     private async Task ShowDeleteAlert(string msg)
