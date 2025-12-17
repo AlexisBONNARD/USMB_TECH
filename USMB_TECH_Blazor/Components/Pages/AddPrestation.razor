@@ -210,8 +210,8 @@
                 </li>
             }
         </ul>
-
-        <input type="submit" value="Ajouter">
+        <hr />
+        <input type="submit" class="btn btn-primary" value="Ajouter">
         @if (!string.IsNullOrEmpty(message))
         {
             <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">

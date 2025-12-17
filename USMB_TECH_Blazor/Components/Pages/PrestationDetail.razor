@@ -93,10 +93,10 @@ else
     </div>
     @if (AdminState.IsAdmin)
     {
-        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(prestation.Id_Domaine_Excellence)">
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(prestation.Id_Prestation)">
             Modifier
         </button>
-        <button class="btn btn-danger mb-3" @onclick="() => DeletePrestation(prestation.Id_Domaine_Excellence)">
+        <button class="btn btn-danger mb-3" @onclick="() => DeletePrestation(prestation.Id_Prestation)">
             Supprimer
         </button>
     }
