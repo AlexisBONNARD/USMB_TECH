@@ -109,7 +109,7 @@ namespace USMB_TECH.Models.Repository
             }
             // Supprimer les photos existantes associées au domaine
             var existingPhotos = await _context.Photos
-                .Where(p => p.Id_Domaine_Excellence == entityToUpdate.Id_Domaine_Excellence)
+                .Where(p => p.Id_Pole_Expertise == entityToUpdate.Id_Pole_Expertise)
                 .ToListAsync();
 
             _context.Photos.RemoveRange(existingPhotos);
@@ -124,9 +124,12 @@ namespace USMB_TECH.Models.Repository
                 {
                     Nom_Photo = photo.Nom_Photo,
                     Url_Photo = photo.Url_Photo,
-                    Id_Domaine_Excellence = entityToUpdate.Id_Domaine_Excellence // Associer la photo au domaine
+                    Id_Pole_Expertise = entityToUpdate.Id_Pole_Expertise
                 });
             }
+
+            // Sauvegarder les changements
+            await _context.SaveChangesAsync();
             // -------------------------
             // 4️ Sauvegarde
             // -------------------------
