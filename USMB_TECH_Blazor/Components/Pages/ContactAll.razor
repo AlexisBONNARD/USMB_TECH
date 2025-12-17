@@ -23,8 +23,13 @@ else
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Mail</th>
-                <th>Num_Securite_Social</th>
+                <th>Num Securite Social</th>
                 <th>Détails</th>
+                @if (AdminState.IsAdmin)
+                {
+                    <th>Modifier</th>
+                    <th>Supprimer</th>
+                }
             </tr>
         </thead>
 
@@ -49,11 +54,11 @@ else
                             </button>
                         </td>
                         <td>
-                            <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(contact.Id_Contact)">
+                            <button class="btn btn-danger mb-3" @onclick="() => DeleteContact(contact.Id_Contact)">
                                 Supprimer
                             </button>
                         </td>
-        }
+                    }
                 </tr>
             }
         </tbody>
@@ -79,11 +84,11 @@ else
     }
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
-    private async Task DeleteEquipement(int id)
+    private async Task DeleteContact(int id)
     {
         bool confirm = await JS.InvokeAsync<bool>(
             "confirm",
-            "Voulez-vous vraiment supprimer cet équipement ?"
+            "Voulez-vous vraiment supprimer ce contact ?"
         );
 
         if (!confirm)
@@ -93,7 +98,7 @@ else
         {
             await ContactService.DeleteAsync(id);
             deleteSuccess = true;
-            await ShowDeleteAlert("Équipement supprimé avec succès");
+            await ShowDeleteAlert("Contact supprimé avec succès");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
@@ -113,13 +118,8 @@ else
         StateHasChanged();
     }
 
-    private void RetourListe(int idPole_Expertise)
-    {
-        Navigation.NavigateTo($"/pole_expertise/{idPole_Expertise}");
-    }
-
     private void GoToUpdate(int id)
     {
-        Navigation.NavigateTo($"/equipement/edit/{id}", true);
+        Navigation.NavigateTo($"/contact/edit/{id}", true);
     }
 }

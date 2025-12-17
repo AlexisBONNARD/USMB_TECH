@@ -136,12 +136,13 @@ else
             if (response.IsSuccessStatusCode)
             {
                 deleteSuccess = true;
-                await ShowDeleteAlert("Pole_Expertise mise à jour avec succès ✅");
+                await ShowDeleteAlert("Pole_Expertise mise à jour avec succès");
+                NavigationManager.NavigateTo($"/pole_expertise/{Id}");
             }
             else
             {
                 deleteSuccess = false;
-                await ShowDeleteAlert("Erreur lors de la mise à jour ❌");
+                await ShowDeleteAlert("Erreur lors de la mise à jour");
             }
         }
         catch (Exception ex)

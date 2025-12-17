@@ -1,6 +1,7 @@
 ﻿@page "/contact/{contactId:int}"
 @inject IMainService<Contact_USMB,int> ContactService
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
 @inject AdminState AdminState
 
@@ -85,12 +86,26 @@ else
             <FormulaireContact />
         </div>
     </div>
+
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(contact.Id_Contact)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteContact(contact.Id_Contact)">
+            Supprimer
+        </button>
+    }
 }
 
 @code {
     [Parameter]
     public int contactId { get; set; }
     private Contact_USMB? contact;
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,6 +115,46 @@ else
     private void RetourListeStr(string idEquipement, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
+    }
+
+    // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
+    private async Task DeleteContact(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer ce contact ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await ContactService.DeleteAsync(id);
+            deleteSuccess = true;
+            await ShowDeleteAlert("Contact supprimé avec succès");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
+        }
+    }
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+        await Task.Delay(3000);
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/contact/edit/{id}", true);
     }
 }
 
