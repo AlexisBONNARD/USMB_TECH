@@ -166,24 +166,29 @@ namespace USMB_TECH.Models.Repository
             _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
 
             // --- Photos ---
-            foreach (var updatedPhoto in updatedEntity.Photos)
-            {
-                var existingPhoto = entityToUpdate.Photos
-                    .FirstOrDefault(p => p.Id_Photo == updatedPhoto.Id_Photo);
+            // Supprimer les photos existantes associées au domaine
+            var existingPhotos = await _context.Photos
+                .Where(p => p.Id_Equipement == entityToUpdate.Id_Equipement)
+                .ToListAsync();
 
-                if (existingPhoto != null)
+            _context.Photos.RemoveRange(existingPhotos);
+
+            // Mettre à jour le domaine d'excellence
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // Ajouter les nouvelles photos (si elles existent dans l'entité mise à jour)
+            foreach (var photo in updatedEntity.Photos)
+            {
+                _context.Photos.Add(new Photo
                 {
-                    // Mise à jour manuelle
-                    existingPhoto.Nom_Photo = updatedPhoto.Nom_Photo;
-                    existingPhoto.Url_Photo = updatedPhoto.Url_Photo;
-                }
-                else
-                {
-                    updatedPhoto.Id_Equipement = entityToUpdate.Id_Equipement;
-                    updatedPhoto.Id_Pole_Expertise = null; // ⚡ Respecte la contrainte CK_Photo_EquipementOuPole_Expertise
-                    entityToUpdate.Photos.Add(updatedPhoto);
-                }
+                    Nom_Photo = photo.Nom_Photo,
+                    Url_Photo = photo.Url_Photo,
+                    Id_Equipement = entityToUpdate.Id_Equipement
+                });
             }
+
+            // Sauvegarder les changements
+            await _context.SaveChangesAsync();
 
             // --- Exemple_Utilisations ---
             foreach (var updatedEx in updatedEntity.Exemple_Utilisations)

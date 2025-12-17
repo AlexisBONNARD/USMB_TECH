@@ -55,6 +55,25 @@ else
                 <option value="true">Oui</option>
                 <option value="false">Non</option>
             </InputSelect>
+
+            <hr />
+            <h4 class="add_style">Photos</h4>
+            <InputFile OnChange="HandleFileUpload" multiple />
+            @if (prestationUpdate.Photos != null && prestationUpdate.Photos.Any())
+            {
+                <div class="uploaded-photos">
+                    <h5>Photos sélectionnées :</h5>
+                    <ul>
+                        @foreach (var photo in prestationUpdate.Photos)
+                        {
+                            <li>
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
                            
             <h4 class="add_style">Laboratoire associé</h4>
             <label>Nom court</label>
@@ -247,7 +266,40 @@ else
     {
         prestationUpdate?.MotCleIds.Remove(id);
     }
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Récupère tous les fichiers sélectionnés
 
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("https://localhost:7093/api/prestations/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                prestationUpdate.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+    private void RemovePhoto(Photo photo)
+    {
+        prestationUpdate.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
     private int selectedEquipementId;
 
     private void AddEquipement()
@@ -269,6 +321,16 @@ else
     {
         if (prestationUpdate != null)
         {
+            // Si aucune photo uploadée → photo par défaut
+            if (prestationUpdate.Photos != null &&
+       prestationUpdate.Photos.Count == 0)
+            {
+                prestationUpdate.Photos.Add(new Photo
+                {
+                    Nom_Photo = "default-image.png",
+                    Url_Photo = "/images/No_image_available.png"
+                });
+            }
             // Envoi direct avec HttpClient
             var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/prestations/{prestationUpdate.Id_Prestation}", prestationUpdate);
 

@@ -169,7 +169,28 @@ namespace USMB_TECH.Models.Repository
         {
             _context.Laboratoires.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            // Supprimer les photos existantes associées au domaine
+            var existingPhotos = await _context.Photos
+                .Where(p => p.Nom_Court == entityToUpdate.Nom_Court)
+                .ToListAsync();
+
+            _context.Photos.RemoveRange(existingPhotos);
+
+            // Mettre à jour le domaine d'excellence
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+
+            // Ajouter les nouvelles photos (si elles existent dans l'entité mise à jour)
+            foreach (var photo in entity.Photos)
+            {
+                _context.Photos.Add(new Photo
+                {
+                    Nom_Photo = photo.Nom_Photo,
+                    Url_Photo = photo.Url_Photo,
+                    Nom_Court = entityToUpdate.Nom_Court
+                });
+            }
             await _context.SaveChangesAsync();
+
         }
 
 
