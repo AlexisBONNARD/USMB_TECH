@@ -1,7 +1,7 @@
 ﻿@page "/contact/edit/{Id:int}"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-@inject Service.IMainService<Contact_USMB, int> contactDatas
+@inject Service.IMainService<Contact_USMBUpdateModel, int> contactDatas
 @inject Service.IMainService<Fonction, int> fonctionDatas
 @inject Service.IMainService<Laboratoire, string> laboratoireDatas
 @inject IJSRuntime JS
@@ -73,6 +73,12 @@ else
 
             <hr />
             <button class="btn btn-primary" type="submit">Mettre à jour</button>
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div id="alertMessage" class="alert @(isSuccess ? "alert-success" : "alert-danger") alert-fixed">
+                    @message
+                </div>
+            }
         </EditForm>
     </div>
 }
@@ -81,7 +87,7 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private Contact_USMB? contact;
+    private Contact_USMBUpdateModel? contact;
     private List<Fonction> fonctions = new();
     private List<Laboratoire> laboratoires = new();
 
@@ -96,8 +102,6 @@ else
     }
 
     // ----------- ALERTES SUPPRESSION -----------
-    private string deleteMessage = null;
-    private bool deleteSuccess = false;
     private List<Domaine_Excellence> domainesExcellence = new();
 
     async Task SubmitContact()
@@ -108,19 +112,19 @@ else
 
             if (response.IsSuccessStatusCode)
             {
-                deleteSuccess = true;
+                isSuccess = true;
                 await ShowMessage("Contact mise à jour avec succès");
                 NavigationManager.NavigateTo($"/contact/{Id}");
             }
             else
             {
-                deleteSuccess = false;
+                isSuccess = false;
                 await ShowMessage("Erreur lors de la mise à jour");
             }
         }
         catch (Exception ex)
         {
-            deleteSuccess = false;
+            isSuccess = false;
             await ShowMessage($"Erreur: {ex.Message}");
         }
     }
@@ -133,7 +137,7 @@ else
 
         await Task.Delay(3000);
 
-        deleteMessage = null;
+        message = null;
         StateHasChanged();
     }
 }

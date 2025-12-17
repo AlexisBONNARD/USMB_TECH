@@ -10,6 +10,12 @@
     <link href="css/PageDetail.css" rel="stylesheet" />
 </HeadContent>
 
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
 @if (prestation == null)
 {
     <p>Loading...</p>
@@ -87,7 +93,12 @@ else
     </div>
     @if (AdminState.IsAdmin)
     {
-    @* Emplacement ou mettre les btn delete et update     *@
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(prestation.Id_Prestation)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeletePrestation(prestation.Id_Prestation)">
+            Supprimer
+        </button>
     }
 }
 
@@ -98,6 +109,8 @@ else
     private List<Pole_Expertise> pole_expertises = new List<Pole_Expertise>();
     private List<Equipement> equipements = new List<Equipement>();
 
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
     protected override async Task OnInitializedAsync()
     {
         prestation = await PrestationService.GetByIdAsync(Id);
@@ -117,4 +130,44 @@ else
     {
         Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
     }
+    private async Task DeletePrestation(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer cette prestation ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await PrestationService.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Prestation supprimée avec succès ✅");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/prestation/edit/{id}", true);
+    }
+
 }

@@ -56,13 +56,35 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Domaine_Excellence entityToUpdate, Domaine_Excellence entity) 
+        public async Task UpdateAsync(Domaine_Excellence entityToUpdate, Domaine_Excellence entity)
         {
+            // Attacher l'entité existante
             _context.Domaine_Excellences.Attach(entityToUpdate);
+
+            // Supprimer les photos existantes associées au domaine
+            var existingPhotos = await _context.Photos
+                .Where(p => p.Id_Domaine_Excellence == entityToUpdate.Id_Domaine_Excellence)
+                .ToListAsync();
+
+            _context.Photos.RemoveRange(existingPhotos);
+
+            // Mettre à jour le domaine d'excellence
             _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+
+            // Ajouter les nouvelles photos (si elles existent dans l'entité mise à jour)
+            foreach (var photo in entity.Photos)
+            {
+                _context.Photos.Add(new Photo
+                {
+                    Nom_Photo = photo.Nom_Photo,
+                    Url_Photo = photo.Url_Photo,
+                    Id_Domaine_Excellence = entityToUpdate.Id_Domaine_Excellence // Associer la photo au domaine
+                });
+            }
+
+            // Sauvegarder les changements
             await _context.SaveChangesAsync();
         }
-
 
         public async Task<IEnumerable<Domaine_Excellence>> GetByKeysAsync<TProperty>(
     Expression<Func<Domaine_Excellence, TProperty>> propertySelector,
