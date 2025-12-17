@@ -21,6 +21,8 @@ namespace USMB_TECH.DTO
         public Contact_USMB Contact { get; set; }
 
         public List<int> MotCleIds { get; set; } = new();
+
+        public List<Preciser> Precisers { get; set; } = new();
     }
 
 
