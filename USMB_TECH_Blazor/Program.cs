@@ -19,6 +19,7 @@ builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebServi
 builder.Services.AddScoped<IMainService<Pole_Expertise, int>>(eq => new WebService<Pole_Expertise, int>("Pole_Expertises"));
 builder.Services.AddScoped<IMainService<Prise_Contact, int>>(eq => new WebService<Prise_Contact, int>("Prise_Contacts"));
 builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<Prestation, int>("Prestations"));
+builder.Services.AddScoped<IMainService<PrestationUpdateModel, int>>(eq => new WebService<PrestationUpdateModel, int>("Prestations"));
 builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematique"));
 builder.Services.AddScoped<IMainService<Type_Equipement, int>>(eq => new WebService<Type_Equipement, int>("Type_Equipements"));
 builder.Services.AddScoped<IMainService<Type_Prestation, int>>(eq => new WebService<Type_Prestation, int>("Type_Prestations"));
@@ -29,7 +30,6 @@ builder.Services.AddScoped<IMainService<Contact_USMB, string>>(eq => new WebServ
 builder.Services.AddScoped<IMainService<Fonction, int>>(eq => new WebService<Fonction, int>("Fonction"));
 builder.Services.AddScoped<IMainService<Contact_USMB, int>>(eq => new WebService<Contact_USMB, int>("Contact_USMB"));
 builder.Services.AddScoped<IMainService<Unite_Oeuvre,int>>(eq => new WebService<Unite_Oeuvre, int>("Unite_Oeuvres"));
-
 //builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
 builder.Services.AddScoped(sp => new HttpClient
 {
