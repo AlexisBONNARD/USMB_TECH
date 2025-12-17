@@ -77,9 +77,9 @@ else
                            
             <h4 class="add_style">Laboratoire associé</h4>
             <label>Nom court</label>
-            <InputSelect class="form-control mb-2"
+            <InputSelect class="form-select mb-2"
                          @bind-Value="prestationUpdate.Nom_Court">
-                <option value="0">...</option>
+                <option value="0">----- Sélectionner un laboratoire -----</option>
                 @foreach (var lab in laboratoires)
                 {
                     <option value="@lab.Nom_Court">@lab.Nom_Court</option>
@@ -89,9 +89,9 @@ else
             <h4 class="add_style">Références</h4>
 
             <label>Domaine *</label>
-            <InputSelect class="form-control mb-2"
+            <InputSelect class="form-select mb-2"
                          @bind-Value="prestationUpdate.Id_Domaine_Excellence">
-                <option value="0">...</option>
+                <option value="0">----- Sélectionner un domaine d'excellence -----</option>
                 @foreach (var d in domaines)
                 {
                     <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
@@ -99,7 +99,7 @@ else
             </InputSelect>
 
             <label>Type *</label>
-            <InputSelect class="form-control mb-2"
+            <InputSelect class="form-select mb-2"
                          @bind-Value="prestationUpdate.Id_Type_Prestation">
                 <option value="0">...</option>
                 @foreach (var t in types)
@@ -109,9 +109,9 @@ else
             </InputSelect>
 
             <label>Unité *</label>
-            <InputSelect class="form-control mb-3"
+            <InputSelect class="form-select mb-3"
                          @bind-Value="prestationUpdate.Id_Unite_Oeuvre">
-                <option value="0">...</option>
+                <option value="0">----- Sélectionner une unité d'oeuvre -----</option>
                 @foreach (var u in unites)
                 {
                     <option value="@u.Id_Unite_Oeuvre">@u.Nom_Unite_Oeuvre</option>
@@ -121,9 +121,9 @@ else
 
             <hr />
             <h4 class="add_style">Contact associé</h4>
-            <InputSelect class="form-control mb-3"
+            <InputSelect class="form-select mb-3"
                          @bind-Value="prestationUpdate.Id_Contact">
-                <option value="0">...</option>
+                <option value="0">----- Sélectionner un contact -----</option>
                 @foreach (var c in contacts)
                 {
                     <option value="@c.Id_Contact">
@@ -135,9 +135,9 @@ else
             <hr />
             <h4 class="add_style">Mots-clés *</h4>
 
-            <InputSelect class="form-control mb-2"
+            <InputSelect class="form-select mb-2"
                          @bind-Value="selectedMotCleId">
-                <option value="0">...</option>
+                <option value="0">----- Sélectionner un mot clé -----</option>
                 @foreach (var mc in motsClesExistants)
                 {
                     <option value="@mc.Id_Mot_Clef">@mc.Nom_Mot_Clef</option>
@@ -171,9 +171,9 @@ else
 
              <h4 class="add_style">Equipement associé*</h4>
 
-            <InputSelect class="form-control mb-2"
+            <InputSelect class="form-select mb-2"
                          @bind-Value="selectedEquipementId">
-                <option value="">...</option>
+                <option value="">----- Sélectionner un équipement -----</option>
                 @foreach (var mc in equipements)
                 {
                     <option value="@mc.Id_Equipement">@mc.Nom_Equipement</option>
