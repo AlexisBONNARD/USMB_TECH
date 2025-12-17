@@ -214,6 +214,33 @@ namespace USMB_TECH.Models.Repository
                 _context.Precisers.Remove(preciser);
             }
 
+            updatedEntity.Fournirs ??= new List<Fournir>();
+
+            // AJOUT
+            foreach (var updatedFournir in updatedEntity.Fournirs)
+            {
+                var exists = entityToUpdate.Fournirs
+                    .Any(f => f.Id_Equipement == updatedFournir.Id_Equipement);
+
+                if (!exists)
+                {
+                    updatedFournir.Id_Prestation = entityToUpdate.Id_Prestation;
+                    entityToUpdate.Fournirs.Add(updatedFournir);
+                }
+            }
+
+            // SUPPRESSION
+            var toRemoveFournir = entityToUpdate.Fournirs
+                .Where(f => !updatedEntity.Fournirs
+                    .Any(up => up.Id_Equipement == f.Id_Equipement))
+                .ToList();
+
+            foreach (var fournir in toRemoveFournir)
+            {
+                entityToUpdate.Fournirs.Remove(fournir);
+                _context.Fournirs.Remove(fournir);
+            }
+
             // 4️ Save des changements
 
             await _context.SaveChangesAsync();

@@ -9,6 +9,7 @@
 @inject IMainService<Mot_Clef, int> motCleService
 @inject IMainService<Contact_USMB, int> contactService
 @inject IMainService<Laboratoire, string> laboratoireService
+@inject IMainService<Equipement, int> equipementService
 
 @using USMB_TECH_Blazor.Models
 
@@ -149,6 +150,42 @@ else
                 }
             </ul>
 
+             <h4 class="add_style">Equipement associé*</h4>
+
+            <InputSelect class="form-control mb-2"
+                         @bind-Value="selectedEquipementId">
+                <option value="">...</option>
+                @foreach (var mc in equipements)
+                {
+                    <option value="@mc.Id_Equipement">@mc.Nom_Equipement</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@(selectedEquipementId == 0)"
+                    @onclick="AddEquipement">
+                Ajouter cette equipement
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var id in prestationUpdate.EquipementIds)
+                {
+                    var mc = equipements.FirstOrDefault(m => m.Id_Equipement == id);
+                    if (mc != null)
+                    {
+                        <li>
+                            @mc.Nom_Equipement
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemoveEquipement(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+
 
             <hr />
             <button type="submit" class="btn btn-primary mt-3">
@@ -169,6 +206,7 @@ else
     private List<Mot_Clef> motsClesExistants = new();
     private List<Contact_USMB> contacts = new();
     private List<Laboratoire> laboratoires = new();
+    private List<Equipement> equipements = new();
 
 
 
@@ -180,6 +218,9 @@ else
         prestationUpdate.MotCleIds = prestationUpdate.Precisers?
             .Select(p => p.Id_Mot_Clef)
             .ToList() ?? new List<int>();
+        prestationUpdate.EquipementIds = prestationUpdate.Fournirs?
+            .Select(f => f.Id_Equipement)
+            .ToList() ?? new List<int>();
 
         domaines = (await domaineService.GetAllAsync()).ToList();
         types = (await typeService.GetAllAsync()).ToList();
@@ -187,6 +228,7 @@ else
         motsClesExistants = (await motCleService.GetAllAsync()).ToList();
         contacts = (await contactService.GetAllAsync()).ToList();
         laboratoires = (await laboratoireService.GetAllAsync()).ToList();
+        equipements = (await equipementService.GetAllAsync()).ToList();
     }
 
 
@@ -204,6 +246,22 @@ else
     private void RemoveMotCle(int id)
     {
         prestationUpdate?.MotCleIds.Remove(id);
+    }
+
+    private int selectedEquipementId;
+
+    private void AddEquipement()
+    {
+        if (selectedEquipementId != 0 && prestationUpdate != null && !prestationUpdate.EquipementIds.Contains(selectedEquipementId))
+        {
+            prestationUpdate.EquipementIds.Add(selectedEquipementId);
+            selectedEquipementId = 0;
+        }
+    }
+
+    private void RemoveEquipement(int id)
+    {
+        prestationUpdate?.EquipementIds.Remove(id);
     }
 
 
@@ -225,10 +283,4 @@ else
             }
         }
     }
-
-
-
-
-
-
 }

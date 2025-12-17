@@ -21,10 +21,14 @@ namespace USMB_TECH.DTO
         public int Id_Contact { get; set; }
 
         public List<int> MotCleIds { get; set; } = new();
+        public List<int> EquipementIds { get; set; } = new();
 
         public List<Preciser> Precisers { get; set; } = new();
 
         public ICollection<Photo>? Photos { get; set; }
+
+        public List<Fournir> Fournirs { get; set; } = new();
+
     }
 
 
