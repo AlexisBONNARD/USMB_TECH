@@ -86,7 +86,7 @@ namespace USMB_TECH.Controllers
 
             var prestationMapped = _mapper.Map<Prestation>(prestations);
             await _dataRepository.AddAsync(prestationMapped);
-            return CreatedAtAction(nameof(GetPrestation), new { id = prestationMapped.Id_Prestation }, prestations);
+            return CreatedAtAction(nameof(GetPrestation), new { id = prestationMapped.Id_Prestation }, prestationMapped);
         }
 
         // DELETE: api/Prestations/{id}

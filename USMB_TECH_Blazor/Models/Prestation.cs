@@ -19,13 +19,13 @@ namespace USMB_TECH_Blazor.Models
 
         public string Nom_Pole_Expertise { get; set; }
 
-        [Required(ErrorMessage = "Un domaine d'expertise est obligatoire")]
+        [Required(ErrorMessage = "Un domaine d'excellence est obligatoire")]
         public string Nom_Domaine { get; set; }
 
         [Required(ErrorMessage = "Une prestation doit obligatoirement avoir un type")]
         public string Type { get; set; }
 
-        [Required(ErrorMessage = "Un unité de mesure de temps doit être attribué")]
+        [Required(ErrorMessage = "Une unité de mesure de temps doit être attribué")]
         public string Unite { get; set; }
 
         public int Id_Contact { get; set; }
