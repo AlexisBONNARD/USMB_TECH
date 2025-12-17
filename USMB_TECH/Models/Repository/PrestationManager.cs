@@ -158,31 +158,26 @@ namespace USMB_TECH.Models.Repository
         }
         public async Task UpdateAsync(Prestation entityToUpdate, Prestation updatedEntity)
         {
-            // -------------------------
-            // 1️ Mise à jour des champs simples + FK
-            // -------------------------
+            // 1️ Mise à jour des champs simple + FK
             _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
 
-            // -------------------------
-            // 2️ Contact (1–1)
-            // -------------------------
-            if (updatedEntity.Contact_USMBNavigation != null)
+            // 2️ Contact (1–1 via Id_Contact)
+            if (updatedEntity.Id_Contact != 0)
             {
-                if (entityToUpdate.Contact_USMBNavigation == null)
+                var contact = await _context.Contact_USMBs.FindAsync(updatedEntity.Id_Contact);
+                if (contact != null)
                 {
-                    entityToUpdate.Contact_USMBNavigation = updatedEntity.Contact_USMBNavigation;
-                }
-                else
-                {
-                    _context.Entry(entityToUpdate.Contact_USMBNavigation)
-                            .CurrentValues
-                            .SetValues(updatedEntity.Contact_USMBNavigation);
+                    entityToUpdate.Contact_USMBNavigation = contact;
                 }
             }
+            else
+            {
+                // Si aucun contact sélectionné, on supprime la relation
+                entityToUpdate.Contact_USMBNavigation = null;
+            }
 
-            // -------------------------
             // 3️ Mots-clés (N–N via Preciser)
-            // -------------------------
+
             updatedEntity.Precisers ??= new List<Preciser>();
 
             // AJOUT
@@ -210,11 +205,11 @@ namespace USMB_TECH.Models.Repository
                 _context.Precisers.Remove(preciser);
             }
 
-            // -------------------------
-            // 4️ Save
-            // -------------------------
+            // 4️ Save des changements
+
             await _context.SaveChangesAsync();
         }
+
 
 
 
