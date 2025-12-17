@@ -22,13 +22,13 @@ namespace USMB_TECH.DTO
 
         public List<int> MotCleIds { get; set; } = new();
         public List<int> EquipementIds { get; set; } = new();
+        public List<int> PoleExpertiseIds { get; set; } = new();
 
         public List<Preciser> Precisers { get; set; } = new();
-
-        public ICollection<Photo>? Photos { get; set; }
-
+        public List<Presenter> Presenters { get; set; } = new();
         public List<Fournir> Fournirs { get; set; } = new();
 
+        public ICollection<Photo>? Photos { get; set; }
     }
 
 

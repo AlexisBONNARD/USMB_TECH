@@ -44,6 +44,8 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Precisers, opt => opt.MapFrom(src => src.Precisers))
                 .ForMember(dest => dest.Fournirs, opt => opt.MapFrom(src =>
                     src.EquipementIds.Select(id => new Fournir { Id_Equipement = id }).ToList()))
+                .ForMember(dest => dest.Presenters, opt => opt.MapFrom(src =>
+                    src.PoleExpertiseIds.Select(id => new Presenter { Id_Pole_Expertise = id }).ToList()))
 
                 // Navigation ignorée
                 .ForMember(dest => dest.Contact_USMBNavigation, opt => opt.Ignore());

@@ -265,6 +265,33 @@ namespace USMB_TECH.Models.Repository
                 _context.Fournirs.Remove(fournir);
             }
 
+            updatedEntity.Presenters ??= new List<Presenter>();
+
+            // AJOUT
+            foreach (var updatedPresenter in updatedEntity.Presenters)
+            {
+                var exists = entityToUpdate.Presenters
+                    .Any(pr => pr.Id_Pole_Expertise == updatedPresenter.Id_Pole_Expertise);
+
+                if (!exists)
+                {
+                    updatedPresenter.Id_Prestation = entityToUpdate.Id_Prestation;
+                    entityToUpdate.Presenters.Add(updatedPresenter);
+                }
+            }
+
+            // SUPPRESSION
+            var toRemovePresenter = entityToUpdate.Presenters
+                .Where(pr => !updatedEntity.Presenters
+                    .Any(up => up.Id_Pole_Expertise == pr.Id_Pole_Expertise))
+                .ToList();
+
+            foreach (var presenter in toRemovePresenter)
+            {
+                entityToUpdate.Presenters.Remove(presenter);
+                _context.Presenters.Remove(presenter);
+            }
+
             // 4️ Save des changements
 
             await _context.SaveChangesAsync();

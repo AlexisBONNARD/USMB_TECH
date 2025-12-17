@@ -10,6 +10,7 @@
 @inject IMainService<Contact_USMB, int> contactService
 @inject IMainService<Laboratoire, string> laboratoireService
 @inject IMainService<Equipement, int> equipementService
+@inject IMainService<Pole_Expertise, int> poleExpertiseService
 
 @using USMB_TECH_Blazor.Models
 
@@ -205,6 +206,43 @@ else
                 }
             </ul>
 
+            <h4 class="add_style">Pôles d'expertise associés *</h4>
+
+            <InputSelect class="form-control mb-2"
+                         @bind-Value="selectedPoleExpertiseId">
+                <option value="0">...</option>
+                @foreach (var pe in polesExpertise)
+                {
+                    <option value="@pe.Id_Pole_Expertise">@pe.Nom_Pole_Expertise</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@(selectedPoleExpertiseId == 0)"
+                    @onclick="AddPoleExpertise">
+                Ajouter ce pôle d'expertise
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var id in prestationUpdate.PoleExpertiseIds)
+                {
+                    var pe = polesExpertise.FirstOrDefault(p => p.Id_Pole_Expertise == id);
+                    if (pe != null)
+                    {
+                        <li>
+                            @pe.Nom_Pole_Expertise
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemovePoleExpertise(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+
+
 
             <hr />
             <button type="submit" class="btn btn-primary mt-3">
@@ -226,7 +264,7 @@ else
     private List<Contact_USMB> contacts = new();
     private List<Laboratoire> laboratoires = new();
     private List<Equipement> equipements = new();
-
+    private List<Pole_Expertise> polesExpertise = new();
 
 
     protected override async Task OnInitializedAsync()
@@ -240,6 +278,9 @@ else
         prestationUpdate.EquipementIds = prestationUpdate.Fournirs?
             .Select(f => f.Id_Equipement)
             .ToList() ?? new List<int>();
+        prestationUpdate.PoleExpertiseIds = prestationUpdate.Presenters?
+        .Select(pr => pr.Id_Pole_Expertise)
+        .ToList() ?? new List<int>();
 
         domaines = (await domaineService.GetAllAsync()).ToList();
         types = (await typeService.GetAllAsync()).ToList();
@@ -248,6 +289,7 @@ else
         contacts = (await contactService.GetAllAsync()).ToList();
         laboratoires = (await laboratoireService.GetAllAsync()).ToList();
         equipements = (await equipementService.GetAllAsync()).ToList();
+        polesExpertise = (await poleExpertiseService.GetAllAsync()).ToList();
     }
 
 
@@ -316,6 +358,22 @@ else
         prestationUpdate?.EquipementIds.Remove(id);
     }
 
+    private int selectedPoleExpertiseId;
+
+    private void AddPoleExpertise()
+    {
+        if (selectedPoleExpertiseId != 0 && prestationUpdate != null &&
+            !prestationUpdate.PoleExpertiseIds.Contains(selectedPoleExpertiseId))
+        {
+            prestationUpdate.PoleExpertiseIds.Add(selectedPoleExpertiseId);
+            selectedPoleExpertiseId = 0;
+        }
+    }
+
+    private void RemovePoleExpertise(int id)
+    {
+        prestationUpdate?.PoleExpertiseIds.Remove(id);
+    }
 
     private async Task Submit()
     {
