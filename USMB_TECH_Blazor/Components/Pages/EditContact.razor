@@ -128,8 +128,6 @@ else
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------
     private async Task ShowMessage(string msg)
     {
-        // await JS.InvokeAsync<bool>(msg);
-        // await JS.InvokeVoidAsync("console.log", $"AFFICHAGE & AUTO-DISPARITION: {msg}");
         deleteMessage = msg;
         StateHasChanged();
 
