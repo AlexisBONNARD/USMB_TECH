@@ -57,8 +57,8 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
         <label>Pays du laboratoire *</label>
-        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
-            <option value=""></option>
+        <InputSelect class="form-select mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
+            <option value="">----- Sélectionner un pays -----</option>
             @foreach(var country in countries)
             {
                 <option value="@country">@country</option>
@@ -88,8 +88,8 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
         <label>Pays du campus *</label>
-        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
-            <option value=""></option>
+        <InputSelect class="form-select mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
+            <option value="">----- Sélectionner un pays -----</option>
             @foreach (var country in countries)
             {
                 <option value="@country">@country</option>
