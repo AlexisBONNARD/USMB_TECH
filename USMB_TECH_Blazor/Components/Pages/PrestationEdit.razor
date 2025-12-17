@@ -188,10 +188,21 @@ else
     {
         if (prestationUpdate != null)
         {
-            await prestationService.UpdateAsync(prestationUpdate);
-            Navigation.NavigateTo($"/prestation/{Id}");
+            // Envoi direct avec HttpClient
+            var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/prestations/{prestationUpdate.Id_Prestation}", prestationUpdate);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo($"/prestation/{Id}");
+            }
+            else
+            {
+                // Tu peux afficher un message d'erreur si besoin
+                Console.WriteLine("Erreur lors de la mise à jour de la prestation");
+            }
         }
     }
+
 
 
 
