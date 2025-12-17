@@ -149,7 +149,7 @@
                     <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
                 }
             </InputSelect>
-            @if (!selectedPrestationId == null)
+            @if (selectedPrestationId != null)
             {
                 <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
             }
