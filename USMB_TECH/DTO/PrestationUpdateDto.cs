@@ -18,7 +18,7 @@ namespace USMB_TECH.DTO
 
         public string Nom_Court { get; set; }
 
-        public Contact_USMB Contact { get; set; }
+        public int Id_Contact { get; set; }
 
         public List<int> MotCleIds { get; set; } = new();
 
