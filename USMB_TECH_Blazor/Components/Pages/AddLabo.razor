@@ -8,6 +8,8 @@
 @inject IMainService<Mot_Clef, int> motcleService
 @inject IMainService<Thematique, int> ThematiqueService
 @inject IMainService<Pole_Expertise, int> poleService
+@inject AdminState AdminState
+
 @inject HttpClient Http
 
 <HeadContent>
@@ -55,7 +57,13 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
 
         <label>Pays du laboratoire *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France"/>
+        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
+            <option value=""></option>
+            @foreach(var country in countries)
+            {
+                <option value="@country">@country</option>
+            }
+        </InputSelect>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
 
         @if (labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
@@ -80,8 +88,15 @@
         <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
 
         <label>Pays du campus *</label>
-        <InputText class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse"/>
+        <InputSelect class="form-control mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
+            <option value=""></option>
+            @foreach (var country in countries)
+            {
+                <option value="@country">@country</option>
+            }
+        </InputSelect>
         <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
+
 
         <h4 class="add_style">Infos générales du contact</h4>
         <label>Nom *</label>
@@ -111,7 +126,7 @@
         <hr />
         <h4 class="add_style">Fonction</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
-            <option value="">Sélectionner une fonction</option>
+            <option value="">----- Sélectionner une fonction -----</option>
             @foreach (var f in fonctions)
             {
                 <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
@@ -144,8 +159,8 @@
 
         <hr />
         <h4 class="add_style">Pôle d'expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="PoleExpertise">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="PoleExpertise">
+            <option value="">----- Sélectionner un pôle d'expertise -----</option>
             @foreach(var pole in existingPoles)
             {
                 <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
@@ -167,8 +182,8 @@
         @* ///Mots-clés *@
         <hr />
         <h4 class="add_style">Mots-Clés *</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="motCle">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
             @if (existingMot is not null)
             {
                 @foreach (var motcle in existingMot)
@@ -176,7 +191,7 @@
                     <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
                 }
             }
-            <option value="ajouter">Ajouter un nouveau mot-clé</option>
+            <option value="ajouter" class="alert-info">----- Créer un mot clé -----</option>
         </InputSelect>
 
         @if (motCle == "ajouter")
@@ -207,15 +222,15 @@
         @* ///Thematique *@ 
         <hr />
         <h4 class="add_style">Thématiques : </h4>
-        <InputSelect class="form-control mb-2" @bind-Value="thematique">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="thematique">
+            <option value="">----- Sélectionner une thématique -----</option>
             @if (existingThematique is not null)
             {
                 @foreach (var thematique in existingThematique)
                 {
                     <option value="@thematique.Nom_Thematique">@thematique.Nom_Thematique</option>
                 }
-                <option value="ajouter" class="alert-info">----- Créer une thématique</option>
+                <option value="ajouter" class="alert-info">----- Créer une thématique -----</option>
             }
         </InputSelect>
 
@@ -246,6 +261,7 @@
         <hr />
         <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" />
+        <hr />
         <input type="submit" class="btn btn-primary" value="Ajouter">
     </EditForm>
 
@@ -255,7 +271,9 @@
             @message
         </div>
     }
+
 </div>
+
 @code {
     Laboratoire labo = new Laboratoire();
     private Contact_USMB contact = new();
@@ -333,9 +351,14 @@
     {
         try
         {
+
             isLoading = true; // active le loader
             StateHasChanged();
-
+            if (string.IsNullOrWhiteSpace(contact.Nom_Contact) || string.IsNullOrWhiteSpace(contact.Prenom_Contact) || string.IsNullOrWhiteSpace(contact.Mail) || string.IsNullOrWhiteSpace(contact.Num_Securite_Social) || string.IsNullOrWhiteSpace(contact.Code_RH))
+            {
+                message = "Tous les champs du contact doivent être remplis.";
+                throw new Exception("Tous les champs du contact doivent être remplis.");
+            }
             // Si aucune photo uploadée → photo par défaut
             if (labo.Photos == null || !labo.Photos.Any())
             {
@@ -491,5 +514,36 @@
     {
         public string url { get; set; }
     }
+    List<string> countries = new List<string>
+{
+    "Afghanistan", "Albania", "Germany", "Andorra", "Angola", "Antigua and Barbuda", "Saudi Arabia",
+    "Algeria", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bangladesh",
+    "Barbados", "Bahrain", "Belgium", "Belize", "Benin", "Belarus", "Burma", "Bolivia",
+    "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+    "Bhutan", "Cape Verde", "Cambodia", "Cameroon", "Canada", "Qatar", "Chad", "Chile", "China",
+    "Cyprus", "Vatican City", "Colombia", "Comoros", "North Korea", "South Korea", "Ivory Coast",
+    "Costa Rica", "Croatia", "Cuba", "Denmark", "Dominica", "Ecuador", "Egypt", "El Salvador",
+    "United Arab Emirates", "Eritrea", "Slovakia", "Slovenia", "Spain", "United States", "Estonia",
+    "Ethiopia", "Philippines", "Finland", "Fiji", "France", "Gabon", "Gambia", "Georgia", "Ghana",
+    "Grenada", "Greece", "Guatemala", "Guyana", "Guinea", "Equatorial Guinea", "Guinea-Bissau",
+    "Haiti", "Honduras", "Hungary", "India", "Indonesia", "Iraq", "Iran", "Ireland", "Iceland",
+    "Marshall Islands", "Solomon Islands", "Israel", "Italy", "Jamaica", "Japan", "Jordan",
+    "Kazakhstan", "Kenya", "Kyrgyzstan", "Kiribati", "Kuwait", "Laos", "Lesotho", "Latvia",
+    "Lebanon", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "North Macedonia",
+    "Madagascar", "Malaysia", "Malawi", "Maldives", "Mali", "Malta", "Morocco", "Mauritius",
+    "Mauritania", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+    "Mozambique", "Namibia", "Nauru", "Nepal", "Nicaragua", "Niger", "Nigeria", "Norway",
+    "New Zealand", "Oman", "Netherlands", "Pakistan", "Palau", "Panama", "Papua New Guinea",
+    "Paraguay", "Peru", "Poland", "Portugal", "United Kingdom", "Central African Republic",
+    "Czech Republic", "Republic of the Congo", "Democratic Republic of the Congo",
+    "Dominican Republic", "Rwanda", "Romania", "Russia", "Samoa", "Saint Kitts and Nevis",
+    "San Marino", "Saint Vincent and the Grenadines", "Saint Lucia", "Sao Tome and Principe",
+    "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Syria", "Somalia",
+    "Sri Lanka", "Swaziland", "South Africa", "Sudan", "South Sudan", "Sweden", "Switzerland",
+    "Suriname", "Thailand", "Tanzania", "Tajikistan", "East Timor", "Togo", "Tonga",
+    "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Turkey", "Tuvalu", "Ukraine", "Uganda",
+    "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Djibouti", "Zambia",
+    "Zimbabwe"
+};
 
 }

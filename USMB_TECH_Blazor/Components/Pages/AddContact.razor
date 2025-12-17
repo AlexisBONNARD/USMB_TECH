@@ -51,7 +51,7 @@
         <hr />
         <h4 class="add_style">Fonction</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
-            <option value="">Sélectionner une fonction</option>
+            <option value="">----- Sélectionner une fonction -----</option>
             @foreach (var f in fonctions)
             {
                 <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
@@ -85,7 +85,7 @@
         <hr />
         <h4 class="add_style">Laboratoire</h4>
         <InputSelect class="form-select mb-2" @bind-Value="SelectedLaboratoireNomCourt">
-            <option value="">-- Choisir un laboratoire --</option>
+            <option value="">----- Sélectionner un laboratoire -----</option>
             @foreach (var labo in laboratoires)
             {
                 <option value="@labo.Nom_Court">@labo.Nom_Court</option>

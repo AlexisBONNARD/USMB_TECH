@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,23 +45,34 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutPrestation(int id, Prestation prestations)
+        public async Task<IActionResult> PutPrestation(int id, PrestationUpdateDto prestations)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             if (id != prestations.Id_Prestation)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"Prestation avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, prestations);
+            // Mapping DTO → Entity
+            var mappedEntity = _mapper.Map<Prestation>(prestations);
+
+            // Mots-clés → Preciser
+            mappedEntity.Precisers = prestations.MotCleIds
+                .Select(idMotCle => new Preciser
+                {
+                    Id_Mot_Clef = idMotCle
+                })
+                .ToList();
+
+            await _dataRepository.UpdateAsync(existing, mappedEntity);
+
             return NoContent();
         }
+
 
         // POST: api/Prestations
         [HttpPost]

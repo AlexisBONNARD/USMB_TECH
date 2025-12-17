@@ -1,6 +1,6 @@
-﻿using USMB_TECH_Blazor.Models;
+﻿
 
-namespace USMB_TECH.Models
+namespace USMB_TECH_Blazor.Models
 {
     public partial class Fournir
     {

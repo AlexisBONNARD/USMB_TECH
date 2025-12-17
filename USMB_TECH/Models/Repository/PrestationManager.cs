@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using USMB_TECH.DTO;
 using USMB_TECH.Models.EntityFramework;
 
 namespace USMB_TECH.Models.Repository
@@ -7,6 +8,7 @@ namespace USMB_TECH.Models.Repository
     public class PrestationManager : IMainRepository<Prestation, int>
     {
         private readonly UsmbTechDbContext _context;
+        private readonly AutoMapper.IMapper _mapper;
 
         public PrestationManager(UsmbTechDbContext context)
         {
@@ -27,7 +29,12 @@ namespace USMB_TECH.Models.Repository
 
                 .Include(p => p.Fournirs)
                     .ThenInclude(e => e.EquipementNavigation)
-         
+                 .Include(p => p.Type_PrestationNavigation)
+                .Include(p => p.Unite_OeuvreNavigation)
+                .Include(p => p.Domaine_ExcellenceNavigation)
+                .Include(p => p.Contact_USMBNavigation)
+                .Include(p => p.Precisers)
+                    .ThenInclude(pr => pr.Mot_ClefNavigation)
                 .FirstOrDefaultAsync(p => p.Id_Prestation == id);
         }
 
@@ -149,12 +156,69 @@ namespace USMB_TECH.Models.Repository
             _context.Prestations.Add(entity);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateAsync(Prestation entityToUpdate, Prestation entity)
+        public async Task UpdateAsync(Prestation entityToUpdate, Prestation updatedEntity)
         {
-            _context.Prestations.Attach(entityToUpdate);
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            // -------------------------
+            // 1️ Mise à jour des champs simples + FK
+            // -------------------------
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // -------------------------
+            // 2️ Contact (1–1)
+            // -------------------------
+            if (updatedEntity.Contact_USMBNavigation != null)
+            {
+                if (entityToUpdate.Contact_USMBNavigation == null)
+                {
+                    entityToUpdate.Contact_USMBNavigation = updatedEntity.Contact_USMBNavigation;
+                }
+                else
+                {
+                    _context.Entry(entityToUpdate.Contact_USMBNavigation)
+                            .CurrentValues
+                            .SetValues(updatedEntity.Contact_USMBNavigation);
+                }
+            }
+
+            // -------------------------
+            // 3️ Mots-clés (N–N via Preciser)
+            // -------------------------
+            updatedEntity.Precisers ??= new List<Preciser>();
+
+            // AJOUT
+            foreach (var updatedPreciser in updatedEntity.Precisers)
+            {
+                var exists = entityToUpdate.Precisers
+                    .Any(p => p.Id_Mot_Clef == updatedPreciser.Id_Mot_Clef);
+
+                if (!exists)
+                {
+                    updatedPreciser.Id_Prestation = entityToUpdate.Id_Prestation;
+                    entityToUpdate.Precisers.Add(updatedPreciser);
+                }
+            }
+
+            // SUPPRESSION
+            var toRemove = entityToUpdate.Precisers
+                .Where(p => !updatedEntity.Precisers
+                    .Any(up => up.Id_Mot_Clef == p.Id_Mot_Clef))
+                .ToList();
+
+            foreach (var preciser in toRemove)
+            {
+                entityToUpdate.Precisers.Remove(preciser);
+                _context.Precisers.Remove(preciser);
+            }
+
+            // -------------------------
+            // 4️ Save
+            // -------------------------
             await _context.SaveChangesAsync();
         }
+
+
+
+
 
         public async Task DeleteAsync(Prestation entity)
         {

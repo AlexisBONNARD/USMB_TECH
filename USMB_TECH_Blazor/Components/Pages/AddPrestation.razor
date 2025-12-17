@@ -48,8 +48,8 @@
         @* //////Contact *@
         <hr />
         <h4 class="add_style">Contact à associer</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="LastContact">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="LastContact">
+            <option value="">----- Sélectionner un contact -----</option>
             @foreach (var contact in contacts)
             {
                 <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
@@ -69,20 +69,28 @@
          @* //////Domaine d'excellence *@
         <hr />
         <h4 class="add_style">Domaine d'excellence</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Nom_Domaine">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="LastDomaineExcellence">
+            <option value="">----- Sélectionner un domaine d'excellence -----</option>
             @foreach (var domaine in domaines)
             {
                 <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
             }
+            <option value="ajouter" class="alert-info">----- Créer un domaine d'excellence -----</option>
         </InputSelect>
-    <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
+        <ValidationMessage For="@(() => LastDomaineExcellence)" />
 
+        <!-- Modal -->
+        <div id="modalDomaine" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalDomaineExcellence">&times;</span>
+                <AddDomaineExcellence OnDomaineExcellenceAdded="OnDomaineExcellenceAdded" EnableRedirect="false" />
+            </div>
+        </div>
         @* //////Type de la prestation *@
         <hr />
         <h4 class="add_style">Type de prestation</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Type">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="prestation.Type">
+            <option value="">----- Sélectionner une prestation -----</option>
             @foreach (var type in types)
             {
                 <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
@@ -94,8 +102,8 @@
         @* //////Unite *@
         <hr />
         <h4 class="add_style">Unite d'oeuvre</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="prestation.Unite">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="prestation.Unite">
+            <option value="">----- Sélectionner une unité d'oeuvre -----</option>
             @foreach (var unite in unites)
             {
                 <option value="@unite.Nom_Unite_Oeuvre">@unite.Nom_Unite_Oeuvre</option>
@@ -106,9 +114,9 @@
         @* //////laboratoire *@
         <hr />
         <h4 class="add_style">Laboratoire</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="LastLaboratoire">
+        <InputSelect class="form-select mb-2" @bind-Value="LastLaboratoire">
 
-            <option value="">...</option>
+            <option value="">----- Sélectionner un laboratoire -----</option>
             @foreach (var laboratoire in laboratoires)
             {
                 <option value="@laboratoire.Nom_Court">@laboratoire.Nom_Long</option>
@@ -126,8 +134,8 @@
         @* //////Poles *@
         <hr />
         <h4 class="add_style">Pôle Expertise</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="LastPole_Expertise">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
+            <option value="">----- Sélectionner un pôle d'expertise -----</option>
             @foreach (var pole in existingpoles)
             {
                 <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
@@ -159,8 +167,8 @@
         @* //////Mots-clés *@
         <hr />
         <h4 class="add_style">Mots-clés</h4>
-        <InputSelect class="form-control mb-2" @bind-Value="motCle">
-            <option value="">...</option>
+        <InputSelect class="form-select mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
             @foreach (var motcle in existingMots)
             {
                 <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
@@ -257,6 +265,27 @@
             else
             {
                 prestation.Nom_Pole_Expertise = value;
+            }
+        }
+    }
+
+    private string _lastDomaineExcellence;
+
+    private string LastDomaineExcellence
+    {
+        get => _lastDomaineExcellence;
+        set
+        {
+            _lastDomaineExcellence = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalDomaineExcellence();
+            }
+            else
+            {
+                prestation.Nom_Domaine = value;
             }
         }
     }
@@ -400,6 +429,16 @@
         JS.InvokeVoidAsync("closeModalPole_expertise");
     }
 
+    private void OpenModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("openModalDomaineExcellence");
+    }
+
+    private void CloseModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("closeModalDomaineExcellence");
+    }
+
     private void OpenModalLaboratoire()
     {
         JS.InvokeVoidAsync("openModalLaboratoirePrestation");
@@ -415,6 +454,13 @@
         contacts = contacts.Append(contact);
         LastContact = contact.Nom_Contact;
         CloseModalContact();
+    }
+
+    private void OnDomaineExcellenceAdded(Domaine_Excellence domaine)
+    {
+        domaines = domaines.Append(domaine);
+        LastDomaineExcellence = domaine.Intitule_Domaine_Excellence;
+        CloseModalDomaineExcellence();
     }
 
     private void OnPole_ExpetiseAdded(Pole_Expertise poleExpertise)

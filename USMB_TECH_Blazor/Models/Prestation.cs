@@ -13,6 +13,8 @@ namespace USMB_TECH_Blazor.Models
 
         public int Id_Type_Prestation { get; set; }
 
+        public int Id_Domaine_Excellence { get; set; }  
+
         public string? Nom_Court { get; set; }
 
         public string Nom_Pole_Expertise { get; set; }
@@ -34,6 +36,7 @@ namespace USMB_TECH_Blazor.Models
         [Required(ErrorMessage = "La prestation actuelle n'a pas reçu de nom")]
         public string Intitule_Prestation { get; set; }
 
+        [Required(ErrorMessage = "Une description doit être donnée pour la prestation")]
         public string Description_Prestation { get; set; }
 
         [Required(ErrorMessage = "Vous devez renseigner un prix de revient")]
