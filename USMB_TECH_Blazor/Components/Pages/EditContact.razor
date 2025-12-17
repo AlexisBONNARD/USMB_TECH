@@ -132,7 +132,7 @@ else
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------
     private async Task ShowMessage(string msg)
     {
-        deleteMessage = msg;
+        message = msg;
         StateHasChanged();
 
         await Task.Delay(3000);

@@ -153,6 +153,15 @@ namespace USMB_TECH.Models.Repository
                 entity.LaboratoireNavigation = labo;
 
             }
+
+            if(entity.Photos != null && entity.Photos.Any())
+            {
+                foreach(var photo in entity.Photos) 
+                {
+                    _context.Photos.Add(photo);
+                }
+            }
+
             _context.Prestations.Add(entity);
             await _context.SaveChangesAsync();
         }

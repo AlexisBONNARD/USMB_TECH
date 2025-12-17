@@ -30,5 +30,7 @@ namespace USMB_TECH.DTO
         public ICollection<string> Mots_Clefs { get; set;}
 
         public ICollection<string> Poles { get; set; }
-        }
+
+        public ICollection<PhotoDto> Photos { get; set; }
+    }
 }
