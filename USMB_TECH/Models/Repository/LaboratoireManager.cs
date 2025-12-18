@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Linq.Expressions;
 using USMB_TECH.Models.EntityFramework;
 
@@ -7,6 +9,7 @@ namespace USMB_TECH.Models.Repository
     public class LaboratoireManager : IMainRepository<Laboratoire, string>
     {
         private readonly UsmbTechDbContext _context;
+        private readonly IMapper _mapper;
 
         public LaboratoireManager(UsmbTechDbContext context)
         {
@@ -26,6 +29,10 @@ namespace USMB_TECH.Models.Repository
                 .Include(l => l.Gerers)
                     .ThenInclude(plt => plt.Pole_ExpertiseNavigation)
                         .ThenInclude(p => p.Photos)
+                 .Include(el => el.Est_Liers)
+                    .ThenInclude(t => t.ThematiqueNavigation)
+                 .Include(des => des.Designers)
+                 .ThenInclude(mc => mc.Mot_ClefNavigation)
                 .FirstOrDefaultAsync(lab => lab.Nom_Court == id);
         }
 
@@ -165,34 +172,154 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Laboratoire entityToUpdate, Laboratoire entity)
+        public async Task UpdateAsync(Laboratoire entityToUpdate, Laboratoire updatedEntity)
         {
-            _context.Laboratoires.Attach(entityToUpdate);
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-            // Supprimer les photos existantes associées au domaine
-            var existingPhotos = await _context.Photos
-                .Where(p => p.Nom_Court == entityToUpdate.Nom_Court)
-                .ToListAsync();
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
 
-            _context.Photos.RemoveRange(existingPhotos);
-
-            // Mettre à jour le domaine d'excellence
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-
-            // Ajouter les nouvelles photos (si elles existent dans l'entité mise à jour)
-            foreach (var photo in entity.Photos)
+            if (updatedEntity.Adresse_laboNavigation != null)
             {
-                _context.Photos.Add(new Photo
+                var existingLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
+                    a.Rue_Adresse == updatedEntity.Adresse_laboNavigation.Rue_Adresse &&
+                    a.Code_Postal_Adresse == updatedEntity.Adresse_laboNavigation.Code_Postal_Adresse &&
+                    a.Ville_Adresse == updatedEntity.Adresse_laboNavigation.Ville_Adresse &&
+                    a.Pays_Adresse == updatedEntity.Adresse_laboNavigation.Pays_Adresse &&
+                    a.Complement_Rue_Adresse == updatedEntity.Adresse_laboNavigation.Complement_Rue_Adresse);
+
+                if (existingLabo == null)
                 {
-                    Nom_Photo = photo.Nom_Photo,
-                    Url_Photo = photo.Url_Photo,
-                    Nom_Court = entityToUpdate.Nom_Court
-                });
+                    existingLabo = new Adresse
+                    {
+                        Rue_Adresse = updatedEntity.Adresse_laboNavigation.Rue_Adresse,
+                        Ville_Adresse = updatedEntity.Adresse_laboNavigation.Ville_Adresse,
+                        Code_Postal_Adresse = updatedEntity.Adresse_laboNavigation.Code_Postal_Adresse,
+                        Pays_Adresse = updatedEntity.Adresse_laboNavigation.Pays_Adresse,
+                        Complement_Rue_Adresse = updatedEntity.Adresse_laboNavigation.Complement_Rue_Adresse
+                    };
+
+                    _context.Adresses.Add(existingLabo);
+                    await _context.SaveChangesAsync();
+                }
+
+                entityToUpdate.Id_Adresse_Labo = existingLabo.Id_Adresse;
+                entityToUpdate.Adresse_laboNavigation = existingLabo;
             }
+
+            if (updatedEntity.Adresse_campusNavigation != null)
+            {
+                var existingCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
+                    a.Rue_Adresse == updatedEntity.Adresse_campusNavigation.Rue_Adresse &&
+                    a.Code_Postal_Adresse == updatedEntity.Adresse_campusNavigation.Code_Postal_Adresse &&
+                    a.Ville_Adresse == updatedEntity.Adresse_campusNavigation.Ville_Adresse &&
+                    a.Pays_Adresse == updatedEntity.Adresse_campusNavigation.Pays_Adresse &&
+                    a.Complement_Rue_Adresse == updatedEntity.Adresse_campusNavigation.Complement_Rue_Adresse);
+
+                if (existingCampus == null)
+                {
+                    existingCampus = new Adresse
+                    {
+                        Rue_Adresse = updatedEntity.Adresse_campusNavigation.Rue_Adresse,
+                        Ville_Adresse = updatedEntity.Adresse_campusNavigation.Ville_Adresse,
+                        Code_Postal_Adresse = updatedEntity.Adresse_campusNavigation.Code_Postal_Adresse,
+                        Pays_Adresse = updatedEntity.Adresse_campusNavigation.Pays_Adresse,
+                        Complement_Rue_Adresse = updatedEntity.Adresse_campusNavigation.Complement_Rue_Adresse
+                    };
+
+                    _context.Adresses.Add(existingCampus);
+                    await _context.SaveChangesAsync();
+                }
+
+                entityToUpdate.Id_Adresse_Campus = existingCampus.Id_Adresse;
+                entityToUpdate.Adresse_campusNavigation = existingCampus;
+            }
+
+            updatedEntity.Gerers ??= new List<Gerer>();
+
+            foreach (var updatedGerer in updatedEntity.Gerers)
+            {
+                var exists = entityToUpdate.Gerers
+                    .Any(g => g.Id_Pole_Expertise == updatedGerer.Id_Pole_Expertise);
+
+                if (!exists)
+                {
+                    updatedGerer.Nom_Court = entityToUpdate.Nom_Court;
+                    entityToUpdate.Gerers.Add(updatedGerer);
+                }
+            }
+
+            var toRemoveGerer = entityToUpdate.Gerers
+                .Where(g => !updatedEntity.Gerers
+                    .Any(up => up.Id_Pole_Expertise == g.Id_Pole_Expertise))
+                .ToList();
+
+            foreach (var gerer in toRemoveGerer)
+            {
+                entityToUpdate.Gerers.Remove(gerer);
+                _context.Gerers.Remove(gerer);
+            }
+
+            updatedEntity.Designers ??= new List<Designer>();
+
+            foreach (var updatedDesigner in updatedEntity.Designers)
+            {
+                var exists = entityToUpdate.Designers
+                    .Any(d => d.Id_Mot_Clef == updatedDesigner.Id_Mot_Clef);
+
+                if (!exists)
+                {
+                    updatedDesigner.Nom_Court = entityToUpdate.Nom_Court;
+                    entityToUpdate.Designers.Add(updatedDesigner);
+                }
+            }
+
+            var toRemoveDesigner = entityToUpdate.Designers
+                .Where(d => !updatedEntity.Designers
+                    .Any(up => up.Id_Mot_Clef == d.Id_Mot_Clef))
+                .ToList();
+
+            foreach (var designer in toRemoveDesigner)
+            {
+                entityToUpdate.Designers.Remove(designer);
+                _context.Designers.Remove(designer);
+            }
+
+            updatedEntity.Est_Liers ??= new List<Est_Lier>();
+
+            foreach (var updatedEstLier in updatedEntity.Est_Liers)
+            {
+                var existingThematique = await _context.Thematiques
+                    .FirstOrDefaultAsync(t => t.Nom_Thematique == updatedEstLier.ThematiqueNavigation.Nom_Thematique);
+
+                if (existingThematique == null)
+                {
+                    existingThematique = updatedEstLier.ThematiqueNavigation;
+                    _context.Thematiques.Add(existingThematique);
+                    await _context.SaveChangesAsync();
+                }
+
+                var exists = entityToUpdate.Est_Liers
+                    .Any(e => e.Id_Thematique == existingThematique.Id_Thematique);
+
+                if (!exists)
+                {
+                    updatedEstLier.Nom_Court = entityToUpdate.Nom_Court;
+                    entityToUpdate.Est_Liers.Add(updatedEstLier);
+                }
+            }
+
+            var toRemoveEstLier = entityToUpdate.Est_Liers
+                .Where(e => !updatedEntity.Est_Liers
+                    .Any(up => up.Id_Thematique == e.Id_Thematique))
+                .ToList();
+
+            foreach (var estlier in toRemoveEstLier)
+            {
+                entityToUpdate.Est_Liers.Remove(estlier);
+                _context.Est_Liers.Remove(estlier);
+            }
+
             await _context.SaveChangesAsync();
 
         }
-
 
         public async Task<IEnumerable<Laboratoire>> GetByKeysAsync<TProperty>(
     Expression<Func<Laboratoire, TProperty>> propertySelector,

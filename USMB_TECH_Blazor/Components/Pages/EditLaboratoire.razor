@@ -1,0 +1,302 @@
+﻿@page "/laboratoire/edit/{Id}"
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IMainService<LaboratoireUpdate, string> laboratoireService
+@inject IMainService<Thematique, int> thematiqueService
+@inject IMainService<Pole_Expertise, int> poleService
+@inject IMainService<Mot_Clef, int> motCleService
+@inject IJSRuntime JS
+
+<h3>LaboratoireEdit</h3>
+
+@if(laboratoire is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="laboratoire" OnValidSubmit="SubmitLaboratoire">
+            @* <DataAnnotationsValidator /> *@
+            @* <ValidationSummary /> *@
+
+            <h2 class="add_style">@laboratoire.Nom_Court</h2>
+
+            <label>Nom complet du laboratoire *</label>
+            <InputText class="form-control mb-2" @bind-Value="laboratoire.Nom_Long" placeholder="Nom complet du laboratoire" />
+            <ValidationMessage For="@(() => laboratoire.Nom_Long)" />
+
+            <label>Description *</label>
+            <InputText class="form-control mb-2" @bind-Value="laboratoire.Description" placeholder="Description du laboratoire" />
+
+
+            <h4 class="add_style">Adresses</h4>
+            <h3 class="add_style">Adresses du laboratoire</h3>
+
+            <label>Rue du laboratoire *</label>
+            <InputText class="form-control mb-2" @bind-Value="adresseLabo.Rue_Adresse" placeholder="Numéro et nom de rue de l'adresse du laboratoire" />
+            @* <ValidationMessage For="@(() => laboratoire.Rue_Adresse_Labo)" /> *@
+
+            <label>Ville du laboratoire *</label>
+            <InputText class="form-control mb-2" @bind-Value="adresseLabo.Ville_Adresse" placeholder="Ville du laboratoire" />
+            @* <ValidationMessage For="@(() => laboratoire.Ville_Adresse_Labo)" /> *@
+
+            <label>Code postal du laboratoire *</label>
+            <InputText class="form-control mb-2" maxlength="11" @bind-Value="adresseLabo.Code_Postal_Adresse" placeholder="Code postal du laboratoire" />
+            @* <ValidationMessage For="@(() => laboratoire.Code_Postal_Adresse_Labo)" /> *@
+
+            <label>Pays du laboratoire *</label>
+            <InputSelect class="form-control mb-2" @bind-Value="adresseLabo.Pays_Adresse" placeholder="Pays du laboratoire">
+                @foreach (var country in countries)
+                {
+                    <option value="@country">@country</option>
+                }
+            </InputSelect>
+            @* <ValidationMessage For="@(() => laboratoire.Pays_Adresse_Labo)" /> *@
+
+            <hr />
+            <h4 class="add_style">Adresse du campus</h4>
+
+            <label>Rue du campus *</label>
+            <InputText class="form-control mb-2" @bind-Value="adresseCampus.Rue_Adresse" placeholder="9 Rue de l'Arc-en-ciel" />
+            @* <ValidationMessage For="@(() => laboratoire.Rue_Adresse_Campus)" /> *@
+
+            <label>Ville du campus *</label>
+            <InputText class="form-control mb-2" @bind-Value="adresseCampus.Ville_Adresse" placeholder="Annecy-le-vieux" />
+            @* <ValidationMessage For="@(() => laboratoire.Ville_Adresse_Campus)" /> *@
+
+            <label>Code postal du campus *</label>
+            <InputText class="form-control mb-2" maxlength="11" @bind-Value="adresseCampus.Code_Postal_Adresse" placeholder="74940" />
+            @* <ValidationMessage For="@(() => laboratoire.Code_Postal_Adresse_Campus)" /> *@
+
+            <label>Pays du campus *</label>
+            <InputSelect class="form-control mb-2" @bind-Value="adresseCampus.Pays_Adresse" placeholder="France">
+                @foreach (var country in countries)
+                {
+                    <option value="@country">@country</option>
+                }
+            </InputSelect>
+            @* <ValidationMessage For="@(() => laboratoire.Pays_Adresse_Campus)" /> *@
+
+            <hr />
+            <h4 class="add_style">Thématiques *</h4>
+            <InputSelect class="form-control mb-2" @bind-Value="selectedThematique">
+                <option value="0">---- Sélectionnez une thématique</option>
+                @foreach(var t in existingThematiques)
+                {
+                    <option value="@t.Id_Thematique">@t.Nom_Thematique</option>
+                }
+            </InputSelect>
+            @if(selectedThematique != 0)
+            {
+                <button type="button" @onclick="AjouterThematique">Ajouter cette thématique</button>
+            }
+            <ul class="add_style mt-2">
+                @foreach (var id in laboratoire.Thematiques)
+                {
+                    var mc = existingThematiques.FirstOrDefault(m => m.Id_Thematique == id);
+                    if (mc != null)
+                    {
+                        <li>
+                            @mc.Nom_Thematique
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemoveThematique(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+
+            <hr />
+            <h4 class="add_style">Pôles d'expertise' *</h4>
+            <InputSelect class="form-control mb-2" @bind-Value="selectedPole">
+                <option value="0"></option>
+                @foreach(var ep in existingPoles)
+                {
+                    <option value="@ep.Id_Pole_Expertise">@ep.Nom_Pole_Expertise</option>
+                }
+            </InputSelect>
+            @if (selectedPole != 0)
+            {
+                <button type="button" @onclick="AjouterPole">Ajouter ce Pôle</button>
+            }
+            <ul class="add_style">
+                @foreach (var id in laboratoire.Pole_Expertises)
+                {
+                    var t = existingPoles.FirstOrDefault(th => th.Id_Pole_Expertise == id);
+                    if (t != null)
+                    {
+                        <lil>
+                            @t.Nom_Pole_Expertise
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemovePole(id)">
+                                Supprimer
+                            </button>
+                        </lil>
+                    }
+                }
+            </ul>
+            <hr />
+            <h4 class="add_style">Mots-clés *</h4>
+
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="selectedMotCle">
+                <option value="0">----- Sélectionner un mot clé -----</option>
+                @foreach (var mc in existingMotCle)
+                {
+                    <option value="@mc.Id_Mot_Clef">@mc.Nom_Mot_Clef</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@(selectedMotCle == 0)"
+                    @onclick="AjouterMotCle">
+                Ajouter ce mot-clé
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var id in laboratoire.mot_Clefs)
+                {
+                    var mc = existingMotCle.FirstOrDefault(m => m.Id_Mot_Clef == id);
+                    if (mc != null)
+                    {
+                        <li>
+                            @mc.Nom_Mot_Clef
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemoveMotCle(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+            <button type="submit" class="btn btn-primary mt-3">Mettre à jour</button>
+        </EditForm>
+    </div>
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+            @message
+        </div>
+    }
+}
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private LaboratoireUpdate laboratoire = new LaboratoireUpdate();
+    Adresse adresseCampus = new Adresse();
+    Adresse adresseLabo = new Adresse();
+
+    private int selectedPole = 0;
+    private int selectedThematique = 0;
+    private int selectedMotCle = 0;
+
+    private List<string> countries = new List<string>();
+    private IEnumerable<Pole_Expertise> existingPoles = new List<Pole_Expertise>();
+    private IEnumerable<Thematique> existingThematiques = new List<Thematique>();
+    private IEnumerable<Mot_Clef> existingMotCle = new List<Mot_Clef>();
+
+    private string message = "";
+    bool isSubmitted = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        laboratoire = await laboratoireService.GetByIdAsync(Id);
+
+        var client = new HttpClient();
+        var json = await client.GetStringAsync("https://data.enseignementsup-recherche.gouv.fr/api/records/1.0/search/?dataset=curiexplore-pays&rows=300");
+        var root = JsonNode.Parse(json);
+        countries = root["records"].AsArray().Select(r => (string)r["fields"]["name_fr"]).OrderBy(name => name).ToList();
+
+        laboratoire.Thematiques = laboratoire.Est_Liers?
+            .Select(t => t.Id_Thematique)
+            .ToList() ?? new List<int>();
+
+        laboratoire.mot_Clefs = laboratoire.Designers?
+            .Select(p => p.Id_Mot_Clef)
+            .ToList() ?? new List<int>();
+
+        laboratoire.Pole_Expertises = laboratoire.Gerers?
+            .Select(g => g.Id_Pole_Expertise)
+            .ToList() ?? new List<int>();
+
+        existingThematiques = await thematiqueService.GetAllAsync();
+        existingPoles = await poleService.GetAllAsync();
+        existingMotCle = await motCleService.GetAllAsync();
+
+        adresseCampus = laboratoire.Adresse_campusNavigation;
+        adresseLabo = laboratoire.Adresse_laboNavigation;
+    }
+
+    private void AjouterThematique()
+    {
+        if (selectedThematique != 0 && !laboratoire.Thematiques.Contains(selectedThematique))
+        {
+            laboratoire.Thematiques.Add(selectedThematique);
+            selectedThematique = 0;
+        }
+    }
+
+    private void RemoveThematique(int id)
+    {
+        laboratoire.Thematiques.Remove(id);
+    }
+
+    private void AjouterPole()
+    {
+        if (selectedPole != 0 && !laboratoire.Pole_Expertises.Contains(selectedPole))
+        {
+            laboratoire.Pole_Expertises.Add(selectedPole);
+            selectedPole = 0;
+        }
+    }
+
+    private void RemovePole(int id)
+    {
+        laboratoire.Pole_Expertises.Remove(id);
+    }
+
+    private void AjouterMotCle()
+    {
+        if (selectedMotCle != 0 && !laboratoire.mot_Clefs.Contains(selectedMotCle))
+        {
+            laboratoire.mot_Clefs.Add(selectedMotCle);
+            selectedMotCle = 0;
+        }
+    }
+
+    private void RemoveMotCle(int id)
+    {
+        laboratoire.mot_Clefs.Remove(id);
+    }
+
+    async Task SubmitLaboratoire()
+    {
+        try
+        {
+            laboratoire.Adresse_campusNavigation = adresseCampus;
+            laboratoire.Adresse_laboNavigation = adresseLabo;
+
+            var response = await Http.PutAsJsonAsync($"https://localhost:7093/api/laboratoires/{laboratoire.Nom_Court}", laboratoire);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo($"/laboratoire/{laboratoire.Nom_Court}");
+            }
+
+            isSubmitted = true;
+            message = "Mise à jour réussie.";
+        }
+        catch (Exception ex)
+        {
+            message = ex.Message;
+            await JS.InvokeVoidAsync("console.log", $"Erreur lors de la mise à jour : {ex.Message}");
+        }
+    }
+}

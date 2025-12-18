@@ -64,6 +64,22 @@ namespace USMB_TECH.Mapper
                         .Distinct()
                         .ToList()
                     : new List<string>()));
+
+            CreateMap<LaboratoireUpdateDTO, Laboratoire>()
+                .ForMember(dest => dest.Nom_Court, opt => opt.MapFrom(src => src.Nom_Court))
+                .ForMember(dest => dest.Nom_Long, opt => opt.MapFrom(src => src.Nom_Long))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                
+                
+                .ForMember(dest => dest.Id_Adresse_Campus, opt => opt.MapFrom(src => src.Id_Adresse_Campus))
+                .ForMember(dest => dest.Id_Adresse_Labo, opt => opt.MapFrom(src => src.Id_Adresse_Labo))
+
+                .ForMember(dest => dest.Designers, opt => opt.MapFrom(src => src.mot_Clefs.Select(id => new Designer {Id_Mot_Clef = id }).ToList()))
+                .ForMember(dest => dest.Est_Liers, opt => opt.MapFrom(src => src.Thematiques.Select(id => new Est_Lier { Id_Thematique = id }).ToList()))
+                .ForMember(dest => dest.Gerers, opt => opt.MapFrom(src => src.Pole_Expertises.Select(id => new Gerer { Id_Pole_Expertise = id }).ToList()))
+                
+                .ForMember(dest => dest.Prestations, opt => opt.Ignore());
+
         }
     }
 }
