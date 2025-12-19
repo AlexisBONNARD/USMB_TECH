@@ -7,63 +7,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
-    permissions:
-      contents: read
-
-    steps:
-      # 1️⃣ Checkout repository
-      - uses: actions/checkout@v4
-
-      # 2️⃣ Installer .NET
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-
-      # 3️⃣ Build Blazor project
-      - name: Build Blazor project
-        run: dotnet build USMB_TECH_Blazor/USMB_TECH_Blazor.csproj --configuration Release
-
-      # 4️⃣ Publish Blazor project dans ./publish
-      - name: Publish Blazor project
-        run: dotnet publish USMB_TECH_Blazor/USMB_TECH_Blazor.csproj --configuration Release --output publish
-
-      # 5️⃣ Upload artifact pour le déploiement
-      - name: Upload artifact for deployment
-        uses: actions/upload-artifact@v4
-        with:
-          name: blazor-app
-          path: publish
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
     permissions:
       id-token: write
       contents: read
 
     steps:
-      # 1️⃣ Télécharger l'artifact dans le même dossier "publish"
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: blazor-app
-          path: publish   # 🔹 important : télécharge directement dans ./publish
+      - uses: actions/checkout@v4
 
-      # 2️⃣ Login Azure
-      - name: Login to Azure
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Publish Blazor
+        run: dotnet publish USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release -o publish
+
+      - name: Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2BD0858EFC5741B68F3AC9032383401D }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_32ED0014365042A496D6DFB73E074325 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E30AF12E185747C5BC16ABAF46E25716 }}
 
-      # 3️⃣ Déployer sur Web App
-      - name: Deploy to Azure Web App
+      - name: Deploy Blazor
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'blazor-usmbtech'
-          slot-name: 'Production'
-          package: './publish'   # 🔹 doit correspondre au dossier de l'artifact
+          app-name: blazor-usmbtech
+          slot-name: Production
+          package: publish

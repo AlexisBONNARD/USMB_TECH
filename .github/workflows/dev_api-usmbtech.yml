@@ -7,63 +7,37 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: windows-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-
-      - name: Clean API project
-        run: dotnet clean USMB_TECH/USMB_TECH.csproj
-
-      - name: Restore dependencies
-        run: dotnet restore USMB_TECH/USMB_TECH.csproj
-
-      - name: Build API project
-        run: dotnet build USMB_TECH/USMB_TECH.csproj --configuration Release --no-restore
-
-      - name: Publish API project
-        run: dotnet publish USMB_TECH/USMB_TECH.csproj --configuration Release --output publish
-
-      - name: Upload artifact for deployment
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-app
-          path: publish
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: api-app
-          path: publish
+      - uses: actions/checkout@v4
 
-      - name: Login to Azure
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore
+        run: dotnet restore USMB_TECH/USMB_TECH.csproj
+
+      - name: Publish
+        run: dotnet publish USMB_TECH/USMB_TECH.csproj -c Release -o publish
+
+      - name: Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9FD37313CE8C4F389B9976F30123971B }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CF49F06B2F244A3DAA092FFFDDF4DF78 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5081036E4D9E46B2ADAF49DD7A106AC6 }}
 
-      - name: Deploy to Azure Web App
+      - name: Deploy API
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'api-usmbtech'
-          slot-name: 'Production'
-          package: './publish'
+          app-name: api-usmbtech
+          slot-name: Production
+          package: publish
           clean: true
