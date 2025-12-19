@@ -13,7 +13,7 @@ namespace USMB_TECH.Models
 
         [Column("rue_adresse")]
         [MaxLength(200)]
-        [RegularExpression(@"^[^$£*µ¤^¨%=+!§;?<>&~{([|_\-#}@]*$")]
+        //[RegularExpression(@"^[^$£*µ¤^¨%=+!§;?<>&~{([|_\-#}@]*$")]
         public string? Rue_Adresse { get; set; }
 
         [Column("complement_rue_adresse")]

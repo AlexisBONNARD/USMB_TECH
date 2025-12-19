@@ -44,23 +44,26 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutLaboratoire(string id, Laboratoire Laboratoire)
+        public async Task<IActionResult> PutLaboratoire(string id, LaboratoireUpdateDTO dto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (id != Laboratoire.Nom_Court)
+            if (id != dto.Nom_Court)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
                 return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, Laboratoire);
+            // Mapping DTO → Entity (AutoMapper gère TOUT)
+            var mappedEntity = _mapper.Map<Laboratoire>(dto);
+
+            await _dataRepository.UpdateAsync(existing, mappedEntity);
+
             return NoContent();
         }
+
 
         // POST: api/Laboratoires
         [HttpPost]
