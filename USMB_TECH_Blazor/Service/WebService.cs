@@ -11,7 +11,7 @@ namespace USMB_TECH_Blazor.Service
         {
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
+                BaseAddress = new Uri("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
             };
             this._endpoint = endpoint;
         }

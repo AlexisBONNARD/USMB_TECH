@@ -320,7 +320,7 @@ else
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/upload", content);
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -390,7 +390,7 @@ else
                 });
             }
             // Envoi direct avec HttpClient
-            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/{prestationUpdate.Id_Prestation}", prestationUpdate);
+            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/{prestationUpdate.Id_Prestation}", prestationUpdate);
 
             if (response.IsSuccessStatusCode)
             {

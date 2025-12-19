@@ -160,7 +160,7 @@ else
                     }
                 };
             }
-            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/{Id}", pole_expertise);
+            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/{Id}", pole_expertise);
 
             if (response.IsSuccessStatusCode)
             {
@@ -195,7 +195,7 @@ else
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
