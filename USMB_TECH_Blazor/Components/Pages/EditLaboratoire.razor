@@ -214,17 +214,10 @@ else
         var root = JsonNode.Parse(json);
         countries = root["records"].AsArray().Select(r => (string)r["fields"]["name_fr"]).OrderBy(name => name).ToList();
 
-        laboratoire.Thematiques = laboratoire.Est_Liers?
-            .Select(t => t.Id_Thematique)
-            .ToList() ?? new List<int>();
+        laboratoire.Thematiques = laboratoire.Thematiques ?? new List<int>();
+        laboratoire.mot_Clefs = laboratoire.mot_Clefs ?? new List<int>();
+        laboratoire.Pole_Expertises = laboratoire.Pole_Expertises ?? new List<int>();
 
-        laboratoire.mot_Clefs = laboratoire.Designers?
-            .Select(p => p.Id_Mot_Clef)
-            .ToList() ?? new List<int>();
-
-        laboratoire.Pole_Expertises = laboratoire.Gerers?
-            .Select(g => g.Id_Pole_Expertise)
-            .ToList() ?? new List<int>();
 
         existingThematiques = await thematiqueService.GetAllAsync();
         existingPoles = await poleService.GetAllAsync();
