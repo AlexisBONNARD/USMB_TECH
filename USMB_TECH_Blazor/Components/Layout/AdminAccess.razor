@@ -1,0 +1,50 @@
+﻿@inject AdminState AdminState
+@inject IJSRuntime JS
+
+@implements IDisposable
+
+@if (!AdminState.IsAdmin)
+{
+    @* <input type="password" @bind="code" placeholder="Code admin" /> *@
+    <button @onclick="Activate">Admin</button>
+}
+else
+{
+    <span style="color:green">Mode admin</span>
+    <button @onclick="Deactivate">Quitter</button>
+}
+
+
+
+@code {
+    private string code;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var stored = await JS.InvokeAsync<string>("localStorage.getItem", "isAdmin");
+        if (stored == "true")
+        {
+            AdminState.EnableAdmin();
+        }
+    }
+
+    private async Task Activate()
+    {
+        // if (code == "1234")
+        // {
+            await JS.InvokeVoidAsync("localStorage.setItem", "isAdmin", "true");
+            AdminState.EnableAdmin();
+        // }
+    }
+
+    private async Task Deactivate()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "isAdmin");
+        AdminState.DisableAdmin();
+    }
+
+    public void Dispose()
+    {
+        // Rien à nettoyer ici
+    }
+}

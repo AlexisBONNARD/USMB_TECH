@@ -12,7 +12,7 @@ namespace USMB_TECH.Models
         public int Id_Thematique { get; set; }
 
         [Column("id_sous_thematique")]
-        public int Id_Sous_Thematique { get; set; }
+        public int? Id_Sous_Thematique { get; set; }
 
         [Column("nom_thematique")]
         [MaxLength(50)]

@@ -1,14 +1,21 @@
 ﻿@page "/prestation/{Id:int}"
 @inject IMainService<Prestation,int> PrestationService
-@inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Pole_Expertise,int> Pole_ExpertiseService
 @inject IMainService<Equipement,int> EquipementService
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
 
 <HeadContent>
     <link href="css/PageDetail.css" rel="stylesheet" />
 </HeadContent>
 
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
 @if (prestation == null)
 {
     <p>Loading...</p>
@@ -20,6 +27,7 @@ else
         <div class="col-left">
             <section>
                 <h2>Prestation : @prestation.Intitule_Prestation</h2>
+                <Carousel Photos="@prestation.Photos" />
                 <p>@prestation.Description_Prestation</p>
                 <p>Laboratoire : @prestation.Nom_Court</p>
             </section>
@@ -36,18 +44,18 @@ else
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
             <section>
-                <h3>NOS PLATEFORMES</h3>
+                <h3>NOS POLES D'EXPERTISE</h3>
 
                 <div class="center-grid">
-                    @foreach (var plateforme in plateformes)
+                    @foreach (var pole_expertise in pole_expertises)
                     {
-                        <div class="center-item" @onclick="@(() => RetourListe(plateforme.Id_Plateforme, "plateforme"))">
-                            @if (plateforme.Photos != null && plateforme.Photos.Any())
+                        <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
+                            @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
                             {
-                                var photo = plateforme.Photos.First();
-                                <img src="@photo.Url_Photo" alt="photo plateforme" />
+                                var photo = pole_expertise.Photos.First();
+                                <img src="@photo.Url_Photo" alt="photo pole_expertise" />
                             }
-                            <p>@plateforme.Nom_Plateforme</p>
+                            <p>@pole_expertise.Nom_Pole_Expertise</p>
                         </div>
                     }
                 </div>
@@ -83,22 +91,33 @@ else
             <FormulaireContact />
         </div>
     </div>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(prestation.Id_Prestation)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeletePrestation(prestation.Id_Prestation)">
+            Supprimer
+        </button>
+    }
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
     private Prestation? prestation;
-    private List<Plateforme> plateformes = new List<Plateforme>();
+    private List<Pole_Expertise> pole_expertises = new List<Pole_Expertise>();
     private List<Equipement> equipements = new List<Equipement>();
 
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
     protected override async Task OnInitializedAsync()
     {
         prestation = await PrestationService.GetByIdAsync(Id);
-        foreach (var plateforme in prestation.Presenters)
+        foreach (var pole_expertise in prestation.Presenters)
         {
-            var plat = await PlateformeService.GetByIdAsync(plateforme.Id_Plateforme);
-            this.plateformes.Add(plat);
+            var plat = await Pole_ExpertiseService.GetByIdAsync(pole_expertise.Id_Pole_Expertise);
+            this.pole_expertises.Add(plat);
         }
         foreach (var equipement in prestation.Fournirs)
         {
@@ -111,4 +130,44 @@ else
     {
         Navigation.NavigateTo($"/{nomChemin}/{idEquipement}");
     }
+    private async Task DeletePrestation(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer cette prestation ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await PrestationService.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Prestation supprimée avec succès ✅");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/prestation/edit/{id}", true);
+    }
+
 }

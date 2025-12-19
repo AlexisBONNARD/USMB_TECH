@@ -1,0 +1,406 @@
+﻿@page "/prestation/edit/{Id:int}"
+
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IMainService<PrestationUpdateModel, int> prestationService
+@inject IMainService<Domaine_Excellence, int> domaineService
+@inject IMainService<Type_Prestation, int> typeService
+@inject IMainService<Unite_Oeuvre, int> uniteService
+@inject IMainService<Mot_Clef, int> motCleService
+@inject IMainService<Contact_USMB, int> contactService
+@inject IMainService<Laboratoire, string> laboratoireService
+@inject IMainService<Equipement, int> equipementService
+@inject IMainService<Pole_Expertise, int> poleExpertiseService
+
+@using USMB_TECH_Blazor.Models
+
+<h2 class="add_style">Modifier la prestation</h2>
+
+@if (prestationUpdate == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="@prestationUpdate" OnValidSubmit="Submit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <h4 class="add_style">Informations générales</h4>
+
+            <label>Intitulé *</label>
+            <InputText class="form-control mb-2"
+                       @bind-Value="prestationUpdate.Intitule_Prestation" />
+
+            <label>Description</label>
+            <InputTextArea class="form-control mb-2"
+                           @bind-Value="prestationUpdate.Description_Prestation" />
+
+            <label>Prix de vente de la prestation *</label>
+            <InputNumber class="form-control mb-2" @bind-Value="prestationUpdate.Prix_Vente" />
+
+            <label>Prix de revient de la prestation *</label>
+            <InputNumber class="form-control mb-2" @bind-Value="prestationUpdate.Prix_Revient" />
+
+            <label>Active ?</label>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Actif">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+            </InputSelect>
+
+            <label>Peut ce réaliser chez le client ?</label>
+            <InputSelect class="form-control mb-3"
+                         @bind-Value="prestationUpdate.Peut_Realiser_Chez_Client">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+            </InputSelect>
+
+            <hr />
+            <h4 class="add_style">Photos</h4>
+            <InputFile OnChange="HandleFileUpload" multiple />
+            @if (prestationUpdate.Photos != null && prestationUpdate.Photos.Any())
+            {
+                <div class="uploaded-photos">
+                    <h5>Photos sélectionnées :</h5>
+                    <ul>
+                        @foreach (var photo in prestationUpdate.Photos)
+                        {
+                            <li>
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+                           
+            <h4 class="add_style">Laboratoire associé</h4>
+            <label>Nom court</label>
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="prestationUpdate.Nom_Court">
+                <option value="0">----- Sélectionner un laboratoire -----</option>
+                @foreach (var lab in laboratoires)
+                {
+                    <option value="@lab.Nom_Court">@lab.Nom_Court</option>
+                }
+            </InputSelect>
+
+            <h4 class="add_style">Références</h4>
+
+            <label>Domaine *</label>
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="prestationUpdate.Id_Domaine_Excellence">
+                <option value="0">----- Sélectionner un domaine d'excellence -----</option>
+                @foreach (var d in domaines)
+                {
+                    <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
+                }
+            </InputSelect>
+
+            <label>Type *</label>
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="prestationUpdate.Id_Type_Prestation">
+                <option value="0">...</option>
+                @foreach (var t in types)
+                {
+                    <option value="@t.Id_Type_Prestation">@t.Nom_Type_Prestation</option>
+                }
+            </InputSelect>
+
+            <label>Unité *</label>
+            <InputSelect class="form-select mb-3"
+                         @bind-Value="prestationUpdate.Id_Unite_Oeuvre">
+                <option value="0">----- Sélectionner une unité d'oeuvre -----</option>
+                @foreach (var u in unites)
+                {
+                    <option value="@u.Id_Unite_Oeuvre">@u.Nom_Unite_Oeuvre</option>
+                }
+            </InputSelect>
+
+
+            <hr />
+            <h4 class="add_style">Contact associé</h4>
+            <InputSelect class="form-select mb-3"
+                         @bind-Value="prestationUpdate.Id_Contact">
+                <option value="0">----- Sélectionner un contact -----</option>
+                @foreach (var c in contacts)
+                {
+                    <option value="@c.Id_Contact">
+                        @c.Prenom_Contact @c.Nom_Contact
+                    </option>
+                }
+            </InputSelect>
+
+            <hr />
+            <h4 class="add_style">Mots-clés *</h4>
+
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="selectedMotCleId">
+                <option value="0">----- Sélectionner un mot clé -----</option>
+                @foreach (var mc in motsClesExistants)
+                {
+                    <option value="@mc.Id_Mot_Clef">@mc.Nom_Mot_Clef</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@(selectedMotCleId == 0)"
+                    @onclick="AddMotCle">
+                Ajouter ce mot-clé
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var id in prestationUpdate.MotCleIds)
+                {
+                    var mc = motsClesExistants.FirstOrDefault(m => m.Id_Mot_Clef == id);
+                    if (mc != null)
+                    {
+                        <li>
+                            @mc.Nom_Mot_Clef
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemoveMotCle(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+
+             <h4 class="add_style">Equipement associé*</h4>
+
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="selectedEquipementId">
+                <option value="0">----- Sélectionner un équipement -----</option>
+                @foreach (var mc in equipements)
+                {
+                    <option value="@mc.Id_Equipement">@mc.Nom_Equipement</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@(selectedEquipementId == 0)"
+                    @onclick="AddEquipement">
+                Ajouter cette equipement
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var id in prestationUpdate.EquipementIds)
+                {
+                    var mc = equipements.FirstOrDefault(m => m.Id_Equipement == id);
+                    if (mc != null)
+                    {
+                        <li>
+                            @mc.Nom_Equipement
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemoveEquipement(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+
+            <h4 class="add_style">Pôles d'expertise associés *</h4>
+
+            <InputSelect class="form-select mb-2"
+                         @bind-Value="selectedPoleExpertiseId">
+                <option value="0">----- Sélectionner un pôle d'expertise -----</option>
+                @foreach (var pe in polesExpertise)
+                {
+                    <option value="@pe.Id_Pole_Expertise">@pe.Nom_Pole_Expertise</option>
+                }
+            </InputSelect>
+
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    disabled="@(selectedPoleExpertiseId == 0)"
+                    @onclick="AddPoleExpertise">
+                Ajouter ce pôle d'expertise
+            </button>
+
+            <ul class="add_style mt-2">
+                @foreach (var id in prestationUpdate.PoleExpertiseIds)
+                {
+                    var pe = polesExpertise.FirstOrDefault(p => p.Id_Pole_Expertise == id);
+                    if (pe != null)
+                    {
+                        <li>
+                            @pe.Nom_Pole_Expertise
+                            <button type="button"
+                                    class="btn btn-sm btn-danger ms-2"
+                                    @onclick="() => RemovePoleExpertise(id)">
+                                Supprimer
+                            </button>
+                        </li>
+                    }
+                }
+            </ul>
+
+
+
+            <hr />
+            <button type="submit" class="btn btn-primary mt-3">
+                Mettre à jour
+            </button>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private PrestationUpdateModel? prestationUpdate;
+
+    private List<Domaine_Excellence> domaines = new();
+    private List<Type_Prestation> types = new();
+    private List<Unite_Oeuvre> unites = new();
+    private List<Mot_Clef> motsClesExistants = new();
+    private List<Contact_USMB> contacts = new();
+    private List<Laboratoire> laboratoires = new();
+    private List<Equipement> equipements = new();
+    private List<Pole_Expertise> polesExpertise = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        prestationUpdate = await prestationService.GetByIdAsync(Id);
+
+        // synchroniser les IDs avec les Precisers
+        prestationUpdate.MotCleIds = prestationUpdate.Precisers?
+            .Select(p => p.Id_Mot_Clef)
+            .ToList() ?? new List<int>();
+        prestationUpdate.EquipementIds = prestationUpdate.Fournirs?
+            .Select(f => f.Id_Equipement)
+            .ToList() ?? new List<int>();
+        prestationUpdate.PoleExpertiseIds = prestationUpdate.Presenters?
+        .Select(pr => pr.Id_Pole_Expertise)
+        .ToList() ?? new List<int>();
+
+        domaines = (await domaineService.GetAllAsync()).ToList();
+        types = (await typeService.GetAllAsync()).ToList();
+        unites = (await uniteService.GetAllAsync()).ToList();
+        motsClesExistants = (await motCleService.GetAllAsync()).ToList();
+        contacts = (await contactService.GetAllAsync()).ToList();
+        laboratoires = (await laboratoireService.GetAllAsync()).ToList();
+        equipements = (await equipementService.GetAllAsync()).ToList();
+        polesExpertise = (await poleExpertiseService.GetAllAsync()).ToList();
+    }
+
+
+    private int selectedMotCleId;
+
+    private void AddMotCle()
+    {
+        if (selectedMotCleId != 0 && prestationUpdate != null && !prestationUpdate.MotCleIds.Contains(selectedMotCleId))
+        {
+            prestationUpdate.MotCleIds.Add(selectedMotCleId);
+            selectedMotCleId = 0;
+        }
+    }
+
+    private void RemoveMotCle(int id)
+    {
+        prestationUpdate?.MotCleIds.Remove(id);
+    }
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Récupère tous les fichiers sélectionnés
+
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                prestationUpdate.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+    private void RemovePhoto(Photo photo)
+    {
+        prestationUpdate.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+    private int selectedEquipementId;
+
+    private void AddEquipement()
+    {
+        if (selectedEquipementId != 0 && prestationUpdate != null && !prestationUpdate.EquipementIds.Contains(selectedEquipementId))
+        {
+            prestationUpdate.EquipementIds.Add(selectedEquipementId);
+            selectedEquipementId = 0;
+        }
+    }
+
+    private void RemoveEquipement(int id)
+    {
+        prestationUpdate?.EquipementIds.Remove(id);
+    }
+
+    private int selectedPoleExpertiseId;
+
+    private void AddPoleExpertise()
+    {
+        if (selectedPoleExpertiseId != 0 && prestationUpdate != null &&
+            !prestationUpdate.PoleExpertiseIds.Contains(selectedPoleExpertiseId))
+        {
+            prestationUpdate.PoleExpertiseIds.Add(selectedPoleExpertiseId);
+            selectedPoleExpertiseId = 0;
+        }
+    }
+
+    private void RemovePoleExpertise(int id)
+    {
+        prestationUpdate?.PoleExpertiseIds.Remove(id);
+    }
+
+    private async Task Submit()
+    {
+        if (prestationUpdate != null)
+        {
+            // Si aucune photo uploadée → photo par défaut
+            if (prestationUpdate.Photos != null &&
+       prestationUpdate.Photos.Count == 0)
+            {
+                prestationUpdate.Photos.Add(new Photo
+                {
+                    Nom_Photo = "default-image.png",
+                    Url_Photo = "/images/No_image_available.png"
+                });
+            }
+            // Envoi direct avec HttpClient
+            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/{prestationUpdate.Id_Prestation}", prestationUpdate);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo($"/prestation/{Id}");
+            }
+            else
+            {
+                // Tu peux afficher un message d'erreur si besoin
+                Console.WriteLine("Erreur lors de la mise à jour de la prestation");
+            }
+        }
+    }
+}

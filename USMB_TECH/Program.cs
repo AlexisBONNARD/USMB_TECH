@@ -11,21 +11,30 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
-builder.Services.AddScoped<IMainRepository<Plateforme, int>, PlateformeManager>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/") });
+builder.Services.AddScoped<IMainRepository<Pole_Expertise, int>, Pole_ExpertiseManager>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(" api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
+builder.Services.AddScoped<IMainRepository<Prise_Contact, int>, Prise_ContactManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Contact_USMB, int>, Contact_USMBManager>();
 builder.Services.AddScoped<IMainRepository<Equipement, int>, EquipementManager>();
 builder.Services.AddScoped<IMainRepository<Type_Equipement, int>, Type_EquipementManager>();
 builder.Services.AddScoped<IMainRepository<Marque, int>, MarqueManager>();
+builder.Services.AddScoped<IMainRepository<Domaine_Excellence, int>, Domaine_ExcellenceManager>();
+builder.Services.AddScoped<IMainRepository<Mot_Clef, int>, MotClefManager>();
+builder.Services.AddScoped<IMainRepository<Fonction, int>, FonctionManager>();
+builder.Services.AddScoped<IMainRepository<Type_Prestation, int>, Type_PrestationManager>();
+builder.Services.AddScoped<IMainRepository<Unite_Oeuvre, int>, Unite_OeuvreManager>();
 
 builder.Services.AddScoped<EquipementManager>();
 builder.Services.AddScoped<LaboratoireManager>();
-builder.Services.AddScoped<PlateformeManager>();
+builder.Services.AddScoped<Pole_ExpertiseManager>();
 builder.Services.AddScoped<PrestationManager>();
 builder.Services.AddScoped<ThematiqueManager>();
+builder.Services.AddScoped<Prise_ContactManager>();
 builder.Services.AddScoped<MarqueManager>();
+builder.Services.AddScoped<MotClefManager>();
+builder.Services.AddScoped<Domaine_ExcellenceManager>();    
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

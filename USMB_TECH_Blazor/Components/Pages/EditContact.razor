@@ -1,0 +1,145 @@
+﻿@page "/contact/edit/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject Service.IMainService<Contact_USMBUpdateModel, int> contactDatas
+@inject Service.IMainService<Fonction, int> fonctionDatas
+@inject Service.IMainService<Laboratoire, string> laboratoireDatas
+@inject IJSRuntime JS
+
+@using USMB_TECH_Blazor.Models
+@using USMB_TECH.Models
+
+<h2 class="add_style">Modifier un contact</h2>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert @(isSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @message
+    </div>
+}
+
+@if (contact == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="contact" OnValidSubmit="SubmitContact">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <h4 class="add_style">Infos générales</h4>
+
+            <label>Nom *</label>
+            <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" />
+            <ValidationMessage For="@(() => contact.Nom_Contact)" />
+
+            <label>Prénom *</label>
+            <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" />
+            <ValidationMessage For="@(() => contact.Prenom_Contact)" />
+
+            <label>Code RH *</label>
+            <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" />
+            <ValidationMessage For="@(() => contact.Code_RH)" />
+
+            <label>Num Securite Social *</label>
+            <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" />
+            <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
+
+            <label>Email *</label>
+            <InputText class="form-control mb-2" @bind-Value="contact.Mail" />
+            <ValidationMessage For="@(() => contact.Mail)" />
+
+            <label>Téléphone *</label>
+            <InputText class="form-control mb-2" @bind-Value="contact.Telephone" />
+            <ValidationMessage For="@(() => contact.Telephone)" />
+            <hr />
+            <h4 class="add_style">Fonction</h4>
+            <InputSelect class="form-control mb-2" @bind-Value="contact.Id_Fonction">
+                <option value="">-- Sélectionner --</option>
+                @foreach (var f in fonctions)
+                {
+                    <option value="@f.Id_Fonction">@f.Nom_Fonction</option>
+                }
+            </InputSelect>
+
+            <hr />
+            <h4 class="add_style">Laboratoire</h4>
+            <InputSelect class="form-control mb-2" @bind-Value="contact.Nom_Court">
+                <option value="">-- Sélectionner --</option>
+                @foreach (var l in laboratoires)
+                {
+                    <option value="@l.Nom_Court">@l.Nom_Long </option>
+                }
+            </InputSelect>
+
+            <hr />
+            <button class="btn btn-primary" type="submit">Mettre à jour</button>
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div id="alertMessage" class="alert @(isSuccess ? "alert-success" : "alert-danger") alert-fixed">
+                    @message
+                </div>
+            }
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Contact_USMBUpdateModel? contact;
+    private List<Fonction> fonctions = new();
+    private List<Laboratoire> laboratoires = new();
+
+    private string? message;
+    private bool isSuccess;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contact = await contactDatas.GetByIdAsync(Id);
+        fonctions = (await fonctionDatas.GetAllAsync()).ToList();
+        laboratoires = (await laboratoireDatas.GetAllAsync()).ToList();
+    }
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private List<Domaine_Excellence> domainesExcellence = new();
+
+    async Task SubmitContact()
+    {
+        try
+        {
+            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/contact_usmb/{Id}", contact);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isSuccess = true;
+                await ShowMessage("Contact mise à jour avec succès");
+                NavigationManager.NavigateTo($"/contact/{Id}");
+            }
+            else
+            {
+                isSuccess = false;
+                await ShowMessage("Erreur lors de la mise à jour");
+            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            await ShowMessage($"Erreur: {ex.Message}");
+        }
+    }
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowMessage(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        message = null;
+        StateHasChanged();
+    }
+}

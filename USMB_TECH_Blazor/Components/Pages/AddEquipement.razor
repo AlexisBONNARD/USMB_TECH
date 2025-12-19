@@ -1,0 +1,465 @@
+﻿@page "/ajouterEquipement"
+@inject Service.IMainService<Pole_Expertise,int> pole_expertiseDatas
+@inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
+@inject Service.IMainService<Equipement,int> equipementDatas
+@inject Service.IMainService<Marque,int> marqueService
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<HeadContent>
+    <li class="add_style" nk href="css/addEquipement.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_style">Ajouter un équipement</h2>
+
+<div class="page-container">
+    <EditForm Model="addEquipement" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h4 class="add_style">Infos générales</h4>
+        <label>Nom de l'équipement *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" placeholder="Serveur"/>
+        <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
+
+        <label>Numéro d'immobilisation *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" placeholder="IT-2024-00157"/>
+        <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
+
+        <label>Description Technique *</label>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" placeholder="Serveur permettant de stocker les données"/>
+        <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
+
+        <label>Prix Achat *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="addEquipement.Prix_Achat" />
+        <ValidationMessage For="@(() => addEquipement.Prix_Achat)" />
+
+        <label>Prix Revient *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="addEquipement.Prix_Revient" />
+        <ValidationMessage For="@(() => addEquipement.Prix_Revient)" />
+        <div class="checkbox-group">
+            <InputCheckbox @bind-Value="addEquipement.Autonomie" />
+            <label>Autonomie</label>
+        </div>
+
+        <div class="checkbox-group">
+            <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
+            <label>Utilisable chez le client</label>
+        </div>
+
+        <hr />
+        <h4 class="add_style">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" multiple/>
+        @if (addEquipement.Photos != null && addEquipement.Photos.Any())
+        {
+            <div class="uploaded-photos">
+                <h5>Photos sélectionnées :</h5>
+                <ul>
+                    @foreach (var photo in addEquipement.Photos)
+                    {
+                        <li>
+                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <hr />
+        <h4 class="add_style">Modèle *</h4>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Modele" placeholder="LDLC PC SERVPRO 2U PRO Ultra 5" />
+        <ValidationMessage For="@(() => addEquipement.Nom_Modele)" />
+
+        <hr />
+        <div class="form-group">
+            <h4 class="add_style">Marque *</h4>
+            <InputSelect class="form-select mb-2" @bind-Value="LastMarque" placeholder="LDLC">
+                <option value="">----- Sélectionner une marque -----</option>
+                @foreach (var marque in marques)
+                {
+                    <option value="@marque.Nom_Marque">@marque.Nom_Marque</option>
+                }
+                <option value="ajouter" class="alert-info">----- Créer une marque -----</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => addEquipement.Nom_Marque)" />
+        </div>
+        @if (LastMarque == "ajouter")
+        {
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newMarque"
+                       @bind:event="oninput"
+                       placeholder="Nom de la marque"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddMarque(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMarque">Ajouter</button>
+            </form>
+
+            @if (derniereMarqueAjoutee != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @derniereMarqueAjoutee.Nom_Marque
+                        <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMarque(derniereMarqueAjoutee)">Supprimer</button>
+                    </li>
+                </ul>
+            }
+        }
+
+
+        <hr />
+        <h4 class="add_style">Pôle d'expertise *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
+            <option value="">----- Sélectionner un pôle d'expertise -----</option>
+            @foreach (var pole_expertise in pole_expertises)
+            {
+                <option value="@pole_expertise.Nom_Pole_Expertise">@pole_expertise.Nom_Pole_Expertise</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un pôle d'expertise -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => addEquipement.Nom_Pole_Expertise)" />
+
+        <!-- Modal -->
+        <div id="modalPole_Expertise" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModal">&times;</span>
+                <AddPole_Expertise OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" EnableRedirect="false" />
+            </div>
+        </div>
+
+
+        <hr />
+        <h4 class="add_style">Type d'équipement *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastTypeEquipement">
+            <option value="">----- Sélectionner un type d'équipement -----</option>
+            @foreach (var type in type_Equipements)
+            {
+                <option value="@type.Nom_Type">@type.Nom_Type</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un type -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => addEquipement.Type_Equipement)" />
+        @if (LastTypeEquipement == "ajouter")
+        {
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newTypeEquipement"
+                       @bind:event="oninput"
+                       placeholder="Nom du type"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddTypeEquipement(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddTypeEquipement">Ajouter</button>
+            </form>
+
+            @if (dernierTypeAjoute != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @dernierTypeAjoute.Nom_Type
+                        <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveTypeEquipement(dernierTypeAjoute)">Supprimer</button>
+                    </li>
+                </ul>
+            }
+        }
+
+
+        <hr />
+        <h4 class="add_style">Exemple d'utilisation *</h4>
+        <div>
+            <label>Nom de l'exemple : </label>
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" placeholder="Stockage"/>
+            <ValidationMessage For="@(() => addEquipement.Nom_Exemple)" />
+        </div>
+        <div>
+            <label>Description : </label>
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" placeholder="la base de données est stockée sur ce serveur" />
+            <ValidationMessage For="@(() => addEquipement.Description_Exemple)" />
+        </div>
+
+        <hr />
+        <button type="submit" class="btn btn-success mt-3">Ajouter</button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
+    </EditForm>
+</div>
+
+@code {
+    private Equipement addEquipement = new();
+    private List<Pole_Expertise> pole_expertises = new();
+    private List<Type_Equipement> type_Equipements = new();
+    private Marque marqueequipement = new();
+    private Type_Equipement dernierTypeAjoute;
+
+    private bool isLoading = false;
+    bool isSubmitted = false;
+    string message = "";
+
+    private string _lastPole_Expertise;
+
+    private string LastPole_Expertise
+    {
+        get => _lastPole_Expertise;
+        set
+        {
+            _lastPole_Expertise = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModal();
+            }
+            else
+            {
+                addEquipement.Nom_Pole_Expertise = value;
+            }
+        }
+    }
+
+    private string _lastTypeEquipement;
+    private string LastTypeEquipement
+    {
+        get => _lastTypeEquipement;
+        set
+        {
+            _lastTypeEquipement = value;
+            JS.InvokeVoidAsync("console.log", $"Type sélectionné : {value}");
+
+            if (value != "ajouter")
+            {
+                addEquipement.Type_Equipement = value;
+            }
+        }
+    }
+
+
+    private string newTypeEquipement = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        pole_expertises = (await pole_expertiseDatas.GetAllAsync()).ToList();
+        type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
+        marques = (await marqueService.GetAllAsync()).ToList(); // ← AJOUTER CECI
+    }
+
+    private void OnPole_ExpertiseChange(ChangeEventArgs e)
+    {
+        var selected = e.Value?.ToString();
+
+        // Affiche côté Visual Studio
+        Console.WriteLine($"Changement détecté : {selected}");
+        System.Diagnostics.Debug.WriteLine($"Changement détecté : {selected}");
+
+        // Affiche côté navigateur (console F12)
+        JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur 2 : {selected}");
+
+        if (selected == "ajouter")
+        {
+            OpenModal();
+        }
+    }
+
+
+    private void OpenModal()
+    {
+        JS.InvokeVoidAsync("openModalPole_expertise");
+    }
+
+    private void CloseModal()
+    {
+        JS.InvokeVoidAsync("closeModalPole_expertise");
+    }
+
+    // Callback qui sera appelé lorsque la pole_expertise est ajoutée
+    private void OnPole_ExpertiseAdded(Pole_Expertise pole_expertise)
+    {
+        pole_expertises.Add(pole_expertise);
+        LastPole_Expertise = pole_expertise.Nom_Pole_Expertise;
+        CloseModal();
+    }
+
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Récupère tous les fichiers sélectionnés
+
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                addEquipement.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+    private void RemovePhoto(Photo photo)
+    {
+        addEquipement.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true; // démarre le loader
+            StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (addEquipement.Photos == null || !addEquipement.Photos.Any())
+            {
+                addEquipement.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
+
+            addEquipement.Date_Acquisition = DateTime.Now;
+            addEquipement.Actif = true;
+
+            var response = await Http.PostAsJsonAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Equipements", addEquipement);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Erreur lors de l'ajout de l'équipement ❌");
+            }
+            var createdeqipement = await response.Content.ReadFromJsonAsync<Equipement>();
+
+            addEquipement = createdeqipement;
+            isSubmitted = true;
+            await ShowAlert("Équipement ajouté avec succès ✅");
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            await ShowAlert("Il y a eu une erreur lors de l'ajout de l'équipement ❌");
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            isLoading = false; // stoppe le loader
+            StateHasChanged();
+        }
+    }
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+        if (isSubmitted)
+        {
+            Navigation.NavigateTo($"/equipement/{addEquipement.Id_Equipement}");
+        }
+    }
+    private void pole_expertiseRotation(string SelectedPole_Expertise)
+    {
+        addEquipement.Nom_Pole_Expertise = SelectedPole_Expertise;
+    }
+    private void TypeRotation(string SelectedType)
+    {
+        addEquipement.Type_Equipement = SelectedType;
+    }
+
+    void AddTypeEquipement()
+    {
+        if (!string.IsNullOrWhiteSpace(newTypeEquipement))
+        {
+            var nouveauType = new Type_Equipement { Nom_Type = newTypeEquipement };
+            type_Equipements.Add(nouveauType);
+
+            // Sélectionne automatiquement le type ajouté
+            LastTypeEquipement = newTypeEquipement;
+            addEquipement.Type_Equipement = newTypeEquipement;
+
+            dernierTypeAjoute = nouveauType;
+            newTypeEquipement = "";
+        }
+    }
+
+
+    void RemoveTypeEquipement(Type_Equipement t)
+    {
+        type_Equipements.Remove(t);
+        if (dernierTypeAjoute == t)
+        {
+            dernierTypeAjoute = null;
+        }
+    }
+
+    private string _lastMarque;
+    private string LastMarque
+    {
+        get => _lastMarque;
+        set
+        {
+            _lastMarque = value;
+            JS.InvokeVoidAsync("console.log", $"Marque sélectionnée : {value}");
+
+            if (value != "ajouter")
+            {
+                addEquipement.Nom_Marque = value;
+            }
+        }
+    }
+
+    private string newMarque = "";
+    private List<Marque> marques = new();
+    private Marque derniereMarqueAjoutee;
+
+    void AddMarque()
+    {
+        if (!string.IsNullOrWhiteSpace(newMarque))
+        {
+            var nouvelleMarque = new Marque { Nom_Marque = newMarque };
+            marques.Add(nouvelleMarque);
+
+            LastMarque = newMarque;
+            addEquipement.Nom_Marque = newMarque;
+            derniereMarqueAjoutee = nouvelleMarque;
+            newMarque = "";
+        }
+    }
+
+    void RemoveMarque(Marque m)
+    {
+        marques.Remove(m);
+        if (derniereMarqueAjoutee == m)
+        {
+            derniereMarqueAjoutee = null;
+        }
+    }
+
+}

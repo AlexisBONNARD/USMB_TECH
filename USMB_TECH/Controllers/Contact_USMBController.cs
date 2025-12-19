@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using USMB_TECH.DTO;
+using USMB_TECH.Mapper;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
@@ -13,9 +16,11 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Contact_USMBController(IMainRepository<Contact_USMB, int> dataRepository) : ControllerBase
+    public class Contact_USMBController(IMainRepository<Contact_USMB, int> dataRepository, IMapper mapper) : ControllerBase
     {
         private readonly IMainRepository<Contact_USMB, int> _dataRepository = dataRepository;
+
+        private readonly IMapper _mapper = mapper;
 
         // GET: api/Contact_USMBs
         [HttpGet]
@@ -62,15 +67,15 @@ namespace USMB_TECH.Controllers
         // POST: api/Contact_USMBs
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Contact_USMB>> PostContact_USMB(Contact_USMB contact_USMB)
+        public async Task<ActionResult<Contact_USMB>> PostContact_USMB(AddContactDTO contact_USMB)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            await _dataRepository.AddAsync(contact_USMB);
-            return CreatedAtAction(nameof(GetContact_USMB), new { id = contact_USMB.Id_Contact }, contact_USMB);
+            var contact = _mapper.Map<Contact_USMB>(contact_USMB);
+            await _dataRepository.AddAsync(contact);
+            return CreatedAtAction(nameof(GetContact_USMB), new { id = contact.Id_Contact }, contact);
         }
 
         // DELETE: api/Contact_USMBs/{id}

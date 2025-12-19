@@ -17,11 +17,10 @@ namespace USMB_TECH.Models.Repository
         public async Task<IEnumerable<Equipement>> GetAllAsync()
         {
             return await _context.Equipements
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Specifiers)
                         .ThenInclude(s => s.Mot_ClefNavigation)
-                .Include(e => e.PlateformeNavigation)
-                    .ThenInclude(p => p.Exposers)
+                .Include(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
                 .Include(e => e.Type_EquipementNavigation)
@@ -40,16 +39,15 @@ namespace USMB_TECH.Models.Repository
         public async Task<Equipement?> GetByIdAsync(int id)
         {
             return await _context.Equipements
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Photos)
-                .Include(e => e.PlateformeNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Specifiers)
                         .ThenInclude(s => s.Mot_ClefNavigation)
-                .Include(e => e.PlateformeNavigation)
-                    .ThenInclude(p => p.Exposers)
+                .Include(p => p.Exposers)
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
-                    .ThenInclude(m => m.MarqueNavigation)   
+                    .ThenInclude(m => m.MarqueNavigation)
                 .Include(e => e.Type_EquipementNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
@@ -60,7 +58,8 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
-
+                .Include(p => p.Pole_ExpertiseNavigation)
+                    .ThenInclude(de => de.Domaine_ExcellenceNavigation)
                 .Include(e => e.Exemple_Utilisations)
 
                 // ✅ Fournirs with their Prestation
@@ -75,25 +74,25 @@ namespace USMB_TECH.Models.Repository
 
         public async Task AddAsync(Equipement entity)
         {
-            if (entity.PlateformeNavigation != null &&
-                !string.IsNullOrEmpty(entity.PlateformeNavigation.Nom_Plateforme))
+            if (entity.Pole_ExpertiseNavigation != null &&
+                !string.IsNullOrEmpty(entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise))
             {
-                var plateforme = await _context.Plateformes
-                    .FirstOrDefaultAsync(p => p.Nom_Plateforme == entity.PlateformeNavigation.Nom_Plateforme);
+                var pole_expertise = await _context.Pole_Expertises
+                    .FirstOrDefaultAsync(p => p.Nom_Pole_Expertise == entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise);
 
-                if (plateforme == null)
+                if (pole_expertise == null)
                 {
-                    plateforme = new Plateforme
+                    pole_expertise = new Pole_Expertise
                     {
-                        Nom_Plateforme = entity.PlateformeNavigation.Nom_Plateforme
+                        Nom_Pole_Expertise = entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise
                     };
 
-                    _context.Plateformes.Add(plateforme);
+                    _context.Pole_Expertises.Add(pole_expertise);
                     await _context.SaveChangesAsync();
                 }
 
-                entity.Id_Plateforme = plateforme.Id_Plateforme;
-                entity.PlateformeNavigation = plateforme;
+                entity.Id_Pole_Expertise = pole_expertise.Id_Pole_Expertise;
+                entity.Pole_ExpertiseNavigation = pole_expertise;
             }
 
             if (entity.Type_EquipementNavigation != null &&
@@ -116,18 +115,18 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Type_Equipement = type.Id_Type_Equipement;
                 entity.Type_EquipementNavigation = type;
             }
-            if(entity.ModeleNavigation.MarqueNavigation is not null) 
+            if (entity.ModeleNavigation.MarqueNavigation is not null)
             {
                 var marqueName = entity.ModeleNavigation.MarqueNavigation.Nom_Marque;
                 var existingMarque = await _context.Marques
                     .FirstOrDefaultAsync(m => m.Nom_Marque == marqueName);
 
-                if(existingMarque is not null) 
+                if (existingMarque is not null)
                 {
                     entity.ModeleNavigation.Id_Marque = existingMarque.Id_Marque;
                     entity.ModeleNavigation.MarqueNavigation = existingMarque;
                 }
-                else 
+                else
                 {
                     var newMarque = new Marque
                     {
@@ -157,22 +156,8 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Modele = model.Id_Modele;
                 entity.ModeleNavigation = model;
             }
-
-            var photos = entity.Photos;
-            entity.Photos = null;
-
             _context.Equipements.Add(entity);
             await _context.SaveChangesAsync();
-
-            foreach (var p in photos)
-            {
-                p.Id_Equipement = entity.Id_Equipement;
-                _context.Photos.Add(p);
-            }
-
-            await _context.SaveChangesAsync();
-
-
         }
 
         public async Task UpdateAsync(Equipement entityToUpdate, Equipement updatedEntity)
@@ -181,24 +166,29 @@ namespace USMB_TECH.Models.Repository
             _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
 
             // --- Photos ---
-            foreach (var updatedPhoto in updatedEntity.Photos)
-            {
-                var existingPhoto = entityToUpdate.Photos
-                    .FirstOrDefault(p => p.Id_Photo == updatedPhoto.Id_Photo);
+            // Supprimer les photos existantes associées au domaine
+            var existingPhotos = await _context.Photos
+                .Where(p => p.Id_Equipement == entityToUpdate.Id_Equipement)
+                .ToListAsync();
 
-                if (existingPhoto != null)
+            _context.Photos.RemoveRange(existingPhotos);
+
+            // Mettre à jour le domaine d'excellence
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+
+            // Ajouter les nouvelles photos (si elles existent dans l'entité mise à jour)
+            foreach (var photo in updatedEntity.Photos)
+            {
+                _context.Photos.Add(new Photo
                 {
-                    // Mise à jour manuelle
-                    existingPhoto.Nom_Photo = updatedPhoto.Nom_Photo;
-                    existingPhoto.Url_Photo = updatedPhoto.Url_Photo;
-                }
-                else
-                {
-                    updatedPhoto.Id_Equipement = entityToUpdate.Id_Equipement;
-                    updatedPhoto.Id_Plateforme = null; // ⚡ Respecte la contrainte CK_Photo_EquipementOuPlateforme
-                    entityToUpdate.Photos.Add(updatedPhoto);
-                }
+                    Nom_Photo = photo.Nom_Photo,
+                    Url_Photo = photo.Url_Photo,
+                    Id_Equipement = entityToUpdate.Id_Equipement
+                });
             }
+
+            // Sauvegarder les changements
+            await _context.SaveChangesAsync();
 
             // --- Exemple_Utilisations ---
             foreach (var updatedEx in updatedEntity.Exemple_Utilisations)
@@ -277,5 +267,18 @@ namespace USMB_TECH.Models.Repository
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Equipement>> SearchAsync(Expression<Func<Equipement, bool>> predicate)
+        {
+            return await _context.Equipements
+                .Include(e => e.Pole_ExpertiseNavigation)
+                    .ThenInclude(p => p.Specifiers)
+                        .ThenInclude(s => s.Mot_ClefNavigation)
+                .Include(e => e.Exposers)
+                    .ThenInclude(t => t.ThematiqueNavigation)
+                .Where(predicate)
+                .ToListAsync();
+        }
+
     }
 }

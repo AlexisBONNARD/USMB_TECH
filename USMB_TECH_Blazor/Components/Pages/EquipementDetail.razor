@@ -1,8 +1,8 @@
 ﻿@page "/equipement/{Id:int}"
-@inject Service.IMainService<Equipement,int> dataRepository
+@inject Service.IMainService<Equipement, int> dataRepository
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject IJSRuntime JS
-
 
 <HeadContent>
     <link href="css/PageDetail.css" rel="stylesheet" />
@@ -16,7 +16,6 @@
         @deleteMessage
     </div>
 }
-
 
 @if (equipement == null)
 {
@@ -38,16 +37,23 @@ else
                 <div class="center-item">
                     @foreach (Photo photo in equipement.Photos)
                     {
-
                         <img src=@photo.Url_Photo alt="photo équipement" />
                     }
                 </div>
             </section>
 
+            @* <!-- Ajout du modèle 3D avec Blazor3D -->
+            <section>
+                <h3>Modèle 3D de l'Équipement</h3>
+                <Blazor3D.Model3DViewer 
+                    ModelUrl="https://skfb.ly/pEunL"
+                    Width="100%" 
+                    Height="500px" />
+            </section> *@
+
             <!-- Utilisation -->
             <section>
                 <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
-
                 @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                 {
                     @foreach (var exemple in equipement.Exemple_Utilisations)
@@ -67,19 +73,16 @@ else
                 <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
                 <p>@equipement.Description_Technique</p>
             </section>
-
         </div>
 
         <!-- ========== COLONNE CENTRALE ========== -->
         <div class="col-center">
-
             <section>
                 <h3>MOTS CLÉS</h3>
-
                 <ul class="list-style">
-                    @if (equipement.PlateformeNavigation?.Specifiers != null)
+                    @if (equipement.Pole_ExpertiseNavigation?.Specifiers != null)
                     {
-                        @foreach (var spec in equipement.PlateformeNavigation.Specifiers)
+                        @foreach (var spec in equipement.Pole_ExpertiseNavigation.Specifiers)
                         {
                             if (spec.Mot_ClefNavigation != null)
                             {
@@ -88,42 +91,51 @@ else
                         }
                     }
                 </ul>
-            </section>
 
+                <h3>TYPE EQUIPEMENTS</h3>
+                <ul class="list-style">
+                    @if (equipement.Type_EquipementNavigation != null)
+                    {
+                        <li>@equipement.Type_EquipementNavigation.Nom_Type</li>
+                    }
+                </ul>
+            </section>
         </div>
 
         <!-- ========== COLONNE DROITE ========== -->
         <div class="col-right">
-
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue">@thematique</div>
+                <div class="btn-blue" @onclick="@(() => RetourDomaineExcellence(equipement.Pole_ExpertiseNavigation.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
+                    @equipement.Pole_ExpertiseNavigation?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
+                </div>
             </div>
 
-            @* <div class="info-block">
+            @*   <div class="info-block">
                 <h4>Localisation :</h4>
                 <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)'</div>
             </div> *@
 
             <div class="info-block">
-                <h4>Plateforme :</h4>
-                <div class="btn-blue"
-                     @onclick="@(() => RetourListe(equipement.Id_Plateforme))">
-                    @equipement.PlateformeNavigation?.Nom_Plateforme
+                <h4>Pôle d'expertise :</h4>
+                <div class="btn-blue" @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
+                    @equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise
                 </div>
-
             </div>
 
             <FormulaireContact />
         </div>
     </div>
 
-    <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
-        Modifier
-    </button>
-    <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
-        Supprimer
-    </button>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
+            Supprimer
+        </button>
+    }
 }
 
 @code {
@@ -140,7 +152,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
-        thematique = equipement.PlateformeNavigation.Exposers.Select(t => t.ThematiqueNavigation.Nom_Thematique).FirstOrDefault();
+        thematique = equipement.Thematiques.Select(t => t.Nom_Thematique).FirstOrDefault();
     }
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
@@ -148,7 +160,7 @@ else
     {
         bool confirm = await JS.InvokeAsync<bool>(
             "confirm",
-            "Voulez-vous vraiment supprimer cette plateforme ?"
+            "Voulez-vous vraiment supprimer cet équipement ?"
         );
 
         if (!confirm)
@@ -157,39 +169,40 @@ else
         try
         {
             await dataRepository.DeleteAsync(id);
-
             deleteSuccess = true;
-            await ShowDeleteAlert("Équipement supprimé avec succès ✅");
+            await ShowDeleteAlert("Équipement supprimé avec succès");
             Navigation.NavigateTo("/", true);
-
         }
         catch (Exception ex)
         {
             deleteSuccess = false;
-            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
         }
     }
-
 
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------
     private async Task ShowDeleteAlert(string msg)
     {
         deleteMessage = msg;
         StateHasChanged();
-
         await Task.Delay(3000);
-
         deleteMessage = null;
         StateHasChanged();
     }
 
-    private void RetourListe(int idPlateforme)
+    private void RetourListe(int idPole_Expertise)
     {
-        Navigation.NavigateTo($"/plateforme/{idPlateforme}");
+        Navigation.NavigateTo($"/pole_expertise/{idPole_Expertise}");
     }
 
     private void GoToUpdate(int id)
     {
         Navigation.NavigateTo($"/equipement/edit/{id}", true);
+    }
+
+
+    private void RetourDomaineExcellence(int idDomaineExcellence)
+    {
+        Navigation.NavigateTo($"/DomaineExcellence/{idDomaineExcellence}");
     }
 }

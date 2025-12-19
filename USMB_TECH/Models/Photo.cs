@@ -14,8 +14,18 @@ namespace USMB_TECH.Models
         [Column("id_equipement")]
         public int? Id_Equipement { get; set; }
 
-        [Column("id_plateforme")]
-        public int? Id_Plateforme { get; set; }
+        [Column("id_pole_expertise")]
+        public int? Id_Pole_Expertise { get; set; }
+
+        [Column("id_domaine_excellence")]
+        public int? Id_Domaine_Excellence { get; set; }
+
+        [Column("id_prestation")]
+        public int? Id_Prestation { get; set; }
+
+        [Column("nom_court")]
+        [MaxLength(25)]
+        public string? Nom_Court { get; set; }
 
         [Column("nom_photo")]
         [MaxLength(100)]
@@ -23,14 +33,26 @@ namespace USMB_TECH.Models
 
         [Column("url_photo")]
         [MaxLength(500)]
-        public string Url_Photo { get; set; }
+        public string? Url_Photo { get; set; } = "/images/No_image_available.png";
 
         [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Photos))]
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
-        [ForeignKey("Id_Plateforme")]
-        [InverseProperty(nameof(Plateforme.Photos))]
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        [ForeignKey("Id_Pole_Expertise")]
+        [InverseProperty(nameof(Pole_Expertise.Photos))]
+        public virtual Pole_Expertise? Pole_ExpertiseNavigation { get; set; } = null!;
+
+        [ForeignKey("Id_Domaine_Excellence")]
+        [InverseProperty(nameof(Domaine_Excellence.Photos))]
+        public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
+
+        [ForeignKey("Id_Prestation")]
+        [InverseProperty(nameof(Prestation.Photos))]
+        public virtual Prestation? PrestationNavigation { get; set; } = null!;
+
+        [ForeignKey("Nom_Court")]
+        [InverseProperty(nameof(Laboratoire.Photos))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
     }
 }

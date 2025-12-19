@@ -1,0 +1,286 @@
+﻿@page "/ajouterContact"
+@using USMB_TECH.Models
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject IMainService<Contact_USMB, string> contactService
+@inject IMainService<Fonction, int> fonctionService
+@inject IMainService<Laboratoire, string> laboService
+@inject HttpClient Http
+
+<HeadContent>
+    <li class="add_style" nk href="css/addContact.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_style">Ajouter un contact</h2>
+
+<div class="page-container">
+    <EditForm Model="contact" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h4 class="add_style">Infos générales</h4>
+        <label>Nom *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" placeholder="LeBrun"/>
+        <ValidationMessage For="@(() => contact.Nom_Contact)" />
+
+        <label>Prénom *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" placeholder="Jacques"/>
+        <ValidationMessage For="@(() => contact.Prenom_Contact)" />
+
+        <label>Numéro de Sécurité Sociale *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" placeholder="1 85 05 78 006 084 36"/>
+        <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
+
+        <label>Code RH *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" placeholder="56321"/>
+        <ValidationMessage For="@(() => contact.Code_RH)" />
+
+        <label>Adresse e-mail *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Mail" placeholder="Adresseexample@gmail.com"/>
+        <ValidationMessage For="@(() => contact.Mail)" />
+
+        <label>Téléphone *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Telephone" placeholder="0689563214"/>
+        <ValidationMessage For="@(() => contact.Telephone)" />
+
+        <hr />
+        <h4 class="add_style">Fonction</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
+            <option value="">----- Sélectionner une fonction -----</option>
+            @foreach (var f in fonctions)
+            {
+                <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer une fonction -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => SelectedFonction)" />
+        @if (SelectedFonction == "ajouter")
+        {
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newFonction"
+                       @bind:event="oninput"
+                       placeholder="Nom de la fonction"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddFonction(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddFonction">Ajouter</button>
+            </form>
+
+            @* @if (derniereFonctionAjoutee != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @derniereFonctionAjoutee.Nom_Fonction
+                    </li>
+                </ul>
+            } *@
+        }
+
+        <hr />
+        <h4 class="add_style">Laboratoire</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="SelectedLaboratoireNomCourt">
+            <option value="">----- Sélectionner un laboratoire -----</option>
+            @foreach (var labo in laboratoires)
+            {
+                <option value="@labo.Nom_Court">@labo.Nom_Court</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un laboratoire -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => SelectedLaboratoireNomCourt)" />
+
+        <!-- Modal -->
+        <div id="modalLaboratoire" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModal">&times;</span>
+                <AddLabo OnLaboratoireAdded="OnLaboratoireAdded" EnableRedirect="false" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Ajouter le contact</button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
+    </EditForm>
+</div>
+
+@code {
+    private Contact_USMB contact = new();
+    private List<Fonction> fonctions = new();
+    private List<Laboratoire> laboratoires = new();
+    private bool isLoading = false;
+    private bool isSubmitted = false;
+    private string message = "";
+    [Parameter] public EventCallback<Contact_USMB> OnContactAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
+    private string _selectedFonction;
+
+    private string SelectedFonction
+    {
+        get => _selectedFonction;
+        set
+        {
+            _selectedFonction = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value != "ajouter")
+            {
+                contact.Nom_Fonction = value;
+            }
+        }
+    }
+
+    private string newFonction = "";
+    private List<Fonction> lesFonctions = new();
+    private Fonction derniereFonctionAjoutee;
+
+    void AddFonction()
+    {
+        if (!string.IsNullOrWhiteSpace(newFonction))
+        {
+            var nouvelleFonction = new Fonction { Nom_Fonction = newFonction };
+
+            // 👉 Ajoute dans la liste de la dropdown
+            fonctions.Add(nouvelleFonction);
+
+            SelectedFonction = newFonction;
+            contact.Nom_Fonction = newFonction;
+
+            derniereFonctionAjoutee = nouvelleFonction;
+            newFonction = "";
+        }
+    }
+
+    private string _selectedLaboratoireNomCourt;
+
+    private string SelectedLaboratoireNomCourt
+    {
+        get => _selectedLaboratoireNomCourt;
+        set
+        {
+            _selectedLaboratoireNomCourt = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModal();
+            }
+            else
+            {
+                contact.Nom_Court = value;
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        fonctions = (await fonctionService.GetAllAsync()).ToList();
+        laboratoires = (await laboService.GetAllAsync()).ToList();
+    }
+
+    private void OnLaboratoireChange(ChangeEventArgs e)
+    {
+        var selected = e.Value?.ToString();
+
+        // Affiche côté navigateur
+        JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {selected}");
+
+        if (selected == "ajouter")
+        {
+            OpenModal();
+        }
+    }
+
+    private void OpenModal()
+    {
+        JS.InvokeVoidAsync("openModalLaboratoire");
+    }
+
+    private void CloseModal()
+    {
+        JS.InvokeVoidAsync("closeModalLaboratoire");
+    }
+
+    // Callback appelé quand un labo est ajouté via le modal
+    private void OnLaboratoireAdded(Laboratoire labo)
+    {
+        laboratoires.Add(labo); // Ajoute le labo à la liste
+        SelectedLaboratoireNomCourt = labo.Nom_Court; // Sélectionne automatiquement le nouveau labo
+        CloseModal();
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true;
+
+            // --- Mise à jour des propriétés du contact ---
+            contact.Nom_Fonction = SelectedFonction;
+            contact.Nom_Court = SelectedLaboratoireNomCourt;
+            contact.LaboratoireNavigation = laboratoires
+                .FirstOrDefault(l => l.Nom_Court == SelectedLaboratoireNomCourt);
+
+            // ---------- Vérification de la fonction ----------
+            var fonctionExistante = fonctions
+                .FirstOrDefault(f => f.Nom_Fonction == SelectedFonction);
+
+            if (fonctionExistante == null)
+            {
+                // 👉 Fonction à créer
+                var newFonction = new Fonction { Nom_Fonction = SelectedFonction };
+                await fonctionService.AddAsync(newFonction);
+
+                // On récupère bien l'ID retourné
+                contact.Id_Fonction = newFonction.Id_Fonction;
+            }
+            else
+            {
+                contact.Id_Fonction = fonctionExistante.Id_Fonction;
+            }
+
+            // ---------- POST du contact ----------
+            var response = await Http.PostAsJsonAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Contact_USMB", contact);
+            var createdContact = await response.Content.ReadFromJsonAsync<Contact_USMB>();
+
+            contact = createdContact;
+            isSubmitted = true;
+            ShowAlert("Contact ajouté avec succès ✅");
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            ShowAlert("Erreur lors de l'ajout du contact ❌");
+            await JS.InvokeVoidAsync("console.error", ex.ToString());
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // Attend 3 secondes
+
+        message = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (isSubmitted && EnableRedirect)
+        {
+            Navigation.NavigateTo($"/contact/{contact.Id_Contact}");
+        }
+    }
+}

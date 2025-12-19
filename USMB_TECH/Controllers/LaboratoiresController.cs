@@ -8,83 +8,118 @@ using Microsoft.EntityFrameworkCore;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
+using USMB_TECH.DTO;
+using AutoMapper;
 
 namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MarquesController(IMainRepository<Marque, int> dataRepository) : ControllerBase
+    public class LaboratoiresController(IMainRepository<Laboratoire, string> dataRepository, IMapper mapper) : ControllerBase
     {
-        private readonly IMainRepository<Marque, int> _dataRepository = dataRepository;
+        private readonly IMainRepository<Laboratoire, string> _dataRepository = dataRepository;
+        private readonly IMapper _mapper = mapper;
 
-        // GET: api/Marques
+        // GET: api/Laboratoires
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Marque>>> GetMarques()
+        public async Task<ActionResult<IEnumerable<Laboratoire>>> GetLaboratoires()
         {
-            var Marques = await _dataRepository.GetAllAsync();
-            return Ok(Marques);
+            var Laboratoires = await _dataRepository.GetAllAsync();
+            return Ok(Laboratoires);
         }
 
-        // GET: api/Marques/{id}
+        // GET: api/Laboratoires/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Marque>> GetMarque(int id)
+        public async Task<ActionResult<Laboratoire>> GetLaboratoire(string id)
         {
-            var Marque = await _dataRepository.GetByIdAsync(id);
-            return Marque is null ? NotFound() : Ok(Marque);
+            var Laboratoire = await _dataRepository.GetByIdAsync(id);
+            return Laboratoire is null ? NotFound() : Ok(Laboratoire);
         }
 
-        // PUT: api/Marques/{id}
+        // PUT: api/Laboratoires/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutMarque(int id, Marque Marque)
+        public async Task<IActionResult> PutLaboratoire(string id, LaboratoireUpdateDTO dto)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            if (id != Marque.Id_Marque)
+            if (id != dto.Nom_Court)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Marque avec l'id {id} introuvable.");
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, Marque);
+            // Mapping DTO → Entity (AutoMapper gère TOUT)
+            var mappedEntity = _mapper.Map<Laboratoire>(dto);
+
+            await _dataRepository.UpdateAsync(existing, mappedEntity);
+
             return NoContent();
         }
 
-        // POST: api/Marques
+
+        // POST: api/Laboratoires
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Marque>> PostMarque(Marque Marque)
+        public async Task<ActionResult<Laboratoire>> PostLaboratoire(AddLaboratoireDTO laboratoireDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            try
+            {
+                var laboratoire = _mapper.Map<Laboratoire>(laboratoireDto);
+                await _dataRepository.AddAsync(laboratoire);
 
-            await _dataRepository.AddAsync(Marque);
-            return CreatedAtAction(nameof(GetMarque), new { id = Marque.Id_Marque }, Marque);
+                return CreatedAtAction(nameof(GetLaboratoire), new { id = laboratoire.Nom_Court }, laboratoireDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // DELETE: api/Marques/{id}
+        // DELETE: api/Laboratoires/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteMarque(int id)
+        public async Task<IActionResult> DeleteLaboratoire(string id)
         {
-            var Marque = await _dataRepository.GetByIdAsync(id);
-            if (Marque is null)
-                return NotFound($"Marque avec l'id {id} introuvable.");
+            var Laboratoire = await _dataRepository.GetByIdAsync(id);
+            if (Laboratoire is null)
+                return NotFound($"Laboratoire avec l'id {id} introuvable.");
 
-            await _dataRepository.DeleteAsync(Marque);
+            await _dataRepository.DeleteAsync(Laboratoire);
             return NoContent();
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Aucun fichier reçu");
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+
+            if (!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            var filePath = Path.Combine(uploadsPath, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { url = $"/uploads/{file.FileName}" });
         }
     }
 }

@@ -9,7 +9,7 @@ namespace USMB_TECH_Blazor.Models
     {
         public int Id_Equipement { get; set; }
 
-        public int Id_Plateforme { get; set; }
+        public int Id_Pole_Expertise { get; set; }
 
         public int Id_Modele { get; set; }
 
@@ -19,8 +19,9 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Equipement { get; set; }
         [Required(ErrorMessage = "Le numéro d'immobilisation est obligatoire ou a été mal écrit")]
         public string Num_Immobilisation { get; set; }
-        public DateTime Date_Acquisition { get; set; }
+        public DateTime Date_Acquisition { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage ="La description technique de votre équipement est obligatoire")]
         public string Description_Technique { get; set; }
 
         [Required(ErrorMessage = "Un prix d'achat est obligatoire")]
@@ -31,8 +32,8 @@ namespace USMB_TECH_Blazor.Models
         [Range(0, double.MaxValue, ErrorMessage = "Le prix de revient ne peut pas être négatif")]
         public double Prix_Revient { get; set; }
 
-        [Required(ErrorMessage = "Une plateforme doit être obligatoirement associée")]
-        public string Nom_Plateforme { get; set; }
+        [Required(ErrorMessage = "Une pole_expertise doit être obligatoirement associée")]
+        public string Nom_Pole_Expertise { get; set; }
 
 
         [Required(ErrorMessage = "Un modèle doit être obligatoirement associé")]
@@ -48,10 +49,16 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Utilisable_Chez_Le_Client { get; set; }
 
-        public bool Actif { get; set; }
+        public bool Actif { get; set; } = true;
         public bool Disponibilite { get; set; }
 
         public string Nom_Contact { get; set; }
+
+        [Required(ErrorMessage = "il est nécessaire de renseigner un Nom pour l'exemple d'utilisation")]
+        public string Nom_Exemple { get; set; }
+
+        [Required(ErrorMessage = "l'exemple d'utilisation doit avoir une description")]
+        public string Description_Exemple { get; set; }
 
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 
@@ -63,8 +70,11 @@ namespace USMB_TECH_Blazor.Models
 
         public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
-        public Plateforme? PlateformeNavigation { get; set; }
+        public Pole_Expertise? Pole_ExpertiseNavigation { get; set; }
 
         public Type_Equipement? Type_EquipementNavigation { get; set; }
+
+        public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
+
     }
 }

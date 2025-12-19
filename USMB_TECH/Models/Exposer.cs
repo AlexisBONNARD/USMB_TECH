@@ -6,17 +6,15 @@ namespace USMB_TECH.Models
     [Table("exposer")]
     public partial class Exposer
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id_plateforme")]
-        public int Id_Plateforme { get; set; }
+        [Column("id_equipement")]
+        public int Id_Equipement { get; set; }
 
         [Column("id_thematique")]
         public int Id_Thematique { get; set; }
 
-        [ForeignKey("Id_Plateforme")]
-        [InverseProperty(nameof(Plateforme.Exposers))]
-        public virtual Plateforme? PlateformeNavigation { get; set; } = null!;
+        [ForeignKey("Id_Pole_Expertise")]
+        [InverseProperty(nameof(Equipement.Exposers))]
+        public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
         [ForeignKey("Id_Thematique")]
         [InverseProperty(nameof(Thematique.Exposers))]

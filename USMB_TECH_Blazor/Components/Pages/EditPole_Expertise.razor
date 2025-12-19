@@ -1,0 +1,237 @@
+﻿@page "/pole_expertise/edit/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject Service.IMainService<Prestation,int> prestationDatas
+@inject Service.IMainService<Domaine_Excellence,int> domaineExcellenceDatas
+@inject Service.IMainService<Pole_Expertise,int> poleExpertiseDatas
+@using USMB_TECH.Models
+
+
+<h2 class="add_style">Modifier le pôle d'expertise</h2>
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
+@if (pole_expertise == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="page-container">
+        <EditForm Model="@pole_expertise" OnValidSubmit="SubmitPole_Expertise">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <!-- Infos générales -->
+            <h4 class="add_style">Infos générales</h4>
+            <label>Nom pôle d'expertise *</label>
+            <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" />
+            <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
+
+            <label>Description *</label>
+            <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" />
+            <ValidationMessage For="@(() => pole_expertise.Description_Pole_Expertise)" />
+
+            <label>Nom contenu *</label>
+            <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" />
+            <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
+
+            <label>URL contenu *</label>
+            <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" />
+            <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
+
+            <label>Description contenu *</label>
+            <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" />
+            <ValidationMessage For="@(() => pole_expertise.Description_Contenu)" />
+
+            <label class="mt-2">Active ?</label>
+            <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Actif">
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+
+            </InputSelect>
+            <h4 class="add_style">Domaine d'excellence *</h4>
+            <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Id_Domaine_Excellence">
+                <option value="">-- Sélectionner --</option>
+                @foreach (var de in domainesExcellence)
+                {
+                    <option value="@de.Id_Domaine_Excellence">@de.Intitule_Domaine_Excellence</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => pole_expertise.Id_Domaine_Excellence)" />
+
+            <hr />
+            <h4 class="add_style">Équipements</h4>
+            @foreach (var eq in pole_expertise.Equipements)
+            {
+                <div class="mb-3 border p-2">
+                    <label>Nom équipement</label>
+                    <InputText class="form-control mb-1" @bind-Value="eq.Nom_Equipement" />
+
+                    <label>Numéro d'immobilisation *</label>
+                    <InputText class="form-control mb-1" @bind-Value="eq.Num_Immobilisation" />
+
+                    <label>Date acquisition</label>
+                    <InputDate class="form-control mb-1" @bind-Value="eq.Date_Acquisition" />
+
+                    <label>Prix achat</label>
+                    <InputNumber class="form-control mb-1" @bind-Value="eq.Prix_Achat" />
+
+                    <label>Prix revient</label>
+                    <InputNumber class="form-control mb-1" @bind-Value="eq.Prix_Revient" />
+
+                    <label>Description technique</label>
+                    <InputTextArea class="form-control mb-1" @bind-Value="eq.Description_Technique" />
+
+                    <label>Disponibilité</label>
+                    <InputCheckbox class="form-check-input" @bind-Value="eq.Disponibilite" />
+
+                    <label>Autonomie</label>
+                    <InputCheckbox class="form-check-input" @bind-Value="eq.Autonomie" />
+
+                    <label>Utilisable chez le client</label>
+                    <InputCheckbox class="form-check-input" @bind-Value="eq.Utilisable_Chez_Le_Client" />
+
+                    <label>Actif</label>
+                    <InputCheckbox class="form-check-input" @bind-Value="eq.Actif" />
+                </div>
+            }
+
+            <!-- Tu peux réutiliser ici les blocs Photos, Mots-clés, Thématiques, Exemples, Prestations comme dans AddPole_Expertise -->
+            <hr />
+            <h4 class="add_style">Photos</h4>
+            <InputFile OnChange="HandleFileUpload" multiple />
+            @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
+            {
+                <div class="uploaded-photos">
+                    <h5>Photos sélectionnées :</h5>
+                    <ul>
+                        @foreach (var photo in pole_expertise.Photos)
+                        {
+                            <li>
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            <hr />
+            <button class="btn btn-primary mt-3" type="submit">Mettre à jour</button>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    Pole_Expertise? pole_expertise;
+    private List<Prestation> prestations = new();
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
+    private List<Domaine_Excellence> domainesExcellence = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        prestations = (await prestationDatas.GetAllAsync()).ToList();
+        pole_expertise = await poleExpertiseDatas.GetByIdAsync(Id);
+        domainesExcellence = (await domaineExcellenceDatas.GetAllAsync()).ToList();
+    }
+
+    async Task SubmitPole_Expertise()
+    {
+        try
+        {
+            // Si aucune photo uploadée → photo par défaut
+            if (pole_expertise.Photos == null || !pole_expertise.Photos.Any())
+            {
+                pole_expertise.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/{Id}", pole_expertise);
+
+            if (response.IsSuccessStatusCode)
+            {
+                deleteSuccess = true;
+                await ShowDeleteAlert("Pole_Expertise mise à jour avec succès");
+                NavigationManager.NavigateTo($"/pole_expertise/{Id}");
+            }
+            else
+            {
+                deleteSuccess = false;
+                await ShowDeleteAlert("Erreur lors de la mise à jour");
+            }
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur: {ex.Message}");
+        }
+    }
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Prendre en charge plusieurs fichiers
+
+        // Réinitialiser les photos existantes avant d'ajouter les nouvelles
+        pole_expertise.Photos.Clear();  // Supprimer les anciennes photos de l'objet
+
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                pole_expertise.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+
+    private void RemovePhoto(Photo photo)
+    {
+        pole_expertise.Photos.Remove(photo);
+    }
+
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // Attend 3 secondes
+
+        deleteMessage = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (deleteSuccess)
+        {
+            NavigationManager.NavigateTo($"/pole_expertise/{Id}");
+        }
+    }
+}

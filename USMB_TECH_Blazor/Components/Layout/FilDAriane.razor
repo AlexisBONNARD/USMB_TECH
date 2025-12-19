@@ -5,6 +5,14 @@
 @code {
     private List<BreadcrumbItem> Items = new();
 
+    private readonly HashSet<string> NonClickable = new()
+    {
+        "pole_expertise",
+        "equipement",
+        "prestation",
+        "laboratoire"
+    };
+
     protected override void OnInitialized()
     {
         BuildBreadcrumb();
@@ -30,37 +38,30 @@
 
     private string Capitalize(string text)
         => char.ToUpper(text[0]) + text.Substring(1);
-}
 
-@* <ul class="breadcrumb">
-    <li><a href="/">Accueil</a></li>
-    @foreach (var item in Items)
-    {
-        <li>
-            <a href="@item.Url">@item.Text</a>
-        </li>
-    }
-</ul> *@
-
-@if (Items.Count > 0)
-{
-    <div class="breadcrumb-container">
-        <ul class="breadcrumb">
-            <li><a href="/">USMB Tech</a></li>
-            @foreach (var item in Items)
-            {
-                <li>
-                    <a href="@item.Url">@item.Text</a>
-                </li>
-            }
-        </ul>
-    </div>
-}
-
-@code {
     public class BreadcrumbItem
     {
         public string Text { get; set; }
         public string Url { get; set; }
     }
 }
+
+<div class="breadcrumb-container">
+    <ul class="breadcrumb">
+        <li><a href="/">USMB Tech</a></li>
+
+        @foreach (var item in Items)
+        {
+            <li>
+                @if (NonClickable.Contains(item.Text.ToLower()))
+                {
+                    <span>@item.Text</span>
+                }
+                else
+                {
+                    <a href="@item.Url">@item.Text</a>
+                }
+            </li>
+        }
+    </ul>
+</div>

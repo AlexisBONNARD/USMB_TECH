@@ -1,6 +1,5 @@
 ﻿@page "/"
-@inject IMainService<Thematique,int> ThematiqueService
-@inject IMainService<Plateforme,int> PlateformeService
+@inject IMainService<Domaine_Excellence,int> Domaine_ExcellenceService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
@@ -47,23 +46,20 @@
             <h3>NOS DOMAINES D’EXCELLENCE</h3>
 
             <div class="domaines-block">
-                @if (thematiques == null)
+                @if (domaines_excellences == null)
                 {
                     <p class="domaine-title">Chargement...</p>
                 }
                 else
                 {
-                    @foreach (var thematique in thematiques)
+                    @foreach (var domaine_excellence in domaines_excellences)
                     {
-                        var firstExposer = thematique.Exposers.FirstOrDefault();
-                        var plateforme = plateformes.FirstOrDefault(p => p.Id_Plateforme == firstExposer?.Id_Plateforme);
-
-                        <div class="domaine" @onclick="@(() => FastShearche(thematique.Nom_Thematique, "thematique"))">
-                            @if (plateforme?.Photos != null && plateforme.Photos.Any())
+                        <div class="domaine" @onclick="@(() => NavigationDomaine_Excellence(domaine_excellence.Id_Domaine_Excellence))">
+                            @if (domaine_excellence?.Photos != null && domaine_excellence.Photos.Any())
                             {
-                                <img src="@plateforme.Photos.First().Url_Photo" class="domaine-img" />
+                                <img src="@domaine_excellence.Photos.First().Url_Photo" class="domaine-img" />
                             }
-                            <p class="domaine-title">@thematique.Nom_Thematique</p>
+                            <p class="domaine-title">@domaine_excellence.Intitule_Domaine_Excellence</p>
                         </div>
                     }
                 }
@@ -78,25 +74,12 @@
 @code {
     private string SearchText = "";
     public int Id { get; set; }
-    private IEnumerable<Thematique> thematiques = new List<Thematique>();
-    private List<Plateforme> plateformes = new List<Plateforme>();
+    private IEnumerable<Domaine_Excellence> domaines_excellences = new List<Domaine_Excellence>();
 
     protected override async Task OnInitializedAsync()
     {
-        thematiques = await ThematiqueService.GetAllAsync();
-        await JS.InvokeVoidAsync("console.log", $"Thematique {thematiques}");
+        domaines_excellences = await Domaine_ExcellenceService.GetAllAsync();
 
-        foreach (var thematique in thematiques)
-        {
-            var firstExposer = thematique.Exposers.FirstOrDefault();
-
-            if (firstExposer != null)
-            {
-                var plat = await PlateformeService.GetByIdAsync(firstExposer.Id_Plateforme);
-                if (plat != null)
-                    plateformes.Add(plat);
-            }
-        }
     }
 
 
@@ -122,9 +105,8 @@
         Nav.NavigateTo($"/{nomChemin}/{idEquipement}");
     }
 
-    private void FastShearche(string nom, string nomChemin)
+    private void NavigationDomaine_Excellence(int id)
     {
-        var encodedQuery = Uri.EscapeDataString(nom);
-        Nav.NavigateTo($"/search/{nomChemin}/{encodedQuery}"); //motclef ou thematique ou motclef_thematique
+        Nav.NavigateTo($"/DomaineExcellence/{id}");
     }
 }

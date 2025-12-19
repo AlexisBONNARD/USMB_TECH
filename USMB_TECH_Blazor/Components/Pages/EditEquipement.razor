@@ -4,7 +4,7 @@
 @using USMB_TECH.Models
 @inject IJSRuntime JS
 @using System.Text.Json;
-<h2 class="add_platform">Modifier l'équipement</h2>
+<h2 class="add_style">Modifier l'équipement</h2>
 
 @if (equipement == null)
 {
@@ -18,7 +18,7 @@ else
             <ValidationSummary />
 
             <!-- Infos générales -->
-            <h4 class="add_platform">Infos générales</h4>
+            <h4 class="add_style">Infos générales</h4>
             <label>Nom équipement *</label>
             <InputText class="form-control mb-2" @bind-value="equipement.Nom_Equipement" />
             <ValidationMessage For="@(() => equipement.Nom_Equipement)" />
@@ -28,13 +28,13 @@ else
             <ValidationMessage For="@(() => equipement.Num_Immobilisation)" />
 
             <label>Date acquisition</label>
-            <InputDate class="form-control mb-2" @bind-value="equipement.Date_Acquisition" />
+            <InputDate class="form-control mb-2" @bind-value="equipement.Date_Acquisition"/>
 
             <label>Prix achat</label>
-            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Achat" />
+            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Achat"/>
 
             <label>Prix revient</label>
-            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Revient" />
+            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Revient"/>
 
             <label>Description technique</label>
             <InputTextArea class="form-control mb-2" @bind-value="equipement.Description_Technique" />
@@ -54,15 +54,16 @@ else
             <!-- Relations obligatoires -->
             <h5 class="mt-4">Associations obligatoires</h5>
 
-            <!-- Plateforme -->
-            <label>Plateforme associée * @equipement.Id_Plateforme @equipement.Nom_Plateforme</label>
-            <input class="form-control mb-2" type="text" value="@equipement.Nom_Plateforme" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Plateforme" />
+            <!-- Pole_Expertise -->
+            <label>Pole_Expertise associée * @equipement.Id_Pole_Expertise @equipement.Nom_Pole_Expertise</label>
+            <input class="form-control mb-2" type="text" value="@equipement.Nom_Pole_Expertise" readonly />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Pole_Expertise"/>
+
 
             <!-- Modèle -->
             <label>Modèle associé *</label>
             <input class="form-control mb-2" type="text" value="@equipement.Nom_Modele" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Modele" />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Modele"/>
 
             <!-- Marque -->
             <label>Marque associée *</label>
@@ -71,25 +72,31 @@ else
             <!-- Type d’équipement -->
             <label>Type d’équipement associé *</label>
             <input class="form-control mb-2" type="text" value="@equipement.Type_Equipement" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Type_Equipement" />
+            <InputNumber class="d-none" @bind-value="equipement.Id_Type_Equipement"/>
 
 
 
             <hr />
-            <h4 class="add_platform">Photos</h4>
-            @foreach (var photo in equipement.Photos)
+            <h4 class="add_style">Photos</h4>
+            <InputFile OnChange="HandleFileUpload" multiple />
+            @if (equipement.Photos != null && equipement.Photos.Any())
             {
-                <div class="mb-3 border p-2">
-                    <label>Nom photo</label>
-                    <InputText class="form-control mb-1" @bind-value="photo.Nom_Photo" />
-
-                    <label>URL photo</label>
-                    <InputText class="form-control mb-1" @bind-value="photo.Url_Photo" />
+                <div class="uploaded-photos">
+                    <h5>Photos sélectionnées :</h5>
+                    <ul>
+                        @foreach (var photo in equipement.Photos)
+                        {
+                            <li>
+                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                                <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                            </li>
+                        }
+                    </ul>
                 </div>
             }
 
             <hr />
-            <h4 class="add_platform">Exemples d'utilisation</h4>
+            <h4 class="add_style">Exemples d'utilisation</h4>
             @foreach (var ex in equipement.Exemple_Utilisations)
             {
                 <div class="mb-3 border p-2">
@@ -102,12 +109,12 @@ else
             }
 
             <hr />
-            <h4 class="add_platform">Fournisseurs</h4>
+            <h4 class="add_style">Fournisseurs</h4>
             @foreach (var f in equipement.Fournirs)
             {
                 <div class="mb-3 border p-2">
                     <label>Prestation liée</label>
-                    <InputNumber class="form-control mb-1" @bind-value="f.Id_Prestation" />
+                    <InputNumber class="form-control mb-1" @bind-value="f.Id_Prestation"/>
                 </div>
             }
 
@@ -128,18 +135,18 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    Equipement? equipement;
+    EquipementUpdateModel? equipement;
 
     bool isSubmitted = false;
     string message = "";
 
     protected override async Task OnInitializedAsync()
     {
-        equipement = await Http.GetFromJsonAsync<Equipement>($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}");
+        equipement = await Http.GetFromJsonAsync<EquipementUpdateModel>($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}");
 
         if (equipement != null)
         {
-            equipement.Nom_Plateforme = equipement.PlateformeNavigation?.Nom_Plateforme ?? "";
+            equipement.Nom_Pole_Expertise = equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise ?? "";
             equipement.Nom_Modele = equipement.ModeleNavigation?.Nom_Modele ?? "";
             equipement.Nom_Marque = equipement.ModeleNavigation?.MarqueNavigation?.Nom_Marque ?? "";
             equipement.Type_Equipement = equipement.Type_EquipementNavigation?.Nom_Type ?? "";
@@ -150,17 +157,63 @@ else
 
     }
 
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(); // Récupère tous les fichiers sélectionnés
+
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                equipement.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+
+    private void RemovePhoto(Photo photo)
+    {
+        equipement.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+
     async Task SubmitEquipement()
     {
         try
         {
-            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}", equipement);
+            // Si aucune photo uploadée → photo par défaut
+            if (equipement.Photos == null || !equipement.Photos.Any())
+            {
+                equipement.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-equipement.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}", equipement);
 
             if (response.IsSuccessStatusCode)
             {
                 isSubmitted = true;
                 await ShowAlert("Équipement mis à jour avec succès ✅");
-                NavigationManager.NavigateTo($"/equipement/{Id}");
             }
             else
             {
@@ -175,10 +228,18 @@ else
         }
     }
 
-    async Task ShowAlert(string msg)
+    private async Task ShowAlert(string msg)
     {
         message = msg;
-        await Task.Delay(3000);
-        message = "";
+        StateHasChanged();
+
+        await Task.Delay(3000); // Attend 3 secondes
+
+        message = null;         // Efface le message
+        StateHasChanged();      // Met à jour
+        if (isSubmitted)
+        {
+            NavigationManager.NavigateTo($"/equipement/{Id}");
+        }
     }
 }

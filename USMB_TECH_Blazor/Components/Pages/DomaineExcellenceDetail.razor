@@ -1,0 +1,179 @@
+﻿@page "/DomaineExcellence/{Id:int}"
+@inject IMainService<Domaine_Excellence,int> DomaineExcellenceService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject AdminState AdminState
+
+
+<HeadContent>
+    <link href="css/PageDetail.css" rel="stylesheet" />
+</HeadContent>
+
+<PageTitle>Détails Domaine d'excellence</PageTitle>
+
+@if (!string.IsNullOrEmpty(deleteMessage))
+{
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+        @deleteMessage
+    </div>
+}
+
+@if (domaine == null)
+{
+    <p>Chargement...</p>
+}
+else
+{
+    <div class="container">
+        <!-- ========= COLONNE GAUCHE ========= -->
+
+        <div class="col-left">
+            <section>
+                <h2>@domaine.Intitule_Domaine_Excellence</h2>
+            </section>
+
+            <Carousel Photos="@domaine.Photos" />
+
+            <p>@domaine.Description_Domaine_Excellence</p>
+        </div>
+
+        <!-- ========= COLONNE CENTRALE ========= -->
+        <section>
+            <h3>POLES D'EXPERTISE LIÉS</h3>
+            <div class="center-grid two-columns">
+                @foreach (var pole in domaine.Pole_Expertises)
+                {
+                    <div class="expertise-card" @onclick="@(() => GoToPole(pole.Id_Pole_Expertise))">
+                        @if (pole.Photos != null && pole.Photos.Any())
+                        {
+                            <img src="@pole.Photos.First().Url_Photo" alt="photo pole expertise" />
+                        }
+                        <div class="card-content">
+                            <h4>@pole.Nom_Pole_Expertise</h4>
+                            <p>@pole.Description_Pole_Expertise</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (prestationsFormation.Any())
+            {
+                <section>
+                    <h3 class="section-title">PRESTATIONS DE TYPE FORMATION</h3>
+                    <div class="center-grid two-columns">
+                        @foreach (var prestation in prestationsFormation)
+                        {
+                            <div class="expertise-card" @onclick="@(() => GoToPresta(prestation.Id_Prestation))">
+                                <div class="card-content">
+
+                                    <img src="@prestation.Photos.First().Url_Photo" alt="@prestation.Photos.First().Nom_Photo" />
+
+
+
+                                    <h4>@prestation.Intitule_Prestation</h4>
+                                    <p>@prestation.Description_Prestation</p>
+                                    <p><strong>Prix :</strong> @prestation.Prix_Vente €</p>
+                                    <p><strong>Réalisation chez client :</strong> @(prestation.Peux_Ce_Realiser_Chez_Le_Client ? "Oui" : "Non")</p>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </section>
+            }
+        </section>
+
+
+
+        <!-- ========= COLONNE DROITE ========= -->
+        <div class="col-right">
+            <div class="info-block">
+                <h4>Nombre de pôles d'expertise liés:</h4>
+                <div class="div-blue">@domaine.Pole_Expertises.Count()</div>
+            </div>
+
+            <FormulaireContact />
+        </div>
+    </div>
+    @if (AdminState.IsAdmin)
+    {
+        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(domaine.Id_Domaine_Excellence)">
+            Modifier
+        </button>
+        <button class="btn btn-danger mb-3" @onclick="() => DeleteDomaine(domaine.Id_Domaine_Excellence)">
+            Supprimer
+        </button>
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Domaine_Excellence? domaine;
+    private List<Prestation> prestationsFormation = new();
+
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        domaine = await DomaineExcellenceService.GetByIdAsync(Id);
+
+        prestationsFormation = domaine.Prestations
+            .Where(p => p.Type_PrestationNavigation.Nom_Type_Prestation == "Formation")
+            .ToList();
+    }
+
+    private async Task DeleteDomaine(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer ce domaine d'excellence ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await DomaineExcellenceService.DeleteAsync(id);
+
+            deleteSuccess = true;
+            await ShowDeleteAlert("Domaine supprimé avec succès ✅");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+        }
+    }
+
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000);
+
+        deleteMessage = null;
+        StateHasChanged();
+    }
+
+    private void GoToPole(int idPole)
+    {
+        Navigation.NavigateTo($"/pole_expertise/{idPole}");
+    }
+
+    private void GoToUpdate(int id)
+    {
+        Navigation.NavigateTo($"/domaine_excellence/edit/{id}", true);
+    }
+    private void GoToPresta(int id)
+    {
+        Navigation.NavigateTo($"/prestation/{id}");
+    }
+
+
+}

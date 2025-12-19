@@ -1,28 +1,51 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
 {
     public class Contact_USMB
     {
+        [Key]
         public int Id_Contact { get; set; }
 
         public int Id_Fonction { get; set; }
 
-        public string Nom_Court { get; set; }
+        [Required(ErrorMessage = "Le nom du contact est obligatoire.")]
+        [StringLength(100, ErrorMessage = "Le nom ne peut pas dépasser 100 caractères.")]
+        public string Nom_Contact { get; set; } = string.Empty;
 
-        public string Code_RH { get; set; }
+        [Required(ErrorMessage = "Le prénom du contact est obligatoire.")]
+        [StringLength(100, ErrorMessage = "Le prénom ne peut pas dépasser 100 caractères.")]
+        public string Prenom_Contact { get; set; } = string.Empty;
 
-        public string Num_Securite_Social { get; set; }
+        [Required(ErrorMessage = "Le code RH est obligatoire.")]
+        [StringLength(50, ErrorMessage = "Le code RH ne peut pas dépasser 50 caractères.")]
+        public string Code_RH { get; set; } = string.Empty;
 
-        public string? Nom_Contact { get; set; }
+        [Required(ErrorMessage = "Le numéro de sécurité sociale est obligatoire.")]
+        [StringLength(15, ErrorMessage = "Le numéro de sécurité sociale ne peut pas dépasser 15 caractères.")]
+        [RegularExpression(@"^[12][0-9]{2}(0[1-9]|1[0-2])(2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$",ErrorMessage = "Le format du numéro de sécurité sociale n'a pas été respecté")]
+        public string Num_Securite_Social { get; set; } = string.Empty;
 
-        public string? Prenom_Contact { get; set; }
+        [Required(ErrorMessage = "L'adresse e-mail est obligatoire.")]
+        [EmailAddress(ErrorMessage = "Le format de l'adresse e-mail est invalide.")]
+        [StringLength(100, ErrorMessage = "L'adresse e-mail ne peut pas dépasser 100 caractères.")]
+        public string Mail { get; set; } = string.Empty;
 
-        public string? Mail { get; set; }
+        [Required(ErrorMessage = "Le numéro de téléphone est obligatoire.")]
+        [Phone(ErrorMessage = "Le format du numéro de téléphone est invalide.")]
+        [StringLength(20, ErrorMessage = "Le numéro de téléphone ne peut pas dépasser 20 caractères.")]
+        public string Telephone { get; set; } = string.Empty;
 
-        public string? Telephone { get; set; }
+        [Required(ErrorMessage = "Le laboratoire du contact est obligatoire.")]
+        [ForeignKey("LaboratoireNavigation")]
+        public string Nom_Court { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "La fonction du contact est obligatoire.")] //car si non EditContact afiche l'ErrorMessage = "La fonction du contact est obligatoire."
+        public string Nom_Fonction { get; set; } = string.Empty;
+
+        public virtual Fonction? FonctionNavigation { get; set; } = null!;
 
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 

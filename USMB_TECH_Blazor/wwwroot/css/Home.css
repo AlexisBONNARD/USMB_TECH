@@ -88,6 +88,7 @@
 .domaine {
     text-align: center;
     width: 30%;
+    cursor: pointer;
 }
 
 .domaine-img {

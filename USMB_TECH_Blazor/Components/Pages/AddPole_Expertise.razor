@@ -1,0 +1,421 @@
+@page "/ajouter-pole_expertise"
+@using USMB_TECH.Models
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject Service.IMainService<Prestation,int> prestationService
+@inject Service.IMainService<Domaine_Excellence,int> domaineService
+@inject Service.IMainService<Mot_Clef,int> motService
+@inject IJSRuntime JS
+
+
+<HeadContent>
+    <li class="add_style" nk href="css/addStyle.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+
+<h2 class="add_style">Ajouter un pôle d'expertise</h2>
+
+<div class="page-container">
+    <EditForm Model="@pole_expertise" OnValidSubmit="SubmitPole_Expertise">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <h4 class="add_style">Infos générales</h4>
+        <label>Nom pôle d'expertise *</label>
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" placeholder="Santé & Sport" />
+        <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
+
+        <label>Description *</label>
+        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" placeholder="Pôle d'expertise dédiée à la Santé & au Sport" />
+        <ValidationMessage For="@(() => pole_expertise.Description_Pole_Expertise)" />
+
+        <label>Nom contenu *</label>
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" placeholder="Présentation laboratoire" />
+        <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
+
+        <label>URL contenu *</label>
+        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" placeholder="https://www.univ-smb.fr" />
+        <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
+
+        <label>Description contenu *</label>
+        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" placeholder="Présentation de ce laboratoire" />
+        <ValidationMessage For="@(() => pole_expertise.Description_Contenu)" />
+
+        <label class="mt-2">Active ?</label>
+        <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Actif">
+            <option value="true">Oui</option>
+            <option value="false">Non</option>
+        </InputSelect>
+
+        <hr />
+        <h4 class="add_style">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" multiple />
+        @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
+        {
+            <div class="uploaded-photos">
+                <h5>Photos sélectionnées :</h5>
+                <ul>
+                    @foreach (var photo in pole_expertise.Photos)
+                    {
+                        <li>
+                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        <hr />
+        <h4 class="add_style">Mots-clés</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
+            @if (existingMot is not null)
+            {
+                @foreach (var mot in existingMot)
+                {
+                    <option value="@mot.Nom_Mot_Clef">@mot.Nom_Mot_Clef</option>
+                }
+            }
+            <option value="ajouter" class="alert-info">----- Créer un mot clé -----</option>
+        </InputSelect>
+        @if (motCle == "ajouter")
+        {
+            <h4>Ajouter un mot-clé</h4>
+            <form @onsubmit="AddMot_Clef" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newMot_Clef"
+                       @bind:event="oninput"
+                       placeholder="Nouveau Mot-clé" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(motCle))
+        {
+            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+        }
+
+        <ul class="add_style">
+            @foreach (var mc in pole_expertise.MotsCles)
+            {
+                <li class="add_style">
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <hr />
+        <h4 class="add_style">Exemples d’utilisation</h4>
+        <form onsubmit="return false;" class="mb-2">
+            <InputText class="form-control mb-1"
+                       @bind-Value="newExempleNom"
+                       placeholder="Nom exemple"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            <input class="form-control mb-1"
+                   @bind="newExempleDesc"
+                   @bind:event="oninput"
+                   placeholder="Description exemple"
+                   @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            @if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
+            {
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
+            }
+        </form>
+        <ul class="add_style">
+            @foreach (var e in pole_expertise.ExempleUtilisations)
+            {
+                <li class="add_style">
+                    @e.Nom_Utilisation : @e.Description_Utilisation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveExemple(e)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+
+        <hr />
+        <h4 class="add_style">Prestations</h4>
+        <form onsubmit="return false;" class="mb-2">
+            <InputSelect class="form-select mb-1"
+                         @bind-Value="selectedPrestationId"
+                         @onkeydown="@(e => { if (e.Key == "Enter") { AddPresenter(); } })">
+                <option value="">----- Sélectionner une prestation -----</option>
+                @foreach (var prestation in prestations)
+                {
+                    <option value="@prestation.Id_Prestation">@prestation.Intitule_Prestation</option>
+                }
+            </InputSelect>
+            @if (selectedPrestationId != null)
+            {
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPresenter">Ajouter</button>
+            }
+        </form>
+        <ul class="add_style">
+            @foreach (var pr in pole_expertise.Presenters)
+            {
+                <li class="add_style">
+                    Prestation ID : @pr.Id_Prestation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePresenter(pr)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <h4 class="add_style">Domaine d'excellence *</h4>
+        <InputSelect class="form-select mb-1"
+                     @bind-Value="LastDomaineExcellence">
+            <option value="">----- Sélectionner un domaine d'excellence -----</option>
+            @foreach (var d in domaines)
+            {
+                <option value="@d.Id_Domaine_Excellence">@d.Intitule_Domaine_Excellence</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un domaine d'excellence -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => LastDomaineExcellence)" />
+
+        <!-- Modal -->
+        <div id="modalDomaine" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalDomaineExcellence">&times;</span>
+                <AddDomaineExcellence OnDomaineExcellenceAdded="OnDomaineExcellenceAdded" EnableRedirect="false" />
+            </div>
+        </div>
+
+        <hr />
+        <button class="btn btn-success mt-3" type="submit">Créer le pôle d'expertise</button>
+    </EditForm>
+</div>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+        @message
+    </div>
+}
+
+@code {
+    Pole_Expertise pole_expertise = new Pole_Expertise();
+    private List<Prestation> prestations = new();
+    IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
+    private List<Mot_Clef> existingMot = new();
+    private bool isLoading = false;
+
+    string newMot_Clef = "";
+    string motCle = "";
+
+    string newExempleNom = "";
+    string newExempleDesc = "";
+    string newEquipement = "";
+    int? selectedPrestationId = null;
+    [Parameter] public EventCallback<Pole_Expertise> OnPole_ExpertiseAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
+
+    bool isSubmitted = false;
+    string message = "";
+
+    private string _lastDomaineExcellence;
+
+    private string LastDomaineExcellence
+    {
+        get => _lastDomaineExcellence;
+        set
+        {
+            _lastDomaineExcellence = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalDomaineExcellence();
+            }
+            else
+            {
+                pole_expertise.Id_Domaine_Excellence = 1;
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        prestations = (await prestationService.GetAllAsync()).ToList();
+        domaines = (await domaineService.GetAllAsync()).ToList();
+        existingMot = (await motService.GetAllAsync()).ToList();
+
+    }
+
+    void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(newMot_Clef))
+        {
+            pole_expertise.MotsCles.Add(newMot_Clef);
+            newMot_Clef = "";
+            motCle = "";
+        }
+        else if (string.IsNullOrWhiteSpace(newMot_Clef) && motCle != "ajouter")
+        {
+            if (!pole_expertise.MotsCles.Contains(motCle))
+            {
+                pole_expertise.MotsCles.Add(motCle);
+            }
+            motCle = "";
+        }
+    }
+    void AddExemple()
+    {
+        if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
+        {
+            pole_expertise.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            {
+                Nom_Utilisation = newExempleNom,
+                Description_Utilisation = newExempleDesc
+            });
+            newExempleNom = "";
+            newExempleDesc = "";
+        }
+    }
+
+    void AddPresenter()
+    {
+        if (selectedPrestationId.HasValue)
+        {
+            pole_expertise.Presenters.Add(new Presenter
+            {
+                Id_Prestation = selectedPrestationId.Value
+            });
+            selectedPrestationId = null;
+        }
+    }
+
+    async Task SubmitPole_Expertise()
+    {
+        try
+        {
+            isLoading = true; // active le loader
+            StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (pole_expertise.Photos == null || !pole_expertise.Photos.Any())
+            {
+                pole_expertise.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
+            var response = await Http.PostAsJsonAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Pole_Expertises", pole_expertise);
+            var createdpole = await response.Content.ReadFromJsonAsync<Pole_Expertise>();
+
+            pole_expertise = createdpole;
+            if (response.IsSuccessStatusCode)
+            {
+                isSubmitted = true;
+                await ShowAlert("Pole_Expertise créée avec succès ✅");
+            }
+            else
+            {
+                isSubmitted = false;
+                await ShowAlert("Erreur lors de la création ❌");
+            }
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            await ShowAlert($"Erreur: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
+        }
+    }
+
+
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+        if (isSubmitted && EnableRedirect)
+        {
+            Navigation.NavigateTo($"/pole_expertise/{pole_expertise.Id_Pole_Expertise}");
+        }
+    }
+
+    private void OnDomaineExcellenceAdded(Domaine_Excellence domaine)
+    {
+        domaines = domaines.Append(domaine);
+        LastDomaineExcellence = domaine.Intitule_Domaine_Excellence;
+        CloseModalDomaineExcellence();
+    }
+
+    void RemoveMotCle(string mc)
+    {
+        pole_expertise.MotsCles.Remove(mc);
+    }
+    void RemoveExemple(Exemple_Utilisation e)
+    {
+        pole_expertise.ExempleUtilisations.Remove(e);
+    }
+    void RemovePresenter(Presenter pr)
+    {
+        pole_expertise.Presenters.Remove(pr);
+    }
+
+    private void OpenModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("openModalDomaineExcellence");
+    }
+
+    private void CloseModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("closeModalDomaineExcellence");
+    }
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                pole_expertise.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+    private void RemovePhoto(Photo photo)
+    {
+        pole_expertise.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+}
+

@@ -23,7 +23,7 @@ namespace USMB_TECH.Models
         public string Code_RH { get; set; }
 
         [Column("num_securite_social")]
-        [StringLength(13)]
+        [StringLength(15)]
         public string Num_Securite_Social { get; set; }
 
         [Column("nom_contact")]
@@ -40,6 +40,7 @@ namespace USMB_TECH.Models
 
         [Column("telephone")]
         [MaxLength(50)]
+        [Phone]
         public string? Telephone { get; set; }
 
         [ForeignKey("Id_Fonction")]

@@ -1,14 +1,15 @@
 ﻿@inject NavigationManager Nav
+@implements IDisposable
+@inject AdminState AdminState
+@inject IJSRuntime JS
 
 <HeadContent>
     <link href="css/app.css" rel="stylesheet" />
 </HeadContent>
 
 <header class="usmb-header">
-
     <!-- Bandeau supérieur -->
     <div class="usmb-header-top">
-
         <div class="usmb-header-lang">
             <button>FR</button>
         </div>
@@ -17,23 +18,30 @@
             <a href="#">Liens directs</a>
         </div>
 
+        <AdminAccess />
+
         <!-- Icônes + Barre de recherche -->
         <div class="usmb-header-top-right">
 
-            <!-- ICONES DES RÉSEAUX → ici -->
+            <!-- ICONES DES RÉSEAUX -->
             <div class="usmb-header-icons">
-                <a href="#"><i class="bi bi-facebook"></i></a>
+                @* <a href="#"><i class="bi bi-facebook"></i></a>
                 <a href="#"><i class="bi bi-twitter"></i></a>
                 <a href="#"><i class="bi bi-youtube"></i></a>
-                <a href="#"><i class="bi bi-instagram"></i></a>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
-                <button @onclick="@(() => Nav.NavigateTo("/ajouter-plateforme"))">Ajouter une plateforme</button>
-                @* <button @onclick="@(() => Nav.NavigateTo("/demandeContact"))">Visualiser demande contact</button> *@
+                <a href="#"><i class="bi bi-instagram"></i></a> *@
+                @if (AdminState.IsAdmin)
+                {
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterEquipement"))">Ajouter un équipement</button>
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterLabo"))">Ajouter un laboratoire</button>
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouter-pole_expertise"))">Ajouter un pôle d'expertise</button>
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterPrestation"))">Ajouter une prestation</button>
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterContact"))">Ajouter un contact</button>
+                    <button class="addButton" @onclick="@(() => Nav.NavigateTo("/ajouterDomaineExcellence"))">Ajouter un domaine d'excellence</button>
+                }
             </div>
 
             <!-- BARRE DE RECHERCHE -->
             <div class="usmb-header-search">
-
                 <input @bind="SearchText"
                        @bind:event="oninput"
                        type="text"
@@ -59,11 +67,13 @@
                     <label>
                         <input type="checkbox" @bind="SearchThematique" /> Par thématique
                     </label>
+                    <label>
+                        <input type="checkbox" @bind="SearchTexte" /> Par texte
+                    </label>
                 </div>
 
             </div>
         </div>
-
     </div>
 
     <!-- Bandeau principal -->
@@ -71,17 +81,13 @@
         <img src="images/logo_usmb.png" alt="Logo Université Savoie Mont Blanc" class="usmb-logo" />
         <NavMenu></NavMenu>
     </div>
-    @* <!-- Bandeau Fil D'Ariane -->
-    <div class="usmb-header-main">
-        <FilDAriane></FilDAriane>
-    </div> *@
-
 </header>
 
 @code {
     private string SearchText = "";
     private bool SearchMotClef = false;
     private bool SearchThematique = false;
+    private bool SearchTexte = false;
     private bool ShowOptions = false;
 
     private void ToggleOptions()
@@ -99,22 +105,42 @@
 
     private void PerformSearch()
     {
-        if (!string.IsNullOrWhiteSpace(SearchText))
+        if (string.IsNullOrWhiteSpace(SearchText))
+            return;
+
+        var encodedQuery = Uri.EscapeDataString(SearchText);
+
+        List<string> modes = new();
+        if (SearchMotClef) modes.Add("motclef");
+        if (SearchThematique) modes.Add("thematique");
+        if (SearchTexte) modes.Add("texte");
+
+        string mode;
+
+        if (modes.Count == 0 || modes.Count == 3)
         {
-            var encodedQuery = Uri.EscapeDataString(SearchText);
-            var mode = "";
-
-            if (SearchMotClef && SearchThematique || !SearchMotClef && !SearchThematique)
-                mode = "motclef_thematique";
-            else if (SearchMotClef)
-                mode = "motclef";
-            else if (SearchThematique)
-                mode = "thematique";
-
-            if (!string.IsNullOrEmpty(mode))
-                Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
+            mode = "full"; // aucune case ou toutes les cases
         }
+        else if (modes.Contains("motclef") && modes.Contains("thematique") && modes.Count == 2)
+        {
+            mode = "global"; // combo particulier motclef+thematique
+        }
+        else
+        {
+            mode = string.Join("+", modes); // autres combinaisons
+        }
+
+        Nav.NavigateTo($"/search/{mode}/{encodedQuery}");
     }
+
+    protected override void OnInitialized()
+    {
+        AdminState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AdminState.OnChange -= StateHasChanged;
+    }
+
 }
-
-

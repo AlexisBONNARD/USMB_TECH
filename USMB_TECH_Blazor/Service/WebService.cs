@@ -11,11 +11,11 @@ namespace USMB_TECH_Blazor.Service
         {
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
+                BaseAddress = new Uri("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/")
             };
             this._endpoint = endpoint;
         }
-        public async Task AddAsync(TEntity entity) 
+        public async Task AddAsync(TEntity entity)
         {
             var response = await _httpClient.PostAsJsonAsync($"{_endpoint}", entity);
             if (!response.IsSuccessStatusCode) 

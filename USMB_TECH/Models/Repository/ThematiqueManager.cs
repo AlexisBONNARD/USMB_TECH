@@ -17,7 +17,7 @@ namespace USMB_TECH.Models.Repository
         {
             return await _context.Thematiques
                 .Include(p => p.Exposers)
-                    .ThenInclude(e => e.PlateformeNavigation)
+                    .ThenInclude(e => e.EquipementNavigation)
                         .ThenInclude(p => p.Photos)
                 .ToListAsync();
         }
@@ -53,6 +53,11 @@ namespace USMB_TECH.Models.Repository
             return await _context.Thematiques
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
                 .ToListAsync();
+        }
+
+        public Task<IEnumerable<Thematique>> SearchAsync(Expression<Func<Thematique, bool>> predicate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

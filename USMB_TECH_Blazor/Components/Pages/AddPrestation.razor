@@ -1,0 +1,495 @@
+﻿@page "/ajouterPrestation"
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject IMainService<Prestation, int> prestationService
+@inject IMainService<Contact_USMB, int> contactService
+@inject IMainService<Domaine_Excellence, int> domaineService
+@inject IMainService<Type_Prestation, int> typeService
+@inject IMainService<Unite_Oeuvre, int> uniteService
+@inject IMainService<Mot_Clef, int> motService
+@inject IMainService<Laboratoire, string> laboratoireService
+@inject IMainService<Pole_Expertise, int> poleService
+
+<HeadContent>
+    <li class="add_style" nk href="css/addPrestation.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_style">Ajouter une prestation</h2>
+
+<div class="page-container">
+    <EditForm Model="prestation" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    
+        <h4 class="add_style">Infos générales</h4>
+        <label>Intitulé de la prestation *</label>
+        <InputText class="form-control mb-2" @bind-Value="prestation.Intitule_Prestation" placeholder="Prestation exemple"/>
+
+        <label>Description de la prestation *</label>
+        <InputText class="form-control mb-2" @bind-Value="prestation.Description_Prestation" placeholder="Prestation pour montrer l'exemple"/>
+
+        <label>Prix de vente de la prestation *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Vente"/>
+        <ValidationMessage For="@(() => prestation.Prix_Vente)" />
+
+        <label>Prix de revient de la prestation *</label>
+        <InputNumber class="form-control mb-2" @bind-Value="prestation.Prix_Revient"/>
+    <ValidationMessage For="@(() => prestation.Prix_Revient)" />
+
+        <label>Peut se réaliser chez le client *</label>
+        <InputCheckbox @bind-Value="prestation.Peux_Ce_Realiser_Chez_Le_Client" />
+        <hr />
+        <h4 class="add_style">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" multiple />
+        @if (prestation.Photos != null && prestation.Photos.Any())
+        {
+            <div class="uploaded-photos">
+                <h5>Photos sélectionnées :</h5>
+                <ul>
+                    @foreach (var photo in prestation.Photos)
+                    {
+                        <li>
+                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        @* //////Contact *@
+        <hr />
+        <h4 class="add_style">Contact à associer</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastContact">
+            <option value="">----- Sélectionner un contact -----</option>
+            @foreach (var contact in contacts)
+            {
+                <option value="@contact.Nom_Contact">@contact.Nom_Contact</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un contact -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Nom_Contact)" />
+
+        <!-- Modal -->
+        <div id="modalContact" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalContact">&times;</span>
+                <AddContact OnContactAdded="OnContact_Added" EnableRedirect="false" />
+            </div>
+        </div>
+
+         @* //////Domaine d'excellence *@
+        <hr />
+        <h4 class="add_style">Domaine d'excellence</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastDomaineExcellence">
+            <option value="">----- Sélectionner un domaine d'excellence -----</option>
+            @foreach (var domaine in domaines)
+            {
+                <option value="@domaine.Intitule_Domaine_Excellence">@domaine.Intitule_Domaine_Excellence</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un domaine d'excellence -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Nom_Domaine)" />
+
+        <!-- Modal -->
+        <div id="modalDomaine" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalDomaineExcellence">&times;</span>
+                <AddDomaineExcellence OnDomaineExcellenceAdded="OnDomaineExcellenceAdded" EnableRedirect="false" />
+            </div>
+        </div>
+        @* //////Type de la prestation *@
+        <hr />
+        <h4 class="add_style">Type de prestation</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="prestation.Type">
+            <option value="">----- Sélectionner une prestation -----</option>
+            @foreach (var type in types)
+            {
+                <option value="@type.Nom_Type_Prestation">@type.Nom_Type_Prestation</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Type)" />
+
+
+        @* //////Unite *@
+        <hr />
+        <h4 class="add_style">Unite d'oeuvre</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="prestation.Unite">
+            <option value="">----- Sélectionner une unité d'oeuvre -----</option>
+            @foreach (var unite in unites)
+            {
+                <option value="@unite.Nom_Unite_Oeuvre">@unite.Nom_Unite_Oeuvre</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Unite)" />
+
+        @* //////laboratoire *@
+        <hr />
+        <h4 class="add_style">Laboratoire</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="LastLaboratoire">
+
+            <option value="">----- Sélectionner un laboratoire -----</option>
+            @foreach (var laboratoire in laboratoires)
+            {
+                <option value="@laboratoire.Nom_Court">@laboratoire.Nom_Long</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un Laboratorie -----</option>
+        </InputSelect>
+
+        <div id="modalLaboratoirePrestation" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" @onclick="CloseModalLaboratoire">&times;</span>
+                <AddLabo OnLaboratoireAdded="OnLaboratoireAdded" EnableRedirect="false" />
+            </div>
+        </div>
+
+        @* //////Poles *@
+        <hr />
+        <h4 class="add_style">Pôles d’expertise</h4>
+
+        <InputSelect class="form-select mb-2" @bind-Value="SelectedPole">
+            <option value="">----- Sélectionner un pôle -----</option>
+            @foreach (var pole in existingpoles)
+            {
+                <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
+            }
+        </InputSelect>
+        @if (!string.IsNullOrWhiteSpace(SelectedPole))
+        {
+        <button type="button"
+                @onclick="AddPole"
+                class="btn btn-secondary btn-sm mt-1">
+            Ajouter ce pôle
+        </button>
+        }
+        <ul class="mt-2">
+            @foreach (var pole in prestation.Poles)
+            {
+                <li>
+                    @pole
+                    <button class="btn btn-sm btn-danger ms-2"
+                            type="button"
+                            @onclick="() => RemovePole(pole)">
+                        Supprimer
+                    </button>
+                </li>
+            }
+        </ul>
+
+        @* //////Mots-clés *@
+        <hr />
+        <h4 class="add_style">Mots-clés</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
+            @foreach (var motcle in existingMots)
+            {
+                <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer un mot-clé -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => prestation.Mots_Clefs)" />
+        @if (motCle == "ajouter")
+        {
+            <form @onsubmit="AddMot_Clef">
+                <input @bind="NewMotCle"
+                       placeholder="Nouveau Mot-clé" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(motCle))
+        {
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+        }
+        <ul>
+            @foreach (var mc in prestation.Mots_Clefs)
+            {
+                <li>
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
+        <hr />
+        <input type="submit" class="btn btn-primary" value="Ajouter">
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+                @message
+            </div>
+        }
+    </EditForm>
+</div>
+
+@code {
+    Prestation prestation = new Prestation();
+    IEnumerable<Contact_USMB> contacts = new List<Contact_USMB>();
+    IEnumerable<Domaine_Excellence> domaines = new List<Domaine_Excellence>();
+    ICollection<Type_Prestation> types = new List<Type_Prestation>();
+    IEnumerable<Unite_Oeuvre> unites = new List<Unite_Oeuvre>();
+    IEnumerable<Laboratoire> laboratoires = new List<Laboratoire>();
+
+    IEnumerable<Pole_Expertise> existingpoles = new List<Pole_Expertise>();
+    private IEnumerable<Mot_Clef> existingMots = new List<Mot_Clef>();
+    [Parameter] public EventCallback<Prestation> OnPrestationAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
+    string motCle;
+    string NewMotCle;
+
+    private bool isLoading = false;
+    bool isSubmitted = false;
+    string message = "";
+
+    private string _lastContact;
+
+    private string LastContact
+    {
+        get => _lastContact;
+        set
+        {
+            _lastContact = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalContact();
+            }
+            else
+            {
+                prestation.Nom_Contact = value;
+            }
+        }
+    }
+
+    private string _lastDomaineExcellence;
+
+    private string LastDomaineExcellence
+    {
+        get => _lastDomaineExcellence;
+        set
+        {
+            _lastDomaineExcellence = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalDomaineExcellence();
+            }
+            else
+            {
+                prestation.Nom_Domaine = value;
+            }
+        }
+    }
+
+    private string _lastLaboratoire;
+
+    private string LastLaboratoire
+    {
+        get => _lastLaboratoire;
+        set
+        {
+            _lastLaboratoire = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value == "ajouter")
+            {
+                OpenModalLaboratoire();
+            }
+            else
+            {
+                prestation.Nom_Court = value;
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        contacts = await contactService.GetAllAsync();
+        domaines = await domaineService.GetAllAsync();
+        types = (await typeService.GetAllAsync()).ToList();
+        unites = await uniteService.GetAllAsync();
+        existingMots = await motService.GetAllAsync();
+        laboratoires = await laboratoireService.GetAllAsync();
+        existingpoles = await poleService.GetAllAsync();
+    }
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true; // active le loader
+            StateHasChanged();
+
+            // Si aucune photo uploadée → photo par défaut
+            if (prestation.Photos == null || !prestation.Photos.Any())
+            {
+                prestation.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
+            var response = await Http.PostAsJsonAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Prestations", prestation);
+            var createdprestation = await response.Content.ReadFromJsonAsync<Prestation>();
+
+            prestation = createdprestation;
+            isSubmitted = true;
+            ShowAlert("La prestation a été ajoutée avec succès.");
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            ShowAlert("Une erreur est survenue lors de l'ajout de la prestation.");
+            await JS.InvokeVoidAsync("console.log", ex.Message);
+        }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
+        }
+    }
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+        if (isSubmitted && EnableRedirect)
+        {
+            Navigation.NavigateTo($"/prestation/{prestation.Id_Prestation}");
+        }
+    }
+
+    private void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(NewMotCle))
+        {
+            prestation.Mots_Clefs.Add(NewMotCle);
+            NewMotCle = "";
+            motCle = "";
+        }
+        else if (string.IsNullOrWhiteSpace(NewMotCle) && motCle != "ajouter")
+        {
+            if (!prestation.Mots_Clefs.Contains(motCle))
+            {
+                prestation.Mots_Clefs.Add(motCle);
+            }
+            motCle = "";
+        }
+    }
+    private string SelectedPole;
+
+    private void AddPole()
+    {
+        if (!string.IsNullOrWhiteSpace(SelectedPole) &&
+            !prestation.Poles.Contains(SelectedPole))
+        {
+            prestation.Poles.Add(SelectedPole);
+        }
+
+        SelectedPole = string.Empty;
+    }
+    private void RemovePole(string pole)
+    {
+        prestation.Poles.Remove(pole);
+    }
+
+    private void RemoveMotCle(string mc)
+    {
+        prestation.Mots_Clefs.Remove(mc);
+    }
+
+    private void OpenModalContact()
+    {
+        JS.InvokeVoidAsync("openModalContact");
+    }
+
+    private void CloseModalContact()
+    {
+        JS.InvokeVoidAsync("closeModalContact");
+    }
+    private void OpenModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("openModalDomaineExcellence");
+    }
+
+    private void CloseModalDomaineExcellence()
+    {
+        JS.InvokeVoidAsync("closeModalDomaineExcellence");
+    }
+
+    private void OpenModalLaboratoire()
+    {
+        JS.InvokeVoidAsync("openModalLaboratoirePrestation");
+    }
+
+    private void CloseModalLaboratoire()
+    {
+        JS.InvokeVoidAsync("closeModalLaboratoirePrestation");
+    }
+
+    private void OnContact_Added(Contact_USMB contact)
+    {
+        contacts = contacts.Append(contact);
+        LastContact = contact.Nom_Contact;
+        CloseModalContact();
+    }
+
+    private void OnDomaineExcellenceAdded(Domaine_Excellence domaine)
+    {
+        domaines = domaines.Append(domaine);
+        LastDomaineExcellence = domaine.Intitule_Domaine_Excellence;
+        CloseModalDomaineExcellence();
+    }
+
+    private void OnLaboratoireAdded(Laboratoire laboratoire)
+    {
+        laboratoires = laboratoires.Append(laboratoire);
+        LastLaboratoire = laboratoire.Nom_Court;
+        CloseModalLaboratoire();
+    }
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                prestation.Photos.Add(new Photo
+                {
+                    Nom_Photo = file.Name,
+                    Url_Photo = result.url
+                });
+            }
+        }
+    }
+    private void RemovePhoto(Photo photo)
+    {
+        prestation.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+}

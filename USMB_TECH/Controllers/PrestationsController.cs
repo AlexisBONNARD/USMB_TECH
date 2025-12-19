@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,36 +45,48 @@ namespace USMB_TECH.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PutPrestation(int id, Prestation prestations)
+        public async Task<IActionResult> PutPrestation(int id, PrestationUpdateDto prestations)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             if (id != prestations.Id_Prestation)
                 return BadRequest("L'identifiant de la ressource ne correspond pas à celui du corps de la requête.");
 
             var existing = await _dataRepository.GetByIdAsync(id);
             if (existing is null)
-                return NotFound($"Laboratoire avec l'id {id} introuvable.");
+                return NotFound($"Prestation avec l'id {id} introuvable.");
 
-            await _dataRepository.UpdateAsync(existing, prestations);
+            // Mapping DTO → Entity
+            var mappedEntity = _mapper.Map<Prestation>(prestations);
+
+            // Mots-clés → Preciser
+            mappedEntity.Precisers = prestations.MotCleIds
+                .Select(idMotCle => new Preciser
+                {
+                    Id_Mot_Clef = idMotCle
+                })
+                .ToList();
+
+            await _dataRepository.UpdateAsync(existing, mappedEntity);
+
             return NoContent();
         }
+
 
         // POST: api/Prestations
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Prestation>> PostPrestation(Prestation prestations)
+        public async Task<ActionResult<Prestation>> PostPrestation(AddPrestationDTO prestations)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _dataRepository.AddAsync(prestations);
-            return CreatedAtAction(nameof(GetPrestation), new { id = prestations.Id_Prestation }, prestations);
+            var prestationMapped = _mapper.Map<Prestation>(prestations);
+            await _dataRepository.AddAsync(prestationMapped);
+            return CreatedAtAction(nameof(GetPrestation), new { id = prestationMapped.Id_Prestation }, prestationMapped);
         }
 
         // DELETE: api/Prestations/{id}
@@ -88,6 +101,26 @@ namespace USMB_TECH.Controllers
 
             await _dataRepository.DeleteAsync(prestations);
             return NoContent();
+        }
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Aucun fichier reçu");
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+
+            if (!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            var filePath = Path.Combine(uploadsPath, file.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Ok(new { url = $"/uploads/{file.FileName}" });
         }
     }
 }

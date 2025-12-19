@@ -1,0 +1,580 @@
+﻿@page "/ajouterLabo"
+@using USMB_TECH.Models
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject IMainService<Fonction, int> fonctionService
+@inject IMainService<Laboratoire, string> laboService
+@inject IMainService<Contact_USMB, string> contactService
+@inject IMainService<Mot_Clef, int> motcleService
+@inject IMainService<Thematique, int> ThematiqueService
+@inject IMainService<Pole_Expertise, int> poleService
+@inject AdminState AdminState
+
+@inject HttpClient Http
+
+<HeadContent>
+    <li class="add_style" nk href="css/addLabo.css" rel="stylesheet" />
+</HeadContent>
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+}
+<h2 class="add_style">Ajouter un laboratoire</h2>
+
+<div class="page-container">
+    <EditForm Model="labo" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <h4 class="add_style">Infos générales</h4>
+
+        <label>Nom complet du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long" placeholder="Laboratoires de France" />
+        <ValidationMessage For="@(() => labo.Nom_Long)" />
+
+        <label>Nom du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Nom_Court" placeholder="LABO" />
+        <ValidationMessage For="@(() => labo.Nom_Court)" />
+
+        <label>Description *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Description" placeholder="Description des laboratoires de France" />
+
+
+        <h4 class="add_style">Adresses</h4>
+        <h3 class="add_style">Adresses du laboratoire</h3>
+
+        <label>Rue du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Labo" placeholder="9 Rue de l'Arc-en-ciel"/>
+        <ValidationMessage For="@(() => labo.Rue_Adresse_Labo)" />
+
+        <label>Ville du laboratoire *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Labo" placeholder="Annecy-le-vieux"/>
+        <ValidationMessage For="@(() => labo.Ville_Adresse_Labo)" />
+
+        <label>Code postal du laboratoire *</label>
+        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Labo" placeholder="74940"/>
+        <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Labo)" />
+
+        <label>Pays du laboratoire *</label>
+        <InputSelect class="form-select mb-2" @bind-Value="labo.Pays_Adresse_Labo" placeholder="France">
+            <option value="">----- Sélectionner un pays -----</option>
+            @if(countries is not null)
+            {
+                @foreach(var country in countries)
+                {
+                    <option value="@country">@country</option>
+                }
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => labo.Pays_Adresse_Labo)" />
+
+        @if (labo.Pays_Adresse_Labo is not null && labo.Rue_Adresse_Labo is not null && labo.Code_Postal_Adresse_Labo is not null && labo.Ville_Adresse_Labo is not null)
+        {
+            <div>
+                <InputCheckbox @bind-Value="SameAdresse" @oninput="Change" /> Adresses Campus = Labo
+            </div>
+        }
+        <hr />
+        <h4 class="add_style">Adresse du campus</h4>
+
+        <label>Rue du campus *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Rue_Adresse_Campus" placeholder="9 Rue de l'Arc-en-ciel" Disabled="@SameAdresse"/>
+        <ValidationMessage For="@(() => labo.Rue_Adresse_Campus)" />
+
+        <label>Ville du campus *</label>
+        <InputText class="form-control mb-2" @bind-Value="labo.Ville_Adresse_Campus" placeholder="Annecy-le-vieux" Disabled="@SameAdresse"/>
+        <ValidationMessage For="@(() => labo.Ville_Adresse_Campus)" />
+
+        <label>Code postal du campus *</label>
+        <InputText class="form-control mb-2" maxlength="11" @bind-Value="labo.Code_Postal_Adresse_Campus" placeholder="74940" Disabled="@SameAdresse"/>
+        <ValidationMessage For="@(() => labo.Code_Postal_Adresse_Campus)" />
+
+        <label>Pays du campus *</label>
+        <InputSelect class="form-select mb-2" @bind-Value="labo.Pays_Adresse_Campus" placeholder="France" Disabled="@SameAdresse">
+            <option value="">----- Sélectionner un pays -----</option>
+             @if(countries is not null)
+            {
+                @foreach (var country in countries)
+                {
+                    <option value="@country">@country</option>
+                }
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => labo.Pays_Adresse_Campus)" />
+
+
+        <h4 class="add_style">Infos liées au contact</h4>
+        <label>Nom *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Nom_Contact" placeholder="LeBrun" />
+        <ValidationMessage For="@(() => contact.Nom_Contact)" />
+
+        <label>Prénom *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" placeholder="Jacques" />
+        <ValidationMessage For="@(() => contact.Prenom_Contact)" />
+
+        <label>Numéro de Sécurité Sociale *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" placeholder="1 85 05 78 006 084 36" />
+        <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
+
+        <label>Code RH *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" placeholder="56321" />
+        <ValidationMessage For="@(() => contact.Code_RH)" />
+
+        <label>Adresse e-mail *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Mail" placeholder="Adresseexample@gmail.com" />
+        <ValidationMessage For="@(() => contact.Mail)" />
+
+        <label>Téléphone *</label>
+        <InputText class="form-control mb-2" @bind-Value="contact.Telephone" placeholder="0689563214" />
+        <ValidationMessage For="@(() => contact.Telephone)" />
+
+        <label>Fonction</label>
+        <InputSelect class="form-select mb-2" @bind-Value="SelectedFonction">
+            <option value="">----- Sélectionner une fonction -----</option>
+            @foreach (var f in fonctions)
+            {
+                <option value="@f.Nom_Fonction">@f.Nom_Fonction</option>
+            }
+            <option value="ajouter" class="alert-info">----- Créer une fonction -----</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => SelectedFonction)" />
+        @if (SelectedFonction == "ajouter")
+        {
+            @* <hr /> *@
+            @* <h4 class="add_style">Ajouter une fonction</h4> *@
+            <form onsubmit="return false;" class="mb-2">
+                <input class="form-control mb-1"
+                       @bind="newFonction"
+                       @bind:event="oninput"
+                       placeholder="Nom de la fonction"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddFonction(); } })" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddFonction">Ajouter</button>
+            </form>
+
+            @* @if (derniereFonctionAjoutee != null)
+            {
+                <ul class="add_style">
+                    <li class="add_style">
+                        @derniereFonctionAjoutee.Nom_Fonction
+                    </li>
+                </ul>
+            } *@
+        }
+
+        <hr />
+        <h4 class="add_style">Pôle d'expertise</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="PoleExpertise">
+            <option value="">----- Sélectionner un pôle d'expertise -----</option>
+            @foreach(var pole in existingPoles)
+            {
+                <option value="@pole.Nom_Pole_Expertise">@pole.Nom_Pole_Expertise</option>
+            }
+        </InputSelect>
+        @if (!string.IsNullOrWhiteSpace(PoleExpertise))
+        {
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddPole">Ajouter ce pôle</button>
+        }
+        <ul class="add_style">
+            @foreach (var pe in labo.Pole_Expertises)
+            {
+                <li class="add_style">
+                    @pe
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemovePole(pe)">Supprimer</button>
+                </li>
+            }
+        </ul>
+        @* ///Mots-clés *@
+        <hr />
+        <h4 class="add_style">Mots-Clés *</h4>
+        <InputSelect class="form-select mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
+            @if (existingMot is not null)
+            {
+                @foreach (var motcle in existingMot)
+                {
+                    <option value="@motcle.Nom_Mot_Clef">@motcle.Nom_Mot_Clef</option>
+                }
+            }
+            <option value="ajouter" class="alert-info">----- Créer un mot clé -----</option>
+        </InputSelect>
+
+        @if (motCle == "ajouter")
+        {
+            <hr />
+            <h4>Ajouter un mot-clé</h4>
+            <form @onsubmit="AddMot_Clef">
+                <input @bind="NewMotCle"
+                       placeholder="Nouveau Mot-clé" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce nouveau mot-clé</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(motCle))
+        {
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+        }
+
+        <ul class="add_style">
+            @foreach (var mc in labo.mot_Clefs)
+            {
+                <li class="add_style">
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        @* ///Thematique *@ 
+        <hr />
+        <h4 class="add_style">Thématiques : </h4>
+        <InputSelect class="form-select mb-2" @bind-Value="thematique">
+            <option value="">----- Sélectionner une thématique -----</option>
+            @if (existingThematique is not null)
+            {
+                @foreach (var thematique in existingThematique)
+                {
+                    <option value="@thematique.Nom_Thematique">@thematique.Nom_Thematique</option>
+                }
+                <option value="ajouter" class="alert-info">----- Créer une thématique -----</option>
+            }
+        </InputSelect>
+
+        @if (thematique == "ajouter")
+        {
+            <hr />
+            <h4></h4>
+            <form @onsubmit="AddThematique">
+                <input @bind="NewThematique" placeholder="Nouvelle thématique" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter cette nouvelle thématique</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(thematique))
+        {
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddThematique">Ajouter cette thématique</button>
+        }
+
+        <ul class="add_style">
+            @foreach (var mc in labo.Thematiques)
+            {
+                <li class="add_style">
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveThematique(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <hr />
+        <h4 class="add_style">Photos</h4>
+        <InputFile OnChange="HandleFileUpload" multiple />
+        @if (labo.Photos != null && labo.Photos.Any())
+        {
+            <div class="uploaded-photos">
+                <h5>Photos sélectionnées :</h5>
+                <ul>
+                    @foreach (var photo in labo.Photos)
+                    {
+                        <li>
+                            <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" style="max-width: 200px; max-height: 200px;" />
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => RemovePhoto(photo)">Supprimer</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        <hr />
+        <input type="submit" class="btn btn-primary" value="Ajouter">
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div id="alertMessage" class="alert @(isSubmitted ? "alert-success" : "alert-danger") alert-fixed">
+            @message
+        </div>
+    }
+
+</div>
+
+@code {
+    Laboratoire labo = new Laboratoire();
+    private Contact_USMB contact = new();
+    [Parameter] public EventCallback<Laboratoire> OnLaboratoireAdded { get; set; }
+    [Parameter] public bool EnableRedirect { get; set; } = true;
+
+    private IEnumerable<Mot_Clef> existingMot = new List<Mot_Clef>();
+    private IEnumerable<Thematique> existingThematique = new List<Thematique>();
+    private IEnumerable<Pole_Expertise> existingPoles = new List<Pole_Expertise>();
+
+    string motCle;
+    string NewMotCle;
+    private List<Fonction> fonctions = new();
+
+    string thematique;
+    string NewThematique;
+
+    string PoleExpertise;
+
+    private bool isLoading = false;
+    bool isSubmitted = false;
+    bool SameAdresse = false;
+
+    private List<string> countries;
+
+    string message = "";
+
+    private string _selectedFonction;
+
+    private string SelectedFonction
+    {
+        get => _selectedFonction;
+        set
+        {
+            _selectedFonction = value;
+            JS.InvokeVoidAsync("console.log", $"Changement détecté côté navigateur : {value}");
+
+            if (value != "ajouter")
+            {
+                contact.Nom_Fonction = value;
+            }
+        }
+    }
+
+    private string newFonction = "";
+    private List<Fonction> lesFonctions = new();
+    private Fonction derniereFonctionAjoutee;
+
+    void AddFonction()
+    {
+        if (!string.IsNullOrWhiteSpace(newFonction))
+        {
+            var nouvelleFonction = new Fonction { Nom_Fonction = newFonction };
+
+            // 👉 Ajoute dans la liste de la dropdown
+            fonctions.Add(nouvelleFonction);
+
+            SelectedFonction = newFonction;
+            contact.Nom_Fonction = newFonction;
+
+            derniereFonctionAjoutee = nouvelleFonction;
+            newFonction = "";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        fonctions = (await fonctionService.GetAllAsync()).ToList();
+        existingMot = await motcleService.GetAllAsync();
+        existingThematique = await ThematiqueService.GetAllAsync();
+        existingPoles = await poleService.GetAllAsync();
+        var client = new HttpClient();
+        var json = await client.GetStringAsync("https://data.enseignementsup-recherche.gouv.fr/api/records/1.0/search/?dataset=curiexplore-pays&rows=300");
+        var root = JsonNode.Parse(json);
+        countries = root["records"].AsArray().Select(r => (string)r["fields"]["name_fr"]).OrderBy(name => name).ToList();
+
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+
+            isLoading = true; // active le loader
+            StateHasChanged();
+            if (string.IsNullOrWhiteSpace(contact.Nom_Contact) || string.IsNullOrWhiteSpace(contact.Prenom_Contact) || string.IsNullOrWhiteSpace(contact.Mail) || string.IsNullOrWhiteSpace(contact.Num_Securite_Social) || string.IsNullOrWhiteSpace(contact.Code_RH))
+            {
+                message = "Tous les champs du contact doivent être remplis.";
+                throw new Exception("Tous les champs du contact doivent être remplis.");
+            }
+            // Si aucune photo uploadée → photo par défaut
+            if (labo.Photos == null || !labo.Photos.Any())
+            {
+                labo.Photos = new List<Photo>
+                {
+                    new Photo
+                    {
+                        Nom_Photo = "default-image.png",
+                        Url_Photo = "/images/No_image_available.png"
+                    }
+                };
+            }
+
+            await laboService.AddAsync(labo);
+            contact.Nom_Court = labo.Nom_Court;
+            await contactService.AddAsync(contact);
+
+
+            isSubmitted = true;
+
+            OnLaboratoireAdded.InvokeAsync(labo);
+
+            ShowAlert("Laboratoire ajouté avec succès !");
+        }
+        catch (Exception ex)
+        {
+            isSubmitted = false;
+            var index = ex.Message.IndexOf(':');
+            ShowAlert(index >= 0 ? ex.Message[(index + 1)..].Trim() : ex.Message);
+            await JS.InvokeVoidAsync("console.error", message);
+        }
+        finally
+        {
+            isLoading = false; // désactive le loader
+            StateHasChanged();
+        }
+    }
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+
+    private async Task ShowAlert(string msg)
+    {
+        message = msg;
+        StateHasChanged();
+
+        await Task.Delay(3000); // attend 3 secondes
+
+        message = null;         // efface le message
+        StateHasChanged();      // met à jour
+        if (isSubmitted && EnableRedirect)
+        {
+            Navigation.NavigateTo($"/laboratoire/{labo.Nom_Court}");
+        }
+    }
+
+    private void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(NewMotCle))
+        {
+            labo.mot_Clefs.Add(NewMotCle);
+            NewMotCle = "";
+            motCle = "";
+        }
+        else if (string.IsNullOrWhiteSpace(NewMotCle) && motCle != "ajouter")
+        {
+            if (!labo.mot_Clefs.Contains(motCle))
+            {
+                labo.mot_Clefs.Add(motCle);
+            }
+            motCle = "";
+        }
+    }
+    private void RemoveMotCle(string mc)
+    {
+        labo.mot_Clefs.Remove(mc);
+    }
+
+    private void AddThematique()
+    {
+        if (!string.IsNullOrWhiteSpace(NewThematique))
+        {
+            labo.Thematiques.Add(NewThematique);
+            NewThematique = "";
+            thematique = "";
+        }
+        else if (string.IsNullOrWhiteSpace(NewThematique) && thematique != "ajouter")
+        {
+            if (!labo.Thematiques.Contains(thematique))
+            {
+                labo.Thematiques.Add(thematique);
+            }
+            thematique = "";
+        }
+    }
+    private void RemoveThematique(string mc)
+    {
+        labo.Thematiques.Remove(mc);
+    }
+
+    private void AddPole()
+    {
+        if (!string.IsNullOrWhiteSpace(PoleExpertise) && !labo.Pole_Expertises.Contains(PoleExpertise))
+        {
+            labo.Pole_Expertises.Add(PoleExpertise);
+        }
+        PoleExpertise = "";
+    }
+    private void RemovePole(string pe)
+    {
+        labo.Pole_Expertises.Remove(pe);
+    }
+
+    private void Change()
+    {
+        if (SameAdresse is true)
+        {
+            labo.Code_Postal_Adresse_Campus = null;
+            labo.Pays_Adresse_Campus = null;
+            labo.Rue_Adresse_Campus = null;
+            labo.Ville_Adresse_Campus = null;
+        }
+        else
+        {
+            labo.Code_Postal_Adresse_Campus = labo.Code_Postal_Adresse_Labo;
+            labo.Pays_Adresse_Campus = labo.Pays_Adresse_Labo;
+            labo.Rue_Adresse_Campus = labo.Rue_Adresse_Labo;
+            labo.Ville_Adresse_Campus = labo.Ville_Adresse_Labo;
+        }
+    }
+
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/laboratoires/upload", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+                labo.Photos.Add(new Photo
+                    {
+                        Nom_Photo = file.Name,
+                        Url_Photo = result.url
+                    });
+            }
+        }
+    }
+    private void RemovePhoto(Photo photo)
+    {
+        labo.Photos.Remove(photo);
+    }
+    public class UploadResponse
+    {
+        public string url { get; set; }
+    }
+//     List<string> countries = new List<string>
+// {
+//     "Afghanistan", "Albania", "Germany", "Andorra", "Angola", "Antigua and Barbuda", "Saudi Arabia",
+//     "Algeria", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bangladesh",
+//     "Barbados", "Bahrain", "Belgium", "Belize", "Benin", "Belarus", "Burma", "Bolivia",
+//     "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+//     "Bhutan", "Cape Verde", "Cambodia", "Cameroon", "Canada", "Qatar", "Chad", "Chile", "China",
+//     "Cyprus", "Vatican City", "Colombia", "Comoros", "North Korea", "South Korea", "Ivory Coast",
+//     "Costa Rica", "Croatia", "Cuba", "Denmark", "Dominica", "Ecuador", "Egypt", "El Salvador",
+//     "United Arab Emirates", "Eritrea", "Slovakia", "Slovenia", "Spain", "United States", "Estonia",
+//     "Ethiopia", "Philippines", "Finland", "Fiji", "France", "Gabon", "Gambia", "Georgia", "Ghana",
+//     "Grenada", "Greece", "Guatemala", "Guyana", "Guinea", "Equatorial Guinea", "Guinea-Bissau",
+//     "Haiti", "Honduras", "Hungary", "India", "Indonesia", "Iraq", "Iran", "Ireland", "Iceland",
+//     "Marshall Islands", "Solomon Islands", "Israel", "Italy", "Jamaica", "Japan", "Jordan",
+//     "Kazakhstan", "Kenya", "Kyrgyzstan", "Kiribati", "Kuwait", "Laos", "Lesotho", "Latvia",
+//     "Lebanon", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "North Macedonia",
+//     "Madagascar", "Malaysia", "Malawi", "Maldives", "Mali", "Malta", "Morocco", "Mauritius",
+//     "Mauritania", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+//     "Mozambique", "Namibia", "Nauru", "Nepal", "Nicaragua", "Niger", "Nigeria", "Norway",
+//     "New Zealand", "Oman", "Netherlands", "Pakistan", "Palau", "Panama", "Papua New Guinea",
+//     "Paraguay", "Peru", "Poland", "Portugal", "United Kingdom", "Central African Republic",
+//     "Czech Republic", "Republic of the Congo", "Democratic Republic of the Congo",
+//     "Dominican Republic", "Rwanda", "Romania", "Russia", "Samoa", "Saint Kitts and Nevis",
+//     "San Marino", "Saint Vincent and the Grenadines", "Saint Lucia", "Sao Tome and Principe",
+//     "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Syria", "Somalia",
+//     "Sri Lanka", "Swaziland", "South Africa", "Sudan", "South Sudan", "Sweden", "Switzerland",
+//     "Suriname", "Thailand", "Tanzania", "Tajikistan", "East Timor", "Togo", "Tonga",
+//     "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Turkey", "Tuvalu", "Ukraine", "Uganda",
+//     "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Djibouti", "Zambia",
+//     "Zimbabwe"
+// };
+
+}

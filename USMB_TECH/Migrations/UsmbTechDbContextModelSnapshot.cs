@@ -69,9 +69,9 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_contact");
 
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
                     b.Property<string>("Fonction")
                         .IsRequired()
@@ -79,10 +79,10 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("fonction");
 
-                    b.HasKey("Id_Contact", "Id_Plateforme")
+                    b.HasKey("Id_Contact", "Id_Pole_Expertise")
                         .HasName("pk_associer");
 
-                    b.HasIndex("Id_Plateforme");
+                    b.HasIndex("Id_Pole_Expertise");
 
                     b.ToTable("associer", "usmbTech");
                 });
@@ -187,8 +187,8 @@ namespace USMB_TECH.Migrations
 
                     b.Property<string>("Num_Securite_Social")
                         .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("character varying(13)")
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("num_securite_social");
 
                     b.Property<string>("Prenom_Contact")
@@ -230,6 +230,31 @@ namespace USMB_TECH.Migrations
                     b.ToTable("designer", "usmbTech");
                 });
 
+            modelBuilder.Entity("USMB_TECH.Models.Domaine_Excellence", b =>
+                {
+                    b.Property<int>("Id_Domaine_Excellence")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_domaine_excellence");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Domaine_Excellence"));
+
+                    b.Property<string>("Description_Domaine_Excellence")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("description_domaine_excellence");
+
+                    b.Property<string>("intitule_Domaine_Excellence")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("intitule_domaine_excellence");
+
+                    b.HasKey("Id_Domaine_Excellence")
+                        .HasName("pk_domaine_excellence");
+
+                    b.ToTable("domaine_excellence", "usmbTech");
+                });
+
             modelBuilder.Entity("USMB_TECH.Models.Equipement", b =>
                 {
                     b.Property<int>("Id_Equipement")
@@ -265,9 +290,9 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_modele");
 
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
                     b.Property<int>("Id_Type_Equipement")
                         .HasColumnType("integer")
@@ -304,7 +329,7 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Id_Modele");
 
-                    b.HasIndex("Id_Plateforme");
+                    b.HasIndex("Id_Pole_Expertise");
 
                     b.HasIndex("Id_Type_Equipement");
 
@@ -349,9 +374,9 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int?>("Id_Plateforme")
+                    b.Property<int?>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
                     b.Property<string>("Nom_Utilisation")
                         .IsRequired()
@@ -364,23 +389,25 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Id_Equipement");
 
-                    b.HasIndex("Id_Plateforme");
+                    b.HasIndex("Id_Pole_Expertise");
 
                     b.ToTable("exemple_utilisation", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Exposer", b =>
                 {
-                    b.Property<int>("Id_Plateforme")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Id_Equipement")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_equipement");
 
                     b.Property<int>("Id_Thematique")
                         .HasColumnType("integer")
                         .HasColumnName("id_thematique");
 
-                    b.HasKey("Id_Plateforme", "Id_Thematique")
+                    b.Property<int?>("Id_Pole_Expertise")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id_Equipement", "Id_Thematique")
                         .HasName("pk_exposer");
 
                     b.HasIndex("Id_Thematique");
@@ -456,9 +483,9 @@ namespace USMB_TECH.Migrations
 
             modelBuilder.Entity("USMB_TECH.Models.Gerer", b =>
                 {
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
                     b.Property<string>("Nom_Court")
                         .HasMaxLength(25)
@@ -470,7 +497,7 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("pourcentage");
 
-                    b.HasKey("Id_Plateforme", "Nom_Court")
+                    b.HasKey("Id_Pole_Expertise", "Nom_Court")
                         .HasName("pk_gerer");
 
                     b.HasIndex("Nom_Court");
@@ -593,13 +620,26 @@ namespace USMB_TECH.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Photo"));
 
+                    b.Property<int?>("Id_Domaine_Excellence")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_domaine_excellence");
+
                     b.Property<int?>("Id_Equipement")
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int?>("Id_Plateforme")
+                    b.Property<int?>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
+
+                    b.Property<int?>("Id_Prestation")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_prestation");
+
+                    b.Property<string>("Nom_Court")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("nom_court");
 
                     b.Property<string>("Nom_Photo")
                         .IsRequired()
@@ -608,7 +648,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("nom_photo");
 
                     b.Property<string>("Url_Photo")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("url_photo");
@@ -616,24 +655,30 @@ namespace USMB_TECH.Migrations
                     b.HasKey("Id_Photo")
                         .HasName("pk_photo");
 
+                    b.HasIndex("Id_Domaine_Excellence");
+
                     b.HasIndex("Id_Equipement");
 
-                    b.HasIndex("Id_Plateforme");
+                    b.HasIndex("Id_Pole_Expertise");
+
+                    b.HasIndex("Id_Prestation");
+
+                    b.HasIndex("Nom_Court");
 
                     b.ToTable("photo", "usmbTech", t =>
                         {
-                            t.HasCheckConstraint("CK_Photo_EquipementOuPlateforme", "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)");
+                            t.HasCheckConstraint("CK_Photo_EquipementOuPole_ExpertiseOuDomaine_Excellence", "(\r\n                        ((id_equipement IS NOT NULL)::int +\r\n                        (id_pole_expertise IS NOT NULL)::int +\r\n                        (id_prestation IS NOT NULL)::int +\r\n                        (nom_court IS NOT NULL)::int +\r\n                        (id_domaine_excellence IS NOT NULL)::int)\r\n                    ) = 1");
                         });
                 });
 
-            modelBuilder.Entity("USMB_TECH.Models.Plateforme", b =>
+            modelBuilder.Entity("USMB_TECH.Models.Pole_Expertise", b =>
                 {
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int>("Id_Pole_Expertise")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Plateforme"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Pole_Expertise"));
 
                     b.Property<bool>("Actif")
                         .HasColumnType("boolean")
@@ -645,11 +690,15 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(500)")
                         .HasColumnName("description_contenu");
 
-                    b.Property<string>("Description_Plateforme")
+                    b.Property<string>("Description_Pole_Expertise")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)")
-                        .HasColumnName("description_plateforme");
+                        .HasColumnName("description_pole_expertise");
+
+                    b.Property<int>("Id_Domaine_Excellence")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_domaine_excellence");
 
                     b.Property<string>("Nom_Contenu")
                         .IsRequired()
@@ -657,11 +706,11 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nom_contenu");
 
-                    b.Property<string>("Nom_Plateforme")
+                    b.Property<string>("Nom_Pole_Expertise")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("nom_plateforme");
+                        .HasColumnName("nom_pole_expertise");
 
                     b.Property<string>("Url_Contenu")
                         .IsRequired()
@@ -669,10 +718,12 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("url_contenu");
 
-                    b.HasKey("Id_Plateforme")
-                        .HasName("pk_plateforme");
+                    b.HasKey("Id_Pole_Expertise")
+                        .HasName("pk_pole_expertise");
 
-                    b.ToTable("plateforme", "usmbTech");
+                    b.HasIndex("Id_Domaine_Excellence");
+
+                    b.ToTable("pole_expertise", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Posseder", b =>
@@ -693,17 +744,35 @@ namespace USMB_TECH.Migrations
                     b.ToTable("posseder", "usmbTech");
                 });
 
+            modelBuilder.Entity("USMB_TECH.Models.Preciser", b =>
+                {
+                    b.Property<int>("Id_Prestation")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_prestation");
+
+                    b.Property<int>("Id_Mot_Clef")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_mot_clef");
+
+                    b.HasKey("Id_Prestation", "Id_Mot_Clef")
+                        .HasName("pk_preciser");
+
+                    b.HasIndex("Id_Mot_Clef");
+
+                    b.ToTable("preciser", "usmbTech");
+                });
+
             modelBuilder.Entity("USMB_TECH.Models.Presenter", b =>
                 {
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
                     b.Property<int>("Id_Prestation")
                         .HasColumnType("integer")
                         .HasColumnName("id_prestation");
 
-                    b.HasKey("Id_Plateforme", "Id_Prestation")
+                    b.HasKey("Id_Pole_Expertise", "Id_Prestation")
                         .HasName("pk_presenter");
 
                     b.HasIndex("Id_Prestation");
@@ -734,6 +803,10 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_contact");
 
+                    b.Property<int>("Id_Domaine_Excellence")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_domaine_excellence");
+
                     b.Property<int>("Id_Type_Prestation")
                         .HasColumnType("integer")
                         .HasColumnName("id_type_prestation");
@@ -749,7 +822,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnName("intitule_prestation");
 
                     b.Property<string>("Nom_Court")
-                        .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)")
                         .HasColumnName("nom_court");
@@ -772,6 +844,8 @@ namespace USMB_TECH.Migrations
                         .HasName("pk_prestation");
 
                     b.HasIndex("Id_Contact");
+
+                    b.HasIndex("Id_Domaine_Excellence");
 
                     b.HasIndex("Id_Type_Prestation");
 
@@ -813,9 +887,9 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int?>("Id_Plateforme")
+                    b.Property<int?>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
                     b.Property<int>("Id_Type_Client")
                         .HasColumnType("integer")
@@ -838,14 +912,32 @@ namespace USMB_TECH.Migrations
 
                     b.HasIndex("Id_Equipement");
 
-                    b.HasIndex("Id_Plateforme");
+                    b.HasIndex("Id_Pole_Expertise");
 
                     b.HasIndex("Id_Type_Client");
 
                     b.ToTable("prise_contact", "usmbTech", t =>
                         {
-                            t.HasCheckConstraint("CK_PriseContact_EquipementOuPlateforme", "(\"id_equipement\" IS NULL) <> (\"id_plateforme\" IS NULL)");
+                            t.HasCheckConstraint("CK_PriseContact_EquipementOuPole_Expertise", "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)");
                         });
+                });
+
+            modelBuilder.Entity("USMB_TECH.Models.Qualifier", b =>
+                {
+                    b.Property<int>("Id_Equipement")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_equipement");
+
+                    b.Property<int>("Id_Mot_Clef")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_mot_clef");
+
+                    b.HasKey("Id_Equipement", "Id_Mot_Clef")
+                        .HasName("pk_qualifier");
+
+                    b.HasIndex("Id_Mot_Clef");
+
+                    b.ToTable("qualifier", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Referencer", b =>
@@ -877,14 +969,14 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_mot_clef");
 
-                    b.Property<int>("Id_Plateforme")
+                    b.Property<int>("Id_Pole_Expertise")
                         .HasColumnType("integer")
-                        .HasColumnName("id_plateforme");
+                        .HasColumnName("id_pole_expertise");
 
-                    b.HasKey("Id_Mot_Clef", "Id_Plateforme")
+                    b.HasKey("Id_Mot_Clef", "Id_Pole_Expertise")
                         .HasName("pk_specifier");
 
-                    b.HasIndex("Id_Plateforme");
+                    b.HasIndex("Id_Pole_Expertise");
 
                     b.ToTable("specifier", "usmbTech");
                 });
@@ -1028,16 +1120,16 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_contact_USMB_associer");
 
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Associers")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_plateforme_associer");
+                        .HasConstraintName("fk_pole_expertise_associer");
 
                     b.Navigation("Contact_USMBNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Consommable", b =>
@@ -1124,12 +1216,12 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_modele_equipement");
 
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Equipements")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_plateforme_equipement");
+                        .HasConstraintName("fk_pole_expertise_equipement");
 
                     b.HasOne("USMB_TECH.Models.Type_Equipement", "Type_EquipementNavigation")
                         .WithMany("Equipements")
@@ -1140,7 +1232,7 @@ namespace USMB_TECH.Migrations
 
                     b.Navigation("ModeleNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
 
                     b.Navigation("Type_EquipementNavigation");
                 });
@@ -1174,25 +1266,25 @@ namespace USMB_TECH.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_exemple_utilisation_equipement");
 
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Exemple_Utilisations")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_plateforme_exemple_utilisation");
+                        .HasConstraintName("fk_pole_expertise_exemple_utilisation");
 
                     b.Navigation("EquipementNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Exposer", b =>
                 {
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Exposers")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Equipement")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_plateforme_exposer");
+                        .HasConstraintName("fk_exposer_equipement");
 
                     b.HasOne("USMB_TECH.Models.Thematique", "ThematiqueNavigation")
                         .WithMany("Exposers")
@@ -1201,7 +1293,7 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_thematique_exposer");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("EquipementNavigation");
 
                     b.Navigation("ThematiqueNavigation");
                 });
@@ -1229,12 +1321,12 @@ namespace USMB_TECH.Migrations
 
             modelBuilder.Entity("USMB_TECH.Models.Gerer", b =>
                 {
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Gerers")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_plateforme_gerer");
+                        .HasConstraintName("fk_pole_expertise_gerer");
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Gerers")
@@ -1245,7 +1337,7 @@ namespace USMB_TECH.Migrations
 
                     b.Navigation("LaboratoireNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Laboratoire", b =>
@@ -1283,21 +1375,57 @@ namespace USMB_TECH.Migrations
 
             modelBuilder.Entity("USMB_TECH.Models.Photo", b =>
                 {
+                    b.HasOne("USMB_TECH.Models.Domaine_Excellence", "Domaine_ExcellenceNavigation")
+                        .WithMany("Photos")
+                        .HasForeignKey("Id_Domaine_Excellence")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_photo_domaine_excelence");
+
                     b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
                         .WithMany("Photos")
                         .HasForeignKey("Id_Equipement")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_photo_equipement");
 
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Photos")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_plateforme_photo");
+                        .HasConstraintName("fk_pole_expertise_photo");
+
+                    b.HasOne("USMB_TECH.Models.Prestation", "PrestationNavigation")
+                        .WithMany("Photos")
+                        .HasForeignKey("Id_Prestation")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_prestation_photo");
+
+                    b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
+                        .WithMany("Photos")
+                        .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_photo_laboratoire");
+
+                    b.Navigation("Domaine_ExcellenceNavigation");
 
                     b.Navigation("EquipementNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("LaboratoireNavigation");
+
+                    b.Navigation("Pole_ExpertiseNavigation");
+
+                    b.Navigation("PrestationNavigation");
+                });
+
+            modelBuilder.Entity("USMB_TECH.Models.Pole_Expertise", b =>
+                {
+                    b.HasOne("USMB_TECH.Models.Domaine_Excellence", "Domaine_ExcellenceNavigation")
+                        .WithMany("Pole_Expertises")
+                        .HasForeignKey("Id_Domaine_Excellence")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_domaine_excellence_pole_expertise");
+
+                    b.Navigation("Domaine_ExcellenceNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Posseder", b =>
@@ -1321,14 +1449,35 @@ namespace USMB_TECH.Migrations
                     b.Navigation("FonctionaliteNavigation");
                 });
 
-            modelBuilder.Entity("USMB_TECH.Models.Presenter", b =>
+            modelBuilder.Entity("USMB_TECH.Models.Preciser", b =>
                 {
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
-                        .WithMany("Presenters")
-                        .HasForeignKey("Id_Plateforme")
+                    b.HasOne("USMB_TECH.Models.Mot_Clef", "Mot_ClefNavigation")
+                        .WithMany("Precisers")
+                        .HasForeignKey("Id_Mot_Clef")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_presenter_plateforme");
+                        .HasConstraintName("fk_preciser_mot_clef");
+
+                    b.HasOne("USMB_TECH.Models.Prestation", "PrestationNavigation")
+                        .WithMany("Precisers")
+                        .HasForeignKey("Id_Prestation")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_preciser_prestation");
+
+                    b.Navigation("Mot_ClefNavigation");
+
+                    b.Navigation("PrestationNavigation");
+                });
+
+            modelBuilder.Entity("USMB_TECH.Models.Presenter", b =>
+                {
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
+                        .WithMany("Presenters")
+                        .HasForeignKey("Id_Pole_Expertise")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_presenter_pole_expertise");
 
                     b.HasOne("USMB_TECH.Models.Prestation", "PrestationNavigation")
                         .WithMany("Presenters")
@@ -1337,7 +1486,7 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_presenter_prestation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
 
                     b.Navigation("PrestationNavigation");
                 });
@@ -1350,6 +1499,13 @@ namespace USMB_TECH.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_prestation_contact_usmb");
+
+                    b.HasOne("USMB_TECH.Models.Domaine_Excellence", "Domaine_ExcellenceNavigation")
+                        .WithMany("Prestations")
+                        .HasForeignKey("Id_Domaine_Excellence")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_prestation_domaine_excellence");
 
                     b.HasOne("USMB_TECH.Models.Type_Prestation", "Type_PrestationNavigation")
                         .WithMany("Prestations")
@@ -1369,10 +1525,11 @@ namespace USMB_TECH.Migrations
                         .WithMany("Prestations")
                         .HasForeignKey("Nom_Court")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_prestation_laboratoire");
 
                     b.Navigation("Contact_USMBNavigation");
+
+                    b.Navigation("Domaine_ExcellenceNavigation");
 
                     b.Navigation("LaboratoireNavigation");
 
@@ -1389,11 +1546,11 @@ namespace USMB_TECH.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_prise_contact_equipement");
 
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Prise_Contacts")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_prise_contact_plateforme");
+                        .HasConstraintName("fk_prise_contact_pole_expertise");
 
                     b.HasOne("USMB_TECH.Models.Type_Client", "Type_ClientNavigation")
                         .WithMany("Prise_Contacts")
@@ -1404,9 +1561,30 @@ namespace USMB_TECH.Migrations
 
                     b.Navigation("EquipementNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
 
                     b.Navigation("Type_ClientNavigation");
+                });
+
+            modelBuilder.Entity("USMB_TECH.Models.Qualifier", b =>
+                {
+                    b.HasOne("USMB_TECH.Models.Equipement", "EquipementNavigation")
+                        .WithMany("Qualifiers")
+                        .HasForeignKey("Id_Equipement")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_qualifier_equipement");
+
+                    b.HasOne("USMB_TECH.Models.Mot_Clef", "Mot_ClefNavigation")
+                        .WithMany("Qualifiers")
+                        .HasForeignKey("Id_Mot_Clef")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_qualifier_mot_clef");
+
+                    b.Navigation("EquipementNavigation");
+
+                    b.Navigation("Mot_ClefNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Referencer", b =>
@@ -1439,16 +1617,16 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_specifier_mot_clef");
 
-                    b.HasOne("USMB_TECH.Models.Plateforme", "PlateformeNavigation")
+                    b.HasOne("USMB_TECH.Models.Pole_Expertise", "Pole_ExpertiseNavigation")
                         .WithMany("Specifiers")
-                        .HasForeignKey("Id_Plateforme")
+                        .HasForeignKey("Id_Pole_Expertise")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_specifier_plateforme");
+                        .HasConstraintName("fk_specifier_pole_expertise");
 
                     b.Navigation("Mot_ClefNavigation");
 
-                    b.Navigation("PlateformeNavigation");
+                    b.Navigation("Pole_ExpertiseNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Thematique", b =>
@@ -1484,11 +1662,22 @@ namespace USMB_TECH.Migrations
                     b.Navigation("Referencers");
                 });
 
+            modelBuilder.Entity("USMB_TECH.Models.Domaine_Excellence", b =>
+                {
+                    b.Navigation("Photos");
+
+                    b.Navigation("Pole_Expertises");
+
+                    b.Navigation("Prestations");
+                });
+
             modelBuilder.Entity("USMB_TECH.Models.Equipement", b =>
                 {
                     b.Navigation("Consommers");
 
                     b.Navigation("Exemple_Utilisations");
+
+                    b.Navigation("Exposers");
 
                     b.Navigation("Fournirs");
 
@@ -1497,6 +1686,8 @@ namespace USMB_TECH.Migrations
                     b.Navigation("Posseders");
 
                     b.Navigation("Prise_Contacts");
+
+                    b.Navigation("Qualifiers");
 
                     b.Navigation("Referencers");
                 });
@@ -1521,6 +1712,8 @@ namespace USMB_TECH.Migrations
 
                     b.Navigation("Gerers");
 
+                    b.Navigation("Photos");
+
                     b.Navigation("Prestations");
                 });
 
@@ -1538,18 +1731,20 @@ namespace USMB_TECH.Migrations
                 {
                     b.Navigation("Designers");
 
+                    b.Navigation("Precisers");
+
+                    b.Navigation("Qualifiers");
+
                     b.Navigation("Specifiers");
                 });
 
-            modelBuilder.Entity("USMB_TECH.Models.Plateforme", b =>
+            modelBuilder.Entity("USMB_TECH.Models.Pole_Expertise", b =>
                 {
                     b.Navigation("Associers");
 
                     b.Navigation("Equipements");
 
                     b.Navigation("Exemple_Utilisations");
-
-                    b.Navigation("Exposers");
 
                     b.Navigation("Gerers");
 
@@ -1565,6 +1760,10 @@ namespace USMB_TECH.Migrations
             modelBuilder.Entity("USMB_TECH.Models.Prestation", b =>
                 {
                     b.Navigation("Fournirs");
+
+                    b.Navigation("Photos");
+
+                    b.Navigation("Precisers");
 
                     b.Navigation("Presenters");
                 });
