@@ -70,7 +70,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        domaineExcellence = await Http.GetFromJsonAsync<Domaine_Excellence>($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/{Id}");
+        domaineExcellence = await Http.GetFromJsonAsync<Domaine_Excellence>($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/{Id}");
 
         var json = JsonSerializer.Serialize(domaineExcellence);
         await JS.InvokeVoidAsync("console.log", json);
@@ -91,7 +91,7 @@ else
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -133,7 +133,7 @@ else
                 };
             }
 
-            var response = await Http.PutAsJsonAsync($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/{Id}", domaineExcellence);
+            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/{Id}", domaineExcellence);
 
             if (response.IsSuccessStatusCode)
             {
@@ -165,7 +165,7 @@ else
         if (isSubmitted)
         {
             // Recharger les informations du domaine d'excellence mis à jour, y compris les photos.
-            domaineExcellence = await Http.GetFromJsonAsync<Domaine_Excellence>($"api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/{Id}");
+            domaineExcellence = await Http.GetFromJsonAsync<Domaine_Excellence>($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Domaine_Excellences/{Id}");
             StateHasChanged();
             NavigationManager.NavigateTo($"/DomaineExcellence/{Id}");
         }
