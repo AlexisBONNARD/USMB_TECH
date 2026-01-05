@@ -198,6 +198,7 @@ else
     private int selectedMotCle = 0;
 
     private List<string> countries = new List<string>();
+
     private IEnumerable<Pole_Expertise> existingPoles = new List<Pole_Expertise>();
     private IEnumerable<Thematique> existingThematiques = new List<Thematique>();
     private IEnumerable<Mot_Clef> existingMotCle = new List<Mot_Clef>();
@@ -214,14 +215,18 @@ else
         var root = JsonNode.Parse(json);
         countries = root["records"].AsArray().Select(r => (string)r["fields"]["name_fr"]).OrderBy(name => name).ToList();
 
-        laboratoire.Thematiques = laboratoire.Thematiques ?? new List<int>();
-        laboratoire.mot_Clefs = laboratoire.mot_Clefs ?? new List<int>();
-        laboratoire.Pole_Expertises = laboratoire.Pole_Expertises ?? new List<int>();
+        // laboratoire.Thematiques = laboratoire.Thematiques ?? new List<int>();
+        // laboratoire.mot_Clefs = laboratoire.mot_Clefs ?? new List<int>();
+        // laboratoire.Pole_Expertises = laboratoire.Pole_Expertises ?? new List<int>();
 
 
         existingThematiques = await thematiqueService.GetAllAsync();
         existingPoles = await poleService.GetAllAsync();
         existingMotCle = await motCleService.GetAllAsync();
+
+        laboratoire.Thematiques = laboratoire.Est_Liers.Select(g => g.ThematiqueNavigation.Id_Thematique).ToList();
+        laboratoire.mot_Clefs = laboratoire.Designers.Select(g => g.Mot_ClefNavigation.Id_Mot_Clef).ToList();
+        laboratoire.Pole_Expertises = laboratoire.Gerers.Select(g => g.Pole_ExpertiseNavigation.Id_Pole_Expertise).ToList();
 
         adresseCampus = laboratoire.Adresse_campusNavigation;
         adresseLabo = laboratoire.Adresse_laboNavigation;

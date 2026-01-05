@@ -26,13 +26,13 @@ else
             </section>
 
             <section>
-                <h2>L'entreprise qui demande le contacte est @prise_contact.Entreprise_Contact</h2>
+                <h2>L'entreprise qui demande le contact est @prise_contact.Entreprise_Contact</h2>
                 <p>EMail : @prise_contact.Email_Contact</p>
                 <p>Pole Expertise nav : @prise_contact.Pole_ExpertiseNavigation</p>
             </section>
 
             <section>
-                <h2>Son besoins : </h2>
+                <h2>Son besoin : </h2>
                 <p>@prise_contact.Description_besoins</p>
             </section>
         </div>
@@ -56,7 +56,7 @@ else
                 }
                 else if (prise_contact.Id_Equipement is not null)
                 {
-                <h2>NOS EQUIPEMENT</h2>
+                <h2>NOS EQUIPEMENTS</h2>
                     <div class="center-grid">
                         <div class="center-item" @onclick="@(() => RetourListe(prise_contact.EquipementNavigation.Id_Equipement, "equipement"))">
                             @if (prise_contact.EquipementNavigation.Photos != null && prise_contact.EquipementNavigation.Photos.Any())
