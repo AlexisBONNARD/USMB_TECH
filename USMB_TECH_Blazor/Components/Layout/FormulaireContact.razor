@@ -11,27 +11,30 @@
 
     <EditForm Model="@prise_contact" OnValidSubmit="HandleSubmit" key="@prise_contact">
         <DataAnnotationsValidator />
-        <ValidationSummary />
-
         <div class="form-container">
 
             <div class="row">
-                <InputText class="input half" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom" />
-                <InputText class="input half" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom" />
+                <InputText class="input half" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom *" />
+                <InputText class="input half" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom *" />
+                <ValidationMessage For="@(() => prise_contact.Nom_Contact)" />
+                <ValidationMessage For="@(() => prise_contact.Prenom_Contact)" />
             </div>
 
-            <InputText class="input" @bind-Value="prise_contact.Email_Contact" placeholder="Email" />
+            <InputText class="input" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
+            <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
 
             <InputText class="input" @bind-Value="prise_contact.Entreprise_Contact"
-                       placeholder="Type d’entité (entreprise, collectivité, association…)" />
+                       placeholder="Type d’entité (entreprise, collectivité, association…) *" />
+            <ValidationMessage For="@(() => prise_contact.Entreprise_Contact)" />
 
             <InputTextArea class="input textarea" @bind-Value="prise_contact.Description_besoins"
-                           placeholder="Votre besoin" />
+                           placeholder="Votre besoin *" />
+            <ValidationMessage For="@(() => prise_contact.Description_besoins)" />
 
             <div class="row">
                 <label>Équipement</label>
                 <InputSelect class="input" @bind-Value="prise_contact.Id_Equipement">
-                    <option value="">-- Aucun --</option>
+                    <option value="">Je ne sais pas</option>
                     @foreach (var eq in equipements)
                     {
                         <option value="@eq.Id_Equipement">@eq.Nom_Equipement</option>
@@ -42,7 +45,17 @@
             <div class="row">
                 <label>Pôle d'expertise</label>
                 <InputSelect class="input" @bind-Value="prise_contact.Id_Pole_Expertise">
-                    <option value="">-- Aucun --</option>
+                    <option value="">Je ne sais pas</option>
+                    @foreach (var p in pole_expertises)
+                    {
+                        <option value="@p.Id_Pole_Expertise">@p.Nom_Pole_Expertise</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="row">
+                <label>Laboratoire</label>
+                <InputSelect class="input" @bind-Value="prise_contact.Id_Pole_Expertise">
+                    <option value="">Je ne sais pas</option>
                     @foreach (var p in pole_expertises)
                     {
                         <option value="@p.Id_Pole_Expertise">@p.Nom_Pole_Expertise</option>
@@ -116,35 +129,19 @@
     {
         List<string> erreurs = new();
 
-        if (string.IsNullOrWhiteSpace(prise_contact.Nom_Contact))
-            erreurs.Add("Veuillez renseigner votre nom.");
-
-        if (string.IsNullOrWhiteSpace(prise_contact.Prenom_Contact))
-            erreurs.Add("Veuillez renseigner votre prénom.");
-
-        if (string.IsNullOrWhiteSpace(prise_contact.Email_Contact))
-            erreurs.Add("Veuillez renseigner votre email.");
-
-        if (string.IsNullOrWhiteSpace(prise_contact.Entreprise_Contact))
-            erreurs.Add("Veuillez renseigner votre type d’entreprise.");
-
-        if (string.IsNullOrWhiteSpace(prise_contact.Description_besoins))
-            erreurs.Add("Veuillez décrire votre besoin.");
-
         if (prise_contact.Id_Equipement == null && prise_contact.Id_Pole_Expertise == null)
             erreurs.Add("Vous devez sélectionner un équipement ou un pôle d'expertise.");
 
         if (prise_contact.Id_Equipement != null && prise_contact.Id_Pole_Expertise != null)
-            erreurs.Add("Sélectionnez uniquement un équipement OU un pôle d'expertise.");
+            erreurs.Add("Sélectionnez uniquement un équipement ou un pôle d'expertise.");
 
         if (erreurs.Count > 0)
         {
-            string messageErreur =
-                erreurs.Count == 1
-                ? erreurs[0]
-                : "<b>Veuillez corriger les erreurs suivantes :</b><br><ul>" +
-                  string.Join("", erreurs.Select(e => $"<li>{e}</li>")) +
-                  "</ul>";
+            string messageErreur = "";
+            foreach (var err in erreurs)
+            {
+                messageErreur += $"{err}<br/>";
+            }
 
             isMultipleErrors = erreurs.Count > 1;
             await ShowAlert(messageErreur, false);
