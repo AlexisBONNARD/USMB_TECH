@@ -37,39 +37,6 @@ else
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
             <section>
-                <h3>NOS POLES D'EXPERTISE</h3>
-                @if (pole_expertises is not null)
-                {
-                    <div class="center-grid">
-                        @foreach (var pole_expertise in pole_expertises)
-                        {
-                            <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
-
-                                <img src="@pole_expertise.Photos.First().Url_Photo" alt="@pole_expertise.Photos.First().Nom_Photo" />
-
-                                <p>@pole_expertise.Nom_Pole_Expertise</p>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p>Il n'y a pas de pôle d'expertise pour ce laboratoire</p>
-                }
-            </section>
-            <section>
-                <h3>NOS PRESTATIONS</h3>
-
-                <div class="center-grid">
-                    @foreach (Prestation prestation in laboratoire.Prestations)
-                    {
-                        <div class="center-item" @onclick="@(() => RetourListe(prestation.Id_Prestation, "prestation"))">
-                            <p>@prestation.Intitule_Prestation</p>
-                        </div>
-                    }
-                </div>
-            </section>
-            <section>
                 <h3>NOS CONTACTS</h3>
 
                 <div class="center-grid">
