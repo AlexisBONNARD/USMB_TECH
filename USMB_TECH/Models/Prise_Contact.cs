@@ -11,6 +11,9 @@ namespace USMB_TECH.Models
         [Column("num_prise_contact")]
         public int Num_Prise_Contact { get; set; }
 
+        [Column("nom_court")]
+        public string? Nom_Court { get; set; }
+
         [Column("id_equipement")]
         public int? Id_Equipement { get; set; }
 
@@ -39,6 +42,10 @@ namespace USMB_TECH.Models
         [Column("description_besoins")]
         [MaxLength(200)]
         public string Description_besoins { get; set; }
+
+        [ForeignKey("Nom_Court")]
+        [InverseProperty(nameof(Laboratoire.Prise_Contacts))]
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
         [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Prise_Contacts))]
