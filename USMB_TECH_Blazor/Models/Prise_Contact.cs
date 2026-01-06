@@ -7,6 +7,8 @@ namespace USMB_TECH_Blazor.Models
     {
         public int Num_Prise_Contact { get; set; }
 
+        public string? Nom_Court { get; set; }
+
         public int? Id_Equipement { get; set; }
 
         public int? Id_Pole_Expertise { get; set; }
@@ -27,6 +29,8 @@ namespace USMB_TECH_Blazor.Models
 
         [Required(ErrorMessage = "Veuillez décrire votre besoin")]
         public string Description_besoins { get; set; }
+
+        public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
 
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
 
