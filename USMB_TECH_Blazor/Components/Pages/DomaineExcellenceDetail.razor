@@ -56,31 +56,6 @@ else
                 }
             </div>
 
-            @if (prestationsFormation.Any())
-            {
-                <section>
-                    <h3 class="section-title">PRESTATIONS DE TYPE FORMATION</h3>
-                    <div class="center-grid two-columns">
-                        @foreach (var prestation in prestationsFormation)
-                        {
-                            <div class="expertise-card" @onclick="@(() => GoToPresta(prestation.Id_Prestation))">
-                                <div class="card-content">
-
-                                    <img src="@prestation.Photos.First().Url_Photo" alt="@prestation.Photos.First().Nom_Photo" />
-
-
-
-                                    <h4>@prestation.Intitule_Prestation</h4>
-                                    <p>@prestation.Description_Prestation</p>
-                                    <p><strong>Prix :</strong> @prestation.Prix_Vente €</p>
-                                    <p><strong>Réalisation chez client :</strong> @(prestation.Peux_Ce_Realiser_Chez_Le_Client ? "Oui" : "Non")</p>
-                                </div>
-                            </div>
-
-                        }
-                    </div>
-                </section>
-            }
         </section>
 
 
@@ -111,7 +86,6 @@ else
     public int Id { get; set; }
 
     private Domaine_Excellence? domaine;
-    private List<Prestation> prestationsFormation = new();
 
     private string deleteMessage = null;
     private bool deleteSuccess = false;
@@ -119,10 +93,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         domaine = await DomaineExcellenceService.GetByIdAsync(Id);
-
-        prestationsFormation = domaine.Prestations
-            .Where(p => p.Type_PrestationNavigation.Nom_Type_Prestation == "Formation")
-            .ToList();
     }
 
     private async Task DeleteDomaine(int id)
