@@ -13,7 +13,7 @@ using USMB_TECH.Models;
 using AutoMapper;
 using USMB_TECHTests.AutoMapper;
 
-namespace USMB_TECH.Controllers.Tests
+namespace USMB_TECHTests.Controllers
 {
     [TestClass()]
     [TestCategory("intégration")]
@@ -47,20 +47,16 @@ namespace USMB_TECH.Controllers.Tests
         }
 
         [TestMethod]
-        public async Task GetAllTypes_Return_Ok()
+        public async Task GetAllTypes_Equipement_Return_Ok()
         {
             var action = await _controller.GetType_Equipements();
-
-            Assert.IsInstanceOfType(action.Result, typeof(OkObjectResult), "la réponse n'est pas OK");
-
             var okResult = action.Result as OkObjectResult;
-
-            Assert.IsInstanceOfType(okResult.Value, typeof(IEnumerable<Type_Equipement>), "Les types d'équipements ne sont pas bien récupérés");
-
             var returnedList = okResult.Value as IEnumerable<Type_Equipement>;
 
+            Assert.IsInstanceOfType(action.Result, typeof(OkObjectResult), "la réponse n'est pas OK");
+            Assert.IsInstanceOfType(okResult.Value, typeof(IEnumerable<Type_Equipement>), "Les types d'équipements ne sont pas bien récupérés");
             Assert.AreEqual(3, returnedList.Count(), "Ils n'y a pas un nombre de trois types ");
-
+            Assert.IsTrue(returnedList.Any(t => t.Nom_Type == "Type1"), "Le type de prestation Type1 est manquant");
             CollectionAssert.AreEquivalent(
                 _context.Type_Equipements.Select(t => t.Nom_Type).ToList(),
                 returnedList.Select(t => t.Nom_Type).ToList()
@@ -68,20 +64,18 @@ namespace USMB_TECH.Controllers.Tests
         }
 
         [TestMethod]
-        public async Task GetTypeById_ExistingId_Returns_Type()
+        public async Task GetTypeById_ExistingId_Returns_Ok()
         {
             var action = await _controller.GetType_Equipement(_type2.Id_Type_Equipement);
-
             var result = action.Result as OkObjectResult;
+            var returnedValue = result.Value as Type_Equipement;
 
             Assert.IsNotNull(result, "La réponse n'est pas un OkObjectResult");
             Assert.IsInstanceOfType(result, typeof(OkObjectResult), "La réponse n'est pas OK");
-
-            var returnedValue = result.Value as Type_Equipement;
-
             Assert.IsNotNull(returnedValue, "Le type d'équipement n'a pas été retourné");
             Assert.AreEqual(_type2.Id_Type_Equipement, returnedValue.Id_Type_Equipement, "L'ID retourné n'est pas le bon");
         }
+
         [TestMethod]
         public async Task GetTypeById_NonExistingId_Returns_NotFound()
         {
@@ -90,6 +84,7 @@ namespace USMB_TECH.Controllers.Tests
             Assert.IsInstanceOfType(action.Result, typeof(NotFoundResult), "La réponse n'est pas NotFound");
             Assert.IsNull(action.Value, "Un type d'équipement a été trouvé");
         }
+
         [TestMethod]
         public async Task DeleteType_Equipement_Return_NoContent()
         {
@@ -98,6 +93,7 @@ namespace USMB_TECH.Controllers.Tests
             Assert.IsInstanceOfType(action.Result, typeof(NoContentResult), "la réponse n'est pas de type NotContentResult");
             Assert.IsNull(_context.Type_Equipements.Find(_type3.Id_Type_Equipement), "Le type d'équipement n'a pas été supprimé");
         }
+
         [TestMethod]
         public async Task DeleteType_Equipement_ReturnNotFound()
         {
@@ -106,6 +102,7 @@ namespace USMB_TECH.Controllers.Tests
             Assert.IsNull(_context.Type_Equipements.Find(5), "la réponse n'est pas nulle");
             Assert.IsInstanceOfType(action.Result, typeof(NotFoundObjectResult), "la réponse n'est pas de type NotFoundObjectResult");
         }
+
         [TestMethod]
         public async Task PostType_Equipement_Return_CreatedAtAction()
         {
@@ -135,6 +132,7 @@ namespace USMB_TECH.Controllers.Tests
             Assert.IsNotNull(result, "La réponse est nulle");
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult), "La réponse n'est pas un BadRequestObjectResult");
         }
+
         [TestMethod]
         public async Task PutType_Equipement_ValidUpdate_ReturnsNoContent()
         {
@@ -146,7 +144,7 @@ namespace USMB_TECH.Controllers.Tests
             var action = await _controller.PutType_Equipement(_type1.Id_Type_Equipement, updatedType);
             Assert.IsInstanceOfType(action, typeof(NoContentResult), "La réponse n'est pas NoContentResult");
             var typeInDb = _context.Type_Equipements.Find(_type1.Id_Type_Equipement);
-            Assert.AreEqual("Type1Updated", typeInDb.Nom_Type, "Le type d'équipement n'a pas été mis à jour");
+            Assert.AreEqual(updatedType.Nom_Type, typeInDb.Nom_Type, "Le type d'équipement n'a pas été mis à jour");
         }
 
         [TestMethod]
@@ -161,6 +159,7 @@ namespace USMB_TECH.Controllers.Tests
 
             Assert.IsInstanceOfType(action, typeof(BadRequestObjectResult), "La réponse n'est pas BadRequestObjectResult");
         }
+
         [TestMethod]
         public async Task PutType_Equipement_NonExistingId_ReturnsNotFound() 
         {
