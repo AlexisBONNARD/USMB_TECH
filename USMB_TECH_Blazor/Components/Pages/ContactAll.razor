@@ -22,8 +22,9 @@ else
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
-                <th>Mail</th>
-                <th>Num Securite Social</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Laboratoire</th>
                 <th>Détails</th>
                 @if (AdminState.IsAdmin)
                 {
@@ -40,7 +41,8 @@ else
                     <td>@contact.Nom_Contact</td>
                     <td>@contact.Prenom_Contact</td>
                     <td>@contact.Mail</td>
-                    <td>@contact.Num_Securite_Social</td>
+                    <td>@contact.Telephone</td>
+                    <td>@contact.Nom_Court</td>
                     <td>
                         <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Id_Contact, "contact"))">
                             Voir
