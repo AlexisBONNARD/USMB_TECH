@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace USMB_TECH_Blazor.Models
 {
@@ -19,6 +20,11 @@ namespace USMB_TECH_Blazor.Models
         public List<int> Pole_Expertises { get; set; } = new();
         public List<int> mot_Clefs { get; set; } = new();
         public List<int> Thematiques { get; set; } = new();
+
+        public ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
+        public ICollection<Est_Lier> Est_Liers { get;  set; } = new List<Est_Lier>();
+        public ICollection<Designer> Designers { get; set; } = new List<Designer>();
+
 
         // Navigation pour les adresses
         public Adresse? Adresse_campusNavigation { get; set; }

@@ -1,29 +1,73 @@
 ﻿@page "/3d-viewer"
 
+
 <link href="css/Affichage3D.css" rel="stylesheet" />
 
 <div style="height:500px;width:100%;">
-    <Viewer @ref="viewer" ViewerSettings="@settings" Scene="@scene" />
+    <Viewer @ref="viewer"
+            ViewerSettings="settings"
+            Scene="scene" />
 </div>
 
+<p>@msg</p>
+
 @code {
-    private Viewer viewer;
+
+    private Viewer viewer = null!;
+    private Scene scene = new();
+    private Guid loadedGuid;
+    private string msg = string.Empty;
+
     private readonly ViewerSettings settings = new ViewerSettings
     {
-        // id du container ou settings supplémentaires
+        // options si besoin
     };
-    private Scene scene = new Scene();
 
     protected override void OnInitialized()
     {
-        // Lumière
+        // Lumières uniquement
         scene.Add(new AmbientLight());
-        scene.Add(new PointLight { Position = new Vector3 { X = 1, Y = 3, Z = 0 } });
 
-        //⇨ Ici ajoute d'un loader pour charger un nouveaux modèle 3D
-        // Exemple : importer un objet .glb
-        // voir les exemples du repo pour le code d'import
+        scene.Add(new PointLight
+        {
+            Intensity = 2f,
+            Position = new Vector3(5, 5, 5)
+        });
+    }
 
-        base.OnInitialized();
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return Task.CompletedTask;
+
+        viewer.JsModuleLoaded += LoadModelAsync;
+        viewer.ObjectLoaded += OnObjectLoaded;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task LoadModelAsync()
+    {
+        // Modèle stocké dans wwwroot/models/
+        var modelUrl = "models/monModele.gltf"; // ou .glb
+
+        loadedGuid = await viewer.Import3DModelAsync(new ImportSettings
+        {
+            Format = Import3DFormats.Gltf, // ou Glb
+            FileURL = modelUrl
+        });
+
+        // Position caméra (caméra JS par défaut)
+        await viewer.SetCameraPositionAsync(
+            new Vector3(45, 30, 0)//,
+            // Vector3.Zero
+        );
+    }
+
+    private Task OnObjectLoaded(Object3DArgs e)
+    {
+        msg = $"Objet chargé : {e.UUID}";
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }

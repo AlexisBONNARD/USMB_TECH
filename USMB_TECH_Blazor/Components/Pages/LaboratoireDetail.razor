@@ -3,6 +3,8 @@
 @inject NavigationManager Navigation
 @inject AdminState AdminState
 @inject IJSRuntime JS
+@inject HttpClient Http
+
 
 <HeadContent>
     <link href="css/PageDetail.css" rel="stylesheet" />
@@ -27,48 +29,19 @@ else
             </div>
             <section>
                 <h3>Adresse</h3>
+                <div id="map"
+                     style="height:400px; width:100%">
+                </div>
+
                 <ul class="list-style">
                     <p>Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse, @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
-                    <p>Adresse du campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p>
+                    @* <p>Adresse du campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p> *@
                 </ul>
             </section>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
-            <section>
-                <h3>NOS POLES D'EXPERTISE</h3>
-                @if (pole_expertises is not null)
-                {
-                    <div class="center-grid">
-                        @foreach (var pole_expertise in pole_expertises)
-                        {
-                            <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
-
-                                <img src="@pole_expertise.Photos.First().Url_Photo" alt="@pole_expertise.Photos.First().Nom_Photo" />
-
-                                <p>@pole_expertise.Nom_Pole_Expertise</p>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p>Il n'y a pas de pôle d'expertise pour ce laboratoire</p>
-                }
-            </section>
-            <section>
-                <h3>NOS PRESTATIONS</h3>
-
-                <div class="center-grid">
-                    @foreach (Prestation prestation in laboratoire.Prestations)
-                    {
-                        <div class="center-item" @onclick="@(() => RetourListe(prestation.Id_Prestation, "prestation"))">
-                            <p>@prestation.Intitule_Prestation</p>
-                        </div>
-                    }
-                </div>
-            </section>
             <section>
                 <h3>NOS CONTACTS</h3>
 
@@ -88,10 +61,6 @@ else
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
 
-            <div class="info-block">
-                <h4>Localisation :</h4>
-                <div class="div-blue">@adresseLabo.Ville_Adresse</div>
-            </div>
             <FormulaireContact />
         </div>
     </div>
@@ -122,7 +91,59 @@ else
         adresseCampus = laboratoire.Adresse_campusNavigation;
         adresseLabo = laboratoire.Adresse_laboNavigation;
         pole_expertises = laboratoire.Gerers.Select(g => g.Pole_ExpertiseNavigation).ToList();
+
+        // Dès que l'adresse est chargée, on initialise la carte
+        await InitMapIfAdresseReady();
     }
+
+    private async Task InitMapIfAdresseReady()
+    {
+        if (adresseLabo?.Rue_Adresse == null ||
+            adresseLabo.Ville_Adresse == null ||
+            adresseLabo.Pays_Adresse == null ||
+            adresseLabo.Code_Postal_Adresse == null)
+        {
+            Console.WriteLine("Adresse incomplète, pas de géocodage.");
+            return;
+        }
+
+        var coords = await GetCoordsFromAdresse();
+        if (coords.HasValue)
+        {
+            await JS.InvokeVoidAsync("initMap", coords.Value.lat, coords.Value.lon);
+        }
+    }
+
+
+    private async Task<(double lat, double lon)?> GetCoordsFromAdresse()
+    {
+        if (adresseLabo?.Rue_Adresse == null ||
+            adresseLabo.Ville_Adresse == null ||
+            adresseLabo.Pays_Adresse == null ||
+            adresseLabo.Code_Postal_Adresse == null)
+            return null;
+
+        // URL avec paramètres séparés
+        var url = $"/api/geocode?" +
+                  $"street={Uri.EscapeDataString(adresseLabo.Rue_Adresse)}&" +
+                  $"city={Uri.EscapeDataString(adresseLabo.Ville_Adresse)}&" +
+                  $"country={Uri.EscapeDataString(adresseLabo.Pays_Adresse)}&" +
+                  $"postalcode={Uri.EscapeDataString(adresseLabo.Code_Postal_Adresse)}";
+
+        Console.WriteLine($"URL de géocodage : {url}");
+
+        var result = await Http.GetFromJsonAsync<List<NominatimResult>>(url);
+
+        if (result == null || result.Count == 0)
+            return null;
+
+        return (
+            double.Parse(result[0].lat, CultureInfo.InvariantCulture),
+            double.Parse(result[0].lon, CultureInfo.InvariantCulture)
+        );
+    }
+
+
 
     private void RetourListe(int id, string nomChemin)
     {
@@ -153,6 +174,25 @@ else
             await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
         }
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || adresseLabo == null)
+            return;
+
+        var coords = await GetCoordsFromAdresse();
+
+        if (coords.HasValue)
+        {
+            await JS.InvokeVoidAsync(
+                "initMap",
+                coords.Value.lat,
+                coords.Value.lon
+            );
+        }
+    }
+
+
 
     private void GoToUpdate(string id)
     {
