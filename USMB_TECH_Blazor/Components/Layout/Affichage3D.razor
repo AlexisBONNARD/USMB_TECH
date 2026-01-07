@@ -1,15 +1,11 @@
 ﻿@page "/3d-viewer"
-
-
 <link href="css/Affichage3D.css" rel="stylesheet" />
 
-<div style="height:500px;width:100%;">
+<div style="height:300px;width:100%;">
     <Viewer @ref="viewer"
             ViewerSettings="settings"
             Scene="scene" />
 </div>
-
-<p>@msg</p>
 
 @code {
 
@@ -30,8 +26,33 @@
 
         scene.Add(new PointLight
         {
-            Intensity = 2f,
-            Position = new Vector3(5, 5, 5)
+            Intensity = 0.5f,
+            Position = new Vector3(-80, 80, 80)
+        });
+        scene.Add(new PointLight
+        {
+            Intensity = 0.5f,
+            Position = new Vector3(80, -80, -80)
+        });
+        scene.Add(new PointLight
+        {
+            Intensity = 0.5f,
+            Position = new Vector3(-80, 0, -80)
+        });
+        scene.Add(new PointLight
+        {
+            Intensity = 0.5f,
+            Position = new Vector3(80, 0, 80)
+        });
+        scene.Add(new PointLight
+        {
+            Intensity = 0.5f,
+            Position = new Vector3(0, 80, 0)
+        });
+        scene.Add(new PointLight
+        {
+            Intensity = 0.5f,
+            Position = new Vector3(0, -80, 0)
         });
     }
 
@@ -53,14 +74,13 @@
 
         loadedGuid = await viewer.Import3DModelAsync(new ImportSettings
         {
-            Format = Import3DFormats.Gltf, // ou Glb
+            Format = Import3DFormats.Gltf, // ou .Glb
             FileURL = modelUrl
         });
 
         // Position caméra (caméra JS par défaut)
         await viewer.SetCameraPositionAsync(
-            new Vector3(45, 30, 0)//,
-            // Vector3.Zero
+            new Vector3(45, 45, 45)
         );
     }
 
