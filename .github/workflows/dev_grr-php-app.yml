@@ -32,8 +32,9 @@ jobs:
         run: |
           rm -rf publish
           mkdir publish
-          # Copier tout le contenu de GRR vers publish, y compris les fichiers cachés
-          cp -r GRR/. publish/
+          cp -r GRR/* publish/
+          cp -r GRR/.* publish/ 2>/dev/null || true
+
 
       - name: Azure Login
         uses: azure/login@v2
