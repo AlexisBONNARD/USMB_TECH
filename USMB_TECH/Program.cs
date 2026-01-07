@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Python.Runtime;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
+Runtime.PythonDLL = @"C:\\ProgramData\\anaconda3\\python311.dll";
+PythonEngine.Initialize();
 
 var builder = WebApplication.CreateBuilder(args);
 

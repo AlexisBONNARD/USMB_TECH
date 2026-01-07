@@ -5,6 +5,7 @@ using USMB_TECH_Blazor;
 using USMB_TECH_Blazor.Components;
 using USMB_TECH_Blazor.Models;
 using USMB_TECH_Blazor.Service;
+using Python.Runtime;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

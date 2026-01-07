@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using USMB_TECH.DTO;
 using USMB_TECH.Models.Repository;
 using USMB_TECH_Blazor.Models;
+using Python.Runtime;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -45,7 +46,13 @@ public class SearchController : ControllerBase
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
-
+        Console.WriteLine("cacatest");
+        using (Py.GIL())
+        {
+            var script = Py.Import("IASearch");
+            var test = script.InvokeMethod("test");
+            Console.WriteLine(test);
+        }
         //                  ÉQUIPEMENTS
         var equipements = (await _equipManager.SearchAsync(e =>
             (
