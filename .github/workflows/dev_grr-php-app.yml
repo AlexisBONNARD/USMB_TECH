@@ -1,4 +1,4 @@
-name: Build and deploy GRR PHP to Azure Web App
+name: Build and Deploy GRR PHP to Azure Web App
 
 on:
   push:
@@ -28,11 +28,6 @@ jobs:
             composer install --no-dev --prefer-dist --no-progress
           fi
 
-      - name: Create ZIP of GRR content
-        run: |
-          cd GRR
-          zip -r ../grr-package.zip ./*    # Important : le contenu, pas le dossier GRR
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -45,4 +40,5 @@ jobs:
         with:
           app-name: 'grr-php-app'
           slot-name: 'Production'
-          package: './grr-package.zip'
+          package: 'GRR/*'
+          clean: true
