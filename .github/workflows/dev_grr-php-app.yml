@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - dev
-    paths:
-      - 'GRR/**'
   workflow_dispatch:
 
 jobs:
