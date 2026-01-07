@@ -924,7 +924,7 @@ namespace USMB_TECH.Migrations
 
                     b.ToTable("prise_contact", "usmbTech", t =>
                         {
-                            t.HasCheckConstraint("CK_PriseContact_EquipementOuPole_Expertise", "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)");
+                            t.HasCheckConstraint("CK_PriseContact_Unique_Cible", "((\"id_equipement\" IS NOT NULL)::int + (\"id_pole_expertise\" IS NOT NULL)::int + (\"nom_court\" IS NOT NULL)::int) = 1");
                         });
                 });
 
@@ -1567,7 +1567,9 @@ namespace USMB_TECH.Migrations
 
                     b.HasOne("USMB_TECH.Models.Laboratoire", "LaboratoireNavigation")
                         .WithMany("Prise_Contacts")
-                        .HasForeignKey("Nom_Court");
+                        .HasForeignKey("Nom_Court")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_prise_contact_laboratoire");
 
                     b.Navigation("EquipementNavigation");
 

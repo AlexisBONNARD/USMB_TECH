@@ -751,6 +751,12 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_pole_expertise");
 
+            e.HasOne(d => d.LaboratoireNavigation)
+                .WithMany(p => p.Prise_Contacts)
+                .HasForeignKey(d => d.Nom_Court)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_prise_contact_laboratoire");
+
             e.HasOne(d => d.Type_ClientNavigation)
                 .WithMany(p => p.Prise_Contacts)
                 .HasForeignKey(d => d.Id_Type_Client)
@@ -761,8 +767,12 @@ public partial class UsmbTechDbContext : DbContext
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
-                    "CK_PriseContact_EquipementOuPole_Expertise",
-                    "(\"id_equipement\" IS NULL) <> (\"id_pole_expertise\" IS NULL)"
+                    "CK_PriseContact_Unique_Cible",
+                    "(" +
+                    "(\"id_equipement\" IS NOT NULL)::int + " +
+                    "(\"id_pole_expertise\" IS NOT NULL)::int + " +
+                    "(\"nom_court\" IS NOT NULL)::int" +
+                    ") = 1"
                 );
             });
         });
