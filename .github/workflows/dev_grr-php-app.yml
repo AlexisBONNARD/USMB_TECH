@@ -28,7 +28,13 @@ jobs:
             composer install --no-dev --prefer-dist --no-progress
           fi
 
-      - name: Login to Azure
+      - name: Prepare publish folder
+        run: |
+          rm -rf publish
+          mkdir publish
+          cp -r GRR/* publish/
+
+      - name: Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8997CEEAA2954B33BA5D44994A4D3669 }}
@@ -40,5 +46,5 @@ jobs:
         with:
           app-name: 'grr-php-app'
           slot-name: 'Production'
-          package: 'GRR/*'
+          package: 'publish'
           clean: true
