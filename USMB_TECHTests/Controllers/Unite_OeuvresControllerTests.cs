@@ -103,7 +103,7 @@ namespace USMB_TECHTests.Controllers
 
             var foundType = _context.Unite_Oeuvres.FirstOrDefault(t => t.Nom_Unite_Oeuvre == "Unite4");
 
-            Assert.IsNotNull(foundType, "L'unité n'a pas été trouvé");
+            Assert.IsNotNull(foundType, "L'unité n'a pas été trouvée");
             Assert.IsInstanceOfType(action.Result, typeof(CreatedAtActionResult), "la réponse n'est pas de type CreatedAtActionResult");
             Assert.IsInstanceOfType(foundType, typeof(Unite_Oeuvre), "L'unité trouvé n'est pas une Unité d'oeuvre");
         }
@@ -133,8 +133,9 @@ namespace USMB_TECHTests.Controllers
                 Nom_Unite_Oeuvre = "Unite1Updated"
             };
             var action = await _controller.PutUnite_Oeuvre(_unite1.Id_Unite_Oeuvre, updatedUnit);
-            Assert.IsInstanceOfType(action, typeof(NoContentResult), "La réponse n'est pas NoContentResult");
             var unitInDb = _context.Unite_Oeuvres.Find(_unite1.Id_Unite_Oeuvre);
+
+            Assert.IsInstanceOfType(action, typeof(NoContentResult), "La réponse n'est pas NoContentResult");
             Assert.AreEqual(updatedUnit.Nom_Unite_Oeuvre, unitInDb.Nom_Unite_Oeuvre, "L'unité n'a pas été mis à jour");
         }
 

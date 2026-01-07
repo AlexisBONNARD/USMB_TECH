@@ -13,35 +13,35 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class marquesController(IMainRepository<Marque, int> dataRepository) : ControllerBase
+    public class MarquesController(IMainRepository<Marque, int> dataRepository) : ControllerBase
     {
         private readonly IMainRepository<Marque, int> _dataRepository = dataRepository;
 
-        // GET: api/marques
+        // GET: api/Marques
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Marque>>> Getmarques()
+        public async Task<ActionResult<IEnumerable<Marque>>> GetMarques()
         {
             var marques = await _dataRepository.GetAllAsync();
             return Ok(marques);
         }
 
-        // GET: api/marques/{id}
+        // GET: api/Marques/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Marque>> Getmarque(int id)
+        public async Task<ActionResult<Marque>> GetMarque(int id)
         {
             var marque = await _dataRepository.GetByIdAsync(id);
             return marque is null ? NotFound() : Ok(marque);
         }
 
-        // PUT: api/marques/{id}
+        // PUT: api/Marques/{id}
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Putmarque(int id, Marque marque)
+        public async Task<IActionResult> PutMarque(int id, Marque marque)
         {
             if (!ModelState.IsValid)
             {
@@ -59,10 +59,10 @@ namespace USMB_TECH.Controllers
             return NoContent();
         }
 
-        // POST: api/marques
+        // POST: api/Marques
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Marque>> Postmarque(Marque marque)
+        public async Task<ActionResult<Marque>> PostMarque(Marque marque)
         {
             if (!ModelState.IsValid)
             {
@@ -70,14 +70,14 @@ namespace USMB_TECH.Controllers
             }
 
             await _dataRepository.AddAsync(marque);
-            return CreatedAtAction(nameof(Getmarque), new { id = marque.Id_Marque }, marque);
+            return CreatedAtAction(nameof(GetMarque), new { id = marque.Id_Marque }, marque);
         }
 
-        // DELETE: api/marques/{id}
+        // DELETE: api/Marques/{id}
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Deletemarque(int id)
+        public async Task<IActionResult> DeleteMarque(int id)
         {
             var marque = await _dataRepository.GetByIdAsync(id);
             if (marque is null)
