@@ -24,6 +24,8 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\" />
+	<ItemGroup>
+		<None Include="..\USMB_TECH_Blazor\Components\Component.razor" Link="Component.razor" />
 	</ItemGroup>
 	<Target Name="PublishBlazorWasm" AfterTargets="Publish">
 		<Exec Command="dotnet publish ../USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release -o $(ProjectDir)wwwroot" />

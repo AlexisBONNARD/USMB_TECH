@@ -1,0 +1,93 @@
+﻿/* Conteneur global pour centrer le formulaire */
+.page-container {
+    max-width: 900px; /* largeur du formulaire */
+    margin: 0 auto; /* centré horizontalement */
+    padding: 20px; /* espace autour */
+}
+
+/* Bloc interne */
+.edit-form-container {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Titres */
+h2.add_platform {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 700;
+}
+
+h4.add_platform {
+    border-left: 4px solid #007bff;
+    padding-left: 10px;
+    margin-top: 30px;
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Labels */
+label {
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* Inputs et textarea */
+input.form-control,
+textarea.form-control,
+select.form-control,
+select.form-select {
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Boutons Ajouter */
+button.btn-secondary {
+    margin-top: 6px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+}
+
+/* Listes */
+ul.add_platform {
+    list-style: none;
+    padding-left: 0;
+}
+
+    ul.add_platform li.add_platform {
+        background-color: #eef1f5;
+        padding: 6px 12px;
+        border-radius: 6px;
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+    }
+
+/* Bouton principal plus petit et centré */
+.submit-wrapper {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button.btn-success {
+    padding: 8px 25px;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+/* Styles pour les alertes fixes en haut de la page */
+.alert-fixed {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: auto;
+    min-width: 300px;
+    max-width: 600px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.4s ease-in-out;
+}

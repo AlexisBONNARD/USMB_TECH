@@ -7,7 +7,6 @@ using USMB_TECH.Models.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,25 +39,18 @@ builder.Services.AddScoped<Domaine_ExcellenceManager>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
 builder.Services.AddDbContext<UsmbTechDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("UsmbTechDbContext")));
 
-
-// CORRECT CORS CONFIGURATION
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazor",
         policy =>
         {
-            policy.WithOrigins(
-                    "https://localhost:7264" // Blazor app
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-                //.AllowCredentials();
+            policy.WithOrigins("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
         });
-
 });
 
 builder.Services.AddControllers()
@@ -71,27 +63,22 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// ENABLE STATIC FILES (REQUIRED FOR UPLOAD)
-app.UseStaticFiles();
-
-// APPLY CORS
 app.UseCors("AllowBlazor");
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
+// IMPORTANT : ordre correct
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
+// Map API controllers
+app.MapControllers();
+
+// LAST : Blazor fallback
 app.MapFallbackToFile("index.html");
 
 app.MapGet("/api/geocode", async (string street, string city, string country, string postalcode) =>

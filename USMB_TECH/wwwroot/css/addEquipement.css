@@ -1,0 +1,78 @@
+﻿form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Titre */
+h3, h4 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Style des labels */
+form label {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 3px;
+}
+
+/* Inputs textes + select + number */
+form input[type="text"],
+form input[type="number"],
+form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+    /* Focus sur un champ */
+    form input:focus,
+    form select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 3px #3b82f6;
+        outline: none;
+    }
+
+/* Checkboxes */
+form input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    transform: translateY(2px);
+}
+
+form label + input[type="checkbox"] {
+    margin-top: 5px;
+}
+
+/* Section photos */
+.add_platform {
+    margin-top: 15px;
+}
+
+/* Bouton */
+form button[type="submit"] {
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Message succès / erreur */
+.alert {
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+}

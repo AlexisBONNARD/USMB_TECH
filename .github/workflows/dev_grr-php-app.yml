@@ -1,0 +1,52 @@
+name: Build and Deploy GRR PHP to Azure Web App
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install Composer dependencies (GRR)
+        working-directory: GRR
+        run: |
+          if [ -f composer.json ]; then
+            composer install --no-dev --prefer-dist --no-progress
+          fi
+
+      - name: Prepare publish folder
+        run: |
+          rm -rf publish
+          mkdir publish
+          cp -r GRR/* publish/
+          cp -r GRR/.* publish/ 2>/dev/null || true
+
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8997CEEAA2954B33BA5D44994A4D3669 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1531A766F6174F559C78478A67D2FBB6 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9A402B00E2D54C9981F60BBFF3EA1399 }}
+
+      - name: Deploy GRR to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'grr-php-app'
+          slot-name: 'Production'
+          package: 'publish'
+          clean: true
