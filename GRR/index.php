@@ -17,7 +17,7 @@
 
 $niveauDossier = 1;
 
-require_once("include/config.inc.php");
+require_once(__DIR__ . '/include/config.inc.php');
 if (file_exists("personnalisation/connect.inc.php"))
 	include "personnalisation/connect.inc.php";
 require_once("include/misc.inc.php");
