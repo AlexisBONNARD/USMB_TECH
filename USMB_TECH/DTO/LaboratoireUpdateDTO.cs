@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using USMB_TECH.Models;
 
 namespace USMB_TECH.DTO
@@ -18,6 +19,11 @@ namespace USMB_TECH.DTO
 
         public Adresse? Adresse_campusNavigation { get; set; }
         public Adresse? Adresse_laboNavigation { get; set; }
+        public ICollection<Gerer> Gerers { get; set; } = new List<Gerer>();
+
+        public ICollection<Est_Lier> Est_Liers { get; set; } = new List<Est_Lier>();
+
+        public ICollection<Designer> Designers { get; set; } = new List<Designer>();
     }
 
 }

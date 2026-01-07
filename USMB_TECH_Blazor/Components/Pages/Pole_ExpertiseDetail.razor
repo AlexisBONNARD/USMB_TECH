@@ -44,18 +44,6 @@ else
             </section>
             <h3>EXEMPLES DE RÉALISATIONS</h3>
             <p>@pole_expertise.Description_Contenu</p>
-            <section>
-                <h3>CATALOGUE DE PRESTATIONS</h3>
-                <ul class="list-style">
-                    @foreach (var prestation in prestations)
-                    {
-                        <li>
-                            <strong>@prestation.Intitule_Prestation :</strong>
-                            <span>@prestation.Description_Prestation</span>
-                        </li>
-                    }
-                </ul>
-            </section>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
@@ -79,7 +67,7 @@ else
             </section>
 
             <section>
-                <h3>PRESTATION</h3>
+                <h3>NOS PRESTATIONS</h3>
                 <div class="center-grid">
                     @foreach (var prestation in prestations)
                     {
@@ -101,7 +89,9 @@ else
         <div class="col-right">
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue">@domaine_excellence</div>
+                <div class="btn-blue" @onclick="@(() => GoToDomaine(pole_expertise.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
+                    @pole_expertise?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
+                </div>
             </div>
 
           @*   <div class="info-block">
@@ -203,11 +193,13 @@ else
 
     private void GoToDomaine(int idDomaine)
     {
-        Navigation.NavigateTo($"/domaine/{idDomaine}");
+        Navigation.NavigateTo($"/DomaineExcellence/{idDomaine}");
     }
 
     private void GoToUpdate(int id)
     {
         Navigation.NavigateTo($"/pole_expertise/edit/{id}", true);
     }
+
+
 }

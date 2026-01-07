@@ -50,5 +50,8 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Photo.LaboratoireNavigation))]
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
+        [InverseProperty(nameof(Prise_Contact.LaboratoireNavigation))]
+        public virtual ICollection<Prise_Contact> Prise_Contacts { get; set; } = new List<Prise_Contact>();
     }
 }

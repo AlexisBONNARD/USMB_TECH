@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
@@ -12,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
 builder.Services.AddScoped<IMainRepository<Pole_Expertise, int>, Pole_ExpertiseManager>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(" https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7093/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
 builder.Services.AddScoped<IMainRepository<Prise_Contact, int>, Prise_ContactManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
@@ -79,5 +80,26 @@ app.MapControllers();
 
 // LAST : Blazor fallback
 app.MapFallbackToFile("index.html");
+
+app.MapGet("/api/geocode", async (string street, string city, string country, string postalcode) =>
+{
+    using var client = new HttpClient();
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("USMB-TECH/1.0");
+
+    var queryParams = new Dictionary<string, string>
+    {
+        ["street"] = street,
+        ["city"] = city,
+        ["country"] = country,
+        ["postalcode"] = postalcode,
+        ["format"] = "json",
+        ["limit"] = "1"
+    };
+
+    var url = QueryHelpers.AddQueryString("https://nominatim.openstreetmap.org/search", queryParams);
+    var json = await client.GetStringAsync(url);
+
+    return Results.Content(json, "application/json");
+});
 
 app.Run();

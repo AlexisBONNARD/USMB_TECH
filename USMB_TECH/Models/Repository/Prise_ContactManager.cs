@@ -25,13 +25,26 @@ namespace USMB_TECH.Models.Repository
         public async Task<Prise_Contact?> GetByIdAsync(int id)
         {
             return await _context.Prise_Contacts
+                // Equipement + photos
                 .Include(p => p.EquipementNavigation)
                     .ThenInclude(e => e.Photos)
-                    .ThenInclude(e => e.Pole_ExpertiseNavigation)
+
+                // Pôle + ses photos
                 .Include(p => p.Pole_ExpertiseNavigation)
-                    .ThenInclude(p => p.Equipements)
+                    .ThenInclude(pe => pe.Photos)
+
+                // Pôle → équipements → photos
+                .Include(p => p.Pole_ExpertiseNavigation)
+                    .ThenInclude(pe => pe.Equipements)
                         .ThenInclude(e => e.Photos)
+
+                // Laboratoire + photos
+                .Include(p => p.LaboratoireNavigation)
+                    .ThenInclude(l => l.Photos)
+
+                // Type client
                 .Include(p => p.Type_ClientNavigation)
+
                 .FirstOrDefaultAsync(p => p.Num_Prise_Contact == id);
         }
 

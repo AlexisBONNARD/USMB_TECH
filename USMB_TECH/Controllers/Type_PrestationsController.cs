@@ -17,10 +17,9 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Type_PrestationsController(IMainRepository<Type_Prestation, int> dataRepository, IMapper mapper) : ControllerBase
+    public class Type_PrestationsController(IMainRepository<Type_Prestation, int> dataRepository) : ControllerBase
     {
         private readonly IMainRepository<Type_Prestation, int> _dataRepository = dataRepository;
-        private readonly IMapper _mapper = mapper;
 
         // GET: api/Type_Prestations
         [HttpGet]
