@@ -31,7 +31,7 @@ jobs:
       - name: Create ZIP of GRR content
         run: |
           cd GRR
-          zip -r ../grr-package.zip ./*
+          zip -r ../grr-package.zip ./*    # Important : le contenu, pas le dossier GRR
 
       - name: Login to Azure
         uses: azure/login@v2
