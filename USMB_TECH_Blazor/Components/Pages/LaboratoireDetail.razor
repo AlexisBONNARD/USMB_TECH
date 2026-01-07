@@ -106,11 +106,11 @@ else
             Console.WriteLine("Adresse incomplète, pas de géocodage.");
             return;
         }
-
+        var adresse = $"{adresseLabo.Rue_Adresse},<br> {adresseLabo.Ville_Adresse}, {adresseLabo.Code_Postal_Adresse}, {adresseLabo.Pays_Adresse}";
         var coords = await GetCoordsFromAdresse();
         if (coords.HasValue)
         {
-            await JS.InvokeVoidAsync("initMap", coords.Value.lat, coords.Value.lon);
+            await JS.InvokeVoidAsync("initMap", coords.Value.lat, coords.Value.lon, adresse);
         }
     }
 

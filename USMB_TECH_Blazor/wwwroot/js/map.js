@@ -1,6 +1,6 @@
 ﻿let map;
 
-window.initMap = (lat, lon) => {
+window.initMap = (lat, lon, adresse) => {
 
     setTimeout(() => {
 
@@ -15,7 +15,9 @@ window.initMap = (lat, lon) => {
         }
 
         map.invalidateSize();   // 🔥 OBLIGATOIRE EN BLAZOR
-        L.marker([lat, lon]).addTo(map);
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup(adresse)
+            .openPopup();
 
     }, 100); // laisse le DOM se stabiliser
 };
