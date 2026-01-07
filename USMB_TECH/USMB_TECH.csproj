@@ -24,6 +24,7 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\" />
+	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\USMB_TECH_Blazor\Components\Component.razor" Link="Component.razor" />
 	</ItemGroup>
