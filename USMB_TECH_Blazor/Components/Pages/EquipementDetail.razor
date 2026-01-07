@@ -43,13 +43,13 @@ else
             </section>
 
             @* <!-- Ajout du modèle 3D avec Blazor3D -->
-            <section>
-                <h3>Modèle 3D de l'Équipement</h3>
-                <Blazor3D.Model3DViewer 
-                    ModelUrl="https://skfb.ly/pEunL"
-                    Width="100%" 
-                    Height="500px" />
-            </section> *@
+            @if (equipement. != null && equipement..Any())
+            {
+                <section>
+                    <h3>Modèle 3D de l'Équipement</h3>
+                    <Affichage3D />
+                </section>
+            } *@
 
             <!-- Utilisation -->
             <section>
@@ -140,7 +140,6 @@ else
     // ----------- ALERTES SUPPRESSION -----------
     private string deleteMessage = null;
     private bool deleteSuccess = false;
-
     protected override async Task OnInitializedAsync()
     {
         equipement = await dataRepository.GetByIdAsync(Id);
