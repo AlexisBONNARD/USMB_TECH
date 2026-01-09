@@ -13,6 +13,7 @@
     private Scene scene = new();
     private Guid loadedGuid;
     private string msg = string.Empty;
+    [Parameter]public string urlModel { get; set; } = string.Empty;
 
     private readonly ViewerSettings settings = new ViewerSettings
     {
@@ -70,7 +71,7 @@
     private async Task LoadModelAsync()
     {
         // Modèle stocké dans wwwroot/models/
-        var modelUrl = "models/monModele.gltf"; // ou .glb
+        var modelUrl = $"models/{urlModel}"; // ou .glb
 
         loadedGuid = await viewer.Import3DModelAsync(new ImportSettings
         {

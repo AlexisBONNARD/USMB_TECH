@@ -45,6 +45,10 @@ namespace USMB_TECH.Models
         [MaxLength(500)]
         public string Description_Technique { get; set; }
 
+        [Column("url_modele_3d")]
+        [MaxLength(150)]
+        public string? Url_Modele_3D { get; set; }
+
         [Column("disponibilite")]
         public bool Disponibilite { get; set; }
 
