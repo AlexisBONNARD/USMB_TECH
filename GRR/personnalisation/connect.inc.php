@@ -2,13 +2,13 @@
 # Les quatre lignes suivantes sont � modifier selon votre configuration
 # ligne suivante : le nom du serveur qui herberge votre base sql.
 # Si c'est le m�me que celui qui heberge les scripts, mettre "localhost"
-$dbHost="localhost";
+$dbHost = getenv('DB_HOST');
 # ligne suivante : le nom de votre base sql
-$dbDb="grr";
+$dbDb = getenv('DB_NAME');
 # ligne suivante : le nom de l'utilisateur sql qui a les droits sur la base
-$dbUser="grr";
+$dbUser = getenv('DB_USER');
 # ligne suivante : le mot de passe de l'utilisateur sql ci-dessus
-$dbPass="grr";
+$dbPass = getenv('DB_PASSWORD');
 # ligne suivante : Port MySQL laiss� par d�faut
-$dbPort="3306";
+$dbPort = getenv('DB_PORT');
 ?>
