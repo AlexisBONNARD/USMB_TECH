@@ -54,7 +54,7 @@ namespace USMB_TECHTests.Controllers
             Assert.IsTrue(returnedList.Any(m => m.Nom_Mot_Clef == "mot1"), "le mot clé1 est absent");
             CollectionAssert.AreEquivalent(
                 _context.Mot_Clefs.Select(m => m.Nom_Mot_Clef).ToList(),
-                returnedList.Select(m => m.Nom_Mot_Clef).ToList(), "Les mots clés retournés sont incorrectes");
+                returnedList.Select(m => m.Nom_Mot_Clef).ToList(), "Les mots clés retournés sont incorrects");
         }
 
         [TestMethod]

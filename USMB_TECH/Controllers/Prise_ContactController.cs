@@ -10,10 +10,9 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Prise_ContactsController(IMainRepository<Prise_Contact, int> dataRepository, IMapper mapper) : ControllerBase
+    public class Prise_ContactsController(IMainRepository<Prise_Contact, int> dataRepository) : ControllerBase
     {
         private readonly IMainRepository<Prise_Contact, int> _dataRepository = dataRepository;
-        private readonly IMapper _mapper = mapper;
 
         // GET: api/Prise_Contacts
         [HttpGet]
