@@ -4,5 +4,5 @@ namespace USMB_TECHTests;
 
 public class BaseTest : PageTest
 {
-    protected const string BaseUrl = "https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/";
+    protected const string BaseUrl = "https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net";
 }

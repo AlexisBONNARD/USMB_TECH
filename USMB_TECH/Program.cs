@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMainRepository<Laboratoire, string>, LaboratoireManager>();
 builder.Services.AddScoped<IMainRepository<Pole_Expertise, int>, Pole_ExpertiseManager>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net//") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/") });
 builder.Services.AddScoped<IMainRepository<Thematique, int>, ThematiqueManager>();
 builder.Services.AddScoped<IMainRepository<Prise_Contact, int>, Prise_ContactManager>();
 builder.Services.AddScoped<IMainRepository<Prestation, int>, PrestationManager>();
@@ -47,7 +47,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazor",
         policy =>
         {
-            policy.WithOrigins("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/")
+            policy.WithOrigins("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });

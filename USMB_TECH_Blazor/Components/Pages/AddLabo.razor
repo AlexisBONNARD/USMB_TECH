@@ -524,7 +524,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net//api/laboratoires/upload", content);
+            var response = await Http.PostAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/api/laboratoires/upload", content);
 
             if (response.IsSuccessStatusCode)
             {

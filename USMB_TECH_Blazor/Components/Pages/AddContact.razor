@@ -249,7 +249,7 @@
             }
 
             // ---------- POST du contact ----------
-            var response = await Http.PostAsJsonAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net//api/Contact_USMB", contact);
+            var response = await Http.PostAsJsonAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/api/Contact_USMB", contact);
             var createdContact = await response.Content.ReadFromJsonAsync<Contact_USMB>();
 
             contact = createdContact;
