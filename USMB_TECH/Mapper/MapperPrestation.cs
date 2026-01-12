@@ -48,6 +48,8 @@ namespace USMB_TECH.Mapper
                 }).ToList()))
                 .ForMember(dest => dest.Id_Contact, opt => opt.Ignore())
                 .ForMember(dest => dest.Id_Type_Prestation, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Unite_Oeuvre, opt => opt.Ignore())
+                .ForMember(dest => dest.Fournirs, opt => opt.Ignore())
                 .ForMember(dest => dest.Id_Domaine_Excellence, opt => opt.Ignore());
 
         }

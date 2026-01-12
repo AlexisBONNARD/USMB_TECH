@@ -88,9 +88,10 @@ namespace USMB_TECHTests.Controllers
         public async Task DeleteType_Prestation_Return_NoContent()
         {
             var action = _controller.DeleteType_Prestation(_type3.Id_Type_Prestation);
+            var typeInDb = _context.Type_Prestations.Find(_type3.Id_Type_Prestation);
 
             Assert.IsInstanceOfType(action.Result, typeof(NoContentResult), "la réponse n'est pas de type NotContentResult");
-            Assert.IsNull(_context.Type_Prestations.Find(_type3.Id_Type_Prestation), "Le type de la prestation n'a pas été supprimé");
+            Assert.IsNull(typeInDb, "Le type de la prestation n'a pas été supprimé");
         }
 
         [TestMethod]

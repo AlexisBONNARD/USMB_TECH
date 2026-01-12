@@ -82,9 +82,10 @@ namespace USMB_TECHTests.Controllers
         public async Task DeleteUnite_Return_NoContent()
         {
             var action = _controller.DeleteUnite_Oeuvre(_unite3.Id_Unite_Oeuvre);
+            var uniteInDb = _context.Unite_Oeuvres.Find(_unite3.Id_Unite_Oeuvre);
 
             Assert.IsInstanceOfType(action.Result, typeof(NoContentResult), "la réponse n'est pas de type NotContentResult");
-            Assert.IsNull(_context.Unite_Oeuvres.Find(_unite3.Id_Unite_Oeuvre), "L'unite d'oeuvre n'a pas été supprimé");
+            Assert.IsNull(uniteInDb, "L'unite d'oeuvre n'a pas été supprimé");
         }
 
         [TestMethod]

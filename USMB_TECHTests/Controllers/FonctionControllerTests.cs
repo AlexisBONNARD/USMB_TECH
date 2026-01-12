@@ -83,9 +83,10 @@ namespace USMB_TECHTests.Controllers
         public async Task DeleteFonction_Return_NoContent() 
         {
             var action = _controller.DeleteFonction(_fonction2.Id_Fonction);
+            var fonctionInDb = _context.Fonctions.Find(_fonction2.Id_Fonction);
 
             Assert.IsInstanceOfType(action.Result, typeof(NoContentResult), "la réponse n'est pas NoContent");
-            Assert.IsNull(_context.Fonctions.Find(_fonction2.Id_Fonction), "La fonction n'a pas été supprimée");
+            Assert.IsNull(fonctionInDb, "La fonction n'a pas été supprimée");
         }
 
         [TestMethod]

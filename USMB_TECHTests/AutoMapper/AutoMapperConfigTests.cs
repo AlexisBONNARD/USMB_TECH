@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using USMB_TECH.Mapper;
 
 namespace USMB_TECHTests.AutoMapper
 {
@@ -18,6 +19,8 @@ namespace USMB_TECHTests.AutoMapper
         {
             _config = new MapperConfiguration(cfg =>
             {
+                cfg.AddProfile<MapperContact>();
+                cfg.AddProfile<MapperPrestation>();
             });
             _config.AssertConfigurationIsValid();
             _mapper = _config.CreateMapper();

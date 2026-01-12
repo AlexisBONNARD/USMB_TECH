@@ -9,13 +9,18 @@ namespace USMB_TECH.Mapper
     {
         public MapperContact()
         {
-            CreateMap<AddContactDTO, Contact_USMB>()
-            .ForMember(dest => dest.FonctionNavigation, opt => opt.MapFrom(src => new Fonction 
-            {
-                Nom_Fonction = src.Nom_Fonction
-            }))
-            .ForMember(dest => dest.Id_Fonction, opt => opt.Ignore());
-            CreateMap<Contact_USMB, AddContactDTO>();
+            CreateMap<AddContactDTO, Contact_USMB>().ForMember(
+                dest => dest.FonctionNavigation, opt => opt.MapFrom(src => new Fonction 
+                { 
+                    Nom_Fonction = src.Nom_Fonction 
+                }))
+                .ForMember(dest => dest.Id_Fonction, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Contact, opt => opt.Ignore())
+                .ForMember(dest => dest.LaboratoireNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.Prestations, opt => opt.Ignore())
+                .ForMember(dest => dest.Associers, opt => opt.Ignore())
+                .ForMember(dest => dest.Referencers, opt => opt.Ignore());
+            CreateMap<Contact_USMB, AddContactDTO>() .ForMember(dest => dest.Nom_Fonction, opt => opt.MapFrom(src => src.FonctionNavigation.Nom_Fonction));
         }
     }
 }

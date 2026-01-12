@@ -83,9 +83,9 @@ namespace USMB_TECHTests.Controllers
         public async Task DeleteMot_Clef_Return_NoContent()
         {
             var action = _controller.Deletemot_clef(_mot1.Id_Mot_Clef);
-
+            var motInDb = _context.Mot_Clefs.Find(_mot1.Id_Mot_Clef);
             Assert.IsInstanceOfType(action.Result, typeof(NoContentResult), "la réponse n'est pas NoContent");
-            Assert.IsNull(_context.Fonctions.Find(_mot1.Id_Mot_Clef), "Le mot clé n'a pas été supprimé");
+            Assert.IsNull(motInDb, "Le mot clé n'a pas été supprimé");
         }
 
         [TestMethod]
