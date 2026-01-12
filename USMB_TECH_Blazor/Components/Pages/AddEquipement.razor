@@ -25,15 +25,15 @@
 
         <h4 class="add_style">Infos générales</h4>
         <label>Nom de l'équipement *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" placeholder="Serveur"/>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Equipement" placeholder="Serveur" />
         <ValidationMessage For="@(() => addEquipement.Nom_Equipement)" />
 
         <label>Numéro d'immobilisation *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" placeholder="IT-2024-00157"/>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Num_Immobilisation" placeholder="IT-2024-00157" />
         <ValidationMessage For="@(() => addEquipement.Num_Immobilisation)" />
 
         <label>Description Technique *</label>
-        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" placeholder="Serveur permettant de stocker les données"/>
+        <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Technique" placeholder="Serveur permettant de stocker les données" />
         <ValidationMessage For="@(() => addEquipement.Description_Technique)" />
 
         <label>Prix Achat *</label>
@@ -55,7 +55,7 @@
 
         <hr />
         <h4 class="add_style">Photos</h4>
-        <InputFile OnChange="HandleFileUpload" multiple/>
+        <InputFile OnChange="HandleFileUpload" multiple />
         @if (addEquipement.Photos != null && addEquipement.Photos.Any())
         {
             <div class="uploaded-photos">
@@ -172,14 +172,28 @@
         <h4 class="add_style">Exemple d'utilisation *</h4>
         <div>
             <label>Nom de l'exemple : </label>
-            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" placeholder="Stockage"/>
+            <InputText class="form-control mb-2" @bind-Value="addEquipement.Nom_Exemple" placeholder="Stockage" />
             <ValidationMessage For="@(() => addEquipement.Nom_Exemple)" />
         </div>
         <div>
-            <label>Description : </label>
-            <InputText class="form-control mb-2" @bind-Value="addEquipement.Description_Exemple" placeholder="la base de données est stockée sur ce serveur" />
+            <label>
+                Description :
+                <span class="info-tooltip">
+                    ⓘ
+                    <span class="tooltip-text">
+                        Dans cette section, vous pouvez décrire votre exemple afin d'aider
+                        l'utilisateur à avoir une idée de l'utilisation de l'équipement.
+                    </span>
+                </span>
+            </label>
+
+            <InputText class="form-control mb-2"
+                       @bind-Value="addEquipement.Description_Exemple"
+                       placeholder="La base de données est stockée sur ce serveur" />
+
             <ValidationMessage For="@(() => addEquipement.Description_Exemple)" />
         </div>
+
 
         <hr />
         <button type="submit" class="btn btn-success mt-3">Ajouter</button>
