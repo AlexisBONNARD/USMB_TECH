@@ -324,7 +324,7 @@
                 };
             }
 
-            var response = await Http.PostAsJsonAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/api/Pole_Expertises", pole_expertise);
+            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Pole_Expertises", pole_expertise);
             var createdpole = await response.Content.ReadFromJsonAsync<Pole_Expertise>();
 
             pole_expertise = createdpole;
@@ -411,7 +411,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
 
             if (response.IsSuccessStatusCode)
             {

@@ -314,7 +314,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/api/equipements/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -361,7 +361,7 @@
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
 
-            var response = await Http.PostAsJsonAsync("https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/api/Equipements", addEquipement);
+            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Equipements", addEquipement);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception("Erreur lors de l'ajout de l'équipement ❌");
