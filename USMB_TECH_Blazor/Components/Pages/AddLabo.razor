@@ -33,7 +33,7 @@
         <InputText class="form-control mb-2" @bind-Value="labo.Nom_Long" placeholder="Laboratoires de France" />
         <ValidationMessage For="@(() => labo.Nom_Long)" />
 
-        <label>Nom du laboratoire *</label>
+        <label>Acronyme *</label>
         <InputText class="form-control mb-2" @bind-Value="labo.Nom_Court" placeholder="LABO" />
         <ValidationMessage For="@(() => labo.Nom_Court)" />
 
@@ -524,7 +524,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/laboratoires/upload", content);
+            var response = await Http.PostAsync("https://localhost:7093/api/laboratoires/upload", content);
 
             if (response.IsSuccessStatusCode)
             {

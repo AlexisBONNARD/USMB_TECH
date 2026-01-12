@@ -17,10 +17,9 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FonctionController(IMainRepository<Fonction, int> dataRepository, IMapper mapper) : ControllerBase
+    public class FonctionController(IMainRepository<Fonction, int> dataRepository) : ControllerBase
     {
         private readonly IMainRepository<Fonction, int> _dataRepository = dataRepository;
-        private readonly IMapper _mapper = mapper;
 
         // GET: api/Fonctions
         [HttpGet]

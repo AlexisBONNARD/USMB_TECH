@@ -42,14 +42,14 @@ else
                 </div>
             </section>
 
-            @* <!-- Ajout du modèle 3D avec Blazor3D -->
-            @if (equipement. != null && equipement..Any())
+            <!-- Ajout du modèle 3D avec Blazor3D -->
+            @if (equipement.Url_Modele_3D != null)
             {
                 <section>
                     <h3>Modèle 3D de l'Équipement</h3>
-                    <Affichage3D />
+                    <Affichage3D urlModel="@equipement.Url_Modele_3D" />
                 </section>
-            } *@
+            }
 
             <!-- Utilisation -->
             <section>

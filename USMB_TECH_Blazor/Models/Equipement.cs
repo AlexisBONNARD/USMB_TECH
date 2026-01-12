@@ -51,6 +51,7 @@ namespace USMB_TECH_Blazor.Models
 
         public bool Actif { get; set; } = true;
         public bool Disponibilite { get; set; }
+        public string? Url_Modele_3D { get; set; }
 
         public string Nom_Contact { get; set; }
 

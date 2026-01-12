@@ -25,7 +25,7 @@ else
                 <th>Email</th>
                 <th>Téléphone</th>
                 <th>Laboratoire</th>
-                <th>Détails</th>
+                @* <th>Détails</th> *@
                 @if (AdminState.IsAdmin)
                 {
                     <th>Modifier</th>
@@ -43,11 +43,11 @@ else
                     <td>@contact.Mail</td>
                     <td>@contact.Telephone</td>
                     <td>@contact.Nom_Court</td>
-                    <td>
+                    @* <td>
                         <button class="btn btn-primary" @onclick="@(() => RetourListe(contact.Id_Contact, "contact"))">
                             Voir
                         </button>
-                    </td>
+                    </td> *@
                     @if (AdminState.IsAdmin)
                     {
                         <td>

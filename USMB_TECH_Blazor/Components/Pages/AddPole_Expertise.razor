@@ -112,15 +112,30 @@
         <hr />
         <h4 class="add_style">Exemples d’utilisation</h4>
         <form onsubmit="return false;" class="mb-2">
-            <InputText class="form-control mb-1"
-                       @bind-Value="newExempleNom"
-                       placeholder="Nom exemple"
+            <div>
+                <label>Nom de l'exemple : </label>
+                <InputText class="form-control mb-1"
+                           @bind-Value="newExempleNom"
+                           placeholder="Nom exemple"
+                           @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            </div>
+            <div>
+                <label>
+                    Description :
+                    <span class="info-tooltip">
+                        ⓘ
+                        <span class="tooltip-text">
+                            Dans cette section, vous pouvez décrire votre exemple afin d'aider
+                            l'utilisateur à avoir une idée de l'utilisation de la plateforme.
+                        </span>
+                    </span>
+                </label>
+                <input class="form-control mb-1"
+                       @bind="newExempleDesc"
+                       @bind:event="oninput"
+                       placeholder="Description exemple"
                        @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
-            <input class="form-control mb-1"
-                   @bind="newExempleDesc"
-                   @bind:event="oninput"
-                   placeholder="Description exemple"
-                   @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            </div>
             @if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
             {
                 <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
@@ -309,7 +324,7 @@
                 };
             }
 
-            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Pole_Expertises", pole_expertise);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Pole_Expertises", pole_expertise);
             var createdpole = await response.Content.ReadFromJsonAsync<Pole_Expertise>();
 
             pole_expertise = createdpole;
@@ -396,7 +411,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/pole_expertises/upload", content);
+            var response = await Http.PostAsync("https://localhost:7093/api/pole_expertises/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
