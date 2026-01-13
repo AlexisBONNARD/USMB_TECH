@@ -219,7 +219,7 @@ namespace USMB_TECHTests.Controllers
         }
 
         [TestMethod]
-        public async Task PutContact_NonExistingID_returnNotFound()
+        public async Task PutContact_NonExistingID_ReturnBadRequestResult()
         {
             var updatedContact = new Contact_USMB
             {

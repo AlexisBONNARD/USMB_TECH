@@ -69,8 +69,6 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
                 .FirstOrDefaultAsync(e => e.Id_Equipement == id);
-
-
         }
 
 

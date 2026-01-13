@@ -38,7 +38,7 @@ namespace USMB_TECHTests.Controllers
         private Adresse adresse;
 
         [TestInitialize]
-        public void Initialize() 
+        public void Initialize()
         {
             var options = new DbContextOptionsBuilder<UsmbTechDbContext>()
                 .UseInMemoryDatabase(databaseName: $"UsmbTechTestDb_{Guid.NewGuid()}")
@@ -48,7 +48,7 @@ namespace USMB_TECHTests.Controllers
             _controller = new PrestationsController(_manager, _mapper);
 
             domaine = new Domaine_Excellence { Id_Domaine_Excellence = 1, intitule_Domaine_Excellence = "Domaine 1" };
-            unite = new Unite_Oeuvre { Id_Unite_Oeuvre = 1, Nom_Unite_Oeuvre = "Heure"};
+            unite = new Unite_Oeuvre { Id_Unite_Oeuvre = 1, Nom_Unite_Oeuvre = "Heure" };
             fonction = new Fonction { Id_Fonction = 1, Nom_Fonction = "Responsable" };
             type = new Type_Prestation { Id_Type_Prestation = 1, Nom_Type_Prestation = "Type 1" };
             adresse = new Adresse { Id_Adresse = 1, Rue_Adresse = "1 rue de l'université", Ville_Adresse = "Chambéry", Code_Postal_Adresse = "73000", Pays_Adresse = "France" };
@@ -73,7 +73,7 @@ namespace USMB_TECHTests.Controllers
             _context.Adresses.Add(adresse);
             _context.Contact_USMBs.Add(contact);
 
-            _prestation1 = new Prestation 
+            _prestation1 = new Prestation
             {
                 Intitule_Prestation = "Prestation 1",
                 Description_Prestation = "Description 1",
@@ -119,7 +119,7 @@ namespace USMB_TECHTests.Controllers
         }
 
         [TestMethod]
-        public async Task GetAllPrestation_Return_Ok() 
+        public async Task GetAllPrestation_Return_Ok()
         {
             var action = await _controller.GetPrestations();
             var okResult = action.Result as OkObjectResult;
@@ -127,27 +127,27 @@ namespace USMB_TECHTests.Controllers
 
             Assert.IsInstanceOfType(action.Result, typeof(OkObjectResult));
             Assert.IsInstanceOfType(returnedList, typeof(IEnumerable<Prestation>));
-            Assert.AreEqual(3, returnedList.Count(),"Le nombre d'éléments est incorrect");
+            Assert.AreEqual(3, returnedList.Count(), "Le nombre d'éléments est incorrect");
             Assert.IsTrue(returnedList.Any(p => p.Intitule_Prestation == _prestation1.Intitule_Prestation), "La prestation n'a pas été trouvée dans la liste retournée");
-            CollectionAssert.AreEquivalent(_context.Prestations.Select(p => p.Intitule_Prestation).ToList(), 
+            CollectionAssert.AreEquivalent(_context.Prestations.Select(p => p.Intitule_Prestation).ToList(),
                 returnedList.Select(p => p.Intitule_Prestation).ToList(), "Les prestations retournées sont incorrects");
         }
 
         [TestMethod]
-        public async Task GetPrestationById_Existing_Return_Ok() 
+        public async Task GetPrestationById_Existing_Return_Ok()
         {
             var action = await _controller.GetPrestation(_prestation1.Id_Prestation);
             var okResult = action.Result as OkObjectResult;
             var returnedPrestation = okResult.Value as Prestation;
 
-            Assert.IsInstanceOfType(action.Result, typeof(OkObjectResult),"La réponse n'est pas de type OkObjectResult");
-            Assert.IsNotNull(returnedPrestation,"la prestation retourné est null");
+            Assert.IsInstanceOfType(action.Result, typeof(OkObjectResult), "La réponse n'est pas de type OkObjectResult");
+            Assert.IsNotNull(returnedPrestation, "la prestation retourné est null");
             Assert.IsInstanceOfType(returnedPrestation, typeof(Prestation), "la valeur retournée n'est pas de type Prestation");
             Assert.AreEqual(_prestation1.Intitule_Prestation, returnedPrestation.Intitule_Prestation, "l'intitulé de la prestation retourné est incorrect");
         }
 
         [TestMethod]
-        public async Task GetPrestationById_NonExistingId_Return_NotFound() 
+        public async Task GetPrestationById_NonExistingId_Return_NotFound()
         {
             var action = await _controller.GetPrestation(11037);
 
@@ -166,7 +166,7 @@ namespace USMB_TECHTests.Controllers
         }
 
         [TestMethod]
-        public async Task DeletePrestation_NonExistingId_Return_NotFound() 
+        public async Task DeletePrestation_NonExistingId_Return_NotFound()
         {
             var action = await _controller.DeletePrestation(999);
             var prestationIdDb = await _context.Contact_USMBs.FindAsync(999);
@@ -176,7 +176,7 @@ namespace USMB_TECHTests.Controllers
         }
 
         [TestMethod]
-        public async Task PostPrestation_Return_CreatedAtAction() 
+        public async Task PostPrestation_Return_CreatedAtAction()
         {
             var action = await _controller.PostPrestation(_addPrestationDTO);
             var prestationInDb = await _context.Prestations
@@ -188,7 +188,7 @@ namespace USMB_TECHTests.Controllers
         }
 
         [TestMethod]
-        public async Task PostPrestation_InvalidModelState_RetrnBadRequest() 
+        public async Task PostPrestation_InvalidModelState_ReturnBadRequest()
         {
             AddPrestationDTO addPrestationDTO = new AddPrestationDTO
             {
@@ -209,6 +209,62 @@ namespace USMB_TECHTests.Controllers
 
             Assert.IsNotNull(result, "la réponse est nulle");
             Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult), "la réponse n'est pas de type BadRequestObjectResult");
+        }
+
+        [TestMethod]
+        public async Task PutPrestation_ValidUpdate_ReturnNoContent()
+        {
+            PrestationUpdateDto prestationUpdated = new PrestationUpdateDto
+            {
+                Id_Prestation = _prestation1.Id_Prestation,
+                Intitule_Prestation = "Prestation 1Updated",
+                Description_Prestation = "Description 1Updated",
+                Id_Unite_Oeuvre = 1,
+                Id_Type_Prestation = 1,
+                Id_Domaine_Excellence = 1,
+                Id_Contact = 1,
+            };
+
+            var action = await _controller.PutPrestation(_prestation1.Id_Prestation, prestationUpdated);
+            var prestationInDb = await _context.Prestations.FindAsync(_prestation1.Id_Prestation);
+
+            Assert.IsInstanceOfType(action, typeof(NoContentResult), "la réponse n'est pas de type NoContentResult");
+            Assert.AreEqual(prestationUpdated.Intitule_Prestation, prestationInDb.Intitule_Prestation, "L'intitulé de la prestation n'a pas été mis à jour");
+        }
+
+        [TestMethod]
+        public async Task PutPrestation_NonExistingId_ReturnBadRequestObject()
+        {
+            PrestationUpdateDto prestationUpdated = new PrestationUpdateDto
+            {
+                Id_Prestation = _prestation1.Id_Prestation,
+                Intitule_Prestation = "Prestation 1Updated",
+                Description_Prestation = "Description 1Updated",
+                Id_Unite_Oeuvre = 1,
+                Id_Type_Prestation = 1,
+                Id_Domaine_Excellence = 1,
+                Id_Contact = 1,
+            };
+            var action = await _controller.PutPrestation(999, prestationUpdated);
+            Assert.IsInstanceOfType(action, typeof(BadRequestObjectResult), "la réponse n'est pas de type NotFoundResult");
+        }
+
+        [TestMethod]
+        public async Task PutPrestation_NonExisting_ReturnNotFound() 
+        {
+            var prestationUpdated = new PrestationUpdateDto
+            {
+                Id_Prestation = 999,
+                Intitule_Prestation = "Prestation 1Updated",
+                Description_Prestation = "Description 1Updated",
+                Id_Unite_Oeuvre = 1,
+                Id_Type_Prestation = 1,
+                Id_Domaine_Excellence = 1,
+                Id_Contact = 1,
+            };
+            var action = await _controller.PutPrestation(999, prestationUpdated);
+
+            Assert.IsInstanceOfType(action, typeof(NotFoundObjectResult), "la réponse n'est pas de type NotFoundResult");
         }
     }
 }

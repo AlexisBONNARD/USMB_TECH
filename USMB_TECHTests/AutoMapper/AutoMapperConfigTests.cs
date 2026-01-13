@@ -21,6 +21,8 @@ namespace USMB_TECHTests.AutoMapper
             {
                 cfg.AddProfile<MapperContact>();
                 cfg.AddProfile<MapperPrestation>();
+                cfg.AddProfile<MapperLaboratoire>();
+                cfg.AddProfile<MapperEquipement>();
             });
             _config.AssertConfigurationIsValid();
             _mapper = _config.CreateMapper();
