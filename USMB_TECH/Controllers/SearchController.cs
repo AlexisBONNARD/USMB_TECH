@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Python.Runtime;
+using System.Drawing.Printing;
 using USMB_TECH.DTO;
+using USMB_TECH.Models;
 using USMB_TECH.Models.Repository;
 using USMB_TECH_Blazor.Models;
 
@@ -45,7 +49,21 @@ public class SearchController : ControllerBase
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
+        Console.WriteLine("oui");
+        Runtime.PythonDLL = @"C:\\ProgramData\\anaconda3\\python311.dll";
+        PythonEngine.Initialize();
+        using (Py.GIL())
+        {
 
+            dynamic script = Py.Import("IASearch"); Console.WriteLine("Point d'arrêt"); 
+            dynamic resultIA = script.search(query); 
+            using var firstItem = new PyList(resultIA)[0];          
+            using var tuple = new PyTuple(firstItem)!;
+            string resultat = tuple[1].As<String>();
+
+            query = resultat;
+        }
+        Console.WriteLine(query);
         //                  ÉQUIPEMENTS
         var equipements = (await _equipManager.SearchAsync(e =>
             (
@@ -176,4 +194,6 @@ public class SearchController : ControllerBase
 
         return Ok(result);
     }
+    
+
 }
