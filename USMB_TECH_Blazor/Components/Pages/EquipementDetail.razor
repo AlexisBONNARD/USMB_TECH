@@ -44,6 +44,10 @@ else
                     </div>
                 </section>
             }
+            <section>
+                <h3>DESCRIPTION</h3>
+                <p>@equipement.Description_Technique</p>
+            </section>
 
             <!-- Ajout du modèle 3D avec Blazor3D -->
             @if (equipement.Url_Modele_3D != null)
@@ -75,10 +79,18 @@ else
             }
 
             <!-- Caractéristiques -->
-            <section>
-                <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
-                <p>@equipement.Description_Technique</p>
-            </section>
+            @if (fonctionnalites != null && fonctionnalites.Any())
+            {
+                <section>
+                    <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
+                    <ul class="list-style">
+                        @foreach (var caract in fonctionnalites)
+                        {
+                            <li><strong>@caract.Nom_Fonctionnalite :</strong> @caract.Description</li>
+                        }
+                    </ul>
+                </section>
+            }
         </div>
 
         <!-- ========== COLONNE CENTRALE ========== -->
@@ -140,6 +152,7 @@ else
     private Equipement? equipement;
     private string thematique;
     private List<Mot_Clef> motsCles = new();
+    private List<Fonctionnalite> fonctionnalites = new();
 
 
     // ----------- ALERTES SUPPRESSION -----------
@@ -151,6 +164,9 @@ else
         thematique = equipement.Thematiques.Select(t => t.Nom_Thematique).FirstOrDefault();
         motsCles = equipement.Qualifiers
             .Select(s => s.Mot_ClefNavigation)
+            .ToList();
+        fonctionnalites = equipement.Posseders.
+            Select(s => s.FonctionnaliteNavigation)
             .ToList();
     }
 

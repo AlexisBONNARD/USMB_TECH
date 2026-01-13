@@ -62,6 +62,7 @@ namespace USMB_TECH_Blazor.Models
         public string Description_Exemple { get; set; }
 
         public virtual ICollection<string> MotsCles { get; set; } = new List<string>();
+        public virtual ICollection<Fonctionnalite> Fonctionnalites { get; set; } = new List<Fonctionnalite>();
 
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 

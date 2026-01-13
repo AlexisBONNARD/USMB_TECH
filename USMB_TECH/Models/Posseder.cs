@@ -9,15 +9,15 @@ namespace USMB_TECH.Models
         [Column("id_equipement")]
         public int Id_Equipement { get; set; }
 
-        [Column("id_fonctionalite")]
-        public int Id_Fonctionalite { get; set; }
+        [Column("id_fonctionnalite")]
+        public int Id_Fonctionnalite { get; set; }
 
         [ForeignKey("Id_Equipement")]
         [InverseProperty(nameof(Equipement.Posseders))]
         public virtual Equipement? EquipementNavigation { get; set; } = null!;
     
-        [ForeignKey("Id_Fonctionalite")]
-        [InverseProperty(nameof(Fonctionalite.Posseders))]
-        public virtual Fonctionalite? FonctionaliteNavigation { get; set; } = null!;
+        [ForeignKey("Id_Fonctionnalite")]
+        [InverseProperty(nameof(Fonctionnalite.Posseders))]
+        public virtual Fonctionnalite? FonctionnaliteNavigation { get; set; } = null!;
     }
 }

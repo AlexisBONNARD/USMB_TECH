@@ -63,18 +63,18 @@ namespace USMB_TECH.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "fonctionalite",
+                name: "fonctionnalite",
                 schema: "usmbTech",
                 columns: table => new
                 {
-                    id_fonctionalite = table.Column<int>(type: "integer", nullable: false)
+                    id_fonctionnalite = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nom_fonctionalite = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    nom_fonctionnalite = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_fonctionalite", x => x.id_fonctionalite);
+                    table.PrimaryKey("pk_fonctionnalite", x => x.id_fonctionnalite);
                 });
 
             migrationBuilder.CreateTable(
@@ -665,11 +665,11 @@ namespace USMB_TECH.Migrations
                 columns: table => new
                 {
                     id_equipement = table.Column<int>(type: "integer", nullable: false),
-                    id_fonctionalite = table.Column<int>(type: "integer", nullable: false)
+                    id_fonctionnalite = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_posseder", x => new { x.id_equipement, x.id_fonctionalite });
+                    table.PrimaryKey("pk_posseder", x => new { x.id_equipement, x.id_fonctionnalite });
                     table.ForeignKey(
                         name: "fk_posseder_equipement",
                         column: x => x.id_equipement,
@@ -678,11 +678,11 @@ namespace USMB_TECH.Migrations
                         principalColumn: "id_equipement",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_posseder_fonctionalite",
-                        column: x => x.id_fonctionalite,
+                        name: "fk_posseder_fonctionnalite",
+                        column: x => x.id_fonctionnalite,
                         principalSchema: "usmbTech",
-                        principalTable: "fonctionalite",
-                        principalColumn: "id_fonctionalite",
+                        principalTable: "fonctionnalite",
+                        principalColumn: "id_fonctionnalite",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1066,10 +1066,10 @@ namespace USMB_TECH.Migrations
                 column: "id_domaine_excellence");
 
             migrationBuilder.CreateIndex(
-                name: "IX_posseder_id_fonctionalite",
+                name: "IX_posseder_id_fonctionnalite",
                 schema: "usmbTech",
                 table: "posseder",
-                column: "id_fonctionalite");
+                column: "id_fonctionnalite");
 
             migrationBuilder.CreateIndex(
                 name: "IX_preciser_id_mot_clef",
@@ -1226,7 +1226,7 @@ namespace USMB_TECH.Migrations
                 schema: "usmbTech");
 
             migrationBuilder.DropTable(
-                name: "fonctionalite",
+                name: "fonctionnalite",
                 schema: "usmbTech");
 
             migrationBuilder.DropTable(

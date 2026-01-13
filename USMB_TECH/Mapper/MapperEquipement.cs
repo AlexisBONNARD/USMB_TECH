@@ -14,24 +14,24 @@ namespace USMB_TECH.Mapper
                opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
             .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.Ignore())
             .ForMember(dest => dest.Exemple_Utilisations,
-    opt => opt.MapFrom(src => new List<Exemple_Utilisation>
-    {
-        new Exemple_Utilisation
-        {
-            Nom_Utilisation = src.Nom_Exemple,
-            Description_Utilisation = src.Description_Exemple
-        }
-    }))
+                opt => opt.MapFrom(src => new List<Exemple_Utilisation>
+                {
+                    new Exemple_Utilisation
+                    {
+                        Nom_Utilisation = src.Nom_Exemple,
+                        Description_Utilisation = src.Description_Exemple
+                    }
+                }))
             .ForMember(dest => dest.Id_Type_Equipement, opt => opt.Ignore())
             .ForMember(dest => dest.ModeleNavigation,
-            opt => opt.MapFrom(src => new Modele
-            {
-                Nom_Modele = src.Nom_Modele,
-                MarqueNavigation = new Marque
+                opt => opt.MapFrom(src => new Modele
                 {
-                    Nom_Marque = src.Nom_Marque
-                }
-            }))
+                    Nom_Modele = src.Nom_Modele,
+                    MarqueNavigation = new Marque
+                    {
+                        Nom_Marque = src.Nom_Marque
+                    }
+                }))
             .ForMember(dest => dest.Id_Modele, opt => opt.Ignore())
             .ForMember(dest => dest.Qualifiers, opt => opt.MapFrom(src =>
                 src.MotsCles != null
@@ -47,9 +47,19 @@ namespace USMB_TECH.Mapper
                         .ToList()
                     : new List<Qualifier>()
             ))
-            ;
-
-
+            .ForMember(dest => dest.Posseders,
+                opt => opt.MapFrom(src => src.Fonctionnalites
+                    .Select(f => new Posseder
+                    {
+                        FonctionnaliteNavigation = new Fonctionnalite
+                        {
+                            Nom_Fonctionnalite = f.Nom_Fonctionnalite,
+                            Description = f.Description
+                        }
+                    }).ToList()
+                )
+            );
+            
             CreateMap<EquipementDTO, Equipement>()
                 .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))
                 .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.MapFrom(src => src.Id_Pole_Expertise))

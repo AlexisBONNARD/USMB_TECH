@@ -3,23 +3,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH.Models
 {
-    [Table("fonctionalite")]
-    public partial class Fonctionalite
+    [Table("fonctionnalite")]
+    public partial class Fonctionnalite
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id_fonctionalite")]
-        public int Id_Fonctionalite { get; set; }
+        [Column("id_fonctionnalite")]
+        public int Id_Fonctionnalite { get; set; }
 
-        [Column("nom_fonctionalite")]
+        [Column("nom_fonctionnalite")]
         [MaxLength(50)]
-        public string Nom_Fonctionalite { get; set; }
+        public string Nom_Fonctionnalite { get; set; }
 
         [Column("description")]
         [MaxLength(1000)]
         public string Description { get; set; }
 
-        [InverseProperty(nameof(Posseder.FonctionaliteNavigation))]
+        [InverseProperty(nameof(Posseder.FonctionnaliteNavigation))]
         public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
     }
 }

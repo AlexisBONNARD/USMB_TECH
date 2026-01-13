@@ -51,11 +51,12 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Type_EquipementNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
+                    .ThenInclude(f => f.FonctionnaliteNavigation)
                 .Include(e => e.Exemple_Utilisations)
                 .Include(e => e.Referencers)
                 .Include(e => e.Prise_Contacts)
                 .Include(e => e.Photos)
-                .Include(e=> e.Qualifiers)
+                .Include(e => e.Qualifiers)
                     .ThenInclude(q => q.Mot_ClefNavigation)
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
@@ -64,7 +65,6 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(de => de.Domaine_ExcellenceNavigation)
                 .Include(e => e.Exemple_Utilisations)
 
-                // ✅ Fournirs with their Prestation
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
@@ -73,30 +73,34 @@ namespace USMB_TECH.Models.Repository
 
         }
 
-
         public async Task AddAsync(Equipement entity)
         {
+            // -------------------
+            // 1️⃣ Gestion Pole_Expertise
+            // -------------------
             if (entity.Pole_ExpertiseNavigation != null &&
                 !string.IsNullOrEmpty(entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise))
             {
-                var pole_expertise = await _context.Pole_Expertises
+                var pole = await _context.Pole_Expertises
                     .FirstOrDefaultAsync(p => p.Nom_Pole_Expertise == entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise);
 
-                if (pole_expertise == null)
+                if (pole == null)
                 {
-                    pole_expertise = new Pole_Expertise
+                    pole = new Pole_Expertise
                     {
                         Nom_Pole_Expertise = entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise
                     };
-
-                    _context.Pole_Expertises.Add(pole_expertise);
+                    _context.Pole_Expertises.Add(pole);
                     await _context.SaveChangesAsync();
                 }
 
-                entity.Id_Pole_Expertise = pole_expertise.Id_Pole_Expertise;
-                entity.Pole_ExpertiseNavigation = pole_expertise;
+                entity.Id_Pole_Expertise = pole.Id_Pole_Expertise;
+                entity.Pole_ExpertiseNavigation = pole;
             }
 
+            // -------------------
+            // 2️⃣ Gestion Type_Equipement
+            // -------------------
             if (entity.Type_EquipementNavigation != null &&
                 !string.IsNullOrEmpty(entity.Type_EquipementNavigation.Nom_Type))
             {
@@ -109,7 +113,6 @@ namespace USMB_TECH.Models.Repository
                     {
                         Nom_Type = entity.Type_EquipementNavigation.Nom_Type
                     };
-
                     _context.Type_Equipements.Add(type);
                     await _context.SaveChangesAsync();
                 }
@@ -117,6 +120,57 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Type_Equipement = type.Id_Type_Equipement;
                 entity.Type_EquipementNavigation = type;
             }
+
+            // -------------------
+            // 3️⃣ Gestion Modele + Marque
+            // -------------------
+            if (entity.ModeleNavigation != null)
+            {
+                // Marque
+                if (entity.ModeleNavigation.MarqueNavigation != null &&
+                    !string.IsNullOrWhiteSpace(entity.ModeleNavigation.MarqueNavigation.Nom_Marque))
+                {
+                    var marqueName = entity.ModeleNavigation.MarqueNavigation.Nom_Marque;
+                    var existingMarque = await _context.Marques
+                        .FirstOrDefaultAsync(m => m.Nom_Marque == marqueName);
+
+                    if (existingMarque == null)
+                    {
+                        existingMarque = new Marque { Nom_Marque = marqueName };
+                        _context.Marques.Add(existingMarque);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    entity.ModeleNavigation.Id_Marque = existingMarque.Id_Marque;
+                    entity.ModeleNavigation.MarqueNavigation = existingMarque;
+                }
+
+                // Modele
+                if (!string.IsNullOrWhiteSpace(entity.ModeleNavigation.Nom_Modele))
+                {
+                    var existingModele = await _context.Modeles
+                        .FirstOrDefaultAsync(m => m.Nom_Modele == entity.ModeleNavigation.Nom_Modele);
+
+                    if (existingModele == null)
+                    {
+                        existingModele = new Modele
+                        {
+                            Nom_Modele = entity.ModeleNavigation.Nom_Modele,
+                            Id_Marque = entity.ModeleNavigation.Id_Marque,
+                            MarqueNavigation = entity.ModeleNavigation.MarqueNavigation
+                        };
+                        _context.Modeles.Add(existingModele);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    entity.Id_Modele = existingModele.Id_Modele;
+                    entity.ModeleNavigation = existingModele;
+                }
+            }
+
+            // -------------------
+            // 4️⃣ Gestion Qualifiers et MotsClés
+            // -------------------
             if (entity.Qualifiers != null && entity.Qualifiers.Any())
             {
                 var qualifierFinal = new List<Qualifier>();
@@ -137,6 +191,7 @@ namespace USMB_TECH.Models.Repository
                             Nom_Mot_Clef = qualifier.Mot_ClefNavigation.Nom_Mot_Clef
                         };
                         _context.Mot_Clefs.Add(motClef);
+                        await _context.SaveChangesAsync();
                     }
 
                     qualifierFinal.Add(new Qualifier
@@ -147,51 +202,52 @@ namespace USMB_TECH.Models.Repository
 
                 entity.Qualifiers = qualifierFinal;
             }
-            if (entity.ModeleNavigation != null &&
-                entity.ModeleNavigation.MarqueNavigation != null &&
-                !string.IsNullOrWhiteSpace(entity.ModeleNavigation.MarqueNavigation.Nom_Marque))
-            {
-                var marqueName = entity.ModeleNavigation.MarqueNavigation.Nom_Marque;
 
-                var existingMarque = await _context.Marques
-                    .FirstOrDefaultAsync(m => m.Nom_Marque == marqueName);
-
-                if (existingMarque != null)
-                {
-                    entity.ModeleNavigation.Id_Marque = existingMarque.Id_Marque;
-                    entity.ModeleNavigation.MarqueNavigation = existingMarque;
-                }
-                else
-                {
-                    var newMarque = new Marque { Nom_Marque = marqueName };
-                    _context.Marques.Add(newMarque);
-                    await _context.SaveChangesAsync();
-
-                    entity.ModeleNavigation.Id_Marque = newMarque.Id_Marque;
-                    entity.ModeleNavigation.MarqueNavigation = newMarque;
-                }
-            }
-
-            if (entity.ModeleNavigation != null && !string.IsNullOrEmpty(entity.ModeleNavigation.Nom_Modele))
-            {
-                var model = await _context.Modeles.FirstOrDefaultAsync(m => m.Nom_Modele == entity.ModeleNavigation.Nom_Modele);
-
-                if (model == null)
-                {
-                    model = new Modele
-                    {
-                        Nom_Modele = entity.ModeleNavigation.Nom_Modele,
-                        Id_Marque = entity.ModeleNavigation.Id_Marque,
-                        MarqueNavigation = entity.ModeleNavigation.MarqueNavigation
-                    };
-                    _context.Modeles.Add(model);
-                    await _context.SaveChangesAsync();
-                }
-                entity.Id_Modele = model.Id_Modele;
-                entity.ModeleNavigation = model;
-            }
+            // -------------------
+            // 5️⃣ Ajouter Equipement (sans Posseders)
+            // -------------------
+            var possedersTemp = entity.Posseders; // sauvegarde temporaire
+            entity.Posseders = new List<Posseder>(); // vide pour l'instant
             _context.Equipements.Add(entity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // Id_Equipement généré
+
+            // -------------------
+            // 6️⃣ Gestion Posseders (Fonctionnalites)
+            // -------------------
+            if (possedersTemp != null && possedersTemp.Any())
+            {
+                var possedersFinal = new List<Posseder>();
+
+                foreach (var posseder in possedersTemp)
+                {
+                    if (posseder?.FonctionnaliteNavigation == null ||
+                        string.IsNullOrWhiteSpace(posseder.FonctionnaliteNavigation.Nom_Fonctionnalite))
+                        continue;
+
+                    var fonctionnalite = await _context.Fonctionnalites
+                        .FirstOrDefaultAsync(f => f.Nom_Fonctionnalite == posseder.FonctionnaliteNavigation.Nom_Fonctionnalite);
+
+                    if (fonctionnalite == null)
+                    {
+                        fonctionnalite = new Fonctionnalite
+                        {
+                            Nom_Fonctionnalite = posseder.FonctionnaliteNavigation.Nom_Fonctionnalite,
+                            Description = posseder.FonctionnaliteNavigation.Description
+                        };
+                        _context.Fonctionnalites.Add(fonctionnalite);
+                        await _context.SaveChangesAsync(); // Id_Fonctionnalite généré
+                    }
+
+                    possedersFinal.Add(new Posseder
+                    {
+                        Id_Equipement = entity.Id_Equipement,
+                        FonctionnaliteNavigation = fonctionnalite
+                    });
+                }
+
+                _context.Posseders.AddRange(possedersFinal);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task UpdateAsync(Equipement entityToUpdate, Equipement updatedEntity)
@@ -263,14 +319,9 @@ namespace USMB_TECH.Models.Repository
                 }
             }
 
-            // ⚠️ Pas de suppression automatique → les données existantes restent en base
 
             await _context.SaveChangesAsync();
         }
-
-
-
-
 
         public async Task DeleteAsync(Equipement entity)
         {

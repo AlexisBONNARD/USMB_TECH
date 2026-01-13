@@ -12,8 +12,8 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    [Migration("20260113090705_EnleverContenu")]
-    partial class EnleverContenu
+    [Migration("20260113164419_CaracteristiquesOk")]
+    partial class CaracteristiquesOk
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
