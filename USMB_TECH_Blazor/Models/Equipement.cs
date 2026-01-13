@@ -79,6 +79,7 @@ namespace USMB_TECH_Blazor.Models
 
         public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
         public virtual ICollection<Qualifier> Qualifiers { get; set; } = new List<Qualifier>();
+        public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
 
     }
 }

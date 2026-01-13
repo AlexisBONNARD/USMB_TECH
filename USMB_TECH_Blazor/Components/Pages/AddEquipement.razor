@@ -55,6 +55,48 @@
         </div>
 
         <hr />
+        <h4 class="add_style">Infos techniques</h4>
+        <form onsubmit="return false;" class="mb-2">
+            <div>
+                <label>Nom de la caractéristique : </label>
+                <InputText class="form-control mb-1"
+                           @bind-Value="newCaracteristiqueNom"
+                           placeholder="Nom de la caractéristique"
+                           @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            </div>
+            <div>
+                <label>
+                    Description :
+                    <span class="info-tooltip">
+                        ⓘ
+                        <span class="tooltip-text">
+                            Dans cette section, vous pouvez décrire votre exemple afin d'aider
+                            l'utilisateur à avoir une idée de l'utilisation de la plateforme.
+                        </span>
+                    </span>
+                </label>
+                <input class="form-control mb-1"
+                       @bind="newCaracteristiqueDesc"
+                       @bind:event="oninput"
+                       placeholder="Description exemple"
+                       @onkeydown="@(e => { if (e.Key == "Enter") { AddExemple(); } })" />
+            </div>
+            @if (!string.IsNullOrWhiteSpace(newCaracteristiqueNom) && !string.IsNullOrWhiteSpace(newCaracteristiqueDesc))
+            {
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddExemple">Ajouter</button>
+            }
+        </form>
+        <ul class="add_style">
+            @foreach (var e in addEquipement.)
+            {
+                <li class="add_style">
+                    @e.Nom_Utilisation : @e.Description_Utilisation
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveExemple(e)">Supprimer</button>
+                </li>
+            }
+        </ul>
+
+        <hr />
         <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" multiple />
         @if (addEquipement.Photos != null && addEquipement.Photos.Any())
@@ -253,7 +295,8 @@
     private Marque marqueequipement = new();
     private Type_Equipement dernierTypeAjoute;
     private List<Mot_Clef> existingMot = new();
-
+    string newCaracteristiqueNom = "";
+    string newCaracteristiqueDesc = "";
     string newMot_Clef = "";
     string motCle = "";
     private bool isLoading = false;
@@ -306,6 +349,23 @@
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
         marques = (await marqueService.GetAllAsync()).ToList();
         existingMot = (await motService.GetAllAsync()).ToList();
+    }
+    void AddCaracteristique()
+    {
+        if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
+        {
+            pole_expertise.Exemple_Utilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            {
+                Nom_Utilisation = newExempleNom,
+                Description_Utilisation = newExempleDesc
+            });
+            newExempleNom = "";
+            newExempleDesc = "";
+        }
+    }
+    void RemoveCaracteristique(Exemple_Utilisation e)
+    {
+        pole_expertise.Exemple_Utilisations.Remove(e);
     }
     void AddMot_Clef()
     {
