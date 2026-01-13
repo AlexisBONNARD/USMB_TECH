@@ -136,11 +136,6 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync();
         }
 
-
-
-
-
-
         public async Task DeleteAsync(Pole_Expertise entity)
         {
             // Récupérer la pole_expertise avec toutes ses relations

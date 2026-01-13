@@ -32,7 +32,23 @@ namespace USMB_TECH.Mapper
                     Nom_Marque = src.Nom_Marque
                 }
             }))
-            .ForMember(dest => dest.Id_Modele, opt => opt.Ignore());
+            .ForMember(dest => dest.Id_Modele, opt => opt.Ignore())
+            .ForMember(dest => dest.Qualifiers, opt => opt.MapFrom(src =>
+                src.MotsCles != null
+                    ? src.MotsCles
+                        .Where(m => !string.IsNullOrWhiteSpace(m))
+                        .Select(m => new Qualifier
+                        {
+                            Mot_ClefNavigation = new Mot_Clef
+                            {
+                                Nom_Mot_Clef = m.Trim()
+                            }
+                        })
+                        .ToList()
+                    : new List<Qualifier>()
+            ))
+            ;
+
 
             CreateMap<EquipementDTO, Equipement>()
                 .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))

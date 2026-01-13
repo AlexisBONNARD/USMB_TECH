@@ -21,6 +21,7 @@
         public string Nom_Exemple { get; set; }
 
         public string Description_Exemple { get; set; }
+        public List<string> MotsCles { get; set; } = new();
 
         public List<PhotoDto> Photos { get; set; } = new();
     }

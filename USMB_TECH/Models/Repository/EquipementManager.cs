@@ -55,6 +55,8 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Referencers)
                 .Include(e => e.Prise_Contacts)
                 .Include(e => e.Photos)
+                .Include(e=> e.Qualifiers)
+                    .ThenInclude(q => q.Mot_ClefNavigation)
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
@@ -115,29 +117,61 @@ namespace USMB_TECH.Models.Repository
                 entity.Id_Type_Equipement = type.Id_Type_Equipement;
                 entity.Type_EquipementNavigation = type;
             }
-            if (entity.ModeleNavigation.MarqueNavigation is not null)
+            if (entity.Qualifiers != null && entity.Qualifiers.Any())
+            {
+                var qualifierFinal = new List<Qualifier>();
+
+                foreach (var qualifier in entity.Qualifiers)
+                {
+                    if (qualifier.Mot_ClefNavigation == null ||
+                        string.IsNullOrWhiteSpace(qualifier.Mot_ClefNavigation.Nom_Mot_Clef))
+                        continue;
+
+                    var motClef = await _context.Mot_Clefs
+                        .FirstOrDefaultAsync(mc => mc.Nom_Mot_Clef == qualifier.Mot_ClefNavigation.Nom_Mot_Clef);
+
+                    if (motClef == null)
+                    {
+                        motClef = new Mot_Clef
+                        {
+                            Nom_Mot_Clef = qualifier.Mot_ClefNavigation.Nom_Mot_Clef
+                        };
+                        _context.Mot_Clefs.Add(motClef);
+                    }
+
+                    qualifierFinal.Add(new Qualifier
+                    {
+                        Mot_ClefNavigation = motClef
+                    });
+                }
+
+                entity.Qualifiers = qualifierFinal;
+            }
+            if (entity.ModeleNavigation != null &&
+                entity.ModeleNavigation.MarqueNavigation != null &&
+                !string.IsNullOrWhiteSpace(entity.ModeleNavigation.MarqueNavigation.Nom_Marque))
             {
                 var marqueName = entity.ModeleNavigation.MarqueNavigation.Nom_Marque;
+
                 var existingMarque = await _context.Marques
                     .FirstOrDefaultAsync(m => m.Nom_Marque == marqueName);
 
-                if (existingMarque is not null)
+                if (existingMarque != null)
                 {
                     entity.ModeleNavigation.Id_Marque = existingMarque.Id_Marque;
                     entity.ModeleNavigation.MarqueNavigation = existingMarque;
                 }
                 else
                 {
-                    var newMarque = new Marque
-                    {
-                        Nom_Marque = marqueName
-                    };
+                    var newMarque = new Marque { Nom_Marque = marqueName };
                     _context.Marques.Add(newMarque);
                     await _context.SaveChangesAsync();
+
                     entity.ModeleNavigation.Id_Marque = newMarque.Id_Marque;
                     entity.ModeleNavigation.MarqueNavigation = newMarque;
                 }
             }
+
             if (entity.ModeleNavigation != null && !string.IsNullOrEmpty(entity.ModeleNavigation.Nom_Modele))
             {
                 var model = await _context.Modeles.FirstOrDefaultAsync(m => m.Nom_Modele == entity.ModeleNavigation.Nom_Modele);

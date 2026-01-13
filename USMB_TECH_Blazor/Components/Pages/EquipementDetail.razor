@@ -80,15 +80,9 @@ else
             <section>
                 <h3>MOTS CLÉS</h3>
                 <ul class="list-style">
-                    @if (equipement.Pole_ExpertiseNavigation?.Specifiers != null)
+                    @foreach (var mot in motsCles)
                     {
-                        @foreach (var spec in equipement.Pole_ExpertiseNavigation.Specifiers)
-                        {
-                            if (spec.Mot_ClefNavigation != null)
-                            {
-                                <li>@spec.Mot_ClefNavigation.Nom_Mot_Clef</li>
-                            }
-                        }
+                        <li>@mot.Nom_Mot_Clef</li>
                     }
                 </ul>
             </section>
@@ -136,6 +130,8 @@ else
 
     private Equipement? equipement;
     private string thematique;
+    private List<Mot_Clef> motsCles = new();
+
 
     // ----------- ALERTES SUPPRESSION -----------
     private string deleteMessage = null;
@@ -144,6 +140,9 @@ else
     {
         equipement = await dataRepository.GetByIdAsync(Id);
         thematique = equipement.Thematiques.Select(t => t.Nom_Thematique).FirstOrDefault();
+        motsCles = equipement.Qualifiers
+            .Select(s => s.Mot_ClefNavigation)
+            .ToList();
     }
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------

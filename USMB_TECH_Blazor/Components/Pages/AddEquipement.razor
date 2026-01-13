@@ -3,6 +3,7 @@
 @inject Service.IMainService<Type_Equipement,int> typeEquipementDatas
 @inject Service.IMainService<Equipement,int> equipementDatas
 @inject Service.IMainService<Marque,int> marqueService
+@inject Service.IMainService<Mot_Clef,int> motService
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -166,6 +167,44 @@
                 </ul>
             }
         }
+        <hr />
+        <h4 class="add_style">Mots-clés</h4>
+        <InputSelect class="form-control mb-2" @bind-Value="motCle">
+            <option value="">----- Sélectionner un mot clé -----</option>
+            @if (existingMot is not null)
+            {
+                @foreach (var mot in existingMot)
+                {
+                    <option value="@mot.Nom_Mot_Clef">@mot.Nom_Mot_Clef</option>
+                }
+            }
+            <option value="ajouter" class="alert-info">----- Créer un mot clé -----</option>
+        </InputSelect>
+        @if (motCle == "ajouter")
+        {
+            <h4>Ajouter un mot-clé</h4>
+            <form @onsubmit="AddMot_Clef" class="mb-2">
+                <input class="btn btn-secondary btn-sm mt-1"
+                       @bind="newMot_Clef"
+                       @bind:event="oninput"
+                       placeholder="Nouveau Mot-clé" />
+                <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter</button>
+            </form>
+        }
+        else if (!string.IsNullOrWhiteSpace(motCle))
+        {
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+        }
+
+        <ul class="add_style">
+            @foreach (var mc in addEquipement.MotsCles)
+            {
+                <li class="add_style">
+                    @mc
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveMotCle(mc)">Supprimer</button>
+                </li>
+            }
+        </ul>
 
 
         <hr />
@@ -213,7 +252,10 @@
     private List<Type_Equipement> type_Equipements = new();
     private Marque marqueequipement = new();
     private Type_Equipement dernierTypeAjoute;
+    private List<Mot_Clef> existingMot = new();
 
+    string newMot_Clef = "";
+    string motCle = "";
     private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
@@ -262,9 +304,30 @@
     {
         pole_expertises = (await pole_expertiseDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
-        marques = (await marqueService.GetAllAsync()).ToList(); // ← AJOUTER CECI
+        marques = (await marqueService.GetAllAsync()).ToList();
+        existingMot = (await motService.GetAllAsync()).ToList();
     }
-
+    void AddMot_Clef()
+    {
+        if (!string.IsNullOrWhiteSpace(newMot_Clef))
+        {
+            addEquipement.MotsCles.Add(newMot_Clef);
+            newMot_Clef = "";
+            motCle = "";
+        }
+        else if (string.IsNullOrWhiteSpace(newMot_Clef) && motCle != "ajouter")
+        {
+            if (!addEquipement.MotsCles.Contains(motCle))
+            {
+                addEquipement.MotsCles.Add(motCle);
+            }
+            motCle = "";
+        }
+    }
+    void RemoveMotCle(string mc)
+    {
+        addEquipement.MotsCles.Remove(mc);
+    }
     private void OnPole_ExpertiseChange(ChangeEventArgs e)
     {
         var selected = e.Value?.ToString();
