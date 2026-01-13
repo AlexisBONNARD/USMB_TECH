@@ -33,14 +33,17 @@ else
             </section>
 
             <!-- Image -->
-            <section class="center-grid">
-                <div class="center-item">
-                    @foreach (Photo photo in equipement.Photos)
-                    {
-                        <img src=@photo.Url_Photo alt="photo équipement" />
-                    }
-                </div>
-            </section>
+            @if (equipement.Photos != null && equipement.Photos.Any())
+            {
+                <section class="center-grid">
+                    <div class="center-item">
+                        @foreach (Photo photo in equipement.Photos)
+                        {
+                            <img src=@photo.Url_Photo alt="photo équipement" />
+                        }
+                    </div>
+                </section>
+            }
 
             <!-- Ajout du modèle 3D avec Blazor3D -->
             @if (equipement.Url_Modele_3D != null)
@@ -52,21 +55,24 @@ else
             }
 
             <!-- Utilisation -->
-            <section>
-                <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
-                @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
-                {
-                    @foreach (var exemple in equipement.Exemple_Utilisations)
+            @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
+            {
+                <section>
+                    <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
+                    @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                     {
-                        <p><strong>@exemple.Nom_Utilisation</strong></p>
-                        <p>@exemple.Description_Utilisation</p>
+                        @foreach (var exemple in equipement.Exemple_Utilisations)
+                        {
+                            <p><strong>@exemple.Nom_Utilisation</strong></p>
+                            <p>@exemple.Description_Utilisation</p>
+                        }
                     }
-                }
-                else
-                {
-                    <p>Aucune utilisation renseignée.</p>
-                }
-            </section>
+                    else
+                    {
+                        <p>Aucune utilisation renseignée.</p>
+                    }
+                </section>
+            }
 
             <!-- Caractéristiques -->
             <section>
@@ -77,15 +83,18 @@ else
 
         <!-- ========== COLONNE CENTRALE ========== -->
         <div class="col-center">
-            <section>
-                <h3>MOTS CLÉS</h3>
-                <ul class="list-style">
-                    @foreach (var mot in motsCles)
-                    {
-                        <li>@mot.Nom_Mot_Clef</li>
-                    }
-                </ul>
-            </section>
+            @if (motsCles != null && motsCles.Any())
+            {
+                <section>
+                    <h3>MOTS CLÉS</h3>
+                    <ul class="list-style">
+                        @foreach (var mot in motsCles)
+                        {
+                            <li>@mot.Nom_Mot_Clef</li>
+                        }
+                    </ul>
+                </section>
+            }
         </div>
 
         <!-- ========== COLONNE DROITE ========== -->
