@@ -29,7 +29,7 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
 
-        public virtual ICollection<Exemple_Utilisation> ExempleUtilisations { get; set; } = new List<Exemple_Utilisation>();
+        public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
         public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
     }
 }

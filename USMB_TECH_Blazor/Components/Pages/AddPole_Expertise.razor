@@ -130,7 +130,7 @@
             }
         </form>
         <ul class="add_style">
-            @foreach (var e in pole_expertise.ExempleUtilisations)
+            @foreach (var e in pole_expertise.Exemple_Utilisations)
             {
                 <li class="add_style">
                     @e.Nom_Utilisation : @e.Description_Utilisation
@@ -270,7 +270,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
         {
-            pole_expertise.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            pole_expertise.Exemple_Utilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
             {
                 Nom_Utilisation = newExempleNom,
                 Description_Utilisation = newExempleDesc
@@ -371,7 +371,7 @@
     }
     void RemoveExemple(Exemple_Utilisation e)
     {
-        pole_expertise.ExempleUtilisations.Remove(e);
+        pole_expertise.Exemple_Utilisations.Remove(e);
     }
     void RemovePresenter(Presenter pr)
     {

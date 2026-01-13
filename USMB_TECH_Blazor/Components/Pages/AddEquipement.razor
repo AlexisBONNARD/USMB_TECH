@@ -4,6 +4,7 @@
 @inject Service.IMainService<Equipement,int> equipementDatas
 @inject Service.IMainService<Marque,int> marqueService
 @inject Service.IMainService<Mot_Clef,int> motService
+@inject Service.IMainService<Fonctionnalite,int> fonctionnaliteService
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject IJSRuntime JS
@@ -53,6 +54,72 @@
             <InputCheckbox @bind-Value="addEquipement.Utilisable_Chez_Le_Client" />
             <label>Utilisable chez le client</label>
         </div>
+
+        <hr />
+        <h4 class="add_style">Infos techniques</h4>
+        <InputSelect class="form-control mb-2"
+                     @bind-Value="fonctionnaliteId">
+            <option value="0">----- Sélectionner une caractéristique -----</option>
+
+            @foreach (var fonc in existingFonctionnalite)
+            {
+                <option value="@fonc.Id_Fonctionnalite">
+                    @fonc.Nom_Fonctionnalite : @fonc.Description
+                </option>
+            }
+
+            <option value="-1">----- Créer une caractéristique -----</option>
+        </InputSelect>
+
+        @if (fonctionnaliteId == -1)
+        {
+            <form onsubmit="return false;" class="mb-2">
+                <div>
+                    <label>Nom de la caractéristique : </label>
+                    <InputText class="form-control mb-1"
+                               @bind-Value="newCaracteristiqueNom"
+                               placeholder="Nom de la caractéristique"
+                               @onkeydown="@(e => { if (e.Key == "Enter") { AddCaracteristique(); } })" />
+                </div>
+                <div>
+                    <label>
+                        Description :
+                        @* <span class="info-tooltip">
+                            ⓘ
+                            <span class="tooltip-text">
+                                Dans cette section, vous pouvez décrire votre exemple afin d'aider
+                                l'utilisateur à avoir une idée de l'utilisation de la plateforme.
+                            </span>
+                        </span> *@
+                    </label>
+                    <input class="form-control mb-1"
+                           @bind="newCaracteristiqueDesc"
+                           @bind:event="oninput"
+                           placeholder="Description / precision / unité ..."
+                           @onkeydown="@(e => { if (e.Key == "Enter") { AddCaracteristique(); } })" />
+                </div>
+                @if (!string.IsNullOrWhiteSpace(newCaracteristiqueNom) && !string.IsNullOrWhiteSpace(newCaracteristiqueDesc))
+                {
+                    <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddCaracteristique">Ajouter</button>
+                }
+
+            </form>
+        }
+        else if (fonctionnaliteId > 0)
+        {
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddCaracteristique">Ajouter cette caractéristique</button>
+        }
+
+
+        <ul class="add_style">
+            @foreach (var fonc in addEquipement.Fonctionnalites)
+            {
+                <li class="add_style">
+                    @fonc.Nom_Fonctionnalite : @fonc.Description
+                    <button type="button" class="btn btn-sm btn-danger ms-2" @onclick="() => RemoveCaracteristique(fonc)">Supprimer</button>
+                </li>
+            }
+        </ul>
 
         <hr />
         <h4 class="add_style">Photos</h4>
@@ -184,7 +251,7 @@
         {
             <h4>Ajouter un mot-clé</h4>
             <form @onsubmit="AddMot_Clef" class="mb-2">
-                <input class="btn btn-secondary btn-sm mt-1"
+                <input class="form-control mb-2"
                        @bind="newMot_Clef"
                        @bind:event="oninput"
                        placeholder="Nouveau Mot-clé" />
@@ -247,18 +314,29 @@
 </div>
 
 @code {
-    private Equipement addEquipement = new();
+    private Equipement addEquipement = new()
+    {
+        Fonctionnalites = new List<Fonctionnalite>(),
+        MotsCles = new List<string>(),
+        Photos = new List<Photo>()
+    };
     private List<Pole_Expertise> pole_expertises = new();
     private List<Type_Equipement> type_Equipements = new();
     private Marque marqueequipement = new();
     private Type_Equipement dernierTypeAjoute;
     private List<Mot_Clef> existingMot = new();
-
+    private List<Fonctionnalite> existingFonctionnalite = new();
+    string newCaracteristiqueNom = "";
+    int fonctionnaliteId;
+    string newCaracteristiqueDesc = "";
     string newMot_Clef = "";
     string motCle = "";
+    string fonctionnalite = "";
     private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
+    Fonctionnalite fonctionnaliteSelectionnee;
+
 
     private string _lastPole_Expertise;
 
@@ -306,6 +384,45 @@
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
         marques = (await marqueService.GetAllAsync()).ToList();
         existingMot = (await motService.GetAllAsync()).ToList();
+        existingFonctionnalite = (await fonctionnaliteService.GetAllAsync()).ToList();
+    }
+    void AddCaracteristique()
+    {
+        // Fonctionnalité existante
+        if (fonctionnaliteId > 0)
+        {
+            var fonc = existingFonctionnalite
+                .FirstOrDefault(f => f.Id_Fonctionnalite == fonctionnaliteId);
+
+            if (fonc != null &&
+                !addEquipement.Fonctionnalites.Any(f => f.Id_Fonctionnalite == fonc.Id_Fonctionnalite))
+            {
+                addEquipement.Fonctionnalites.Add(fonc);
+            }
+
+            fonctionnaliteId = 0;
+            return;
+        }
+
+        // Nouvelle fonctionnalité
+        if (fonctionnaliteId == -1 &&
+            !string.IsNullOrWhiteSpace(newCaracteristiqueNom) &&
+            !string.IsNullOrWhiteSpace(newCaracteristiqueDesc))
+        {
+            addEquipement.Fonctionnalites.Add(new Fonctionnalite
+            {
+                Nom_Fonctionnalite = newCaracteristiqueNom,
+                Description = newCaracteristiqueDesc
+            });
+
+            newCaracteristiqueNom = "";
+            newCaracteristiqueDesc = "";
+            fonctionnaliteId = 0;
+        }
+    }
+    void RemoveCaracteristique(Fonctionnalite e)
+    {
+        addEquipement.Fonctionnalites.Remove(e);
     }
     void AddMot_Clef()
     {
@@ -375,8 +492,6 @@
             var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
 
-            content.Add(fileContent, "file", file.Name);
-
             var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
 
             if (response.IsSuccessStatusCode)
@@ -404,31 +519,40 @@
     {
         try
         {
-            isLoading = true; // démarre le loader
+            isLoading = true;
             StateHasChanged();
 
             // Si aucune photo uploadée → photo par défaut
             if (addEquipement.Photos == null || !addEquipement.Photos.Any())
             {
                 addEquipement.Photos = new List<Photo>
+            {
+                new Photo
                 {
-                    new Photo
-                    {
-                        Nom_Photo = "default-equipement.png",
-                        Url_Photo = "/images/No_image_available.png"
-                    }
-                };
+                    Nom_Photo = "default-equipement.png",
+                    Url_Photo = "/images/No_image_available.png"
+                }
+            };
             }
-
 
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
 
+            // ✅ Transformer les Fonctionnalites en Posseders
+            addEquipement.Posseders = addEquipement.Fonctionnalites
+                .Select(f => new Posseder
+                {
+                    Id_Fonctionnalite = f.Id_Fonctionnalite
+                    // Id_Equipement sera rempli côté backend
+                }).ToList();
+
             var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Equipements", addEquipement);
+
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception("Erreur lors de l'ajout de l'équipement ❌");
             }
+
             var createdeqipement = await response.Content.ReadFromJsonAsync<Equipement>();
 
             addEquipement = createdeqipement;
@@ -443,10 +567,11 @@
         }
         finally
         {
-            isLoading = false; // stoppe le loader
+            isLoading = false;
             StateHasChanged();
         }
     }
+
     private async Task ShowAlert(string msg)
     {
         message = msg;

@@ -33,13 +33,20 @@ else
             </section>
 
             <!-- Image -->
-            <section class="center-grid">
-                <div class="center-item">
-                    @foreach (Photo photo in equipement.Photos)
-                    {
-                        <img src=@photo.Url_Photo alt="photo équipement" />
-                    }
-                </div>
+            @if (equipement.Photos != null && equipement.Photos.Any())
+            {
+                <section class="center-grid">
+                    <div class="center-item">
+                        @foreach (Photo photo in equipement.Photos)
+                        {
+                            <img src=@photo.Url_Photo alt="photo équipement" />
+                        }
+                    </div>
+                </section>
+            }
+            <section>
+                <h3>DESCRIPTION</h3>
+                <p>@equipement.Description_Technique</p>
             </section>
 
             <!-- Ajout du modèle 3D avec Blazor3D -->
@@ -52,40 +59,54 @@ else
             }
 
             <!-- Utilisation -->
-            <section>
-                <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
-                @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
-                {
-                    @foreach (var exemple in equipement.Exemple_Utilisations)
+            @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
+            {
+                <section>
+                    <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
+                    @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                     {
-                        <p><strong>@exemple.Nom_Utilisation</strong></p>
-                        <p>@exemple.Description_Utilisation</p>
+                        @foreach (var exemple in equipement.Exemple_Utilisations)
+                        {
+                            <p><strong>@exemple.Nom_Utilisation</strong></p>
+                            <p>@exemple.Description_Utilisation</p>
+                        }
                     }
-                }
-                else
-                {
-                    <p>Aucune utilisation renseignée.</p>
-                }
-            </section>
+                    else
+                    {
+                        <p>Aucune utilisation renseignée.</p>
+                    }
+                </section>
+            }
 
             <!-- Caractéristiques -->
-            <section>
-                <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
-                <p>@equipement.Description_Technique</p>
-            </section>
+            @if (fonctionnalites != null && fonctionnalites.Any())
+            {
+                <section>
+                    <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
+                    <ul class="list-style">
+                        @foreach (var caract in fonctionnalites)
+                        {
+                            <li><strong>@caract.Nom_Fonctionnalite :</strong> @caract.Description</li>
+                        }
+                    </ul>
+                </section>
+            }
         </div>
 
         <!-- ========== COLONNE CENTRALE ========== -->
         <div class="col-center">
-            <section>
-                <h3>MOTS CLÉS</h3>
-                <ul class="list-style">
-                    @foreach (var mot in motsCles)
-                    {
-                        <li>@mot.Nom_Mot_Clef</li>
-                    }
-                </ul>
-            </section>
+            @if (motsCles != null && motsCles.Any())
+            {
+                <section>
+                    <h3>MOTS CLÉS</h3>
+                    <ul class="list-style">
+                        @foreach (var mot in motsCles)
+                        {
+                            <li>@mot.Nom_Mot_Clef</li>
+                        }
+                    </ul>
+                </section>
+            }
         </div>
 
         <!-- ========== COLONNE DROITE ========== -->
@@ -131,6 +152,7 @@ else
     private Equipement? equipement;
     private string thematique;
     private List<Mot_Clef> motsCles = new();
+    private List<Fonctionnalite> fonctionnalites = new();
 
 
     // ----------- ALERTES SUPPRESSION -----------
@@ -142,6 +164,9 @@ else
         thematique = equipement.Thematiques.Select(t => t.Nom_Thematique).FirstOrDefault();
         motsCles = equipement.Qualifiers
             .Select(s => s.Mot_ClefNavigation)
+            .ToList();
+        fonctionnalites = equipement.Posseders.
+            Select(s => s.FonctionnaliteNavigation)
             .ToList();
     }
 

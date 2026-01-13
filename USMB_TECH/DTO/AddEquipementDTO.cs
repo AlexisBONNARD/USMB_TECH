@@ -1,4 +1,6 @@
-﻿namespace USMB_TECH.DTO
+﻿using USMB_TECH.Models;
+
+namespace USMB_TECH.DTO
 {
     public class AddEquipementDTO
     {
@@ -24,5 +26,7 @@
         public List<string> MotsCles { get; set; } = new();
 
         public List<PhotoDto> Photos { get; set; } = new();
+        public List<Fonctionnalite> Fonctionnalites { get; set; } = new();
+
     }
 }

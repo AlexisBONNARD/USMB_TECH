@@ -439,14 +439,14 @@ namespace USMB_TECH.Migrations
                     b.ToTable("fonction", "usmbTech");
                 });
 
-            modelBuilder.Entity("USMB_TECH.Models.Fonctionalite", b =>
+            modelBuilder.Entity("USMB_TECH.Models.Fonctionnalite", b =>
                 {
-                    b.Property<int>("Id_Fonctionalite")
+                    b.Property<int>("Id_Fonctionnalite")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id_fonctionalite");
+                        .HasColumnName("id_fonctionnalite");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Fonctionalite"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Fonctionnalite"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -454,16 +454,16 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("description");
 
-                    b.Property<string>("Nom_Fonctionalite")
+                    b.Property<string>("Nom_Fonctionnalite")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("nom_fonctionalite");
+                        .HasColumnName("nom_fonctionnalite");
 
-                    b.HasKey("Id_Fonctionalite")
-                        .HasName("pk_fonctionalite");
+                    b.HasKey("Id_Fonctionnalite")
+                        .HasName("pk_fonctionnalite");
 
-                    b.ToTable("fonctionalite", "usmbTech");
+                    b.ToTable("fonctionnalite", "usmbTech");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Fournir", b =>
@@ -717,14 +717,14 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_equipement");
 
-                    b.Property<int>("Id_Fonctionalite")
+                    b.Property<int>("Id_Fonctionnalite")
                         .HasColumnType("integer")
-                        .HasColumnName("id_fonctionalite");
+                        .HasColumnName("id_fonctionnalite");
 
-                    b.HasKey("Id_Equipement", "Id_Fonctionalite")
+                    b.HasKey("Id_Equipement", "Id_Fonctionnalite")
                         .HasName("pk_posseder");
 
-                    b.HasIndex("Id_Fonctionalite");
+                    b.HasIndex("Id_Fonctionnalite");
 
                     b.ToTable("posseder", "usmbTech");
                 });
@@ -1422,16 +1422,16 @@ namespace USMB_TECH.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_posseder_equipement");
 
-                    b.HasOne("USMB_TECH.Models.Fonctionalite", "FonctionaliteNavigation")
+                    b.HasOne("USMB_TECH.Models.Fonctionnalite", "FonctionnaliteNavigation")
                         .WithMany("Posseders")
-                        .HasForeignKey("Id_Fonctionalite")
+                        .HasForeignKey("Id_Fonctionnalite")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_posseder_fonctionalite");
+                        .HasConstraintName("fk_posseder_fonctionnalite");
 
                     b.Navigation("EquipementNavigation");
 
-                    b.Navigation("FonctionaliteNavigation");
+                    b.Navigation("FonctionnaliteNavigation");
                 });
 
             modelBuilder.Entity("USMB_TECH.Models.Preciser", b =>
@@ -1682,7 +1682,7 @@ namespace USMB_TECH.Migrations
                     b.Navigation("Contacts");
                 });
 
-            modelBuilder.Entity("USMB_TECH.Models.Fonctionalite", b =>
+            modelBuilder.Entity("USMB_TECH.Models.Fonctionnalite", b =>
                 {
                     b.Navigation("Posseders");
                 });

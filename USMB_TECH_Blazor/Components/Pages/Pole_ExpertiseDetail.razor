@@ -32,63 +32,73 @@ else
                 <Carousel Photos="@pole_expertise.Photos" />
                 <p>@pole_expertise.Description_Pole_Expertise</p>
             </section>
-
-            <section>
-                <h3>MOTS CLÉS</h3>
+            @if (motsCles != null && motsCles.Any())
+            {
+                <section>
+                    <h3>MOTS CLÉS</h3>
+                    <ul class="list-style">
+                        @foreach (var mot in motsCles)
+                        {
+                            <li>@mot.Nom_Mot_Clef</li>
+                        }
+                    </ul>
+                </section>
+            }
+            @if (pole_expertise.Exemple_Utilisations != null && pole_expertise.Exemple_Utilisations.Any())
+            {
+                <h3>EXEMPLES DE RÉALISATIONS</h3>
                 <ul class="list-style">
-                    @foreach (var mot in motsCles)
+                    @foreach (var exemple in pole_expertise.Exemple_Utilisations)
                     {
-                        <li>@mot.Nom_Mot_Clef</li>
+                        <li>@exemple.Description_Utilisation</li>
                     }
                 </ul>
-            </section>
-            <h3>EXEMPLES DE RÉALISATIONS</h3>
-            @foreach (var exemple in pole_expertise.ExempleUtilisations)
-            {
-                <div class="example-block">
-                    <h4>@exemple.Nom_Utilisation</h4>
-                    <p>@exemple.Description_Utilisation</p>
-                </div>
+
             }
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
-            <section>
-                <h3>NOS ÉQUIPEMENTS</h3>
+            @if (pole_expertise.Equipements != null && pole_expertise.Equipements.Any())
+            {
+                <section>
+                    <h3>NOS ÉQUIPEMENTS</h3>
 
-                <div class="center-grid">
-                    @foreach (var equipement in pole_expertise.Equipements)
-                    {
-                        <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement))">
-                            @if (equipement.Photos != null && equipement.Photos.Any())
-                            {
-                                var photo = equipement.Photos.First();
-                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
-                            }
-                            <p>@equipement.Nom_Equipement</p>
-                        </div>
-                    }
-                </div>
-            </section>
+                    <div class="center-grid">
+                        @foreach (var equipement in pole_expertise.Equipements)
+                        {
+                            <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement))">
+                                @if (equipement.Photos != null && equipement.Photos.Any())
+                                {
+                                    var photo = equipement.Photos.First();
+                                    <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
+                                }
+                                <p>@equipement.Nom_Equipement</p>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+            @if (prestations != null && prestations.Any())
+            {
+                <section>
+                    <h3>NOS PRESTATIONS</h3>
+                    <div class="center-grid">
+                        @foreach (var prestation in prestations)
+                        {
+                            <div class="center-item" @onclick="@(() => Navigation.NavigateTo($"/prestation/{prestation.Id_Prestation}"))">
+                                @if (prestation.Photos != null && prestation.Photos.Any())
+                                {
+                                    var photo = prestation.Photos.First();
+                                    <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
+                                }
+                                <p>@prestation.Intitule_Prestation</p>
+                            </div>
+                        }
+                    </div>
 
-            <section>
-                <h3>NOS PRESTATIONS</h3>
-                <div class="center-grid">
-                    @foreach (var prestation in prestations)
-                    {
-                        <div class="center-item" @onclick="@(() => Navigation.NavigateTo($"/prestation/{prestation.Id_Prestation}"))">
-                            @if (prestation.Photos != null && prestation.Photos.Any())
-                            {
-                                var photo = prestation.Photos.First();
-                                <img src="@photo.Url_Photo" alt="@photo.Nom_Photo" />
-                            }
-                            <p>@prestation.Intitule_Prestation</p>
-                        </div>
-                    }
-                </div>
-                
-            </section>
+                </section>
+            }
         </div>
 
         <!-- ========= COLONNE DROITE ========= -->
@@ -100,7 +110,7 @@ else
                 </div>
             </div>
 
-          @*   <div class="info-block">
+            @*   <div class="info-block">
                 <h4>Localisation :</h4>
                 <div class="btn-blue">Le Bourget du Lac</div>
             </div> *@

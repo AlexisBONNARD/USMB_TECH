@@ -46,32 +46,47 @@
                        @bind:event="oninput"
                        type="text"
                        placeholder="Rechercher..."
+                       data-testid="header-search-input"
                        @onkeydown="HandleKeyDown" />
 
                 <!-- Bouton flèche -->
                 <button class="search-toggle @(ShowOptions ? "open" : "")"
+                        data-testid="header-search-toggle"
                         @onclick="ToggleOptions">
                     ▲
                 </button>
 
                 <!-- Bouton loupe -->
-                <button class="search-btn" @onclick="PerformSearch">
+                <button class="search-btn"
+                        data-testid="header-search-button"
+                        @onclick="PerformSearch">
                     <i class="bi bi-search"></i>
                 </button>
 
                 <!-- Options -->
-                <div class="search-options @(ShowOptions ? "open" : "")">
+                <div class="search-options @(ShowOptions ? "open" : "")"
+                     data-testid="header-search-options">
                     <label>
-                        <input type="checkbox" @bind="SearchMotClef" /> Par mot-clé
+                        <input type="checkbox"
+                               data-testid="search-mode-motclef"
+                               @bind="SearchMotClef" />
+                        Par mot-clé
                     </label>
+
                     <label>
-                        <input type="checkbox" @bind="SearchThematique" /> Par thématique
+                        <input type="checkbox"
+                               data-testid="search-mode-thematique"
+                               @bind="SearchThematique" />
+                        Par thématique
                     </label>
+
                     <label>
-                        <input type="checkbox" @bind="SearchTexte" /> Par texte
+                        <input type="checkbox"
+                               data-testid="search-mode-texte"
+                               @bind="SearchTexte" />
+                        Par texte
                     </label>
                 </div>
-
             </div>
         </div>
     </div>
