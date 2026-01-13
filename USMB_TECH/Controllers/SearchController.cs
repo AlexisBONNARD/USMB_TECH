@@ -4,6 +4,7 @@ using USMB_TECH.DTO;
 using USMB_TECH.Models.Repository;
 using USMB_TECH_Blazor.Models;
 using Python.Runtime;
+using System.Drawing.Printing;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -46,12 +47,16 @@ public class SearchController : ControllerBase
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
-        Console.WriteLine("cacatest");
+        Console.WriteLine("oui");
+        Runtime.PythonDLL = @"C:\\ProgramData\\anaconda3\\python311.dll";
+        PythonEngine.Initialize();
         using (Py.GIL())
         {
-            var script = Py.Import("IASearch");
-            var test = script.InvokeMethod("test");
-            Console.WriteLine(test);
+
+            dynamic script = Py.Import("IASearch");
+            dynamic resultIA = script.search("transformation informatique");
+            Console.WriteLine(resultIA);
+
         }
         //                  ÉQUIPEMENTS
         var equipements = (await _equipManager.SearchAsync(e =>

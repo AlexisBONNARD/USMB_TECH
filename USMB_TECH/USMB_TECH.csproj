@@ -7,6 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Controllers\IASearch.py" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 		<PackageReference Include="IronPython" Version="3.4.2" />
 		<PackageReference Include="IronPython.StdLib" Version="3.4.2" />
@@ -27,6 +31,26 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	
+
+	<ItemGroup>
+	  <None Update="Controllers\IASearch\IASearch.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Controllers\IASearch\__init__.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Controllers\IA\IASearch.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Controllers\IA\__init__.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="IASearch.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 	<Target Name="PublishBlazorWasm" AfterTargets="Publish">
 		<Exec Command="dotnet publish ../USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release -o $(ProjectDir)wwwroot" />
