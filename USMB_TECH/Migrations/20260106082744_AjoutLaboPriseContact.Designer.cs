@@ -687,12 +687,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("actif");
 
-                    b.Property<string>("Description_Contenu")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("description_contenu");
-
                     b.Property<string>("Description_Pole_Expertise")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -703,23 +697,11 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_domaine_excellence");
 
-                    b.Property<string>("Nom_Contenu")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("nom_contenu");
-
-                    b.Property<string>("Nom_Pole_Expertise")
+                   b.Property<string>("Nom_Pole_Expertise")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("nom_pole_expertise");
-
-                    b.Property<string>("Url_Contenu")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("url_contenu");
 
                     b.HasKey("Id_Pole_Expertise")
                         .HasName("pk_pole_expertise");

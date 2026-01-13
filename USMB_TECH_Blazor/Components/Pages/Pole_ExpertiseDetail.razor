@@ -43,7 +43,13 @@ else
                 </ul>
             </section>
             <h3>EXEMPLES DE RÉALISATIONS</h3>
-            <p>@pole_expertise.Description_Contenu</p>
+            @foreach (var exemple in pole_expertise.ExempleUtilisations)
+            {
+                <div class="example-block">
+                    <h4>@exemple.Nom_Utilisation</h4>
+                    <p>@exemple.Description_Utilisation</p>
+                </div>
+            }
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->

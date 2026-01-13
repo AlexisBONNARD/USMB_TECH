@@ -8,9 +8,6 @@ namespace USMB_TECH.DTO
 
         public string Nom_Pole_Expertise { get; set; }
         public string Description_Pole_Expertise { get; set; }
-        public string Nom_Contenu { get; set; }
-        public string Url_Contenu { get; set; }
-        public string Description_Contenu { get; set; }
         public bool Actif { get; set; }
 
         public int Id_Domaine_Excellence { get; set; }
@@ -28,9 +25,6 @@ namespace USMB_TECH.DTO
                    Id_Pole_Expertise == dto.Id_Pole_Expertise &&
                    Nom_Pole_Expertise == dto.Nom_Pole_Expertise &&
                    Description_Pole_Expertise == dto.Description_Pole_Expertise &&
-                   Nom_Contenu == dto.Nom_Contenu &&
-                   Url_Contenu == dto.Url_Contenu &&
-                   Description_Contenu == dto.Description_Contenu &&
                    Actif == dto.Actif &&
                    EqualityComparer<List<PhotoDto>>.Default.Equals(Photos, dto.Photos) &&
                    EqualityComparer<List<ExempleUtilisationDto>>.Default.Equals(ExempleUtilisations, dto.ExempleUtilisations) &&
@@ -46,9 +40,6 @@ namespace USMB_TECH.DTO
             hash.Add(Id_Pole_Expertise);
             hash.Add(Nom_Pole_Expertise);
             hash.Add(Description_Pole_Expertise);
-            hash.Add(Nom_Contenu);
-            hash.Add(Url_Contenu);
-            hash.Add(Description_Contenu);
             hash.Add(Actif);
             hash.Add(Photos);
             hash.Add(ExempleUtilisations);

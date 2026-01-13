@@ -34,18 +34,6 @@
         <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" placeholder="Pôle d'expertise dédiée à la Santé & au Sport" />
         <ValidationMessage For="@(() => pole_expertise.Description_Pole_Expertise)" />
 
-        <label>Nom contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" placeholder="Présentation laboratoire" />
-        <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
-
-        <label>URL contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" placeholder="https://www.univ-smb.fr" />
-        <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
-
-        <label>Description contenu *</label>
-        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" placeholder="Présentation de ce laboratoire" />
-        <ValidationMessage For="@(() => pole_expertise.Description_Contenu)" />
-
         <label class="mt-2">Active ?</label>
         <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Actif">
             <option value="true">Oui</option>

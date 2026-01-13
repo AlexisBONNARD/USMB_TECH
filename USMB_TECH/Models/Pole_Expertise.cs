@@ -22,19 +22,6 @@ namespace USMB_TECH.Models
         [MaxLength(250)]
         public string Description_Pole_Expertise { get; set; }
 
-        [Column("nom_contenu")]
-        [MaxLength(50)]
-        public string Nom_Contenu { get; set; } 
-
-        [Column("url_contenu")]
-        [MaxLength(150)]
-        [RegularExpression(@"^https?://[^\s/$.?#].[^\s]*$")]
-        public string Url_Contenu { get; set; }
-
-        [Column("description_contenu")]
-        [MaxLength(500)]
-        public string Description_Contenu { get; set; }
-
         [Column("actif")]
         public bool Actif {  get; set; }
 
