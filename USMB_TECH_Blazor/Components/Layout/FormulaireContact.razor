@@ -170,23 +170,42 @@
         if (typeSelectionne != TypeCible.Laboratoire)
             prise_contact.Nom_Court = null;
     }
+    private bool ValiderCible()
+    {
+        return
+            typeSelectionne == TypeCible.Equipement && prise_contact.Id_Equipement != null
+         || typeSelectionne == TypeCible.Pole && prise_contact.Id_Pole_Expertise != null
+         || typeSelectionne == TypeCible.Laboratoire && !string.IsNullOrWhiteSpace(prise_contact.Nom_Court);
+    }
 
     private async Task HandleSubmit()
     {
         NormaliserAvantEnvoi();
+
+        if (!ValiderCible())
+        {
+            await ShowAlert(
+                "Veuillez sélectionner soit un équipement, soit un pôle d’expertise, soit un laboratoire.",
+                false
+            );
+            return;
+        }
+
         try
         {
             await Prise_ContactService.AddAsync(prise_contact);
             await ShowAlert("Votre demande a bien été envoyée !", true);
 
             prise_contact = new() { Id_Type_Client = 1 };
+            typeSelectionne = TypeCible.Aucun;
         }
         catch (Exception ex)
         {
-            await ShowAlert("Erreur serveur.", false);
+            await ShowAlert("Une erreur technique est survenue. Veuillez réessayer.", false);
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
     }
+
 
     private async Task ShowAlert(string msg, bool success)
     {
