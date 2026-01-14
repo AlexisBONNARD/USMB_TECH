@@ -1,10 +1,10 @@
-﻿﻿using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Python.Runtime;
 using USMB_TECH.DTO;
 using USMB_TECH.Models.Repository;
 using USMB_TECH_Blazor.Models;
-using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
+
 [ApiController]
 [Route("api/[controller]")]
 public class SearchController : ControllerBase
@@ -30,49 +30,60 @@ public class SearchController : ControllerBase
         _laboratoireManager = laboratoireManager;
         _domaineManager = domaineManager;
         _mapper = mapper;
-
     }
 
     [HttpGet("global")]
     public async Task<ActionResult<GlobalSearchResultDTO>> GlobalSearch(
-        [FromQuery] string query,
-        [FromQuery] string mode = "motclef")
+     [FromQuery] string query,
+     [FromQuery] string mode = "motclef")
     {
         if (string.IsNullOrWhiteSpace(query))
             return Ok(new GlobalSearchResultDTO());
 
         query = query.ToLower().Trim();
 
-        // Détection des types activés
-        bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
-        bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
-        bool useTexte = mode.Contains("texte") || mode == "full";
-        if (!PythonEngine.IsInitialized)
-        {
-            Python.Runtime.Runtime.PythonDLL = @"C:\ProgramData\anaconda3\python311.dll";
-            PythonEngine.Initialize();
-            PythonEngine.BeginAllowThreads();  
-        }
-        Console.WriteLine("Engine initialized");
+        // Détection du mode IA
+        bool useIA = mode.Contains("ia");
 
-        using (Py.GIL())
+        // Si mode IA, on utilise uniquement l'IA pour transformer la query
+        // Sinon, on utilise les 3 modes classiques
+        bool useMotClef = !useIA && (mode.Contains("motclef") || mode == "global" || mode == "full");
+        bool useThematique = !useIA && (mode.Contains("thematique") || mode == "global" || mode == "full");
+        bool useTexte = !useIA && (mode.Contains("texte") || mode == "full");
+
+        // Si mode IA est activé, on traite la query avec Python
+        if (useIA)
         {
-            Console.WriteLine("GIL acquis");
-            dynamic script = Py.Import("IASearch"); 
-            Console.WriteLine("Point d'arrêt");
-            dynamic resultIA = script.search(query, 10);
-            string resultat = "";
-            foreach (var item in resultIA)
+            // Plus besoin de vérifier IsInitialized ni de définir PythonDLL
+            // car c'est fait au démarrage dans Program.cs
+            try
             {
-                using var tuple = new PyTuple(item)!;
-                resultat += " " + tuple[1].As<String>();
-            }   
+                using (Py.GIL())
+                {
+                    Console.WriteLine("GIL acquis");
+                    dynamic script = Py.Import("IASearch");
+                    Console.WriteLine("Script Python importé");
+                    dynamic resultIA = script.search(query, 10);
+                    string resultat = "";
+                    foreach (var item in resultIA)
+                    {
+                        using var tuple = new PyTuple(item)!;
+                        resultat += " " + tuple[1].As<String>();
+                    }
 
-            query = resultat.ToLower().Trim();
+                    query = resultat.ToLower().Trim();
+                    Console.WriteLine("Query transformée par IA : " + query);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'appel à l'IA Python : {ex.Message}");
+                // En cas d'erreur, continuer avec la query originale
+            }
         }
-        Console.WriteLine("La query : " + query);
+
         //                  ÉQUIPEMENTS
-        /*var equipements = (await _equipManager.SearchAsync(e =>
+        var equipements = (await _equipManager.SearchAsync(e =>
             (
                 useMotClef &&
                 e.Pole_ExpertiseNavigation != null &&
@@ -91,6 +102,19 @@ public class SearchController : ControllerBase
                 (
                     (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
                     (e.Description_Technique ?? "").ToLower().Contains(query)
+                )
+            )
+            ||
+            (
+                useIA &&
+                (
+                    (e.Pole_ExpertiseNavigation != null &&
+                     e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
+                         query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))) ||
+                    e.Exposers.Any(t =>
+                        query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower())) ||
+                    query.Contains((e.Nom_Equipement ?? "").ToLower()) ||
+                    query.Contains((e.Description_Technique ?? "").ToLower())
                 )
             )
         ))
@@ -115,6 +139,16 @@ public class SearchController : ControllerBase
                     (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)
                 )
             )
+            ||
+            (
+                useIA &&
+                (
+                    p.Specifiers.Any(s =>
+                        query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower())) ||
+                    query.Contains((p.Nom_Pole_Expertise ?? "").ToLower()) ||
+                    query.Contains((p.Description_Pole_Expertise ?? "").ToLower())
+                )
+            )
         ))
         .ToList();
 
@@ -133,6 +167,16 @@ public class SearchController : ControllerBase
                 (
                     (pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
                     (pr.Description_Prestation ?? "").ToLower().Contains(query)
+                )
+            )
+            ||
+            (
+                useIA &&
+                (
+                    pr.Precisers.Any(p =>
+                        query.Contains(p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower())) ||
+                    query.Contains((pr.Intitule_Prestation ?? "").ToLower()) ||
+                    query.Contains((pr.Description_Prestation ?? "").ToLower())
                 )
             )
         ))
@@ -170,110 +214,16 @@ public class SearchController : ControllerBase
                     )
                 )
             )
-        ))
-        .ToList();
-
-        var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
-
-        //            DOMAINES D’EXCELLENCE
-        var domaines = (await _domaineManager.SearchAsync(d =>
+            ||
             (
-                useTexte &&
+                useIA &&
                 (
-                    (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
-                    (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
-                )
-            )
-        ))
-        .ToList();*/
-        //                  ÉQUIPEMENTS
-        var equipements = (await _equipManager.SearchAsync(e =>
-            (
-                useMotClef &&
-                e.Pole_ExpertiseNavigation != null &&
-                e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                    query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
-            )
-            ||
-            (
-                useThematique &&
-                e.Exposers.Any(t =>
-                    query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower()))
-            )
-            ||
-            (
-                useTexte &&
-                (
-                    query.Contains((e.Nom_Equipement ?? "").ToLower()) ||
-                    query.Contains((e.Description_Technique ?? "").ToLower())
-                )
-            )
-        ))
-        .GroupBy(e => e.Id_Equipement)
-        .Select(g => g.First())
-        .ToList();
-
-        var equipementDtos = _mapper.Map<List<EquipementPreviewDTO>>(equipements);
-
-        //                  POLES EXPERTISE
-        var poles = (await _poleManager.SearchAsync(p =>
-            (
-                useMotClef &&
-                p.Specifiers.Any(s =>
-                    query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
-            )
-            ||
-            (
-                useTexte &&
-                (
-                    query.Contains((p.Nom_Pole_Expertise ?? "").ToLower()) ||
-                    query.Contains((p.Description_Pole_Expertise ?? "").ToLower())
-                )
-            )
-        ))
-        .ToList();
-
-        var poleDtos = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles);
-
-        //                 PRESTATIONS
-        var prestations = (await _prestationManager.SearchAsync(pr =>
-            (
-                useMotClef &&
-                pr.Precisers.Any(p =>
-                    query.Contains(p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
-            )
-            ||
-            (
-                useTexte &&
-                (
-                    query.Contains((pr.Intitule_Prestation ?? "").ToLower()) ||
-                    query.Contains((pr.Description_Prestation ?? "").ToLower())
-                )
-            )
-        ))
-        .ToList();
-
-        var prestationDtos = _mapper.Map<List<PrestationPreviewDTO>>(prestations);
-
-        //                LABORATOIRES
-        var laboratoires = (await _laboratoireManager.SearchAsync(l =>
-            (
-                useMotClef &&
-                l.Designers.Any(q =>
-                    q.Mot_ClefNavigation != null &&
-                    query.Contains(q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
-            )
-            ||
-            (
-                useThematique &&
-                l.Est_Liers.Any(t =>
-                    t.ThematiqueNavigation != null &&
-                    query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower()))
-            )
-            ||
-            (
-                useTexte &&
-                (
+                    l.Designers.Any(q =>
+                        q.Mot_ClefNavigation != null &&
+                        query.Contains(q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower())) ||
+                    l.Est_Liers.Any(t =>
+                        t.ThematiqueNavigation != null &&
+                        query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower())) ||
                     query.Contains((l.Nom_Long ?? "").ToLower()) ||
                     query.Contains((l.Description ?? "").ToLower()) ||
                     (
@@ -287,15 +237,24 @@ public class SearchController : ControllerBase
             )
         ))
         .ToList();
+
         var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
 
-        //            DOMAINES D’EXCELLENCE
+        //            DOMAINES D'EXCELLENCE
         var domaines = (await _domaineManager.SearchAsync(d =>
             (
                 useTexte &&
                 (
                     (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
                     (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
+                )
+            )
+            ||
+            (
+                useIA &&
+                (
+                    query.Contains((d.intitule_Domaine_Excellence ?? "").ToLower()) ||
+                    query.Contains((d.Description_Domaine_Excellence ?? "").ToLower())
                 )
             )
         ))
