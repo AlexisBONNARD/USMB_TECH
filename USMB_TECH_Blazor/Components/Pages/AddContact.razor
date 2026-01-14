@@ -32,10 +32,6 @@
         <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" placeholder="Jacques"/>
         <ValidationMessage For="@(() => contact.Prenom_Contact)" />
 
-        <label>Numéro de Sécurité Sociale *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" placeholder="1 85 05 78 006 084 36"/>
-        <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
-
         <label>Code RH *</label>
         <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" placeholder="56321"/>
         <ValidationMessage For="@(() => contact.Code_RH)" />
@@ -249,7 +245,7 @@
             }
 
             // ---------- POST du contact ----------
-            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Contact_USMB", contact);
+            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Contact_USMB", contact);
             var createdContact = await response.Content.ReadFromJsonAsync<Contact_USMB>();
 
             contact = createdContact;
