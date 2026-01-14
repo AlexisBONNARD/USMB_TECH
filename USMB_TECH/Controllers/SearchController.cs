@@ -54,7 +54,7 @@ public class SearchController : ControllerBase
                 e.Pole_ExpertiseNavigation.Specifiers
                     .Where(s => s != null)
                     .Any(s =>
-                        (s.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                        (s.Mot_ClefNavigation.Nom_Mot_Clef ?? "")
                             .ToLower()
                             .Contains(query))
             )
@@ -65,7 +65,7 @@ public class SearchController : ControllerBase
                 e.Exposers
                     .Where(t => t != null)
                     .Any(t =>
-                        (t.ThematiqueNavigation?.Nom_Thematique ?? "")
+                        (t.ThematiqueNavigation.Nom_Thematique ?? "")
                             .ToLower()
                             .Contains(query))
             )
@@ -92,7 +92,7 @@ public class SearchController : ControllerBase
                 p.Specifiers
                     .Where(s => s != null)
                     .Any(s =>
-                        (s.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                        (s.Mot_ClefNavigation.Nom_Mot_Clef ?? "")
                             .ToLower()
                             .Contains(query))
             )
@@ -117,7 +117,7 @@ public class SearchController : ControllerBase
                 pr.Precisers
                     .Where(p => p != null)
                     .Any(p =>
-                        (p.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                        (p.Mot_ClefNavigation.Nom_Mot_Clef ?? "")
                             .ToLower()
                             .Contains(query))
             )
@@ -142,7 +142,7 @@ public class SearchController : ControllerBase
                 l.Designers
                     .Where(q => q != null)
                     .Any(q =>
-                        (q.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                        (q.Mot_ClefNavigation.Nom_Mot_Clef ?? "")
                             .ToLower()
                             .Contains(query))
             )
@@ -153,7 +153,7 @@ public class SearchController : ControllerBase
                 l.Est_Liers
                     .Where(t => t != null)
                     .Any(t =>
-                        (t.ThematiqueNavigation?.Nom_Thematique ?? "")
+                        (t.ThematiqueNavigation.Nom_Thematique ?? "")
                             .ToLower()
                             .Contains(query))
             )
