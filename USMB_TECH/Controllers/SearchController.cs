@@ -41,24 +41,33 @@ public class SearchController : ControllerBase
 
         query = query.ToLower().Trim();
 
-        // Détection des types activés
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
 
-        //                  ÉQUIPEMENTS
+        // ------------------ ÉQUIPEMENTS ------------------
         var equipements = (await _equipManager.SearchAsync(e =>
             (
                 useMotClef &&
                 e.Pole_ExpertiseNavigation != null &&
-                e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                    s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+                e.Pole_ExpertiseNavigation.Specifiers != null &&
+                e.Pole_ExpertiseNavigation.Specifiers
+                    .Where(s => s != null)
+                    .Any(s =>
+                        (s.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                            .ToLower()
+                            .Contains(query))
             )
             ||
             (
                 useThematique &&
-                e.Exposers.Any(t =>
-                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
+                e.Exposers != null &&
+                e.Exposers
+                    .Where(t => t != null)
+                    .Any(t =>
+                        (t.ThematiqueNavigation?.Nom_Thematique ?? "")
+                            .ToLower()
+                            .Contains(query))
             )
             ||
             (
@@ -75,12 +84,17 @@ public class SearchController : ControllerBase
 
         var equipementDtos = _mapper.Map<List<EquipementPreviewDTO>>(equipements);
 
-        //                  POLES EXPERTISE
+        // ------------------ PÔLES ------------------
         var poles = (await _poleManager.SearchAsync(p =>
             (
                 useMotClef &&
-                p.Specifiers.Any(s =>
-                    s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+                p.Specifiers != null &&
+                p.Specifiers
+                    .Where(s => s != null)
+                    .Any(s =>
+                        (s.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                            .ToLower()
+                            .Contains(query))
             )
             ||
             (
@@ -95,12 +109,17 @@ public class SearchController : ControllerBase
 
         var poleDtos = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles);
 
-        //                 PRESTATIONS
+        // ------------------ PRESTATIONS ------------------
         var prestations = (await _prestationManager.SearchAsync(pr =>
             (
                 useMotClef &&
-                pr.Precisers.Any(p =>
-                    p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+                pr.Precisers != null &&
+                pr.Precisers
+                    .Where(p => p != null)
+                    .Any(p =>
+                        (p.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                            .ToLower()
+                            .Contains(query))
             )
             ||
             (
@@ -115,20 +134,28 @@ public class SearchController : ControllerBase
 
         var prestationDtos = _mapper.Map<List<PrestationPreviewDTO>>(prestations);
 
-        //                LABORATOIRES
+        // ------------------ LABORATOIRES ------------------
         var laboratoires = (await _laboratoireManager.SearchAsync(l =>
             (
                 useMotClef &&
-                l.Designers.Any(q =>
-                    q.Mot_ClefNavigation != null &&
-                    q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+                l.Designers != null &&
+                l.Designers
+                    .Where(q => q != null)
+                    .Any(q =>
+                        (q.Mot_ClefNavigation?.Nom_Mot_Clef ?? "")
+                            .ToLower()
+                            .Contains(query))
             )
             ||
             (
                 useThematique &&
-                l.Est_Liers.Any(t =>
-                    t.ThematiqueNavigation != null &&
-                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
+                l.Est_Liers != null &&
+                l.Est_Liers
+                    .Where(t => t != null)
+                    .Any(t =>
+                        (t.ThematiqueNavigation?.Nom_Thematique ?? "")
+                            .ToLower()
+                            .Contains(query))
             )
             ||
             (
@@ -150,7 +177,7 @@ public class SearchController : ControllerBase
 
         var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
 
-        //            DOMAINES D’EXCELLENCE
+        // ------------------ DOMAINES ------------------
         var domaines = (await _domaineManager.SearchAsync(d =>
             (
                 useTexte &&
@@ -164,7 +191,7 @@ public class SearchController : ControllerBase
 
         var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
 
-        //                 RÉSULTAT GLOBAL
+        // ------------------ RÉSULTAT ------------------
         var result = new GlobalSearchResultDTO
         {
             Equipements = equipementDtos,
