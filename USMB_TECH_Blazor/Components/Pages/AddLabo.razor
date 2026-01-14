@@ -113,10 +113,6 @@
         <InputText class="form-control mb-2" @bind-Value="contact.Prenom_Contact" placeholder="Jacques" />
         <ValidationMessage For="@(() => contact.Prenom_Contact)" />
 
-        <label>Numéro de Sécurité Sociale *</label>
-        <InputText class="form-control mb-2" @bind-Value="contact.Num_Securite_Social" placeholder="1 85 05 78 006 084 36" />
-        <ValidationMessage For="@(() => contact.Num_Securite_Social)" />
-
         <label>Code RH *</label>
         <InputText class="form-control mb-2" @bind-Value="contact.Code_RH" placeholder="56321" />
         <ValidationMessage For="@(() => contact.Code_RH)" />
@@ -379,7 +375,7 @@
 
             isLoading = true; // active le loader
             StateHasChanged();
-            if (string.IsNullOrWhiteSpace(contact.Nom_Contact) || string.IsNullOrWhiteSpace(contact.Prenom_Contact) || string.IsNullOrWhiteSpace(contact.Mail) || string.IsNullOrWhiteSpace(contact.Num_Securite_Social) || string.IsNullOrWhiteSpace(contact.Code_RH))
+            if (string.IsNullOrWhiteSpace(contact.Nom_Contact) || string.IsNullOrWhiteSpace(contact.Prenom_Contact) || string.IsNullOrWhiteSpace(contact.Mail) || string.IsNullOrWhiteSpace(contact.Code_RH))
             {
                 message = "Tous les champs du contact doivent être remplis.";
                 throw new Exception("Tous les champs du contact doivent être remplis.");

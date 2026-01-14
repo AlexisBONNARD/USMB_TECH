@@ -28,14 +28,6 @@ jobs:
             composer install --no-dev --prefer-dist --no-progress
           fi
 
-      - name: Prepare publish folder
-        run: |
-          rm -rf publish
-          mkdir publish
-          cp -r GRR/* publish/
-          cp -r GRR/.* publish/ 2>/dev/null || true
-
-
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -48,5 +40,5 @@ jobs:
         with:
           app-name: 'grr-php-app'
           slot-name: 'Production'
-          package: 'publish'
+          package: './GRR'   # <--- Déployer directement le dossier GRR
           clean: true

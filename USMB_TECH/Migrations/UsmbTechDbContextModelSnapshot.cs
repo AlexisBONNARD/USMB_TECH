@@ -185,12 +185,6 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("character varying(25)")
                         .HasColumnName("nom_court");
 
-                    b.Property<string>("Num_Securite_Social")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)")
-                        .HasColumnName("num_securite_social");
-
                     b.Property<string>("Prenom_Contact")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")

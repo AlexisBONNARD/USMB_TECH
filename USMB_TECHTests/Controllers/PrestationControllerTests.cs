@@ -58,7 +58,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "Ellen",
                 Nom_Contact = "Joe",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact1@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,

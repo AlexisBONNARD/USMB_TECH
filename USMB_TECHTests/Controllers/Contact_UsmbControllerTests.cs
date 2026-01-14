@@ -56,7 +56,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "Ellen",
                 Nom_Contact = "Joe",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact1@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,
@@ -68,7 +67,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "Jane",
                 Nom_Contact = "Doe",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact2@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,
@@ -80,7 +78,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "Burnice",
                 Nom_Contact = "Stars",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact3@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,
@@ -92,7 +89,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "Ellen",
                 Nom_Contact = "Joe",
                 Code_RH = "JE123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact1@gmail.com",
                 Telephone = "0612345678",
                 Nom_Fonction = "Responsable",
@@ -179,14 +175,13 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "Ellen",
                 Nom_Contact = "Joe",
                 Code_RH = "JE123",
-                Num_Securite_Social = "20210039936",
-                Mail = "contact1@gmail.com",
+                Mail = "contact1",
                 Telephone = "0612345678",
                 Nom_Fonction = "Responsable",
                 Nom_Court = labo.Nom_Court,
             };
 
-            _controller.ModelState.AddModelError("Num_Securite_Social", "Le numéro de sécurité sociale est invalide.");
+            _controller.ModelState.AddModelError("Mail", "L'email est invalide.");
 
             var action = await _controller.PostContact_USMB(contact);
             var result = action.Result as BadRequestObjectResult;
@@ -204,7 +199,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "EllenUpdated",
                 Nom_Contact = "JoeUpdated",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact1@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,
@@ -227,7 +221,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "EllenUpdated",
                 Nom_Contact = "JoeUpdated",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact1@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,
@@ -248,7 +241,6 @@ namespace USMB_TECHTests.Controllers
                 Prenom_Contact = "EllenUpdated",
                 Nom_Contact = "JoeUpdated",
                 Code_RH = "EJ123",
-                Num_Securite_Social = "202100399200136",
                 Mail = "contact1@gmail.com",
                 Telephone = "0612345678",
                 Nom_Court = labo.Nom_Court,

@@ -22,10 +22,6 @@ namespace USMB_TECH.Models
         [MaxLength(25)]
         public string Code_RH { get; set; }
 
-        [Column("num_securite_social")]
-        [StringLength(15)]
-        public string Num_Securite_Social { get; set; }
-
         [Column("nom_contact")]
         [MaxLength(50)]
         public string? Nom_Contact { get; set; }
