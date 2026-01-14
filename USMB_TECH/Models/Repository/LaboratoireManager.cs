@@ -174,67 +174,90 @@ namespace USMB_TECH.Models.Repository
 
         public async Task UpdateAsync(Laboratoire entityToUpdate, Laboratoire updatedEntity)
         {
-            // -------------------------
-            // 1. Champs simples
-            // -------------------------
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+            // =====================================================
+            // 0. Sécurité
+            // =====================================================
+            if (entityToUpdate == null)
+                throw new ArgumentNullException(nameof(entityToUpdate));
 
-            // -------------------------
-            // 2. Adresse labo
-            // -------------------------
+            // =====================================================
+            // 1. Champs simples (PAS les FK ni les navigations)
+            // =====================================================
+            entityToUpdate.Nom_Long = updatedEntity.Nom_Long;
+            entityToUpdate.Description = updatedEntity.Description;
+
+            // =====================================================
+            // 2. Adresse LABO
+            // =====================================================
             if (updatedEntity.Adresse_laboNavigation != null)
             {
-                var existingLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
+                var adresseLabo = await _context.Adresses.FirstOrDefaultAsync(a =>
                     a.Rue_Adresse == updatedEntity.Adresse_laboNavigation.Rue_Adresse &&
                     a.Code_Postal_Adresse == updatedEntity.Adresse_laboNavigation.Code_Postal_Adresse &&
                     a.Ville_Adresse == updatedEntity.Adresse_laboNavigation.Ville_Adresse &&
                     a.Pays_Adresse == updatedEntity.Adresse_laboNavigation.Pays_Adresse &&
                     a.Complement_Rue_Adresse == updatedEntity.Adresse_laboNavigation.Complement_Rue_Adresse);
 
-                if (existingLabo == null)
+                if (adresseLabo == null)
                 {
-                    existingLabo = updatedEntity.Adresse_laboNavigation;
-                    _context.Adresses.Add(existingLabo);
+                    adresseLabo = new Adresse
+                    {
+                        Rue_Adresse = updatedEntity.Adresse_laboNavigation.Rue_Adresse,
+                        Complement_Rue_Adresse = updatedEntity.Adresse_laboNavigation.Complement_Rue_Adresse,
+                        Code_Postal_Adresse = updatedEntity.Adresse_laboNavigation.Code_Postal_Adresse,
+                        Ville_Adresse = updatedEntity.Adresse_laboNavigation.Ville_Adresse,
+                        Pays_Adresse = updatedEntity.Adresse_laboNavigation.Pays_Adresse
+                    };
+
+                    _context.Adresses.Add(adresseLabo);
                     await _context.SaveChangesAsync();
                 }
 
-                entityToUpdate.Id_Adresse_Labo = existingLabo.Id_Adresse;
-                entityToUpdate.Adresse_laboNavigation = existingLabo;
+                entityToUpdate.Id_Adresse_Labo = adresseLabo.Id_Adresse;
+                entityToUpdate.Adresse_laboNavigation = adresseLabo;
             }
 
-            // -------------------------
-            // 3. Adresse campus
-            // -------------------------
+            // =====================================================
+            // 3. Adresse CAMPUS
+            // =====================================================
             if (updatedEntity.Adresse_campusNavigation != null)
             {
-                var existingCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
+                var adresseCampus = await _context.Adresses.FirstOrDefaultAsync(a =>
                     a.Rue_Adresse == updatedEntity.Adresse_campusNavigation.Rue_Adresse &&
                     a.Code_Postal_Adresse == updatedEntity.Adresse_campusNavigation.Code_Postal_Adresse &&
                     a.Ville_Adresse == updatedEntity.Adresse_campusNavigation.Ville_Adresse &&
                     a.Pays_Adresse == updatedEntity.Adresse_campusNavigation.Pays_Adresse &&
                     a.Complement_Rue_Adresse == updatedEntity.Adresse_campusNavigation.Complement_Rue_Adresse);
 
-                if (existingCampus == null)
+                if (adresseCampus == null)
                 {
-                    existingCampus = updatedEntity.Adresse_campusNavigation;
-                    _context.Adresses.Add(existingCampus);
+                    adresseCampus = new Adresse
+                    {
+                        Rue_Adresse = updatedEntity.Adresse_campusNavigation.Rue_Adresse,
+                        Complement_Rue_Adresse = updatedEntity.Adresse_campusNavigation.Complement_Rue_Adresse,
+                        Code_Postal_Adresse = updatedEntity.Adresse_campusNavigation.Code_Postal_Adresse,
+                        Ville_Adresse = updatedEntity.Adresse_campusNavigation.Ville_Adresse,
+                        Pays_Adresse = updatedEntity.Adresse_campusNavigation.Pays_Adresse
+                    };
+
+                    _context.Adresses.Add(adresseCampus);
                     await _context.SaveChangesAsync();
                 }
 
-                entityToUpdate.Id_Adresse_Campus = existingCampus.Id_Adresse;
-                entityToUpdate.Adresse_campusNavigation = existingCampus;
+                entityToUpdate.Id_Adresse_Campus = adresseCampus.Id_Adresse;
+                entityToUpdate.Adresse_campusNavigation = adresseCampus;
             }
 
-            // -------------------------
+            // =====================================================
             // 4. Gerers (pôles d’expertise)
-            // -------------------------
+            // =====================================================
             updatedEntity.Gerers ??= new List<Gerer>();
 
-            var toRemoveGerer = entityToUpdate.Gerers
+            var gerersToRemove = entityToUpdate.Gerers
                 .Where(g => !updatedEntity.Gerers.Any(up => up.Id_Pole_Expertise == g.Id_Pole_Expertise))
                 .ToList();
 
-            foreach (var g in toRemoveGerer)
+            foreach (var g in gerersToRemove)
             {
                 entityToUpdate.Gerers.Remove(g);
                 _context.Gerers.Remove(g);
@@ -244,21 +267,26 @@ namespace USMB_TECH.Models.Repository
             {
                 if (!entityToUpdate.Gerers.Any(x => x.Id_Pole_Expertise == g.Id_Pole_Expertise))
                 {
-                    g.Nom_Court = entityToUpdate.Nom_Court;
-                    entityToUpdate.Gerers.Add(g);
+                    var newGerer = new Gerer
+                    {
+                        Nom_Court = entityToUpdate.Nom_Court,
+                        Id_Pole_Expertise = g.Id_Pole_Expertise
+                    };
+
+                    entityToUpdate.Gerers.Add(newGerer);
                 }
             }
 
-            // -------------------------
-            // 5. Designers (mots‑clés)
-            // -------------------------
+            // =====================================================
+            // 5. Designers (mots-clés)
+            // =====================================================
             updatedEntity.Designers ??= new List<Designer>();
 
-            var toRemoveDesigner = entityToUpdate.Designers
+            var designersToRemove = entityToUpdate.Designers
                 .Where(d => !updatedEntity.Designers.Any(up => up.Id_Mot_Clef == d.Id_Mot_Clef))
                 .ToList();
 
-            foreach (var d in toRemoveDesigner)
+            foreach (var d in designersToRemove)
             {
                 entityToUpdate.Designers.Remove(d);
                 _context.Designers.Remove(d);
@@ -268,21 +296,26 @@ namespace USMB_TECH.Models.Repository
             {
                 if (!entityToUpdate.Designers.Any(x => x.Id_Mot_Clef == d.Id_Mot_Clef))
                 {
-                    d.Nom_Court = entityToUpdate.Nom_Court;
-                    entityToUpdate.Designers.Add(d);
+                    var newDesigner = new Designer
+                    {
+                        Nom_Court = entityToUpdate.Nom_Court,
+                        Id_Mot_Clef = d.Id_Mot_Clef
+                    };
+
+                    entityToUpdate.Designers.Add(newDesigner);
                 }
             }
 
-            // -------------------------
+            // =====================================================
             // 6. Est_Liers (thématiques)
-            // -------------------------
+            // =====================================================
             updatedEntity.Est_Liers ??= new List<Est_Lier>();
 
-            var toRemoveEstLier = entityToUpdate.Est_Liers
+            var estLiersToRemove = entityToUpdate.Est_Liers
                 .Where(e => !updatedEntity.Est_Liers.Any(up => up.Id_Thematique == e.Id_Thematique))
                 .ToList();
 
-            foreach (var e in toRemoveEstLier)
+            foreach (var e in estLiersToRemove)
             {
                 entityToUpdate.Est_Liers.Remove(e);
                 _context.Est_Liers.Remove(e);
@@ -292,16 +325,22 @@ namespace USMB_TECH.Models.Repository
             {
                 if (!entityToUpdate.Est_Liers.Any(x => x.Id_Thematique == e.Id_Thematique))
                 {
-                    e.Nom_Court = entityToUpdate.Nom_Court;
-                    entityToUpdate.Est_Liers.Add(e);
+                    var newEstLier = new Est_Lier
+                    {
+                        Nom_Court = entityToUpdate.Nom_Court,
+                        Id_Thematique = e.Id_Thematique
+                    };
+
+                    entityToUpdate.Est_Liers.Add(newEstLier);
                 }
             }
 
-            // -------------------------
-            // 7. Save final
-            // -------------------------
+            // =====================================================
+            // 7. Sauvegarde finale
+            // =====================================================
             await _context.SaveChangesAsync();
         }
+
 
 
         public async Task<IEnumerable<Laboratoire>> GetByKeysAsync<TProperty>(
