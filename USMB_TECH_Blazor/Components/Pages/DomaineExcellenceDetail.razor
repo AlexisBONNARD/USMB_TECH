@@ -13,7 +13,7 @@
 
 @if (!string.IsNullOrEmpty(deleteMessage))
 {
-    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed" data-testid="domaine-delete-alert">
         @deleteMessage
     </div>
 }
@@ -29,12 +29,12 @@ else
 
         <div class="col-left">
             <section>
-                <h2>@domaine.Intitule_Domaine_Excellence</h2>
+                <h2 data-testid="domaine-title">@domaine.Intitule_Domaine_Excellence</h2>
             </section>
 
             <Carousel Photos="@domaine.Photos" />
 
-            <p>@domaine.Description_Domaine_Excellence</p>
+            <p data-testid="domaine-description">@domaine.Description_Domaine_Excellence</p>
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
@@ -46,7 +46,7 @@ else
                 <div class="center-grid two-columns">
                     @foreach (var pole in domaine.Pole_Expertises)
                     {
-                        <div class="expertise-card" @onclick="@(() => GoToPole(pole.Id_Pole_Expertise))">
+                        <div class="expertise-card" data-testid="domaine-pole-card" @onclick="@(() => GoToPole(pole.Id_Pole_Expertise))">
                             @if (pole.Photos != null && pole.Photos.Any())
                             {
                                 <img src="@pole.Photos.First().Url_Photo" alt="photo pole expertise" />
@@ -62,13 +62,11 @@ else
             </section>
         }
 
-
-
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
             <div class="info-block">
                 <h4>Nombre de pôles d'expertise liés:</h4>
-                <div class="div-blue">@domaine.Pole_Expertises.Count()</div>
+                <div class="div-blue" data-testid="domaine-pole-count">@domaine.Pole_Expertises.Count()</div>
             </div>
 
             <FormulaireContact />
@@ -76,10 +74,10 @@ else
     </div>
     @if (AdminState.IsAdmin)
     {
-        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(domaine.Id_Domaine_Excellence)">
+        <button class="btn btn-info mb-3" data-testid="domaine-edit-btn" @onclick="() => GoToUpdate(domaine.Id_Domaine_Excellence)">
             Modifier
         </button>
-        <button class="btn btn-danger mb-3" @onclick="() => DeleteDomaine(domaine.Id_Domaine_Excellence)">
+        <button class="btn btn-danger mb-3" data-testid="domaine-delete-btn" @onclick="() => DeleteDomaine(domaine.Id_Domaine_Excellence)">
             Supprimer
         </button>
     }
@@ -114,13 +112,13 @@ else
             await DomaineExcellenceService.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Domaine supprimé avec succès ✅");
+            await ShowDeleteAlert("Domaine supprimé avec succès");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
         {
             deleteSuccess = false;
-            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
         }
     }
 

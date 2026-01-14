@@ -1,13 +1,13 @@
 ﻿@using System.Timers
 
-<div class="carousel-wrapper">
-    <div class="carousel-track" style="transform:@GetCarouselTransform()">
+<div class="carousel-wrapper" data-testid="carousel">
+    <div class="carousel-track" data-testid="carousel-track" style="transform:@GetCarouselTransform()">
         @if (Photos != null)
         {
             @foreach (var photo in Photos)
             {
-                <div class="carousel-slide">
-                    <img src="@photo.Url_Photo" alt="photo domaine" />
+                <div class="carousel-slide" data-testid="carousel-slide">
+                    <img src="@photo.Url_Photo" data-testid="carousel-image" alt="photo domaine" />
                 </div>
             }
         }
@@ -15,8 +15,8 @@
 
     @if (Photos != null && Photos.Count > 1)
     {
-        <button class="carousel-btn left" @onclick="PreviousSlide">&#10094;</button>
-        <button class="carousel-btn right" @onclick="NextSlide">&#10095;</button>
+        <button class="carousel-btn left" data-testid="carousel-prev" @onclick="PreviousSlide">&#10094;</button>
+        <button class="carousel-btn right" data-testid="carousel-next" @onclick="NextSlide">&#10095;</button>
     }
 </div>
 

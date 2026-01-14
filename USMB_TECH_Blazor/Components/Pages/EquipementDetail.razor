@@ -12,7 +12,7 @@
 
 @if (!string.IsNullOrEmpty(deleteMessage))
 {
-    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed" data-testid="equipement-delete-alert">
         @deleteMessage
     </div>
 }
@@ -29,7 +29,7 @@ else
 
             <!-- Nom équipement -->
             <section>
-                <h2>@equipement.Nom_Equipement</h2>
+                <h2 data-testid="equipement-title">@equipement.Nom_Equipement</h2>
             </section>
 
             <!-- Image -->
@@ -39,20 +39,20 @@ else
                     <div class="center-item">
                         @foreach (Photo photo in equipement.Photos)
                         {
-                            <img src=@photo.Url_Photo alt="photo équipement" />
+                            <img src=@photo.Url_Photo alt="photo équipement" data-testid="equipement-photo" />
                         }
                     </div>
                 </section>
             }
             <section>
                 <h3>DESCRIPTION</h3>
-                <p>@equipement.Description_Technique</p>
+                <p data-testid="equipement-description">@equipement.Description_Technique</p>
             </section>
 
             <!-- Ajout du modèle 3D avec Blazor3D -->
             @if (equipement.Url_Modele_3D != null)
             {
-                <section>
+                <section data-testid="equipement-3d">
                     <h3>Modèle 3D de l'Équipement</h3>
                     <Affichage3D urlModel="@equipement.Url_Modele_3D" />
                 </section>
@@ -61,7 +61,7 @@ else
             <!-- Utilisation -->
             @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
             {
-                <section>
+                <section data-testid="equipement-usage">
                     <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
                     @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
                     {
@@ -83,10 +83,10 @@ else
             {
                 <section>
                     <h3>CARACTÉRISTIQUES TECHNIQUES</h3>
-                    <ul class="list-style">
+                    <ul class="list-style" data-testid="equipement-features">
                         @foreach (var caract in fonctionnalites)
                         {
-                            <li><strong>@caract.Nom_Fonctionnalite :</strong> @caract.Description</li>
+                            <li data-testid="equipement-feature-item"><strong>@caract.Nom_Fonctionnalite :</strong> @caract.Description</li>
                         }
                     </ul>
                 </section>
@@ -99,10 +99,10 @@ else
             {
                 <section>
                     <h3>MOTS CLÉS</h3>
-                    <ul class="list-style">
+                    <ul class="list-style" data-testid="equipement-keywords">
                         @foreach (var mot in motsCles)
                         {
-                            <li>@mot.Nom_Mot_Clef</li>
+                            <li data-testid="equipement-keyword-item">@mot.Nom_Mot_Clef</li>
                         }
                     </ul>
                 </section>
@@ -113,7 +113,7 @@ else
         <div class="col-right">
             <div class="info-block">
                 <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue" @onclick="@(() => RetourDomaineExcellence(equipement.Pole_ExpertiseNavigation.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
+                <div class="btn-blue" data-testid="equipement-domaine-btn" @onclick="@(() => RetourDomaineExcellence(equipement.Pole_ExpertiseNavigation.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
                     @equipement.Pole_ExpertiseNavigation?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
                 </div>
             </div>
@@ -125,7 +125,7 @@ else
 
             <div class="info-block">
                 <h4>Pôle d'expertise :</h4>
-                <div class="btn-blue" @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
+                <div class="btn-blue" data-testid="equipement-pole-btn" @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
                     @equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise
                 </div>
             </div>
@@ -136,10 +136,10 @@ else
 
     @if (AdminState.IsAdmin)
     {
-        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
+        <button class="btn btn-info mb-3" data-testid="equipement-edit-btn" @onclick="() => GoToUpdate(equipement.Id_Equipement)">
             Modifier
         </button>
-        <button class="btn btn-danger mb-3" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
+        <button class="btn btn-danger mb-3" data-testid="equipement-delete-btn" @onclick="() => DeleteEquipement(equipement.Id_Equipement)">
             Supprimer
         </button>
     }
