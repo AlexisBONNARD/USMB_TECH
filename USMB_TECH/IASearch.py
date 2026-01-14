@@ -31,13 +31,7 @@ articles = descriptionLabo+nomEquipements+descritpionTechEquipement+poleExpertis
 # Pré-calcul des embeddings
 article_embeddings = model.encode(articles)
 
-# Recherche des articles
-# args :
-#   - query : string
-#       contiens la recherche de l'utilisateur$
-#   - top_k : int
-#       permet d'obtenir un top
-#       remarque : le premier résultat est souvent loin devant mais des fois plusieurs résultats sont proches
+
 def search(query, top_k=5):
     query_emb = model.encode(query)
     scores = cosine_similarity([query_emb], article_embeddings)[0]
