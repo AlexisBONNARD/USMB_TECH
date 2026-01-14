@@ -491,6 +491,7 @@
             using var content = new MultipartFormDataContent();
             var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            content.Add(fileContent, "file", file.Name);
 
             var response = await Http.PostAsync("https://localhost:7093/api/equipements/upload", content);
 
