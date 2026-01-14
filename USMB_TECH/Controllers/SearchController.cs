@@ -47,12 +47,17 @@ public class SearchController : ControllerBase
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
+        if (!PythonEngine.IsInitialized)
+        {
+            Python.Runtime.Runtime.PythonDLL = @"C:\ProgramData\anaconda3\python311.dll";
+            PythonEngine.Initialize();
+            PythonEngine.BeginAllowThreads();  
+        }
+        Console.WriteLine("Engine initialized");
 
-        Python.Runtime.Runtime.PythonDLL = @"C:\\ProgramData\\anaconda3\\python311.dll";
-        PythonEngine.Initialize();
         using (Py.GIL())
         {
-
+            Console.WriteLine("GIL acquis");
             dynamic script = Py.Import("IASearch"); 
             Console.WriteLine("Point d'arrêt");
             dynamic resultIA = script.search(query);
