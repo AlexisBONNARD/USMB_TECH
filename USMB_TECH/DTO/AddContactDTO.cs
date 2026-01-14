@@ -6,7 +6,6 @@
         public string Nom_Contact { get; set; }
         public string Prenom_Contact { get; set; }
         public string Code_RH { get; set; }
-        public string Num_Securite_Social { get; set; }
         public string Mail { get; set; }
         public string Telephone { get; set; }
         public string Nom_Court { get; set; }
