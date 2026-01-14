@@ -12,8 +12,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<AdminState>();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
 builder.Services.AddScoped<IMainService<Equipement, int>>(eq => new WebService<Equipement, int>("Equipements"));
 builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebService<Laboratoire, string>("Laboratoires"));
 builder.Services.AddScoped<IMainService<LaboratoireUpdate, string>>(eq => new WebService<LaboratoireUpdate, string>("Laboratoires"));
