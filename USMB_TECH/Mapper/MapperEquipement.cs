@@ -14,6 +14,14 @@ namespace USMB_TECH.Mapper
             .ForMember(dest => dest.Type_EquipementNavigation,
                opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
             .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.Ignore())
+            .ForMember(dest => dest.Url_Modele_3D, opt => opt.Ignore())
+            .ForMember(dest => dest.Consommers, opt => opt.Ignore())
+            .ForMember(dest => dest.Referencers, opt => opt.Ignore())
+            .ForMember(dest => dest.Prise_Contacts, opt => opt.Ignore())
+            .ForMember(dest => dest.Disponibilite, opt => opt.Ignore())
+            .ForMember(dest => dest.Fournirs, opt => opt.Ignore())
+            .ForMember(dest => dest.Exposers, opt => opt.Ignore())
+            .ForMember(dest => dest.Id_Equipement, opt => opt.Ignore())
             .ForMember(dest => dest.Exemple_Utilisations,
                 opt => opt.MapFrom(src => new List<Exemple_Utilisation>
                 {
