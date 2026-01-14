@@ -34,7 +34,6 @@ namespace USMB_TECH.Models
         public virtual ICollection<Presenter> Presenters { get; set; } = new List<Presenter>();
 
         [InverseProperty(nameof(Equipement.Pole_ExpertiseNavigation))]
-        [JsonIgnore]
         public virtual ICollection<Equipement> Equipements { get; set; } = new List<Equipement>();
 
         [InverseProperty(nameof(Specifier.Pole_ExpertiseNavigation))]

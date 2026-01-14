@@ -50,6 +50,7 @@ namespace USMB_TECH.Mapper
             CreateMap<Laboratoire, LaboratoirePreviewDTO>()
             .ForMember(dest => dest.Nom_Court, opt => opt.MapFrom(src => src.Nom_Court))
             .ForMember(dest => dest.Nom_Long, opt => opt.MapFrom(src => src.Nom_Long))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.Ville, opt => opt.MapFrom(src => src.Adresse_laboNavigation != null ? src.Adresse_laboNavigation.Ville_Adresse : null))
             .ForMember(dest => dest.Pays, opt => opt.MapFrom(src => src.Adresse_laboNavigation != null ? src.Adresse_laboNavigation.Pays_Adresse : null))
             .ForMember(dest => dest.MotsCles, opt => opt.MapFrom(src =>

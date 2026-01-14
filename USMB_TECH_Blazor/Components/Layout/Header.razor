@@ -86,6 +86,13 @@
                                @bind="SearchTexte" />
                         Par texte
                     </label>
+
+                    <label>
+                        <input type="checkbox"
+                               data-testid="search-mode-ia"
+                               @bind="SearchIA" />
+                        Par IA
+                    </label>
                 </div>
             </div>
         </div>
@@ -103,6 +110,8 @@
     private bool SearchMotClef = false;
     private bool SearchThematique = false;
     private bool SearchTexte = false;
+    private bool SearchIA = false;
+
     private bool ShowOptions = false;
 
     private void ToggleOptions()
@@ -126,13 +135,15 @@
         var encodedQuery = Uri.EscapeDataString(SearchText);
 
         List<string> modes = new();
+        if (SearchIA) modes.Add("ia");
         if (SearchMotClef) modes.Add("motclef");
         if (SearchThematique) modes.Add("thematique");
         if (SearchTexte) modes.Add("texte");
+        
 
         string mode;
 
-        if (modes.Count == 0 || modes.Count == 3)
+        if (modes.Count == 0 || modes.Count == 4)
         {
             mode = "full"; // aucune case ou toutes les cases
         }

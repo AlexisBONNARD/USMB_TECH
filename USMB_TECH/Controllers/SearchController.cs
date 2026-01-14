@@ -47,24 +47,32 @@ public class SearchController : ControllerBase
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
+        if (!PythonEngine.IsInitialized)
+        {
+            Python.Runtime.Runtime.PythonDLL = @"C:\ProgramData\anaconda3\python311.dll";
+            PythonEngine.Initialize();
+            PythonEngine.BeginAllowThreads();  
+        }
+        Console.WriteLine("Engine initialized");
 
-        Python.Runtime.Runtime.PythonDLL = @"C:\\ProgramData\\anaconda3\\python311.dll";
-        PythonEngine.Initialize();
         using (Py.GIL())
         {
-
+            Console.WriteLine("GIL acquis");
             dynamic script = Py.Import("IASearch"); 
             Console.WriteLine("Point d'arrêt");
-            dynamic resultIA = script.search(query);
-            using var firstItem = new PyList(resultIA)[0];
-            using var tuple = new PyTuple(firstItem)!;
-            string resultat = tuple[1].As<String>();
+            dynamic resultIA = script.search(query, 10);
+            string resultat = "";
+            foreach (var item in resultIA)
+            {
+                using var tuple = new PyTuple(item)!;
+                resultat += " " + tuple[1].As<String>();
+            }   
 
             query = resultat.ToLower().Trim();
         }
         Console.WriteLine("La query : " + query);
         //                  ÉQUIPEMENTS
-        var equipements = (await _equipManager.SearchAsync(e =>
+        /*var equipements = (await _equipManager.SearchAsync(e =>
             (
                 useMotClef &&
                 e.Pole_ExpertiseNavigation != null &&
@@ -165,6 +173,120 @@ public class SearchController : ControllerBase
         ))
         .ToList();
 
+        var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
+
+        //            DOMAINES D’EXCELLENCE
+        var domaines = (await _domaineManager.SearchAsync(d =>
+            (
+                useTexte &&
+                (
+                    (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
+                    (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
+                )
+            )
+        ))
+        .ToList();*/
+        //                  ÉQUIPEMENTS
+        var equipements = (await _equipManager.SearchAsync(e =>
+            (
+                useMotClef &&
+                e.Pole_ExpertiseNavigation != null &&
+                e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
+                    query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
+            )
+            ||
+            (
+                useThematique &&
+                e.Exposers.Any(t =>
+                    query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower()))
+            )
+            ||
+            (
+                useTexte &&
+                (
+                    query.Contains((e.Nom_Equipement ?? "").ToLower()) ||
+                    query.Contains((e.Description_Technique ?? "").ToLower())
+                )
+            )
+        ))
+        .GroupBy(e => e.Id_Equipement)
+        .Select(g => g.First())
+        .ToList();
+
+        var equipementDtos = _mapper.Map<List<EquipementPreviewDTO>>(equipements);
+
+        //                  POLES EXPERTISE
+        var poles = (await _poleManager.SearchAsync(p =>
+            (
+                useMotClef &&
+                p.Specifiers.Any(s =>
+                    query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
+            )
+            ||
+            (
+                useTexte &&
+                (
+                    query.Contains((p.Nom_Pole_Expertise ?? "").ToLower()) ||
+                    query.Contains((p.Description_Pole_Expertise ?? "").ToLower())
+                )
+            )
+        ))
+        .ToList();
+
+        var poleDtos = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles);
+
+        //                 PRESTATIONS
+        var prestations = (await _prestationManager.SearchAsync(pr =>
+            (
+                useMotClef &&
+                pr.Precisers.Any(p =>
+                    query.Contains(p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
+            )
+            ||
+            (
+                useTexte &&
+                (
+                    query.Contains((pr.Intitule_Prestation ?? "").ToLower()) ||
+                    query.Contains((pr.Description_Prestation ?? "").ToLower())
+                )
+            )
+        ))
+        .ToList();
+
+        var prestationDtos = _mapper.Map<List<PrestationPreviewDTO>>(prestations);
+
+        //                LABORATOIRES
+        var laboratoires = (await _laboratoireManager.SearchAsync(l =>
+            (
+                useMotClef &&
+                l.Designers.Any(q =>
+                    q.Mot_ClefNavigation != null &&
+                    query.Contains(q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))
+            )
+            ||
+            (
+                useThematique &&
+                l.Est_Liers.Any(t =>
+                    t.ThematiqueNavigation != null &&
+                    query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower()))
+            )
+            ||
+            (
+                useTexte &&
+                (
+                    query.Contains((l.Nom_Long ?? "").ToLower()) ||
+                    query.Contains((l.Description ?? "").ToLower()) ||
+                    (
+                        l.Adresse_laboNavigation != null &&
+                        (
+                            query.Contains((l.Adresse_laboNavigation.Ville_Adresse ?? "").ToLower()) ||
+                            query.Contains((l.Adresse_laboNavigation.Pays_Adresse ?? "").ToLower())
+                        )
+                    )
+                )
+            )
+        ))
+        .ToList();
         var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
 
         //            DOMAINES D’EXCELLENCE

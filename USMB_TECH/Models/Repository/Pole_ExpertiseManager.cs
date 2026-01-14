@@ -10,10 +10,9 @@ namespace USMB_TECH.Models.Repository
         private readonly UsmbTechDbContext _context;
         private readonly HttpClient _httpClient;
 
-        public Pole_ExpertiseManager(UsmbTechDbContext context, HttpClient httpClient)
+        public Pole_ExpertiseManager(UsmbTechDbContext context)
         {
             _context = context;
-            _httpClient = httpClient;
         }
 
         public async Task<IEnumerable<Pole_Expertise>> GetAllAsync()
