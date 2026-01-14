@@ -14,9 +14,6 @@ namespace USMB_TECH.Mapper
             {
                 Nom_Pole_Expertise = dto.Nom_Pole_Expertise,
                 Description_Pole_Expertise = dto.Description_Pole_Expertise,
-                Nom_Contenu = dto.Nom_Contenu,
-                Url_Contenu = dto.Url_Contenu,
-                Description_Contenu = dto.Description_Contenu,
                 Actif = dto.Actif,
                 Id_Domaine_Excellence = dto.Id_Domaine_Excellence,
                 Photos = dto.Photos.Select(p => new Photo
@@ -52,9 +49,6 @@ namespace USMB_TECH.Mapper
                 // --- Propriétés simples ---
                 Nom_Pole_Expertise = dto.Nom_Pole_Expertise?.Trim(),
                 Description_Pole_Expertise = dto.Description_Pole_Expertise?.Trim(),
-                Nom_Contenu = dto.Nom_Contenu?.Trim(),
-                Url_Contenu = dto.Url_Contenu?.Trim(),
-                Description_Contenu = dto.Description_Contenu?.Trim(),
                 Actif = dto.Actif
             };
 

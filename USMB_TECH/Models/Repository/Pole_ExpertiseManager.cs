@@ -40,7 +40,7 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(s => s.Mot_ClefNavigation)
                 .Include(p => p.Presenters)
                     .ThenInclude(pr => pr.PrestationNavigation)
-
+                .Include(p => p.Exemple_Utilisations)
                 .Include(p => p.Photos)
                 .Include(p => p.Equipements)
                     .ThenInclude(e => e.Photos)
@@ -135,11 +135,6 @@ namespace USMB_TECH.Models.Repository
             // -------------------------
             await _context.SaveChangesAsync();
         }
-
-
-
-
-
 
         public async Task DeleteAsync(Pole_Expertise entity)
         {

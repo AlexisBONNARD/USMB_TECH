@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Playwright.NUnit;
-using Microsoft.Playwright.Xunit;
-using Xunit;
+﻿using Xunit;
 
 namespace USMB_TECHTests.E2E.AdminTests;
 

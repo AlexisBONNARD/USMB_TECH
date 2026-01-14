@@ -15,25 +15,25 @@
         <div class="form-container">
 
             <div class="row">
-                <InputText class="input half" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom *" />
-                <InputText class="input half" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom *" />
+                <InputText class="input half" data-testid="contact-nom" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom *" />
+                <InputText class="input half" data-testid="contact-nom" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom *" />
                 <ValidationMessage For="@(() => prise_contact.Nom_Contact)" />
                 <ValidationMessage For="@(() => prise_contact.Prenom_Contact)" />
             </div>
 
-            <InputText class="input" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
+            <InputText class="input" data-testid="contact-nom" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
             <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
 
-            <InputText class="input" @bind-Value="prise_contact.Entreprise_Contact"
+            <InputText class="input" data-testid="contact-nom" @bind-Value="prise_contact.Entreprise_Contact"
                        placeholder="Type d’entité (entreprise, collectivité, association…) *" />
             <ValidationMessage For="@(() => prise_contact.Entreprise_Contact)" />
 
-            <InputTextArea class="input textarea" @bind-Value="prise_contact.Description_besoins"
+            <InputTextArea class="input textarea" data-testid="contact-nom" @bind-Value="prise_contact.Description_besoins"
                            placeholder="Votre besoin *" />
             <ValidationMessage For="@(() => prise_contact.Description_besoins)" />
             <div class="row">
                 <label>Vous souhaitez contacter :</label>
-                <InputSelect class="input" @bind-Value="typeSelectionne">
+                <InputSelect class="input" data-testid="contact-type" @bind-Value="typeSelectionne">
                     <option value="Aucun">Je ne sais pas</option>
                     <option value="Equipement">Un équipement</option>
                     <option value="Pole">Un pôle d'expertise</option>
@@ -45,7 +45,7 @@
             {
                 <div class="row">
                     <label>Équipement</label>
-                    <InputSelect class="input" @bind-Value="prise_contact.Id_Equipement">
+                    <InputSelect class="input" data-testid="contact-equipement-select" @bind-Value="prise_contact.Id_Equipement">
                         <option value="">Sélectionnez un équipement</option>
                         @foreach (var eq in equipements)
                         {
@@ -59,7 +59,7 @@
             {
                 <div class="row">
                     <label>Pôle d'expertise</label>
-                    <InputSelect class="input" @bind-Value="prise_contact.Id_Pole_Expertise">
+                    <InputSelect class="input" data-testid="contact-pole-select" @bind-Value="prise_contact.Id_Pole_Expertise">
                         <option value="">Sélectionnez un pôle</option>
                         @foreach (var p in pole_expertises)
                         {
@@ -73,7 +73,7 @@
             {
                 <div class="row">
                     <label>Laboratoire</label>
-                    <InputSelect class="input" @bind-Value="prise_contact.Nom_Court">
+                    <InputSelect class="input" data-testid="contact-laboratoire-select" @bind-Value="prise_contact.Nom_Court">
                         <option value="">Sélectionnez un laboratoire</option>
                         @foreach (var l in laboratoires)
                         {
@@ -84,13 +84,13 @@
             }
 
 
-            <button type="submit" class="submit-btn">ENVOYER</button>
+            <button type="submit" class="submit-btn" data-testid="contact-submit">ENVOYER</button>
         </div>
     </EditForm>
 
     @if (!string.IsNullOrEmpty(message))
     {
-        <div id="alertMessage"
+        <div id="alertMessage" data-testid="contact-alert"
              class="alert @(isSuccess ? "alert-success" : "alert-danger") alert-fixed"
              style="font-size:@(isMultipleErrors ? "18px" : "14px")"
              @onclick="() => message = null">
@@ -170,23 +170,42 @@
         if (typeSelectionne != TypeCible.Laboratoire)
             prise_contact.Nom_Court = null;
     }
+    private bool ValiderCible()
+    {
+        return
+            typeSelectionne == TypeCible.Equipement && prise_contact.Id_Equipement != null
+         || typeSelectionne == TypeCible.Pole && prise_contact.Id_Pole_Expertise != null
+         || typeSelectionne == TypeCible.Laboratoire && !string.IsNullOrWhiteSpace(prise_contact.Nom_Court);
+    }
 
     private async Task HandleSubmit()
     {
         NormaliserAvantEnvoi();
+
+        if (!ValiderCible())
+        {
+            await ShowAlert(
+                "Veuillez sélectionner soit un équipement, soit un pôle d’expertise, soit un laboratoire.",
+                false
+            );
+            return;
+        }
+
         try
         {
             await Prise_ContactService.AddAsync(prise_contact);
             await ShowAlert("Votre demande a bien été envoyée !", true);
 
             prise_contact = new() { Id_Type_Client = 1 };
+            typeSelectionne = TypeCible.Aucun;
         }
         catch (Exception ex)
         {
-            await ShowAlert("Erreur serveur.", false);
+            await ShowAlert("Une erreur technique est survenue. Veuillez réessayer.", false);
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
     }
+
 
     private async Task ShowAlert(string msg, bool success)
     {

@@ -43,41 +43,47 @@ else
 
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
-            <section>
-                <h3>NOS POLES D'EXPERTISE</h3>
+            @if (pole_expertises != null && pole_expertises.Any())
+            {
+                <section>
+                    <h3>NOS POLES D'EXPERTISE</h3>
 
-                <div class="center-grid">
-                    @foreach (var pole_expertise in pole_expertises)
-                    {
-                        <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
-                            @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
-                            {
-                                var photo = pole_expertise.Photos.First();
-                                <img src="@photo.Url_Photo" alt="photo pole_expertise" />
-                            }
-                            <p>@pole_expertise.Nom_Pole_Expertise</p>
-                        </div>
-                    }
-                </div>
-            </section>
-            <section>
-                <h3>NOS ÉQUIPEMENTS</h3>
+                    <div class="center-grid">
+                        @foreach (var pole_expertise in pole_expertises)
+                        {
+                            <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
+                                @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
+                                {
+                                    var photo = pole_expertise.Photos.First();
+                                    <img src="@photo.Url_Photo" alt="photo pole_expertise" />
+                                }
+                                <p>@pole_expertise.Nom_Pole_Expertise</p>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+            @if (equipements != null && equipements.Any())
+            {
+                <section>
+                    <h3>NOS ÉQUIPEMENTS</h3>
 
-                <div class="center-grid">
-                    @foreach (var equipement in equipements)
-                    {
-                        <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
-                            @if (equipement.Photos != null && equipement.Photos.Any())
-                            {
-                                var photo = equipement.Photos.First();
-                                <img src="@photo.Url_Photo" alt="photo équipement" />
-                            }
-                            <p>@equipement.Nom_Equipement</p>
-                        </div>
-                    }
+                    <div class="center-grid">
+                        @foreach (var equipement in equipements)
+                        {
+                            <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
+                                @if (equipement.Photos != null && equipement.Photos.Any())
+                                {
+                                    var photo = equipement.Photos.First();
+                                    <img src="@photo.Url_Photo" alt="photo équipement" />
+                                }
+                                <p>@equipement.Nom_Equipement</p>
+                            </div>
+                        }
 
-                </div>
-            </section>
+                    </div>
+                </section>
+            }
         </div>
 
         <!-- ========= COLONNE DROITE ========= -->

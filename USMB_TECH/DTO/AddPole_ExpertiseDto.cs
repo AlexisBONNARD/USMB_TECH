@@ -12,12 +12,7 @@ namespace USMB_TECH.DTO
 
         public string Description_Pole_Expertise { get; set; }
 
-        public string Nom_Contenu { get; set; }
-
-        public string Url_Contenu { get; set; }
-
-        public string Description_Contenu { get; set; }
-        public bool Actif { get; set; }
+       public bool Actif { get; set; }
 
         public int Id_Domaine_Excellence { get; set; }
 

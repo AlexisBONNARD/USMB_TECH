@@ -25,13 +25,27 @@ public class HeaderSearchTests : BaseTest
     [Fact]
     public async Task Header_Search_With_MotClef_Checked_Should_Work()
     {
-        await Page.GotoAsync($"{BaseUrl}/");
+        await Page.GotoAsync(BaseUrl);
 
-        await Page.CheckAsync("text=Par mot-clé >> input");
-        await Page.FillAsync("header input[placeholder='Rechercher...']", "optique");
-        await Page.ClickAsync("header button.search-btn");
+        // Ouvrir options
+        var toggle = Page.GetByTestId("header-search-toggle");
+        await Expect(toggle).ToBeVisibleAsync();
+        await toggle.ClickAsync();
 
-        await Expect(Page).ToHaveURLAsync(
-            new Regex("/search/motclef/optique"));
+        // Cocher options
+        var motClefCheckbox = Page.GetByTestId("search-mode-motclef");
+        await Expect(motClefCheckbox).ToBeVisibleAsync();
+        await motClefCheckbox.CheckAsync();
+
+        // Remplir champ
+        var searchInput = Page.GetByTestId("header-search-input");
+        await searchInput.FillAsync("optique");
+
+        // Lancer recherche
+        var searchButton = Page.GetByTestId("header-search-button");
+        await searchButton.ClickAsync();
+
+        // Vérifier navigation
+        await Page.WaitForURLAsync(new Regex("/search/motclef/optique"));
     }
 }

@@ -42,20 +42,23 @@ else
 
         <!-- ========= COLONNE CENTRALE ========= -->
         <div class="col-center">
-            <section>
-                <h3>NOS CONTACTS</h3>
+            @if (laboratoire.Contacts != null && laboratoire.Contacts.Any())
+            {
+                <section>
+                    <h3>NOS CONTACTS</h3>
 
-                <div class="center-grid">
-                    @foreach (Contact_USMB contact in laboratoire.Contacts)
-                    {
-                        <div class="center-item">
-                            <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
-                            <p>Mail : @contact.Mail</p>
-                            <p>Numéro de téléphone : @contact.Telephone</p>
-                        </div>
-                    }
-                </div>
-            </section>
+                    <div class="center-grid">
+                        @foreach (Contact_USMB contact in laboratoire.Contacts)
+                        {
+                            <div class="center-item">
+                                <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
+                                <p>Mail : @contact.Mail</p>
+                                <p>Numéro de téléphone : @contact.Telephone</p>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
         </div>
 
         <!-- ========= COLONNE DROITE ========= -->

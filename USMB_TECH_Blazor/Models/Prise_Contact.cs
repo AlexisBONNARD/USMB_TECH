@@ -25,6 +25,7 @@ namespace USMB_TECH_Blazor.Models
         public string Entreprise_Contact { get; set; }
 
         [Required(ErrorMessage = "Veuillez renseigner votre email")]
+        [EmailAddress(ErrorMessage = "Le format de l'adresse e-mail est invalide.")]
         public string Email_Contact { get; set; }
 
         [Required(ErrorMessage = "Veuillez décrire votre besoin")]

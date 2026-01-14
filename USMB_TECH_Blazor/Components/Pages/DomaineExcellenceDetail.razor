@@ -38,25 +38,29 @@ else
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
-        <section>
-            <h3>POLES D'EXPERTISE LIÉS</h3>
-            <div class="center-grid two-columns">
-                @foreach (var pole in domaine.Pole_Expertises)
-                {
-                    <div class="expertise-card" @onclick="@(() => GoToPole(pole.Id_Pole_Expertise))">
-                        @if (pole.Photos != null && pole.Photos.Any())
-                        {
-                            <img src="@pole.Photos.First().Url_Photo" alt="photo pole expertise" />
-                        }
-                        <div class="card-content">
-                            <h4>@pole.Nom_Pole_Expertise</h4>
-                            <p>@pole.Description_Pole_Expertise</p>
+        @if (domaine.Pole_Expertises != null || domaine.Pole_Expertises.Any())
+        {
+            <section>
+                else)
+                <h3>POLES D'EXPERTISE LIÉS</h3>
+                <div class="center-grid two-columns">
+                    @foreach (var pole in domaine.Pole_Expertises)
+                    {
+                        <div class="expertise-card" @onclick="@(() => GoToPole(pole.Id_Pole_Expertise))">
+                            @if (pole.Photos != null && pole.Photos.Any())
+                            {
+                                <img src="@pole.Photos.First().Url_Photo" alt="photo pole expertise" />
+                            }
+                            <div class="card-content">
+                                <h4>@pole.Nom_Pole_Expertise</h4>
+                                <p>@pole.Description_Pole_Expertise</p>
+                            </div>
                         </div>
-                    </div>
-                }
-            </div>
+                    }
+                </div>
 
-        </section>
+            </section>
+        }
 
 
 

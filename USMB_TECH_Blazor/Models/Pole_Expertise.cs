@@ -14,15 +14,6 @@ namespace USMB_TECH_Blazor.Models
         [Required(ErrorMessage = "La description est obligatoire")]
         public string Description_Pole_Expertise { get; set; }
 
-        [Required(ErrorMessage = "Le nom du contenu est obligatoire")]
-        public string Nom_Contenu { get; set; }
-
-        [Required(ErrorMessage = "L’URL du contenu est obligatoire")]
-        [Url(ErrorMessage = "Veuillez entrer une URL valide")]
-        public string Url_Contenu { get; set; }
-
-        [Required(ErrorMessage = "La description du contenu est obligatoire")]
-        public string Description_Contenu { get; set; }
         public bool Actif { get; set; }
 
         public int Id_Domaine_Excellence { get; set; }
@@ -38,7 +29,7 @@ namespace USMB_TECH_Blazor.Models
         public virtual ICollection<Photo> Photos { get; set; } = new List<Photo>();
 
 
-        public virtual ICollection<Exemple_Utilisation> ExempleUtilisations { get; set; } = new List<Exemple_Utilisation>();
+        public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
         public virtual Domaine_Excellence? Domaine_ExcellenceNavigation { get; set; } = null!;
     }
 }

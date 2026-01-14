@@ -30,7 +30,7 @@ namespace USMB_TECH.Mapper
                 Mot_ClefNavigation = new Mot_Clef { Nom_Mot_Clef = mc },
                 Nom_Court = src.Nom_Court
             }).ToList()))
-            .ForMember(dest => dest.Est_Liers, opt => opt.MapFrom(src => src.Thematiques.Select(t => new Est_Lier 
+            .ForMember(dest => dest.Est_Liers, opt => opt.MapFrom(src => src.Thematiques.Select(t => new Est_Lier
             {
                 ThematiqueNavigation = new Thematique { Nom_Thematique = t },
                 Nom_Court = src.Nom_Court,
@@ -38,10 +38,14 @@ namespace USMB_TECH.Mapper
             .ForMember(dest => dest.Gerers, opt => opt.MapFrom(src => src.Pole_Expertises.Select(pe => new Gerer
             {
                 Nom_Court = src.Nom_Court,
-                Pole_ExpertiseNavigation = new Pole_Expertise { Nom_Pole_Expertise =  pe}
+                Pole_ExpertiseNavigation = new Pole_Expertise { Nom_Pole_Expertise = pe }
             }).ToList()))
             .ForMember(dest => dest.Id_Adresse_Labo, opt => opt.Ignore())
-            .ForMember(dest => dest.Id_Adresse_Campus, opt => opt.Ignore());
+            .ForMember(dest => dest.Id_Adresse_Campus, opt => opt.Ignore())
+            .ForMember(dest => dest.Prestations, opt => opt.Ignore())
+            .ForMember(dest => dest.Prise_Contacts, opt => opt.Ignore())
+            .ForMember(dest => dest.Contacts, opt => opt.Ignore());
+
 
             CreateMap<Laboratoire, LaboratoirePreviewDTO>()
             .ForMember(dest => dest.Nom_Court, opt => opt.MapFrom(src => src.Nom_Court))
@@ -83,7 +87,11 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Est_Liers, opt => opt.MapFrom(src =>
                     src.Thematiques.Select(id => new Est_Lier { Id_Thematique = id }).ToList()))
 
-                .ForMember(dest => dest.Prestations, opt => opt.Ignore());
+                .ForMember(dest => dest.Prestations, opt => opt.Ignore())
+                .ForMember(dest => dest.Prise_Contacts, opt => opt.Ignore())
+                .ForMember(dest => dest.Photos, opt => opt.Ignore())
+                .ForMember(dest => dest.Contacts, opt => opt.Ignore());
+
 
 
         }

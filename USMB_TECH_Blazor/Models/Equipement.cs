@@ -61,6 +61,9 @@ namespace USMB_TECH_Blazor.Models
         [Required(ErrorMessage = "l'exemple d'utilisation doit avoir une description")]
         public string Description_Exemple { get; set; }
 
+        public virtual ICollection<string> MotsCles { get; set; } = new List<string>();
+        public virtual ICollection<Fonctionnalite> Fonctionnalites { get; set; } = new List<Fonctionnalite>();
+
         public virtual ICollection<Exemple_Utilisation> Exemple_Utilisations { get; set; } = new List<Exemple_Utilisation>();
 
         public virtual ICollection<Fournir> Fournirs { get; set; } = new List<Fournir>();
@@ -76,6 +79,8 @@ namespace USMB_TECH_Blazor.Models
         public Type_Equipement? Type_EquipementNavigation { get; set; }
 
         public virtual ICollection<Thematique> Thematiques { get; set; } = new List<Thematique>();
+        public virtual ICollection<Qualifier> Qualifiers { get; set; } = new List<Qualifier>();
+        public virtual ICollection<Posseder> Posseders { get; set; } = new List<Posseder>();
 
     }
 }

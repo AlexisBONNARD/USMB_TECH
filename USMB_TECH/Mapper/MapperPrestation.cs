@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Design;
 using USMB_TECH.DTO;
 using USMB_TECH.Models;
 
@@ -48,6 +49,40 @@ namespace USMB_TECH.Mapper
                 }).ToList()))
                 .ForMember(dest => dest.Id_Contact, opt => opt.Ignore())
                 .ForMember(dest => dest.Id_Type_Prestation, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Unite_Oeuvre, opt => opt.Ignore())
+                .ForMember(dest => dest.Fournirs, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Domaine_Excellence, opt => opt.Ignore());
+
+            CreateMap<PrestationUpdateDto, Prestation>()
+
+                .ForMember(dest => dest.Contact_USMBNavigation, opt => opt.MapFrom(src => new Contact_USMB
+                {
+                    Id_Contact = src.Id_Contact,
+                }))
+                .ForMember(dest => dest.Type_PrestationNavigation, opt => opt.MapFrom(src => new Type_Prestation 
+                {
+                    Id_Type_Prestation = src.Id_Type_Prestation,
+                }))
+                .ForMember(dest => dest.Unite_OeuvreNavigation, opt => opt.MapFrom(src => new Unite_Oeuvre 
+                {
+                    Id_Unite_Oeuvre = src.Id_Unite_Oeuvre,
+                }))
+                .ForMember(dest => dest.Domaine_ExcellenceNavigation, opt => opt.MapFrom(src => new Domaine_Excellence 
+                {
+                    Id_Domaine_Excellence = src.Id_Domaine_Excellence,
+                }))
+                .ForMember(dest => dest.LaboratoireNavigation, opt => opt.MapFrom(src => new Laboratoire 
+                {
+                    Nom_Court = src.Nom_Court,
+                }))
+                .ForMember(dest => dest.Peux_Ce_Realiser_Chez_Le_Client, opt => opt.MapFrom(src => src.Peut_Realiser_Chez_Client))
+                .ForMember(dest => dest.Precisers, opt => opt.Ignore())
+                .ForMember(dest => dest.Presenters, opt => opt.Ignore())
+                .ForMember(dest => dest.Fournirs, opt => opt.Ignore())
+                .ForMember(dest => dest.Photos, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Contact, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Type_Prestation, opt => opt.Ignore())
+                .ForMember(dest => dest.Id_Unite_Oeuvre, opt => opt.Ignore())
                 .ForMember(dest => dest.Id_Domaine_Excellence, opt => opt.Ignore());
 
         }

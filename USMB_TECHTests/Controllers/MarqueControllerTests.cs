@@ -83,9 +83,9 @@ namespace USMB_TECHTests.Controllers
         public async Task DeleteMarque_Return_NoContent()
         {
             var action = _controller.DeleteMarque(_marque2.Id_Marque);
-
+            var marqueInDb = _context.Marques.Find(_marque2.Id_Marque);
             Assert.IsInstanceOfType(action.Result, typeof(NoContentResult), "la réponse n'est pas NoContent");
-            Assert.IsNull(_context.Marques.Find(_marque2.Id_Marque), "La marque n'a pas été supprimée");
+            Assert.IsNull(marqueInDb, "La marque n'a pas été supprimée");
         }
 
         [TestMethod]

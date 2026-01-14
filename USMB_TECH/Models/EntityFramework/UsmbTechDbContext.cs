@@ -19,7 +19,7 @@ public partial class UsmbTechDbContext : DbContext
     public DbSet<Exemple_Utilisation> Exemple_Utilisations { get; set; }
     public DbSet<Exposer> Exposers { get; set; }
     public DbSet<Fonction> Fonctions { get; set; }
-    public DbSet<Fonctionalite> Functionalites { get; set; }
+    public DbSet<Fonctionnalite> Fonctionnalites { get; set; }
     public DbSet<Fournir> Fournirs { get; set; }
     public DbSet<Gerer> Gerers { get; set; }
     public DbSet<Laboratoire> Laboratoires { get; set; }
@@ -357,17 +357,17 @@ public partial class UsmbTechDbContext : DbContext
                 .HasConstraintName("fk_fonction_contact");
         });
 
-        modelBuilder.Entity<Fonctionalite>(e =>
+        modelBuilder.Entity<Fonctionnalite>(e =>
         {
-            e.HasKey(e => e.Id_Fonctionalite).HasName("pk_fonctionalite");
+            e.HasKey(e => e.Id_Fonctionnalite).HasName("pk_fonctionnalite");
 
-            e.Property(e => e.Id_Fonctionalite).ValueGeneratedOnAdd();
+            e.Property(e => e.Id_Fonctionnalite).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Posseders)
-                .WithOne(p => p.FonctionaliteNavigation)
-                .HasForeignKey(d => d.Id_Fonctionalite)
+                .WithOne(p => p.FonctionnaliteNavigation)
+                .HasForeignKey(d => d.Id_Fonctionnalite)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_fonctionalite_posseder");
+                .HasConstraintName("fk_fonctionnalite_posseder");
         });
 
         modelBuilder.Entity<Fournir>(e =>
@@ -629,7 +629,7 @@ public partial class UsmbTechDbContext : DbContext
 
         modelBuilder.Entity<Posseder>(e =>
         {
-            e.HasKey(e => new { e.Id_Equipement, e.Id_Fonctionalite }).HasName("pk_posseder");
+            e.HasKey(e => new { e.Id_Equipement, e.Id_Fonctionnalite }).HasName("pk_posseder");
 
             e.HasOne(d => d.EquipementNavigation)
                 .WithMany(p => p.Posseders)
@@ -637,11 +637,11 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_posseder_equipement");
 
-            e.HasOne(d => d.FonctionaliteNavigation)
+            e.HasOne(d => d.FonctionnaliteNavigation)
                 .WithMany(p => p.Posseders)
-                .HasForeignKey(d => d.Id_Fonctionalite)
+                .HasForeignKey(d => d.Id_Fonctionnalite)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_posseder_fonctionalite");
+                .HasConstraintName("fk_posseder_fonctionnalite");
         });
 
         modelBuilder.Entity<Preciser>(e =>

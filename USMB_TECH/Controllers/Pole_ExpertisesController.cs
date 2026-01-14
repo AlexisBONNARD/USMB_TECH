@@ -87,9 +87,6 @@ namespace USMB_TECH.Controllers
                 {
                     Nom_Pole_Expertise = pole_expertiseDto.Nom_Pole_Expertise?.Trim(),
                     Description_Pole_Expertise = pole_expertiseDto.Description_Pole_Expertise?.Trim(),
-                    Nom_Contenu = pole_expertiseDto.Nom_Contenu?.Trim(),
-                    Url_Contenu = pole_expertiseDto.Url_Contenu?.Trim(),
-                    Description_Contenu = pole_expertiseDto.Description_Contenu?.Trim(),
                     Actif = pole_expertiseDto.Actif,
                     Id_Domaine_Excellence = pole_expertiseDto.Id_Domaine_Excellence
                 };

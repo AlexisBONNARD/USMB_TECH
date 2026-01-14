@@ -34,18 +34,6 @@
         <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Pole_Expertise" placeholder="Pôle d'expertise dédiée à la Santé & au Sport" />
         <ValidationMessage For="@(() => pole_expertise.Description_Pole_Expertise)" />
 
-        <label>Nom contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Contenu" placeholder="Présentation laboratoire" />
-        <ValidationMessage For="@(() => pole_expertise.Nom_Contenu)" />
-
-        <label>URL contenu *</label>
-        <InputText class="form-control mb-2" @bind-Value="pole_expertise.Url_Contenu" placeholder="https://www.univ-smb.fr" />
-        <ValidationMessage For="@(() => pole_expertise.Url_Contenu)" />
-
-        <label>Description contenu *</label>
-        <InputTextArea class="form-control mb-2" @bind-Value="pole_expertise.Description_Contenu" placeholder="Présentation de ce laboratoire" />
-        <ValidationMessage For="@(() => pole_expertise.Description_Contenu)" />
-
         <label class="mt-2">Active ?</label>
         <InputSelect class="form-control mb-2" @bind-Value="pole_expertise.Actif">
             <option value="true">Oui</option>
@@ -96,7 +84,7 @@
         }
         else if (!string.IsNullOrWhiteSpace(motCle))
         {
-            <button type="button" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
+            <button type="button" class="btn btn-secondary btn-sm mt-1" @onclick="AddMot_Clef">Ajouter ce mot-clé</button>
         }
 
         <ul class="add_style">
@@ -142,7 +130,7 @@
             }
         </form>
         <ul class="add_style">
-            @foreach (var e in pole_expertise.ExempleUtilisations)
+            @foreach (var e in pole_expertise.Exemple_Utilisations)
             {
                 <li class="add_style">
                     @e.Nom_Utilisation : @e.Description_Utilisation
@@ -282,7 +270,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newExempleNom) && !string.IsNullOrWhiteSpace(newExempleDesc))
         {
-            pole_expertise.ExempleUtilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
+            pole_expertise.Exemple_Utilisations.Add(new USMB_TECH.Models.Exemple_Utilisation
             {
                 Nom_Utilisation = newExempleNom,
                 Description_Utilisation = newExempleDesc
@@ -383,7 +371,7 @@
     }
     void RemoveExemple(Exemple_Utilisation e)
     {
-        pole_expertise.ExempleUtilisations.Remove(e);
+        pole_expertise.Exemple_Utilisations.Remove(e);
     }
     void RemovePresenter(Presenter pr)
     {
