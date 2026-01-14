@@ -8,6 +8,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+		<PackageReference Include="IronPython" Version="3.4.2" />
+		<PackageReference Include="IronPython.StdLib" Version="3.4.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.11" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
@@ -17,6 +19,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
+		<PackageReference Include="pythonnet" Version="3.0.5" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	</ItemGroup>
 
@@ -27,6 +30,11 @@
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\USMB_TECH_Blazor\Components\Component.razor" Link="Component.razor" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="IASearch.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 	<Target Name="PublishBlazorWasm" AfterTargets="Publish">
 		<Exec Command="dotnet publish ../USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release -o $(ProjectDir)wwwroot" />
