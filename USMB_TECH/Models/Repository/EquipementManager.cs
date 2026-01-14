@@ -36,6 +36,7 @@ namespace USMB_TECH.Models.Repository
                 .ToListAsync();
         }
 
+
         public async Task<Equipement?> GetByIdAsync(int id)
         {
             return await _context.Equipements
@@ -44,8 +45,8 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Pole_ExpertiseNavigation)
                     .ThenInclude(p => p.Specifiers)
                         .ThenInclude(s => s.Mot_ClefNavigation)
-                .Include(p => p.Exposers)
-                        .ThenInclude(ex => ex.ThematiqueNavigation)
+                .Include(e => e.Pole_ExpertiseNavigation)
+                    .ThenInclude(p => p.Domaine_ExcellenceNavigation)
                 .Include(e => e.ModeleNavigation)
                     .ThenInclude(m => m.MarqueNavigation)
                 .Include(e => e.Type_EquipementNavigation)
@@ -61,15 +62,11 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.Fournirs)
                     .ThenInclude(f => f.PrestationNavigation)
                         .ThenInclude(p => p.Type_PrestationNavigation)
-                .Include(p => p.Pole_ExpertiseNavigation)
-                    .ThenInclude(de => de.Domaine_ExcellenceNavigation)
-                .Include(e => e.Exemple_Utilisations)
-
-                .Include(e => e.Fournirs)
-                    .ThenInclude(f => f.PrestationNavigation)
-                        .ThenInclude(p => p.Type_PrestationNavigation)
+                .Include(e => e.Exposers)
+                    .ThenInclude(ex => ex.ThematiqueNavigation)
                 .FirstOrDefaultAsync(e => e.Id_Equipement == id);
         }
+
 
         public async Task AddAsync(Equipement entity)
         {

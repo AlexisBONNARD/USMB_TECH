@@ -19,6 +19,7 @@
 
         <!-- Dropdown NOS POLES D'EXPERTISE -->
         <div class="nav-link dropdown"
+             data-testid="nav-pole-menu"
              @onmouseenter="@(() => OpenDropdown("Pole_Expertise"))"
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
@@ -32,13 +33,15 @@
                     {
                         if (pl.Actif)
                         {
-                            <li @onclick="() => GoToPole_Expertise(pl.Id_Pole_Expertise)">
+                            <li data-testid="nav-pole-item" 
+                                @onclick="() => GoToPole_Expertise(pl.Id_Pole_Expertise)">
                                 @pl.Nom_Pole_Expertise
                             </li>
                         }
                         @if (AdminState.IsAdmin && !pl.Actif)
                         {
-                            <li @onclick="() => GoToPole_Expertise(pl.Id_Pole_Expertise)" style="background-color: lightgray">
+                            <li data-testid="nav-pole-item"
+                                @onclick="() => GoToPole_Expertise(pl.Id_Pole_Expertise)" style="background-color: lightgray">
                                 @pl.Nom_Pole_Expertise
                             </li>
                         }
@@ -49,6 +52,7 @@
 
         <!-- Dropdown NOS EQUIPEMENTS -->
         <div class="nav-link dropdown"
+             data-testid="nav-equipement-menu"
              @onmouseenter="@(() => OpenDropdown("Equipement"))"
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
@@ -60,7 +64,8 @@
                 {
                     @foreach (var eq in equipements)
                     {
-                        <li @onclick="() => GoToEquipement(eq.Id_Equipement)">
+                        <li data-testid="nav-equipement-item"
+                            @onclick="() => GoToEquipement(eq.Id_Equipement)">
                             @eq.Nom_Equipement
                         </li>
                     }
@@ -70,6 +75,7 @@
 
         <!-- Dropdown NOS PRESTATIONS -->
         <div class="nav-link dropdown"
+             data-testid="nav-prestation-menu"
              @onmouseenter="@(() => OpenDropdown("Prestation"))"
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
@@ -81,7 +87,8 @@
                 {
                     @foreach (var pr in prestations)
                     {
-                        <li @onclick="() => GoToPrestation(pr.Id_Prestation)">
+                        <li data-testid="nav-prestation-item"
+                            @onclick="() => GoToPrestation(pr.Id_Prestation)">
                             @pr.Intitule_Prestation
                         </li>
                     }
@@ -91,6 +98,7 @@
 
         <!-- Dropdown NOS LABORATOIRES -->
         <div class="nav-link dropdown"
+             data-testid="nav-laboratoire-menu"
              @onmouseenter="@(() => OpenDropdown("Laboratoire"))"
              @onmouseleave="@CloseDropdown"
              style="cursor:pointer;">
@@ -102,8 +110,9 @@
                 {
                     @foreach (var lab in laboratoires)
                     {
-                        <li @onclick="() => GoToLaboratoire(lab.Nom_Court)">
-                              @lab.Nom_Court
+                        <li data-testid="nav-laboratoire-item"
+                            @onclick="() => GoToLaboratoire(lab.Nom_Court)">
+                            @lab.Nom_Court
                         </li>
                     }
                 }

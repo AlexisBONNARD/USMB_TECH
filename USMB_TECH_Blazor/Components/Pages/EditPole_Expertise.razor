@@ -28,7 +28,7 @@ else
             <!-- Infos générales -->
             <h4 class="add_style">Infos générales</h4>
             <label>Nom pôle d'expertise *</label>
-            <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" />
+            <InputText class="form-control mb-2" @bind-Value="pole_expertise.Nom_Pole_Expertise" MaxLength=50/>
             <ValidationMessage For="@(() => pole_expertise.Nom_Pole_Expertise)" />
 
             <label>Description *</label>

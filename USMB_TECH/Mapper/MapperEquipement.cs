@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using USMB_TECH.DTO;
 using USMB_TECH.Models;
 
@@ -14,6 +15,14 @@ namespace USMB_TECH.Mapper
             .ForMember(dest => dest.Type_EquipementNavigation,
                opt => opt.MapFrom(src => new Type_Equipement { Nom_Type = src.Type_Equipement }))
             .ForMember(dest => dest.Id_Pole_Expertise, opt => opt.Ignore())
+            .ForMember(dest => dest.Url_Modele_3D, opt => opt.Ignore())
+            .ForMember(dest => dest.Consommers, opt => opt.Ignore())
+            .ForMember(dest => dest.Referencers, opt => opt.Ignore())
+            .ForMember(dest => dest.Prise_Contacts, opt => opt.Ignore())
+            .ForMember(dest => dest.Disponibilite, opt => opt.Ignore())
+            .ForMember(dest => dest.Fournirs, opt => opt.Ignore())
+            .ForMember(dest => dest.Exposers, opt => opt.Ignore())
+            .ForMember(dest => dest.Id_Equipement, opt => opt.Ignore())
             .ForMember(dest => dest.Exemple_Utilisations,
                 opt => opt.MapFrom(src => new List<Exemple_Utilisation>
                 {
@@ -60,7 +69,7 @@ namespace USMB_TECH.Mapper
                     }).ToList()
                 )
             );
-            
+
             CreateMap<EquipementDTO, Equipement>()
                 .ForMember(dest => dest.Url_Modele_3D, opt => opt.Ignore())
                 .ForMember(dest => dest.Consommers, opt => opt.Ignore())
@@ -110,20 +119,20 @@ namespace USMB_TECH.Mapper
                 .ForMember(dest => dest.Id_Equipement, opt => opt.MapFrom(src => src.Id_Equipement))
                 .ForMember(dest => dest.Nom_Equipement, opt => opt.MapFrom(src => src.Nom_Equipement))
                 .ForMember(dest => dest.Description_Technique, opt => opt.MapFrom(src => src.Description_Technique))
-                .ForMember(dest => dest.Nom_Pole_Expertise, opt => opt.MapFrom(src => src.Pole_ExpertiseNavigation != null ? src.Pole_ExpertiseNavigation.Nom_Pole_Expertise : null))
+                .ForMember(dest => dest.Nom_Pole_Expertise, opt => opt.MapFrom(src => src.Pole_ExpertiseNavigation != null? src.Pole_ExpertiseNavigation.Nom_Pole_Expertise : null))
                 .ForMember(dest => dest.Prix_Achat, opt => opt.MapFrom(src => src.Prix_Achat))
                 .ForMember(dest => dest.Date_Acquisition, opt => opt.MapFrom(src => src.Date_Acquisition))
                 .ForMember(dest => dest.Disponibilite, opt => opt.MapFrom(src => src.Disponibilite))
-                .ForMember(dest => dest.MotsCles, opt => opt.MapFrom(src => src.Pole_ExpertiseNavigation != null && src.Pole_ExpertiseNavigation.Specifiers != null ? src.Pole_ExpertiseNavigation.Specifiers
+                .ForMember(dest => dest.MotsCles, opt => opt.MapFrom(src => src.Pole_ExpertiseNavigation != null && src.Pole_ExpertiseNavigation.Specifiers != null? src.Pole_ExpertiseNavigation.Specifiers
                     .Where(s => s.Mot_ClefNavigation != null)
                         .Select(s => s.Mot_ClefNavigation.Nom_Mot_Clef)
                             .Distinct()
-                                .ToList() : new List<string>()))
-                .ForMember(dest => dest.Thematiques, opt => opt.MapFrom(src => src.Exposers != null ? src.Exposers
+                                .ToList(): new List<string>()))
+                .ForMember(dest => dest.Thematiques, opt => opt.MapFrom(src =>src.Exposers != null? src.Exposers
                     .Where(t => t.ThematiqueNavigation != null)
                         .Select(t => t.ThematiqueNavigation.Nom_Thematique)
                             .Distinct()
-                            .ToList() : new List<string>()));
+                            .ToList(): new List<string>()));
         }
     }
 }

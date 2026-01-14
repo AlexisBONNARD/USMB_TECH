@@ -4,6 +4,7 @@
     {
         public string Nom_Court { get; set; }
         public string Nom_Long { get; set; }
+        public string Description { get; set; } 
         public string Ville { get; set; }
         public string Pays { get; set; }
         public List<string> MotsCles { get; set; } = new();

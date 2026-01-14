@@ -16,19 +16,19 @@
 
             <div class="row">
                 <InputText class="input half" data-testid="contact-nom" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom *" />
-                <InputText class="input half" data-testid="contact-nom" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom *" />
+                <InputText class="input half" data-testid="contact-prenom" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom *" />
                 <ValidationMessage For="@(() => prise_contact.Nom_Contact)" />
                 <ValidationMessage For="@(() => prise_contact.Prenom_Contact)" />
             </div>
 
-            <InputText class="input" data-testid="contact-nom" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
+            <InputText class="input" data-testid="contact-email" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
             <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
 
-            <InputText class="input" data-testid="contact-nom" @bind-Value="prise_contact.Entreprise_Contact"
+            <InputText class="input" data-testid="contact-entreprise" @bind-Value="prise_contact.Entreprise_Contact"
                        placeholder="Type d’entité (entreprise, collectivité, association…) *" />
             <ValidationMessage For="@(() => prise_contact.Entreprise_Contact)" />
 
-            <InputTextArea class="input textarea" data-testid="contact-nom" @bind-Value="prise_contact.Description_besoins"
+            <InputTextArea class="input textarea" data-testid="contact-description" @bind-Value="prise_contact.Description_besoins"
                            placeholder="Votre besoin *" />
             <ValidationMessage For="@(() => prise_contact.Description_besoins)" />
             <div class="row">

@@ -12,7 +12,7 @@
 
 @if (!string.IsNullOrEmpty(deleteMessage))
 {
-    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed">
+    <div class="alert @(deleteSuccess ? "alert-success" : "alert-danger") alert-fixed" data-testid="prestation-delete-alert">
         @deleteMessage
     </div>
 }
@@ -26,10 +26,12 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>Prestation : @prestation.Intitule_Prestation</h2>
-                <Carousel Photos="@prestation.Photos" />
-                <p>@prestation.Description_Prestation</p>
-                <p>Laboratoire : @prestation.Nom_Court</p>
+                <h2 data-testid="prestation-title">Prestation : @prestation.Intitule_Prestation</h2>
+                <div data-testid="prestation-carousel">
+                    <Carousel Photos="@prestation.Photos" />
+                </div>
+                <p data-testid="prestation-description">@prestation.Description_Prestation</p>
+                <p data-testid="prestation-laboratoire">Laboratoire : @prestation.Nom_Court</p>
             </section>
 
             @* <section>
@@ -45,13 +47,13 @@ else
         <div class="col-center">
             @if (pole_expertises != null && pole_expertises.Any())
             {
-                <section>
+                <section data-testid="prestation-poles">
                     <h3>NOS POLES D'EXPERTISE</h3>
 
                     <div class="center-grid">
                         @foreach (var pole_expertise in pole_expertises)
                         {
-                            <div class="center-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
+                            <div class="center-item" data-testid="prestation-pole-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
                                 @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
                                 {
                                     var photo = pole_expertise.Photos.First();
@@ -65,13 +67,13 @@ else
             }
             @if (equipements != null && equipements.Any())
             {
-                <section>
+                <section data-testid="prestation-equipements">
                     <h3>NOS ÉQUIPEMENTS</h3>
 
                     <div class="center-grid">
                         @foreach (var equipement in equipements)
                         {
-                            <div class="center-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
+                            <div class="center-item" data-testid="prestation-equipement-item" @onclick="@(() => RetourListe(equipement.Id_Equipement, "equipement"))">
                                 @if (equipement.Photos != null && equipement.Photos.Any())
                                 {
                                     var photo = equipement.Photos.First();
@@ -99,10 +101,10 @@ else
     </div>
     @if (AdminState.IsAdmin)
     {
-        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(prestation.Id_Prestation)">
+        <button class="btn btn-info mb-3" data-testid="prestation-edit-btn" @onclick="() => GoToUpdate(prestation.Id_Prestation)">
             Modifier
         </button>
-        <button class="btn btn-danger mb-3" @onclick="() => DeletePrestation(prestation.Id_Prestation)">
+        <button class="btn btn-danger mb-3" data-testid="prestation-delete-btn" @onclick="() => DeletePrestation(prestation.Id_Prestation)">
             Supprimer
         </button>
     }

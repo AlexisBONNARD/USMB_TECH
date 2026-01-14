@@ -22,19 +22,21 @@ else
         <!-- ========= COLONNE GAUCHE ========= -->
         <div class="col-left">
             <section>
-                <h2>@laboratoire.Nom_Long (@laboratoire.Nom_Court)</h2>
+                <h2 data-testid="laboratoire-title">@laboratoire.Nom_Long (@laboratoire.Nom_Court)</h2>
             </section>
             <div class="banner-photo">
                 <Carousel Photos="@laboratoire.Photos" />
+                <p data-testid="laboratoire-description">@laboratoire.Description</p>
             </div>
             <section>
                 <h3>Adresse</h3>
                 <div id="map"
+                     data-testid="laboratoire-map"
                      style="height:400px; width:100%">
                 </div>
 
                 <ul class="list-style">
-                    <p>Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse, @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
+                    <p data-testid="laboratoire-adresse">Adresse du laboratoire : @adresseLabo.Complement_Rue_Adresse @adresseLabo.Rue_Adresse, @adresseLabo.Ville_Adresse @adresseLabo.Code_Postal_Adresse, @adresseLabo.Pays_Adresse </p>
                     @* <p>Adresse du campus : @adresseCampus.Complement_Rue_Adresse @adresseCampus.Rue_Adresse, @adresseCampus.Ville_Adresse @adresseCampus.Code_Postal_Adresse, @adresseCampus.Pays_Adresse </p> *@
                 </ul>
             </section>
@@ -50,7 +52,7 @@ else
                     <div class="center-grid">
                         @foreach (Contact_USMB contact in laboratoire.Contacts)
                         {
-                            <div class="center-item">
+                            <div class="center-item" data-testid="laboratoire-contact-item">
                                 <p>@contact.Prenom_Contact @contact.Nom_Contact</p>
                                 <p>Mail : @contact.Mail</p>
                                 <p>Numéro de téléphone : @contact.Telephone</p>
@@ -69,10 +71,10 @@ else
     </div>
     @if (AdminState.IsAdmin)
     {
-        <button class="btn btn-info mb-3" @onclick="() => GoToUpdate(laboratoire.Nom_Court)">
+        <button class="btn btn-info mb-3" data-testid="laboratoire-edit-btn" @onclick="() => GoToUpdate(laboratoire.Nom_Court)">
             Modifier
         </button>
-        <button class="btn btn-danger mb-3" @onclick="() => DeleteLaboratoire(laboratoire.Nom_Court)">
+        <button class="btn btn-danger mb-3" data-testid="laboratoire-delete-btn" @onclick="() => DeleteLaboratoire(laboratoire.Nom_Court)">
             Supprimer
         </button>
     }
