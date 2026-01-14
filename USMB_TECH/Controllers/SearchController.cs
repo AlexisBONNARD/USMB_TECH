@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using USMB_TECH.DTO;
 using USMB_TECH.Models.Repository;
 using USMB_TECH_Blazor.Models;
@@ -8,6 +9,8 @@ using USMB_TECH_Blazor.Models;
 [Route("api/[controller]")]
 public class SearchController : ControllerBase
 {
+    private const string COLLATION = "French_CI_AI";
+
     private readonly EquipementManager _equipManager;
     private readonly Pole_ExpertiseManager _poleManager;
     private readonly PrestationManager _prestationManager;
@@ -34,146 +37,119 @@ public class SearchController : ControllerBase
     [HttpGet("global")]
     public async Task<ActionResult<GlobalSearchResultDTO>> GlobalSearch(
         [FromQuery] string query,
-        [FromQuery] string mode = "motclef")
+        [FromQuery] string mode = "full")
     {
         if (string.IsNullOrWhiteSpace(query))
             return Ok(new GlobalSearchResultDTO());
 
-        query = query.ToLower().Trim();
+        query = query.Trim();
+        var like = $"%{query}%";
 
-        // Détection des types activés
         bool useMotClef = mode.Contains("motclef") || mode == "global" || mode == "full";
         bool useThematique = mode.Contains("thematique") || mode == "global" || mode == "full";
         bool useTexte = mode.Contains("texte") || mode == "full";
 
-        //                  ÉQUIPEMENTS
+        // ================= ÉQUIPEMENTS =================
         var equipements = (await _equipManager.SearchAsync(e =>
-            (
-                useMotClef &&
+            (useMotClef &&
                 e.Pole_ExpertiseNavigation != null &&
                 e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                    s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-            )
+                    EF.Functions.Like(
+                        EF.Functions.Collate(s.Mot_ClefNavigation.Nom_Mot_Clef, COLLATION),
+                        like)))
             ||
-            (
-                useThematique &&
+            (useThematique &&
                 e.Exposers.Any(t =>
-                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
-            )
+                    EF.Functions.Like(
+                        EF.Functions.Collate(t.ThematiqueNavigation.Nom_Thematique, COLLATION),
+                        like)))
             ||
-            (
-                useTexte &&
+            (useTexte &&
                 (
-                    (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
-                    (e.Description_Technique ?? "").ToLower().Contains(query)
-                )
-            )
+                    EF.Functions.Like(EF.Functions.Collate(e.Nom_Equipement ?? "", COLLATION), like) ||
+                    EF.Functions.Like(EF.Functions.Collate(e.Description_Technique ?? "", COLLATION), like)
+                ))
         ))
         .GroupBy(e => e.Id_Equipement)
         .Select(g => g.First())
         .ToList();
 
-        var equipementDtos = _mapper.Map<List<EquipementPreviewDTO>>(equipements);
-
-        //                  POLES EXPERTISE
+        // ================= POLES =================
         var poles = (await _poleManager.SearchAsync(p =>
-            (
-                useMotClef &&
+            (useMotClef &&
                 p.Specifiers.Any(s =>
-                    s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-            )
+                    EF.Functions.Like(
+                        EF.Functions.Collate(s.Mot_ClefNavigation.Nom_Mot_Clef, COLLATION),
+                        like)))
             ||
-            (
-                useTexte &&
+            (useTexte &&
                 (
-                    (p.Nom_Pole_Expertise ?? "").ToLower().Contains(query) ||
-                    (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)
-                )
-            )
-        ))
-        .ToList();
+                    EF.Functions.Like(EF.Functions.Collate(p.Nom_Pole_Expertise ?? "", COLLATION), like) ||
+                    EF.Functions.Like(EF.Functions.Collate(p.Description_Pole_Expertise ?? "", COLLATION), like)
+                ))
+        )).ToList();
 
-        var poleDtos = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles);
-
-        //                 PRESTATIONS
+        // ================= PRESTATIONS =================
         var prestations = (await _prestationManager.SearchAsync(pr =>
-            (
-                useMotClef &&
+            (useMotClef &&
                 pr.Precisers.Any(p =>
-                    p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-            )
+                    EF.Functions.Like(
+                        EF.Functions.Collate(p.Mot_ClefNavigation.Nom_Mot_Clef, COLLATION),
+                        like)))
             ||
-            (
-                useTexte &&
+            (useTexte &&
                 (
-                    (pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
-                    (pr.Description_Prestation ?? "").ToLower().Contains(query)
-                )
-            )
-        ))
-        .ToList();
+                    EF.Functions.Like(EF.Functions.Collate(pr.Intitule_Prestation ?? "", COLLATION), like) ||
+                    EF.Functions.Like(EF.Functions.Collate(pr.Description_Prestation ?? "", COLLATION), like)
+                ))
+        )).ToList();
 
-        var prestationDtos = _mapper.Map<List<PrestationPreviewDTO>>(prestations);
-
-        //                LABORATOIRES
+        // ================= LABORATOIRES =================
         var laboratoires = (await _laboratoireManager.SearchAsync(l =>
-            (
-                useMotClef &&
-                l.Designers.Any(q =>
-                    q.Mot_ClefNavigation != null &&
-                    q.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-            )
+            (useMotClef &&
+                l.Designers.Any(d =>
+                    d.Mot_ClefNavigation != null &&
+                    EF.Functions.Like(
+                        EF.Functions.Collate(d.Mot_ClefNavigation.Nom_Mot_Clef, COLLATION),
+                        like)))
             ||
-            (
-                useThematique &&
+            (useThematique &&
                 l.Est_Liers.Any(t =>
                     t.ThematiqueNavigation != null &&
-                    t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
-            )
+                    EF.Functions.Like(
+                        EF.Functions.Collate(t.ThematiqueNavigation.Nom_Thematique, COLLATION),
+                        like)))
             ||
-            (
-                useTexte &&
+            (useTexte &&
                 (
-                    (l.Nom_Long ?? "").ToLower().Contains(query) ||
-                    (l.Description ?? "").ToLower().Contains(query) ||
+                    EF.Functions.Like(EF.Functions.Collate(l.Nom_Long ?? "", COLLATION), like) ||
+                    EF.Functions.Like(EF.Functions.Collate(l.Description ?? "", COLLATION), like) ||
                     (
                         l.Adresse_laboNavigation != null &&
                         (
-                            (l.Adresse_laboNavigation.Ville_Adresse ?? "").ToLower().Contains(query) ||
-                            (l.Adresse_laboNavigation.Pays_Adresse ?? "").ToLower().Contains(query)
+                            EF.Functions.Like(EF.Functions.Collate(l.Adresse_laboNavigation.Ville_Adresse ?? "", COLLATION), like) ||
+                            EF.Functions.Like(EF.Functions.Collate(l.Adresse_laboNavigation.Pays_Adresse ?? "", COLLATION), like)
                         )
                     )
-                )
-            )
-        ))
-        .ToList();
+                ))
+        )).ToList();
 
-        var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
-
-        //            DOMAINES D’EXCELLENCE
+        // ================= DOMAINES =================
         var domaines = (await _domaineManager.SearchAsync(d =>
+            useTexte &&
             (
-                useTexte &&
-                (
-                    (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
-                    (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
-                )
+                EF.Functions.Like(EF.Functions.Collate(d.intitule_Domaine_Excellence ?? "", COLLATION), like) ||
+                EF.Functions.Like(EF.Functions.Collate(d.Description_Domaine_Excellence ?? "", COLLATION), like)
             )
-        ))
-        .ToList();
+        )).ToList();
 
-        var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
-
-        //                 RÉSULTAT GLOBAL
-        var result = new GlobalSearchResultDTO
+        return Ok(new GlobalSearchResultDTO
         {
-            Equipements = equipementDtos,
-            PolesExpertise = poleDtos,
-            Prestations = prestationDtos,
-            Laboratoires = laboratoireDtos,
-            DomainesExcellence = domaineDtos
-        };
-
-        return Ok(result);
+            Equipements = _mapper.Map<List<EquipementPreviewDTO>>(equipements),
+            PolesExpertise = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles),
+            Prestations = _mapper.Map<List<PrestationPreviewDTO>>(prestations),
+            Laboratoires = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires),
+            DomainesExcellence = _mapper.Map<List<DomaineExcellenceDTO>>(domaines)
+        });
     }
 }

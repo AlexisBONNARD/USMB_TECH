@@ -10,6 +10,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/")
+});
+
 builder.Services.AddScoped<AdminState>();
 
 builder.Services.AddScoped<IMainService<Equipement, int>>(eq => new WebService<Equipement, int>("Equipements"));
@@ -32,10 +37,5 @@ builder.Services.AddScoped<IMainService<Contact_USMBUpdateModel, int>>(eq => new
 builder.Services.AddScoped<IMainService<Unite_Oeuvre,int>>(eq => new WebService<Unite_Oeuvre, int>("Unite_Oeuvres"));
 builder.Services.AddScoped<IMainService<Fonctionnalite, int>>(eq => new WebService<Fonctionnalite, int>("Fonctionnalites"));
 
-//builder.Services.AddHttpClient(); // Assurez-vous que HttpClient est disponible
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net") // URL de ton API
-});
 builder.Services.AddScoped<SearchService>();
 await builder.Build().RunAsync();
