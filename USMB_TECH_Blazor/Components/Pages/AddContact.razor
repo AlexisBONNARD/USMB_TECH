@@ -245,7 +245,7 @@
             }
 
             // ---------- POST du contact ----------
-            var response = await Http.PostAsJsonAsync("https://localhost:7093/api/Contact_USMB", contact);
+            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Contact_USMB", contact);
             var createdContact = await response.Content.ReadFromJsonAsync<Contact_USMB>();
 
             contact = createdContact;
