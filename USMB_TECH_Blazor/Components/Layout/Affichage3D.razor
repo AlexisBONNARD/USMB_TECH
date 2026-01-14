@@ -71,7 +71,7 @@
     private async Task LoadModelAsync()
     {
         // Modèle stocké dans wwwroot/uploads/
-        var modelUrl = $"uploads/{urlModel}"; // ou .glb
+        var modelUrl = $"/uploads/{urlModel}"; // ou .glb
 
         loadedGuid = await viewer.Import3DModelAsync(new ImportSettings
         {
