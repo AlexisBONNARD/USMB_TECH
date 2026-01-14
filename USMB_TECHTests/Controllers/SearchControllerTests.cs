@@ -43,7 +43,7 @@ namespace USMB_TECHTests.Controllers
             var httpClient = new HttpClient();
 
             _equipManager = new EquipementManager(_context);
-            _poleManager = new Pole_ExpertiseManager(_context, httpClient);
+            _poleManager = new Pole_ExpertiseManager(_context);
             _prestationManager = new PrestationManager(_context);
             _laboManager = new LaboratoireManager(_context);
             _domaineManager = new Domaine_ExcellenceManager(_context);

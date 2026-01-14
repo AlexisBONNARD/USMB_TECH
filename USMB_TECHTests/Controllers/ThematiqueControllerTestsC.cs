@@ -10,13 +10,17 @@ using USMB_TECH.Models;
 using USMB_TECH.Models.EntityFramework;
 using USMB_TECH.Models.Repository;
 using USMB_TECHTests.AutoMapper;
+using AutoMapper;
 
 namespace USMB_TECHTests.Controllers
 {
     [TestClass]
     [TestCategory("intégration")]
-    public class ThematiqueControllerTests : AutoMapperConfigTests
+    public class ThematiqueControllerTests
     {
+        //: AutoMapperConfigTests
+
+        private IMapper mapper;
         private UsmbTechDbContext _context;
         private ThematiqueController _controller;
         private ThematiqueManager _manager;
@@ -33,7 +37,7 @@ namespace USMB_TECHTests.Controllers
                .Options;
             _context = new UsmbTechDbContext(option);
             _manager = new ThematiqueManager(_context);
-            _controller = new ThematiqueController(_manager, _mapper);
+            _controller = new ThematiqueController(_manager, mapper);
 
             _thematique1 = new Thematique { Nom_Thematique = "Thematique1" };
             _thematique2 = new Thematique { Nom_Thematique = "Thematique2" };
