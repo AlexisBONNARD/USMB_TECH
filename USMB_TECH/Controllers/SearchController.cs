@@ -34,8 +34,8 @@ public class SearchController : ControllerBase
 
     [HttpGet("global")]
     public async Task<ActionResult<GlobalSearchResultDTO>> GlobalSearch(
-     [FromQuery] string query,
-     [FromQuery] string mode = "motclef")
+        [FromQuery] string query,
+        [FromQuery] string mode = "motclef")
     {
         if (string.IsNullOrWhiteSpace(query))
             return Ok(new GlobalSearchResultDTO());
@@ -54,32 +54,30 @@ public class SearchController : ControllerBase
         // Si mode IA est activé, on traite la query avec Python
         if (useIA)
         {
-            // Plus besoin de vérifier IsInitialized ni de définir PythonDLL
-            // car c'est fait au démarrage dans Program.cs
-            try
+            if (!PythonEngine.IsInitialized)
             {
-                using (Py.GIL())
-                {
-                    Console.WriteLine("GIL acquis");
-                    dynamic script = Py.Import("IASearch");
-                    Console.WriteLine("Script Python importé");
-                    dynamic resultIA = script.search(query, 10);
-                    string resultat = "";
-                    foreach (var item in resultIA)
-                    {
-                        using var tuple = new PyTuple(item)!;
-                        resultat += " " + tuple[1].As<String>();
-                    }
+                Python.Runtime.Runtime.PythonDLL = @"C:\ProgramData\anaconda3\python311.dll";
+                PythonEngine.Initialize();
+                PythonEngine.BeginAllowThreads();
+            }
+            Console.WriteLine("Engine initialized");
 
-                    query = resultat.ToLower().Trim();
-                    Console.WriteLine("Query transformée par IA : " + query);
-                }
-            }
-            catch (Exception ex)
+            using (Py.GIL())
             {
-                Console.WriteLine($"Erreur lors de l'appel à l'IA Python : {ex.Message}");
-                // En cas d'erreur, continuer avec la query originale
+                Console.WriteLine("GIL acquis");
+                dynamic script = Py.Import("IASearch");
+                Console.WriteLine("Point d'arrêt");
+                dynamic resultIA = script.search(query, 10);
+                string resultat = "";
+                foreach (var item in resultIA)
+                {
+                    using var tuple = new PyTuple(item)!;
+                    resultat += " " + tuple[1].As<String>();
+                }
+
+                query = resultat.ToLower().Trim();
             }
+            Console.WriteLine("Query transformée par IA : " + query);
         }
 
         //                  ÉQUIPEMENTS
@@ -100,10 +98,8 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useMotClef &&
-                    e.Pole_ExpertiseNavigation != null &&
-                    e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                        s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+                    (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
+                    (e.Description_Technique ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -137,17 +133,8 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useThematique &&
-                    e.Exposers.Any(t =>
-                        t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
-                )
-                ||
-                (
-                    useTexte &&
-                    (
-                        (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
-                        (e.Description_Technique ?? "").ToLower().Contains(query)
-                    )
+                    (p.Nom_Pole_Expertise ?? "").ToLower().Contains(query) ||
+                    (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -176,9 +163,8 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useMotClef &&
-                    p.Specifiers.Any(s =>
-                        s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
+                    (pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
+                    (pr.Description_Prestation ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -215,30 +201,14 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useTexte &&
+                    (l.Nom_Long ?? "").ToLower().Contains(query) ||
+                    (l.Description ?? "").ToLower().Contains(query) ||
                     (
-                        (p.Nom_Pole_Expertise ?? "").ToLower().Contains(query) ||
-                        (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)
-                    )
-                )
-            ))
-            .ToList();
-
-            var poleDtos = _mapper.Map<List<PoleExpertisePreviewDTO>>(poles);
-
-            //                 PRESTATIONS
-            var prestations = (await _prestationManager.SearchAsync(pr =>
-                (
-                    useMotClef &&
-                    pr.Precisers.Any(p =>
-                        p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-                )
-                ||
-                (
-                    useTexte &&
-                    (
-                        (pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
-                        (pr.Description_Prestation ?? "").ToLower().Contains(query)
+                        l.Adresse_laboNavigation != null &&
+                        (
+                            (l.Adresse_laboNavigation.Ville_Adresse ?? "").ToLower().Contains(query) ||
+                            (l.Adresse_laboNavigation.Pays_Adresse ?? "").ToLower().Contains(query)
+                        )
                     )
                 )
             )
@@ -266,25 +236,15 @@ public class SearchController : ControllerBase
         ))
         .ToList();
 
-            var prestationDtos = _mapper.Map<List<PrestationPreviewDTO>>(prestations);
+        var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
 
         //            DOMAINES D'EXCELLENCE
         var domaines = (await _domaineManager.SearchAsync(d =>
             (
                 useTexte &&
                 (
-                    useTexte &&
-                    (
-                        (l.Nom_Long ?? "").ToLower().Contains(query) ||
-                        (l.Description ?? "").ToLower().Contains(query) ||
-                        (
-                            l.Adresse_laboNavigation != null &&
-                            (
-                                (l.Adresse_laboNavigation.Ville_Adresse ?? "").ToLower().Contains(query) ||
-                                (l.Adresse_laboNavigation.Pays_Adresse ?? "").ToLower().Contains(query)
-                            )
-                        )
-                    )
+                    (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
+                    (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -298,51 +258,18 @@ public class SearchController : ControllerBase
         ))
         .ToList();
 
-            var laboratoireDtos = _mapper.Map<List<LaboratoirePreviewDTO>>(laboratoires);
+        var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
 
-            //            DOMAINES D'EXCELLENCE
-            var domaines = (await _domaineManager.SearchAsync(d =>
-                (
-                    useTexte &&
-                    (
-                        (d.intitule_Domaine_Excellence ?? "").ToLower().Contains(query) ||
-                        (d.Description_Domaine_Excellence ?? "").ToLower().Contains(query)
-                    )
-                )
-            ))
-            .ToList();
-
-            var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
-
-            //                 RÉSULTAT GLOBAL
-            var result = new GlobalSearchResultDTO
-            {
-                Equipements = equipementDtos,
-                PolesExpertise = poleDtos,
-                Prestations = prestationDtos,
-                Laboratoires = laboratoireDtos,
-                DomainesExcellence = domaineDtos
-            };
-
-            return Ok(result);
-        }
-        catch (Exception ex)
+        //                 RÉSULTAT GLOBAL
+        var result = new GlobalSearchResultDTO
         {
-            // Construire un message d'erreur détaillé
-            var errorDetails = new
-            {
-                success = false,
-                errorMessage = ex.Message,
-                errorType = ex.GetType().FullName,
-                innerException = ex.InnerException?.Message,
-                innerExceptionType = ex.InnerException?.GetType().FullName,
-                stackTrace = ex.StackTrace,
-                source = ex.Source,
-                targetSite = ex.TargetSite?.Name
-            };
+            Equipements = equipementDtos,
+            PolesExpertise = poleDtos,
+            Prestations = prestationDtos,
+            Laboratoires = laboratoireDtos,
+            DomainesExcellence = domaineDtos
+        };
 
-            // Retourner avec un code 500 mais avec les détails dans le body
-            return StatusCode(500, errorDetails);
-        }
+        return Ok(result);
     }
 }
