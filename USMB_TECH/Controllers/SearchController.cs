@@ -34,8 +34,8 @@ public class SearchController : ControllerBase
 
     [HttpGet("global")]
     public async Task<ActionResult<GlobalSearchResultDTO>> GlobalSearch(
-     [FromQuery] string query,
-     [FromQuery] string mode = "motclef")
+        [FromQuery] string query,
+        [FromQuery] string mode = "motclef")
     {
         if (string.IsNullOrWhiteSpace(query))
             return Ok(new GlobalSearchResultDTO());
@@ -98,23 +98,8 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useMotClef &&
-                    e.Pole_ExpertiseNavigation != null &&
-                    e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                        s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-                )
-            )
-            ||
-            (
-                useIA &&
-                (
-                    (e.Pole_ExpertiseNavigation != null &&
-                     e.Pole_ExpertiseNavigation.Specifiers.Any(s =>
-                         query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower()))) ||
-                    e.Exposers.Any(t =>
-                        query.Contains(t.ThematiqueNavigation.Nom_Thematique.ToLower())) ||
-                    query.Contains((e.Nom_Equipement ?? "").ToLower()) ||
-                    query.Contains((e.Description_Technique ?? "").ToLower())
+                    (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
+                    (e.Description_Technique ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -148,27 +133,8 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useThematique &&
-                    e.Exposers.Any(t =>
-                        t.ThematiqueNavigation.Nom_Thematique.ToLower().Contains(query))
-                )
-                ||
-                (
-                    useTexte &&
-                    (
-                        (e.Nom_Equipement ?? "").ToLower().Contains(query) ||
-                        (e.Description_Technique ?? "").ToLower().Contains(query)
-                    )
-                )
-            )
-            ||
-            (
-                useIA &&
-                (
-                    p.Specifiers.Any(s =>
-                        query.Contains(s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower())) ||
-                    query.Contains((p.Nom_Pole_Expertise ?? "").ToLower()) ||
-                    query.Contains((p.Description_Pole_Expertise ?? "").ToLower())
+                    (p.Nom_Pole_Expertise ?? "").ToLower().Contains(query) ||
+                    (p.Description_Pole_Expertise ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -197,19 +163,8 @@ public class SearchController : ControllerBase
             (
                 useTexte &&
                 (
-                    useMotClef &&
-                    p.Specifiers.Any(s =>
-                        s.Mot_ClefNavigation.Nom_Mot_Clef.ToLower().Contains(query))
-                )
-            )
-            ||
-            (
-                useIA &&
-                (
-                    pr.Precisers.Any(p =>
-                        query.Contains(p.Mot_ClefNavigation.Nom_Mot_Clef.ToLower())) ||
-                    query.Contains((pr.Intitule_Prestation ?? "").ToLower()) ||
-                    query.Contains((pr.Description_Prestation ?? "").ToLower())
+                    (pr.Intitule_Prestation ?? "").ToLower().Contains(query) ||
+                    (pr.Description_Prestation ?? "").ToLower().Contains(query)
                 )
             )
             ||
@@ -303,17 +258,17 @@ public class SearchController : ControllerBase
         ))
         .ToList();
 
-            var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
+        var domaineDtos = _mapper.Map<List<DomaineExcellenceDTO>>(domaines);
 
-            //                 RÉSULTAT GLOBAL
-            var result = new GlobalSearchResultDTO
-            {
-                Equipements = equipementDtos,
-                PolesExpertise = poleDtos,
-                Prestations = prestationDtos,
-                Laboratoires = laboratoireDtos,
-                DomainesExcellence = domaineDtos
-            };
+        //                 RÉSULTAT GLOBAL
+        var result = new GlobalSearchResultDTO
+        {
+            Equipements = equipementDtos,
+            PolesExpertise = poleDtos,
+            Prestations = prestationDtos,
+            Laboratoires = laboratoireDtos,
+            DomainesExcellence = domaineDtos
+        };
 
         return Ok(result);
     }
