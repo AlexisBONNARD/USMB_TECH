@@ -26,7 +26,7 @@ jobs:
         run: dotnet restore USMB_TECH/USMB_TECH.csproj
 
       - name: Publish
-        run: dotnet publish USMB_TECH/USMB_TECH.csproj -c Release -o ./publish --no-build
+        run: dotnet publish USMB_TECH/USMB_TECH.csproj -c Release -o ./publish 
 
       - name: Azure Login
         uses: azure/login@v2
