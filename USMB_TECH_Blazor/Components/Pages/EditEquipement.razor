@@ -142,7 +142,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        equipement = await Http.GetFromJsonAsync<EquipementUpdateModel>($"http://localhost:7093/api/equipements/{Id}");
+        equipement = await Http.GetFromJsonAsync<EquipementUpdateModel>($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}");
 
         if (equipement != null)
         {
@@ -169,7 +169,7 @@ else
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("http://localhost:7093/api/equipements/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -208,7 +208,7 @@ else
                     }
                 };
             }
-            var response = await Http.PutAsJsonAsync($"http://localhost:7093/api/equipements/{Id}", equipement);
+            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/{Id}", equipement);
 
             if (response.IsSuccessStatusCode)
             {

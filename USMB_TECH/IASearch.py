@@ -7,11 +7,11 @@ import requests
 # Chargement du meilleur modèle français d'association de synonymes
 #  possibilité d'utiliser dangvantuan/sentence-camembert-large sinon
 model = SentenceTransformer("Lajavaness/sentence-camembert-large")
-Laboratoires = requests.get("http://localhost:7093/api/Laboratoires").json()
-Equipements = requests.get("http://localhost:7093/api/Equipements").json()
-PoleExpertise = requests.get("http://localhost:7093/api/Pole_Expertises").json()
-Prestation = requests.get("http://localhost:7093/api/Prestations").json()
-PriseContacts= requests.get("http://localhost:7093/api/Prise_Contacts").json()
+Laboratoires = requests.get("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Laboratoires").json()
+Equipements = requests.get("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Equipements").json()
+PoleExpertise = requests.get("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Pole_Expertises").json()
+Prestation = requests.get("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Prestations").json()
+PriseContacts= requests.get("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Prise_Contacts").json()
 
 
 # Liste des articles du site web

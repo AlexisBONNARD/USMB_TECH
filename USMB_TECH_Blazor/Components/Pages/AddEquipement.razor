@@ -493,7 +493,7 @@
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("http://localhost:7093/api/equipements/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -547,7 +547,7 @@
                     // Id_Equipement sera rempli côté backend
                 }).ToList();
 
-            var response = await Http.PostAsJsonAsync("http://localhost:7093/api/Equipements", addEquipement);
+            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Equipements", addEquipement);
 
             if (!response.IsSuccessStatusCode)
             {

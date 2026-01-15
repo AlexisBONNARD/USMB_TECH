@@ -338,7 +338,7 @@
                 };
             }
 
-            var response = await Http.PostAsJsonAsync("http://localhost:7093/api/Prestations", prestation);
+            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Prestations", prestation);
             var createdprestation = await response.Content.ReadFromJsonAsync<Prestation>();
 
             prestation = createdprestation;
@@ -471,7 +471,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("http://localhost:7093/api/prestations/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/prestations/upload", content);
 
             if (response.IsSuccessStatusCode)
             {
