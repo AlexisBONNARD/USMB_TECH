@@ -83,4 +83,4 @@ foreach ($grrRooms as $roomId) {
     }
 }
 
-echo "✅ Synchronisation complète terminée.";
+echo "<script>console.log('Synchronisation GRR : OK');</script>";
