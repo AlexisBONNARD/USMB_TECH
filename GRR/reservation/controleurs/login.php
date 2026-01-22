@@ -158,7 +158,7 @@ if (isset($_POST['login']) && isset($_POST['password']))
         nettoieLogConnexion($nbMaxJoursLogConnexion);
 		nettoieLogEmail($nbMaxJoursLogEmail);
 		// Synchronisation automatique des équipements pour tous les utilisateurs
-		//include_once __DIR__ . "/../../sync_equipements.php"; 
+		include_once __DIR__ . "/../../sync_equipements.php"; 
 
 		if (isset($_POST['url']))
 		{
