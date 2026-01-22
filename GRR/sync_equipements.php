@@ -66,4 +66,4 @@ foreach ($grrRooms as $roomId) {
     }
 }
 
-echo "✅ Synchronisation complète terminée.";
+echo " ✅ Synchronisation complète terminée.";
