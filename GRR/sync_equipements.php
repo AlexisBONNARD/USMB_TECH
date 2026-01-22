@@ -26,10 +26,24 @@ foreach ($equipements as $eq) {
     $nom = $eq["nom_Equipement"];
 
     if (!in_array($id, $grrRooms)) {
-        // Création de la ressource
+
+        // INSERT compatible GRR (toutes colonnes obligatoires)
         $stmt = $pdo->prepare("
-            INSERT INTO grr_room (id, room_name, area_id)
-            VALUES (?, ?, 1)
+            INSERT INTO grr_room (
+                id,
+                room_name,
+                area_id,
+                comment_room,
+                statut_room,
+                capacity,
+                order_display,
+                delais_max_resa_room,
+                delais_min_resa_room,
+                allow_action_on_conflict,
+                active
+            ) VALUES (
+                ?, ?, 1, '', 0, 0, 0, 0, 0, 0, 1
+            )
         ");
         $stmt->execute([$id, $nom]);
     }
