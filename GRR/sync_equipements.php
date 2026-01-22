@@ -17,13 +17,13 @@ $pdo = new PDO(
 $columnsStmt = $pdo->query("SHOW COLUMNS FROM grr_room");
 $columns = $columnsStmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Colonnes minimales obligatoires
+// Colonnes minimales obligatoires (statut_room forcé à 1)
 $defaultValues = [
     "id" => null,
     "room_name" => "",
     "area_id" => 1,
     "comment_room" => "",
-    "statut_room" => 0,
+    "statut_room" => 1,   // ACTIVÉ PAR DÉFAUT
     "capacity" => 0,
     "order_display" => 0,
     "delais_max_resa_room" => 0,
@@ -66,7 +66,7 @@ foreach ($equipements as $eq) {
     }
 }
 
-// 7. MISE À JOUR des ressources existantes
+// 7. MISE À JOUR des ressources existantes (nom uniquement)
 foreach ($equipements as $eq) {
     $id = $eq["id_Equipement"];
     $nom = $eq["nom_Equipement"];
@@ -75,7 +75,10 @@ foreach ($equipements as $eq) {
     $stmt->execute([$nom, $id]);
 }
 
-// 8. SUPPRESSION des ressources en trop
+// 8. ACTIVATION de toutes les ressources (statut_room = 1)
+$pdo->exec("UPDATE grr_room SET statut_room = 1");
+
+// 9. SUPPRESSION des ressources en trop
 foreach ($grrRooms as $roomId) {
     if (!in_array($roomId, $apiIds)) {
         $stmt = $pdo->prepare("DELETE FROM grr_room WHERE id = ?");
