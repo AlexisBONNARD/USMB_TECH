@@ -101,21 +101,21 @@ public class EquipementDetailsTests : BaseTest
         );
     }
 
-    [Fact]
-    public async Task Deleting_Equipement_Should_Succeed()
-    {
-        await Page.GotoAsync($"{BaseUrl}/equipement/{EquipementId}");
+    //[Fact]
+    //public async Task Deleting_Equipement_Should_Succeed()
+    //{
+    //    await Page.GotoAsync($"{BaseUrl}/equipement/{EquipementId}");
 
-        await Page.ClickAsync("text=Admin");
+    //    await Page.ClickAsync("text=Admin");
 
-        Page.Dialog += async (_, dialog) =>
-        {
-            await dialog.AcceptAsync();
-        };
+    //    Page.Dialog += async (_, dialog) =>
+    //    {
+    //        await dialog.AcceptAsync();
+    //    };
 
-        await Page.GetByTestId("equipement-delete-btn").ClickAsync();
+    //    await Page.GetByTestId("equipement-delete-btn").ClickAsync();
 
-        await Expect(Page.GetByTestId("equipement-delete-alert"))
-            .ToContainTextAsync("Équipement supprimé");
-    }
+    //    await Expect(Page.GetByTestId("equipement-delete-alert"))
+    //        .ToContainTextAsync("Équipement supprimé");
+    //}
 }

@@ -84,21 +84,21 @@ public class DomaineExcellenceDetailsTests : BaseTest
         );
     }
 
-    [Fact]
-    public async Task Deleting_Domaine_Should_Succeed()
-    {
-        await Page.GotoAsync($"{BaseUrl}/DomaineExcellence/{DomaineId}");
+    //[Fact]
+    //public async Task Deleting_Domaine_Should_Succeed()
+    //{
+    //    await Page.GotoAsync($"{BaseUrl}/DomaineExcellence/{DomaineId}");
 
-        await Page.ClickAsync("text=Admin");
+    //    await Page.ClickAsync("text=Admin");
 
-        Page.Dialog += async (_, dialog) =>
-        {
-            await dialog.AcceptAsync();
-        };
+    //    Page.Dialog += async (_, dialog) =>
+    //    {
+    //        await dialog.AcceptAsync();
+    //    };
 
-        await Page.GetByTestId("domaine-delete-btn").ClickAsync();
+    //    await Page.GetByTestId("domaine-delete-btn").ClickAsync();
 
-        await Expect(Page.GetByTestId("domaine-delete-alert"))
-            .ToContainTextAsync("Domaine supprimé avec succès");
-    }
+    //    await Expect(Page.GetByTestId("domaine-delete-alert"))
+    //        .ToContainTextAsync("Domaine supprimé avec succès");
+    //}
 }

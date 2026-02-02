@@ -1,6 +1,7 @@
 ﻿@page "/prise_contact"
 @inject IMainService<Prise_Contact, int> Prise_ContactService
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <h1>Liste des prises de contact</h1>
 
@@ -22,6 +23,7 @@ else
                 <th>Email</th>
                 <th>Entreprise</th>
                 <th>Détails</th>
+                <th>Supprimer</th>
             </tr>
         </thead>
 
@@ -38,6 +40,11 @@ else
                             Voir
                         </button>
                     </td>
+                    <td>
+                        <button data-testid="prise_contact-delete-btn" class="btn btn-danger mb-3" @onclick="() => DeletePrise_Contact(contact.Num_Prise_Contact)">
+                            Supprimer
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -46,6 +53,10 @@ else
 
 @code {
     private List<Prise_Contact> prise_contacts = new();
+
+    // ----------- ALERTES SUPPRESSION -----------
+    private string deleteMessage = null;
+    private bool deleteSuccess = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,5 +67,40 @@ else
     private void RetourListe(int id, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+
+    // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
+    private async Task DeletePrise_Contact(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>(
+            "confirm",
+            "Voulez-vous vraiment supprimer ce contact ?"
+        );
+
+        if (!confirm)
+            return;
+
+        try
+        {
+            await Prise_ContactService.DeleteAsync(id);
+            deleteSuccess = true;
+            await ShowDeleteAlert("Contact supprimé avec succès");
+            Navigation.NavigateTo("/", true);
+        }
+        catch (Exception ex)
+        {
+            deleteSuccess = false;
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
+        }
+    }
+
+    // ----------- AFFICHAGE & AUTO-DISPARITION -----------
+    private async Task ShowDeleteAlert(string msg)
+    {
+        deleteMessage = msg;
+        StateHasChanged();
+        await Task.Delay(3000);
+        deleteMessage = null;
+        StateHasChanged();
     }
 }

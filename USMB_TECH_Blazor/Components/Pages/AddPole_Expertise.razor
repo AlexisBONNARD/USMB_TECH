@@ -234,6 +234,10 @@
             {
                 OpenModalDomaineExcellence();
             }
+            else if (int.TryParse(value, out var domaineId))
+            {
+                pole_expertise.Id_Domaine_Excellence = domaineId;
+            }
             else
             {
                 pole_expertise.Id_Domaine_Excellence = 1;
