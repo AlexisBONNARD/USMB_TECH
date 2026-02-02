@@ -4,7 +4,9 @@ To install the packages for the tests E2E
 In USMB_TECH\USMB_TECHTests
 ```bash
 cd \...\USMB_TECH\USMB_TECHTests
-bin/Debug/net8.0/playwright.ps1 install
+```
+```bash
+pwsh bin/Debug/net8.0/playwright.ps1 install
 ```
 To execute the tests E2E :
 ```bash
