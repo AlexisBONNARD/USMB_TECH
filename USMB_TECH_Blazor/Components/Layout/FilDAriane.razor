@@ -1,65 +1,159 @@
 ﻿@inject NavigationManager NavManager
 
 <link href="css/FilDAriane.css" rel="stylesheet" />
+@inject IMainService<Equipement, int> dataRepository
+@inject IMainService<Pole_Expertise, int> Pole_ExpertiseService
+@inject IMainService<Prise_Contact, int> Prise_ContactService
 
 @code {
-    private List<BreadcrumbItem> Items = new();
-
-    private readonly HashSet<string> NonClickable = new()
-    {
-        "pole_expertise",
-        "equipement",
-        "prestation",
-        "laboratoire"
-    };
-
     protected override void OnInitialized()
     {
-        BuildBreadcrumb();
+        NavManager.LocationChanged += async (_, __) =>
+        {
+            await BuildBreadcrumbFromUrl();
+            StateHasChanged();
+        };
     }
 
-    private void BuildBreadcrumb()
+    private List<BreadcrumbItem> Items = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        var uri = NavManager.ToBaseRelativePath(NavManager.Uri);
-        var segments = uri.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        await BuildBreadcrumbFromUrl();
+    }
 
-        string cumulative = "";
+    private async Task BuildBreadcrumbFromUrl()
+    {
+        Items.Clear();
 
-        foreach (var segment in segments)
+        var relative = NavManager.ToBaseRelativePath(NavManager.Uri);
+        var segments = relative.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        // Ex : /equipement/4
+        if (segments.Length < 2 || !int.TryParse(segments[1], out int id))
         {
-            cumulative += "/" + segment;
-            Items.Add(new BreadcrumbItem
-            {
-                Text = Capitalize(segment),
-                Url = cumulative
-            });
+            BuildFallback(segments);
+            return;
+        }
+
+        switch (segments[0].ToLower())
+        {
+            case "equipement":
+                await BuildEquipement(id);
+                break;
+
+            case "pole_expertise":
+                await BuildPoleExpertise(id);
+                break;
+
+            case "prise_contact":
+                await BuildPriseContact(id);
+                break;
+
+            default:
+                BuildFallback(segments);
+                break;
         }
     }
 
-    private string Capitalize(string text)
-        => char.ToUpper(text[0]) + text.Substring(1);
+    /* ===================== CAS MÉTIERS ===================== */
 
-    public class BreadcrumbItem
+    private async Task BuildEquipement(int id)
     {
-        public string Text { get; set; }
-        public string Url { get; set; }
+        var equipement = await dataRepository.GetByIdAsync(id);
+
+        if (equipement == null)
+        {
+            Items.Add(new BreadcrumbItem("Equipement"));
+            return;
+        }
+
+        Items.Add(new BreadcrumbItem("PoleExpertise : " + equipement.Pole_ExpertiseNavigation.Nom_Pole_Expertise, $"/pole_expertise/{equipement.Pole_ExpertiseNavigation.Id_Pole_Expertise}"));
+
+        Items.Add(new BreadcrumbItem("Equipement : " + equipement.Nom_Equipement));
+    }
+
+    private async Task BuildPoleExpertise(int id)
+    {
+        var pole = await Pole_ExpertiseService.GetByIdAsync(id);
+
+        if (pole == null)
+        {
+            Items.Add(new BreadcrumbItem("PoleExpertise"));
+            return;
+        }
+
+        Items.Add(new BreadcrumbItem("PoleExpertise : " + pole.Nom_Pole_Expertise));
+    }
+
+    private async Task BuildPriseContact(int id)
+    {
+        var priseContact = await Prise_ContactService.GetByIdAsync(id);
+
+        if (priseContact == null)
+        {
+            Items.Add(new BreadcrumbItem("PriseContact"));
+            return;
+        }
+
+        if (priseContact.EquipementNavigation != null)
+        {
+            var equipement = priseContact.EquipementNavigation;
+            var pole = await Pole_ExpertiseService.GetByIdAsync(equipement.Id_Pole_Expertise);
+
+            if (pole != null)
+            {
+                Items.Add(new BreadcrumbItem("PoleExpertise : " + pole.Nom_Pole_Expertise, $"/pole_expertise/{pole.Id_Pole_Expertise}"));
+            }
+
+            Items.Add(new BreadcrumbItem("Equipement : " + equipement.Nom_Equipement, $"/equipement/{equipement.Id_Equipement}"));
+        }
+        else if (priseContact.Pole_ExpertiseNavigation != null)
+        {
+            Items.Add(new BreadcrumbItem("PoleExpertise : " + priseContact.Pole_ExpertiseNavigation.Nom_Pole_Expertise, $"/pole_expertise/{priseContact.Pole_ExpertiseNavigation.Id_Pole_Expertise}"));
+        }
+        Items.Add(new BreadcrumbItem("PriseContact par : " + priseContact.Entreprise_Contact));
+    }
+
+
+    /* ===================== FALLBACK ===================== */
+
+    private void BuildFallback(string[] segments)
+    {
+        foreach (var segment in segments)
+        {
+            Items.Add(new BreadcrumbItem(segment));
+        }
+    }
+
+    /* ===================== MODELE ===================== */
+
+    private class BreadcrumbItem
+    {
+        public string Text { get; }
+        public string? Url { get; }
+
+        public BreadcrumbItem(string text, string? url = null)
+        {
+            Text = text;
+            Url = url;
+        }
     }
 }
-
 <div class="breadcrumb-container">
     <ul class="breadcrumb">
-        <li><a href="/">USMB Tech</a></li>
+        <li><a href="/">Accueille</a></li>
 
         @foreach (var item in Items)
         {
             <li>
-                @if (NonClickable.Contains(item.Text.ToLower()))
+                @if (item.Url != null)
                 {
-                    <span>@item.Text</span>
+                    <a href="@item.Url">@item.Text</a>
                 }
                 else
                 {
-                    <a href="@item.Url">@item.Text</a>
+                    <span>@item.Text</span>
                 }
             </li>
         }

@@ -73,6 +73,7 @@
             </ul>
         </div>
 
+        @*
         <!-- Dropdown NOS PRESTATIONS -->
         <div class="nav-link dropdown"
              data-testid="nav-prestation-menu"
@@ -95,7 +96,9 @@
                 }
             </ul>
         </div>
+        *@
 
+        @*
         <!-- Dropdown NOS LABORATOIRES -->
         <div class="nav-link dropdown"
              data-testid="nav-laboratoire-menu"
@@ -118,6 +121,7 @@
                 }
             </ul>
         </div>
+        *@
         
         @if (AdminState.IsAdmin)
         {
@@ -132,10 +136,10 @@
         <!-- Dropdown NOS CONTACTS -->
         <span class="nav-link"
              @onclick="@(() => RetourListe("contact"))">
-            <span class="">CONTACT</span>
+            <span class="">NOUS CONTACTEZ</span>
         </span>
     </div>
-
+    <FilDAriane/>
 </div>
 
 
