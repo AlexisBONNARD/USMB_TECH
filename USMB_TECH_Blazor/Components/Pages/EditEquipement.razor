@@ -28,13 +28,10 @@ else
             <ValidationMessage For="@(() => equipement.Num_Immobilisation)" />
 
             <label>Date acquisition</label>
-            <InputDate class="form-control mb-2" @bind-value="equipement.Date_Acquisition"/>
 
             <label>Prix achat</label>
-            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Achat"/>
 
             <label>Prix revient</label>
-            <InputNumber class="form-control mb-2" @bind-value="equipement.Prix_Revient"/>
 
             <label>Description technique</label>
             <InputTextArea class="form-control mb-2" @bind-value="equipement.Description_Technique" />
@@ -57,13 +54,11 @@ else
             <!-- Pole_Expertise -->
             <label>Pole_Expertise associée * @equipement.Id_Pole_Expertise @equipement.Nom_Pole_Expertise</label>
             <input class="form-control mb-2" type="text" value="@equipement.Nom_Pole_Expertise" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Pole_Expertise"/>
 
 
             <!-- Modèle -->
             <label>Modèle associé *</label>
             <input class="form-control mb-2" type="text" value="@equipement.Nom_Modele" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Modele"/>
 
             <!-- Marque -->
             <label>Marque associée *</label>
@@ -72,7 +67,6 @@ else
             <!-- Type d’équipement -->
             <label>Type d’équipement associé *</label>
             <input class="form-control mb-2" type="text" value="@equipement.Type_Equipement" readonly />
-            <InputNumber class="d-none" @bind-value="equipement.Id_Type_Equipement"/>
 
 
 
@@ -114,7 +108,6 @@ else
             {
                 <div class="mb-3 border p-2">
                     <label>Prestation liée</label>
-                    <InputNumber class="form-control mb-1" @bind-value="f.Id_Prestation"/>
                 </div>
             }
 

@@ -1,0 +1,78 @@
+﻿/* --- SECTION PLEINE LARGEUR --- */
+.contact-section {
+    width: 100%;
+    padding: 40px 0;
+}
+
+/* --- CONTENEUR DU FORMULAIRE --- */
+.form-container {
+    width: 100%;
+    max-width: 1200px; /* largeur confortable */
+    margin: 0 auto; /* centre horizontalement */
+    padding: 32px 40px;
+    background-color: #f5f7fa;
+    border-radius: 4px;
+}
+
+/* --- LIGNES --- */
+.row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+/* --- INPUTS --- */
+.input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14px;
+    border: 1px solid #cfd6dd;
+    border-radius: 3px;
+    background-color: white;
+    color: #333;
+}
+
+    .input.half {
+        width: 48.5%;
+    }
+
+/* --- TEXTAREA --- */
+.textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+/* --- LABELS --- */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+}
+
+/* --- BOUTON --- */
+.submit-btn {
+    margin-top: 24px;
+    padding: 12px 28px;
+    background-color: #0b3d78;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .input.half {
+        width: 100%;
+    }
+
+    .form-container {
+        padding: 24px 16px;
+    }
+}

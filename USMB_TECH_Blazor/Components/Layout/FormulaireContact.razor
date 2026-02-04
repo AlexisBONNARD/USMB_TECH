@@ -10,7 +10,8 @@
 <div class="contact-section">
     <h3>FORMULAIRE DE CONTACT</h3>
 
-    <EditForm Model="@prise_contact" OnValidSubmit="HandleSubmit" key="@prise_contact">
+    @*OnValidSubmit="HandleSubmit"*@
+    <EditForm Model="@prise_contact" OnSubmit="HandleSubmit" key="@prise_contact">
         <DataAnnotationsValidator />
         <div class="form-container">
 
@@ -24,13 +25,37 @@
             <InputText class="input" data-testid="contact-email" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
             <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
 
+            @*
             <InputText class="input" data-testid="contact-entreprise" @bind-Value="prise_contact.Entreprise_Contact"
-                       placeholder="Type d’entité (entreprise, collectivité, association…) *" />
+                       placeholder="Type d’entité (entreprise, collectivité, association…)*" />
             <ValidationMessage For="@(() => prise_contact.Entreprise_Contact)" />
+            *@
+            <div class="row">
+                <label>Type d’entité :</label>
+                <InputSelect class="input" data-testid="contact-entreprise" @bind-Value="prise_contact.Entreprise_Contact">
+                    <option value="Aucun">Je ne sais pas</option>
+                    <option value="Equipement">Un équipement</option>
+                    <option value="Pole">Un pôle d'expertise</option>
+                    <option value="Laboratoire">Un laboratoire</option>
+                    <option value="USMB">USMB</option>
+                    <option value="UNITA">UNITA</option>
+                </InputSelect>
+            </div>
 
-            <InputTextArea class="input textarea" data-testid="contact-description" @bind-Value="prise_contact.Description_besoins"
-                           placeholder="Votre besoin *" />
-            <ValidationMessage For="@(() => prise_contact.Description_besoins)" />
+            <div class="row">
+                <label>Type de besoin :</label>
+                <InputSelect class="input" @bind-Value="typeBesoinSelectionne">
+                    <option value="Aucun">Je ne sais pas</option>
+                    <option value="Prestation">Prestation</option>
+                    <option value="Formation">Formation</option>
+                    <option value="Location">Location</option>
+                </InputSelect>
+            </div>
+            <InputTextArea class="input textarea"
+                           @bind-Value="precisionBesoin"
+                           placeholder="Précisez votre besoin *" />
+
+
             <div class="row">
                 <label>Vous souhaitez contacter :</label>
                 <InputSelect class="input" data-testid="contact-type" @bind-Value="typeSelectionne">
@@ -100,6 +125,16 @@
 </div>
 
 @code {
+    private TypeBesoin typeBesoinSelectionne = TypeBesoin.Aucun;
+    private string? precisionBesoin;
+    public enum TypeBesoin
+    {
+        Aucun,
+        Prestation,
+        Formation,
+        Location
+    }
+
     private string? message;
     private bool isSuccess = false;
     private bool isMultipleErrors = false;
@@ -191,6 +226,8 @@
             return;
         }
 
+        prise_contact.Description_besoins = ConstruireDescriptionBesoins();
+
         try
         {
             await Prise_ContactService.AddAsync(prise_contact);
@@ -198,6 +235,8 @@
 
             prise_contact = new() { Id_Type_Client = 1 };
             typeSelectionne = TypeCible.Aucun;
+            typeBesoinSelectionne = TypeBesoin.Aucun;
+            precisionBesoin = null;
         }
         catch (Exception ex)
         {
@@ -220,4 +259,19 @@
         isMultipleErrors = false;
         StateHasChanged();
     }
+
+    private string ConstruireDescriptionBesoins()
+    {
+        if (typeBesoinSelectionne == TypeBesoin.Aucun && string.IsNullOrWhiteSpace(precisionBesoin))
+            return string.Empty;
+
+        if (typeBesoinSelectionne == TypeBesoin.Aucun)
+            return precisionBesoin!.Trim();
+
+        if (string.IsNullOrWhiteSpace(precisionBesoin))
+            return typeBesoinSelectionne.ToString();
+
+        return $"{typeBesoinSelectionne} : {precisionBesoin.Trim()}";
+    }
+
 }
