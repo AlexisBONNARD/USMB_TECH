@@ -42,6 +42,10 @@ public partial class UsmbTechDbContext : DbContext
     public DbSet<Type_Prestation> Type_Prestations { get; set; }
     public DbSet<Unite> Unites { get; set; }
     public DbSet<Unite_Oeuvre> Unite_Oeuvres { get; set; }
+    public DbSet<Autoriser> Autorisers { get; set; }
+    public DbSet<Proposer> Proposers { get; set; }
+    public DbSet<Type_Utilisation> Type_Utilisations { get; set; }
+
 
 
     public UsmbTechDbContext()
@@ -556,7 +560,7 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_photo_domaine_excelence");
 
-            // ✅ Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise, un laboratoire, une prestation, à un domaine d'excellence ou à un équipement.
+            // Contrainte d’exclusion : Une photo ne peut être liée qu’à un pôle d'expertise, un laboratoire, une prestation, à un domaine d'excellence ou à un équipement.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
@@ -763,7 +767,7 @@ public partial class UsmbTechDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_prise_contact_type_client");
 
-            // ✅ Contrainte d’exclusion : Une prise de contact ne peut être liée qu’à un pôle d'expertise ou à un équipement, pas les deux.
+            // Contrainte d’exclusion : Une prise de contact ne peut être liée qu’à un pôle d'expertise ou à un équipement, pas les deux.
             e.ToTable(tb =>
             {
                 tb.HasCheckConstraint(
@@ -924,6 +928,57 @@ public partial class UsmbTechDbContext : DbContext
                 .HasForeignKey(d => d.Id_Unite_Oeuvre)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_unite_oeuvre_prestation");
+        });
+
+        modelBuilder.Entity<Autoriser>(e =>
+        {
+            e.HasKey(e => new { e.Id_Equipement, e.Id_Type_Client })
+             .HasName("pk_autoriser");
+
+            e.HasOne(d => d.EquipementNavigation)
+                .WithMany(p => p.Autorisers)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_autoriser_equipement");
+
+            e.HasOne(d => d.Type_ClientNavigation)
+                .WithMany(p => p.Autorisers)
+                .HasForeignKey(d => d.Id_Type_Client)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_autoriser_type_client");
+        });
+
+        modelBuilder.Entity<Proposer>(e =>
+        {
+            e.HasKey(e => new { e.Id_Equipement, e.Id_Type_Utilisation })
+             .HasName("pk_proposer");
+
+            e.HasOne(d => d.EquipementNavigation)
+                .WithMany(p => p.Proposers)
+                .HasForeignKey(d => d.Id_Equipement)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_proposer_equipement");
+
+            e.HasOne(d => d.Type_UtilisationNavigation)
+                .WithMany(p => p.Proposers)
+                .HasForeignKey(d => d.Id_Type_Utilisation)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_proposer_type_utilisation");
+        });
+
+        modelBuilder.Entity<Type_Utilisation>(e =>
+        {
+            e.HasKey(e => e.Id_Type_Utilisation)
+             .HasName("pk_type_utilisation");
+
+            e.Property(e => e.Id_Type_Utilisation)
+             .ValueGeneratedOnAdd();
+
+            e.HasMany(d => d.Proposers)
+                .WithOne(p => p.Type_UtilisationNavigation)
+                .HasForeignKey(d => d.Id_Type_Utilisation)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_type_utilisation_proposer");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -539,7 +539,7 @@
             addEquipement.Date_Acquisition = DateTime.Now;
             addEquipement.Actif = true;
 
-            // ✅ Transformer les Fonctionnalites en Posseders
+            // Transformer les Fonctionnalites en Posseders
             addEquipement.Posseders = addEquipement.Fonctionnalites
                 .Select(f => new Posseder
                 {

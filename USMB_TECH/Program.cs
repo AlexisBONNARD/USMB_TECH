@@ -39,7 +39,11 @@ builder.Services.AddScoped<Prise_ContactManager>();
 builder.Services.AddScoped<MarqueManager>();
 builder.Services.AddScoped<MotClefManager>();
 builder.Services.AddScoped<FonctionnaliteManager>();
-builder.Services.AddScoped<Domaine_ExcellenceManager>();    
+builder.Services.AddScoped<Domaine_ExcellenceManager>();
+builder.Services.AddScoped<AutoriserManager>();
+builder.Services.AddScoped<ProposerManager>();
+builder.Services.AddScoped<TypeUtilisationManager>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

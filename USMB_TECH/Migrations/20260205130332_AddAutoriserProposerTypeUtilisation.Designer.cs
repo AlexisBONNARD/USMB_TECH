@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using USMB_TECH.Models.EntityFramework;
@@ -11,9 +12,11 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    partial class UsmbTechDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260205130332_AddAutoriserProposerTypeUtilisation")]
+    partial class AddAutoriserProposerTypeUtilisation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -63,17 +63,10 @@ else
             {
                 <section data-testid="equipement-usage">
                     <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
-                    @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
+                    @foreach (var exemple in equipement.Exemple_Utilisations)
                     {
-                        @foreach (var exemple in equipement.Exemple_Utilisations)
-                        {
-                            <p><strong>@exemple.Nom_Utilisation</strong></p>
-                            <p>@exemple.Description_Utilisation</p>
-                        }
-                    }
-                    else
-                    {
-                        <p>Aucune utilisation renseignée.</p>
+                        <p><strong>@exemple.Nom_Utilisation</strong></p>
+                        <p>@exemple.Description_Utilisation</p>
                     }
                 </section>
             }

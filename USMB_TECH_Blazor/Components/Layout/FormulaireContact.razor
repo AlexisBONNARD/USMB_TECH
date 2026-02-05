@@ -10,7 +10,6 @@
 <div class="contact-section">
     <h3>FORMULAIRE DE CONTACT</h3>
 
-    @*OnValidSubmit="HandleSubmit"*@
     <EditForm Model="@prise_contact" OnSubmit="HandleSubmit" key="@prise_contact">
         <DataAnnotationsValidator />
         <div class="form-container">
@@ -25,19 +24,15 @@
             <InputText class="input" data-testid="contact-email" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
             <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
 
-            @*
-            <InputText class="input" data-testid="contact-entreprise" @bind-Value="prise_contact.Entreprise_Contact"
-                       placeholder="Type d’entité (entreprise, collectivité, association…)*" />
-            <ValidationMessage For="@(() => prise_contact.Entreprise_Contact)" />
-            *@
             <div class="row">
                 <label>Type d’entité :</label>
                 <InputSelect class="input" data-testid="contact-entreprise" @bind-Value="prise_contact.Entreprise_Contact">
                     <option value="Aucun">Je ne sais pas</option>
-                    <option value="Equipement">Un équipement</option>
-                    <option value="Pole">Un pôle d'expertise</option>
-                    <option value="Laboratoire">Un laboratoire</option>
-                    <option value="USMB">USMB</option>
+                    <option value="Entreprise">Une Entreprise</option>
+                    <option value="Colectivité">Une Colectivité</option>
+                    <option value="Asotiation">Une Asotiation</option>
+                    <option value="Académique">Académique</option>
+                    <option value="USMB">L'USMB</option>
                     <option value="UNITA">UNITA</option>
                 </InputSelect>
             </div>
@@ -54,7 +49,6 @@
             <InputTextArea class="input textarea"
                            @bind-Value="precisionBesoin"
                            placeholder="Précisez votre besoin *" />
-
 
             <div class="row">
                 <label>Vous souhaitez contacter :</label>

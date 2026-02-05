@@ -24,6 +24,10 @@ namespace USMB_TECH.Models.Repository
                         .ThenInclude(ex => ex.ThematiqueNavigation)
                 .Include(e => e.ModeleNavigation)
                 .Include(e => e.Type_EquipementNavigation)
+                .Include(e => e.Autorisers)
+                    .ThenInclude(a => a.Type_ClientNavigation)
+                .Include(e => e.Proposers)
+                    .ThenInclude(p => p.Type_UtilisationNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
                 .Include(e => e.Exemple_Utilisations)
@@ -50,6 +54,10 @@ namespace USMB_TECH.Models.Repository
                 .Include(e => e.ModeleNavigation)
                     .ThenInclude(m => m.MarqueNavigation)
                 .Include(e => e.Type_EquipementNavigation)
+                .Include(e => e.Autorisers)
+                    .ThenInclude(a => a.Type_ClientNavigation)
+                .Include(e => e.Proposers)
+                    .ThenInclude(p => p.Type_UtilisationNavigation)
                 .Include(e => e.Consommers)
                 .Include(e => e.Posseders)
                     .ThenInclude(f => f.FonctionnaliteNavigation)
@@ -71,7 +79,7 @@ namespace USMB_TECH.Models.Repository
         public async Task AddAsync(Equipement entity)
         {
             // -------------------
-            // 1️⃣ Gestion Pole_Expertise
+            // 1️ Gestion Pole_Expertise
             // -------------------
             if (entity.Pole_ExpertiseNavigation != null &&
                 !string.IsNullOrEmpty(entity.Pole_ExpertiseNavigation.Nom_Pole_Expertise))
@@ -94,7 +102,7 @@ namespace USMB_TECH.Models.Repository
             }
 
             // -------------------
-            // 2️⃣ Gestion Type_Equipement
+            // 2️ Gestion Type_Equipement
             // -------------------
             if (entity.Type_EquipementNavigation != null &&
                 !string.IsNullOrEmpty(entity.Type_EquipementNavigation.Nom_Type))
@@ -117,7 +125,7 @@ namespace USMB_TECH.Models.Repository
             }
 
             // -------------------
-            // 3️⃣ Gestion Modele + Marque
+            // 3️ Gestion Modele + Marque
             // -------------------
             if (entity.ModeleNavigation != null)
             {
@@ -164,7 +172,7 @@ namespace USMB_TECH.Models.Repository
             }
 
             // -------------------
-            // 4️⃣ Gestion Qualifiers et MotsClés
+            // 4️ Gestion Qualifiers et MotsClés
             // -------------------
             if (entity.Qualifiers != null && entity.Qualifiers.Any())
             {
@@ -199,7 +207,7 @@ namespace USMB_TECH.Models.Repository
             }
 
             // -------------------
-            // 5️⃣ Ajouter Equipement (sans Posseders)
+            // 5️ Ajouter Equipement (sans Posseders)
             // -------------------
             var possedersTemp = entity.Posseders; // sauvegarde temporaire
             entity.Posseders = new List<Posseder>(); // vide pour l'instant
@@ -207,7 +215,7 @@ namespace USMB_TECH.Models.Repository
             await _context.SaveChangesAsync(); // Id_Equipement généré
 
             // -------------------
-            // 6️⃣ Gestion Posseders (Fonctionnalites)
+            // 6️ Gestion Posseders (Fonctionnalites)
             // -------------------
             if (possedersTemp != null && possedersTemp.Any())
             {
@@ -243,6 +251,20 @@ namespace USMB_TECH.Models.Repository
                 _context.Posseders.AddRange(possedersFinal);
                 await _context.SaveChangesAsync();
             }
+
+            // -------------------
+            // 7 Gestion Autorisers (Type_Client)
+            // -------------------
+            await HandleAutorisersAsync(entity);
+
+            // -------------------
+            // 8 Gestion Proposers (Type_Utilisation)
+            // -------------------
+            await HandleProposersAsync(entity);
+
+            await _context.SaveChangesAsync();
+
+
         }
 
         public async Task UpdateAsync(Equipement entityToUpdate, Equipement updatedEntity)
@@ -314,6 +336,21 @@ namespace USMB_TECH.Models.Repository
                 }
             }
 
+            // --- Autorisers ---
+            _context.Autorisers.RemoveRange(
+                _context.Autorisers.Where(a => a.Id_Equipement == entityToUpdate.Id_Equipement));
+
+            // --- Proposers ---
+            _context.Proposers.RemoveRange(
+                _context.Proposers.Where(p => p.Id_Equipement == entityToUpdate.Id_Equipement));
+
+            await _context.SaveChangesAsync();
+
+            // recréation depuis l’entité mise à jour
+            updatedEntity.Id_Equipement = entityToUpdate.Id_Equipement;
+
+            await HandleAutorisersAsync(updatedEntity);
+            await HandleProposersAsync(updatedEntity);
 
             await _context.SaveChangesAsync();
         }
@@ -334,14 +371,16 @@ namespace USMB_TECH.Models.Repository
                 _context.Posseders.Where(p => p.Id_Equipement == entity.Id_Equipement));
             _context.Consommers.RemoveRange(
                 _context.Consommers.Where(c => c.Id_Equipement == entity.Id_Equipement));
+            _context.Autorisers.RemoveRange(
+                _context.Autorisers.Where(a => a.Id_Equipement == entity.Id_Equipement));
+            _context.Proposers.RemoveRange(
+                _context.Proposers.Where(p => p.Id_Equipement == entity.Id_Equipement));
 
             _context.Equipements.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Equipement>> GetByKeysAsync<TProperty>(
-    Expression<Func<Equipement, TProperty>> propertySelector,
-    TProperty value)
+        public async Task<IEnumerable<Equipement>> GetByKeysAsync<TProperty>(Expression<Func<Equipement, TProperty>> propertySelector, TProperty value)
         {
             return await _context.Equipements
                 .Where(p => EF.Property<TProperty>(p, ((MemberExpression)propertySelector.Body).Member.Name).Equals(value))
@@ -359,6 +398,98 @@ namespace USMB_TECH.Models.Repository
                 .Where(predicate)
                 .ToListAsync();
         }
+        private async Task HandleAutorisersAsync(Equipement entity)
+        {
+            if (entity.Autorisers == null || !entity.Autorisers.Any())
+                return;
 
+            var autorisersFinal = new List<Autoriser>();
+
+            foreach (var autoriser in entity.Autorisers)
+            {
+                Type_Client typeClient = null;
+
+                if (autoriser.Id_Type_Client > 0)
+                {
+                    typeClient = await _context.Type_Clients.FindAsync(autoriser.Id_Type_Client);
+                }
+                else if (autoriser.Type_ClientNavigation != null &&
+                         !string.IsNullOrWhiteSpace(autoriser.Type_ClientNavigation.Nom_Type_Client))
+                {
+                    typeClient = await _context.Type_Clients
+                        .FirstOrDefaultAsync(tc =>
+                            tc.Nom_Type_Client == autoriser.Type_ClientNavigation.Nom_Type_Client);
+
+                    if (typeClient == null)
+                    {
+                        typeClient = new Type_Client
+                        {
+                            Nom_Type_Client = autoriser.Type_ClientNavigation.Nom_Type_Client,
+                            Mult_Tarif_Type_Client = autoriser.Type_ClientNavigation.Mult_Tarif_Type_Client
+                        };
+                        _context.Type_Clients.Add(typeClient);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                if (typeClient != null)
+                {
+                    autorisersFinal.Add(new Autoriser
+                    {
+                        Id_Equipement = entity.Id_Equipement,
+                        Id_Type_Client = typeClient.Id_Type_Client
+                    });
+                }
+            }
+
+            _context.Autorisers.AddRange(autorisersFinal);
+        }
+
+        private async Task HandleProposersAsync(Equipement entity)
+        {
+            if (entity.Proposers == null || !entity.Proposers.Any())
+                return;
+
+            var proposersFinal = new List<Proposer>();
+
+            foreach (var proposer in entity.Proposers)
+            {
+                Type_Utilisation typeUtilisation = null;
+
+                if (proposer.Id_Type_Utilisation > 0)
+                {
+                    typeUtilisation = await _context.Type_Utilisations
+                        .FindAsync(proposer.Id_Type_Utilisation);
+                }
+                else if (proposer.Type_UtilisationNavigation != null &&
+                         !string.IsNullOrWhiteSpace(proposer.Type_UtilisationNavigation.Nom_Type_Utilisation))
+                {
+                    typeUtilisation = await _context.Type_Utilisations
+                        .FirstOrDefaultAsync(tu =>
+                            tu.Nom_Type_Utilisation == proposer.Type_UtilisationNavigation.Nom_Type_Utilisation);
+
+                    if (typeUtilisation == null)
+                    {
+                        typeUtilisation = new Type_Utilisation
+                        {
+                            Nom_Type_Utilisation = proposer.Type_UtilisationNavigation.Nom_Type_Utilisation
+                        };
+                        _context.Type_Utilisations.Add(typeUtilisation);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                if (typeUtilisation != null)
+                {
+                    proposersFinal.Add(new Proposer
+                    {
+                        Id_Equipement = entity.Id_Equipement,
+                        Id_Type_Utilisation = typeUtilisation.Id_Type_Utilisation
+                    });
+                }
+            }
+
+            _context.Proposers.AddRange(proposersFinal);
+        }
     }
 }
