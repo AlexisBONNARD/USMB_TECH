@@ -44,30 +44,46 @@ else
                     </div>
                 </section>
             }
-            <section>
-                <h3>DESCRIPTION</h3>
-                <p data-testid="equipement-description">@equipement.Description_Technique</p>
-            </section>
 
-            <!-- Ajout du modèle 3D avec Blazor3D -->
-            @if (equipement.Url_Modele_3D != null)
+            <!-- Mots Cles -->
+            @if (motsCles != null && motsCles.Any())
             {
-                <section data-testid="equipement-3d">
-                    <h3>Modèle 3D de l'Équipement</h3>
-                    <Affichage3D urlModel="@equipement.Url_Modele_3D" />
+                <section>
+                    <h3>MOTS CLÉS</h3>
+                    <ul class="list-style" data-testid="equipement-keywords">
+                        @foreach (var mot in motsCles)
+                        {
+                            <li data-testid="equipement-keyword-item">@mot.Nom_Mot_Clef</li>
+                        }
+                    </ul>
                 </section>
             }
 
-            <!-- Utilisation -->
-            @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
+            <!-- Type_Client -->
+            @if (type_Clients != null && type_Clients.Any())
             {
-                <section data-testid="equipement-usage">
-                    <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
-                    @foreach (var exemple in equipement.Exemple_Utilisations)
-                    {
-                        <p><strong>@exemple.Nom_Utilisation</strong></p>
-                        <p>@exemple.Description_Utilisation</p>
-                    }
+                <section>
+                    <h3>Type de Clients Autoriser à acheté</h3>
+                    <ul class="list-style" data-testid="equipement-keywords">
+                        @foreach (var typeClient in type_Clients)
+                        {
+                            <li data-testid="equipement-keyword-item">@typeClient.Nom_Type_Client</li>
+                        }
+                    </ul>
+                </section>
+            }
+
+            <!-- Type_Utilisation -->
+            @if (type_Utilisations != null && type_Utilisations.Any())
+            {
+                <section>
+                    <h3>Type d'Utilisation posible</h3>
+                    <ul class="list-style" data-testid="equipement-keywords">
+                        @foreach (var typeUtilisation in type_Utilisations)
+                        {
+                            <li data-testid="equipement-keyword-item">@typeUtilisation.Nom_Type_Utilisation</li>
+                        }
+                    </ul>
                 </section>
             }
 
@@ -88,16 +104,31 @@ else
 
         <!-- ========== COLONNE CENTRALE ========== -->
         <div class="col-center">
-            @if (motsCles != null && motsCles.Any())
+            <!-- DESCRIPTION -->
+            <section>
+                <h3>DESCRIPTION</h3>
+                <p data-testid="equipement-description">@equipement.Description_Technique</p>
+            </section>
+
+            <!-- Modèle 3D avec Blazor3D -->
+            @if (equipement.Url_Modele_3D != null)
             {
-                <section>
-                    <h3>MOTS CLÉS</h3>
-                    <ul class="list-style" data-testid="equipement-keywords">
-                        @foreach (var mot in motsCles)
-                        {
-                            <li data-testid="equipement-keyword-item">@mot.Nom_Mot_Clef</li>
-                        }
-                    </ul>
+                <section data-testid="equipement-3d">
+                    <h3>Modèle 3D de l'Équipement</h3>
+                    <Affichage3D urlModel="@equipement.Url_Modele_3D" />
+                </section>
+            }
+
+            <!-- Utilisation -->
+            @if (equipement.Exemple_Utilisations != null && equipement.Exemple_Utilisations.Any())
+            {
+                <section data-testid="equipement-usage">
+                    <h3>UTILISATION - DOMAINE D’APPLICATION</h3>
+                    @foreach (var exemple in equipement.Exemple_Utilisations)
+                    {
+                        <p><strong>@exemple.Nom_Utilisation</strong></p>
+                        <p>@exemple.Description_Utilisation</p>
+                    }
                 </section>
             }
         </div>
@@ -146,6 +177,8 @@ else
     private string thematique;
     private List<Mot_Clef> motsCles = new();
     private List<Fonctionnalite> fonctionnalites = new();
+    private List<Type_Client> type_Clients = new();
+    private List<Type_Utilisation> type_Utilisations = new();
 
 
     // ----------- ALERTES SUPPRESSION -----------
@@ -155,12 +188,10 @@ else
     {
         equipement = await dataRepository.GetByIdAsync(Id);
         thematique = equipement.Thematiques.Select(t => t.Nom_Thematique).FirstOrDefault();
-        motsCles = equipement.Qualifiers
-            .Select(s => s.Mot_ClefNavigation)
-            .ToList();
-        fonctionnalites = equipement.Posseders.
-            Select(s => s.FonctionnaliteNavigation)
-            .ToList();
+        motsCles = equipement.Qualifiers.Select(s => s.Mot_ClefNavigation).ToList();
+        fonctionnalites = equipement.Posseders.Select(s => s.FonctionnaliteNavigation).ToList();
+        type_Clients = equipement.Autorisers.Select(s => s.Type_ClientNavigation).ToList();
+        type_Utilisations = equipement.Proposers.Select(s => s.Type_UtilisationNavigation).ToList();
     }
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
