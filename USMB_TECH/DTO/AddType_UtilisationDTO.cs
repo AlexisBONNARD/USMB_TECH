@@ -1,8 +1,7 @@
 ﻿namespace USMB_TECH.DTO
 {
-    public class TypeUtilisationDTO
+    public class AddType_UtilisationDTO
     {
-        public int Id_Type_Utilisation { get; set; }
         public string Nom_Type_Utilisation { get; set; }
     }
 }

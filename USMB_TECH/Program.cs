@@ -29,6 +29,9 @@ builder.Services.AddScoped<IMainRepository<Fonction, int>, FonctionManager>();
 builder.Services.AddScoped<IMainRepository<Fonctionnalite, int>, FonctionnaliteManager>();
 builder.Services.AddScoped<IMainRepository<Type_Prestation, int>, Type_PrestationManager>();
 builder.Services.AddScoped<IMainRepository<Unite_Oeuvre, int>, Unite_OeuvreManager>();
+builder.Services.AddScoped<IMainRepository<Type_Utilisation, int>, Type_UtilisationManager>();
+//builder.Services.AddScoped<IMainRepository<Type_Client, int>, Type_ClientManager>();
+
 
 builder.Services.AddScoped<EquipementManager>();
 builder.Services.AddScoped<LaboratoireManager>();
@@ -40,9 +43,7 @@ builder.Services.AddScoped<MarqueManager>();
 builder.Services.AddScoped<MotClefManager>();
 builder.Services.AddScoped<FonctionnaliteManager>();
 builder.Services.AddScoped<Domaine_ExcellenceManager>();
-builder.Services.AddScoped<AutoriserManager>();
-builder.Services.AddScoped<ProposerManager>();
-builder.Services.AddScoped<TypeUtilisationManager>();
+builder.Services.AddScoped<Type_ClientManager>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

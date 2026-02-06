@@ -930,49 +930,17 @@ public partial class UsmbTechDbContext : DbContext
                 .HasConstraintName("fk_unite_oeuvre_prestation");
         });
 
-        modelBuilder.Entity<Autoriser>(e =>
-        {
-            e.HasKey(e => new { e.Id_Equipement, e.Id_Type_Client })
-             .HasName("pk_autoriser");
+        modelBuilder.Entity<Autoriser>()
+        .HasKey(a => new { a.Id_Equipement, a.Id_Type_Client });
 
-            e.HasOne(d => d.EquipementNavigation)
-                .WithMany(p => p.Autorisers)
-                .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_autoriser_equipement");
-
-            e.HasOne(d => d.Type_ClientNavigation)
-                .WithMany(p => p.Autorisers)
-                .HasForeignKey(d => d.Id_Type_Client)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_autoriser_type_client");
-        });
-
-        modelBuilder.Entity<Proposer>(e =>
-        {
-            e.HasKey(e => new { e.Id_Equipement, e.Id_Type_Utilisation })
-             .HasName("pk_proposer");
-
-            e.HasOne(d => d.EquipementNavigation)
-                .WithMany(p => p.Proposers)
-                .HasForeignKey(d => d.Id_Equipement)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_proposer_equipement");
-
-            e.HasOne(d => d.Type_UtilisationNavigation)
-                .WithMany(p => p.Proposers)
-                .HasForeignKey(d => d.Id_Type_Utilisation)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_proposer_type_utilisation");
-        });
+        modelBuilder.Entity<Proposer>()
+            .HasKey(p => new { p.Id_Equipement, p.Id_Type_Utilisation });
 
         modelBuilder.Entity<Type_Utilisation>(e =>
         {
-            e.HasKey(e => e.Id_Type_Utilisation)
-             .HasName("pk_type_utilisation");
+            e.HasKey(e => e.Id_Type_Utilisation).HasName("pk_type_utilisation");
 
-            e.Property(e => e.Id_Type_Utilisation)
-             .ValueGeneratedOnAdd();
+            e.Property(e => e.Id_Type_Utilisation).ValueGeneratedOnAdd();
 
             e.HasMany(d => d.Proposers)
                 .WithOne(p => p.Type_UtilisationNavigation)
