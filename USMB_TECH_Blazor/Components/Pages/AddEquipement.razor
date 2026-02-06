@@ -5,7 +5,10 @@
 @inject Service.IMainService<Marque,int> marqueService
 @inject Service.IMainService<Mot_Clef,int> motService
 @inject Service.IMainService<Fonctionnalite,int> fonctionnaliteService
+@inject Service.IMainService<Type_Client,int> typeClientService
+@inject Service.IMainService<Type_Utilisation,int> typeUtilisationService
 @inject NavigationManager Navigation
+@inject AdminState AdminState
 @inject HttpClient Http
 @inject IJSRuntime JS
 
@@ -124,6 +127,12 @@
         <hr />
         <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" multiple />
+        @if (!string.IsNullOrEmpty(fileErrorMessage))
+        {
+            <div class="alert alert-warning mt-2">
+                @fileErrorMessage
+            </div>
+        }
         @if (addEquipement.Photos != null && addEquipement.Photos.Any())
         {
             <div class="uploaded-photos">
@@ -300,6 +309,41 @@
             <ValidationMessage For="@(() => addEquipement.Description_Exemple)" />
         </div>
 
+        @* Type Client *@
+        <hr />
+        <h4 class="add_style">Types de clients autorisés</h4>
+
+        @foreach (var tc in typeClients)
+        {
+            <div class="form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       checked="@selectedTypeClients.Contains(tc.Id_Type_Client)"
+                       @onchange="e => ToggleTypeClient(tc.Id_Type_Client, (bool)e.Value)" />
+
+                <label class="form-check-label">
+                    @tc.Nom_Type_Client
+                </label>
+            </div>
+        }
+        
+        @* Type Utilisateur *@
+        <hr />
+        <h4 class="add_style">Types d’utilisation proposés</h4>
+
+        @foreach (var tu in typeUtilisations)
+        {
+            <div class="form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       checked="@selectedTypeUtilisations.Contains(tu.Id_Type_Utilisation)"
+                       @onchange="e => ToggleTypeUtilisation(tu.Id_Type_Utilisation, (bool)e.Value)" />
+
+                <label class="form-check-label">
+                    @tu.Nom_Type_Utilisation
+                </label>
+            </div>
+        }
 
         <hr />
         <button type="submit" class="btn btn-success mt-3">Ajouter</button>
@@ -314,6 +358,7 @@
 </div>
 
 @code {
+    private EquipementRelationService _equipementRelationService;
     private Equipement addEquipement = new()
     {
         Fonctionnalites = new List<Fonctionnalite>(),
@@ -335,7 +380,53 @@
     private bool isLoading = false;
     bool isSubmitted = false;
     string message = "";
+    private const long MaxFileSize = 10_000_000; // 10 Mo
+    private string fileErrorMessage;
     Fonctionnalite fonctionnaliteSelectionnee;
+    List<Type_Client> typeClients = new();
+    List<int> selectedTypeClients = new();
+    List<Type_Utilisation> typeUtilisations = new();
+    List<int> selectedTypeUtilisations = new();
+    void ToggleTypeClient(int id, bool isChecked)
+    {
+        if (isChecked)
+            selectedTypeClients.Add(id);
+        else
+            selectedTypeClients.Remove(id);
+    }
+    void ToggleTypeUtilisation(int id, bool isChecked)
+    {
+        if (isChecked)
+            selectedTypeUtilisations.Add(id);
+        else
+            selectedTypeUtilisations.Remove(id);
+    }
+
+    public class EquipementRelationService
+    {
+        private readonly HttpClient _http;
+
+        public EquipementRelationService(HttpClient http)
+        {
+            _http = http;
+        }
+
+        public Task LierTypeClients(int equipementId, List<int> ids)
+        {
+            return _http.PostAsJsonAsync(
+                $"api/equipements/{equipementId}/type-clients",
+                ids
+            );
+        }
+
+        public Task LierTypeUtilisations(int equipementId, List<int> ids)
+        {
+            return _http.PostAsJsonAsync(
+                $"api/equipements/{equipementId}/type-utilisations",
+                ids
+            );
+        }
+    }
 
 
     private string _lastPole_Expertise;
@@ -380,12 +471,17 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _equipementRelationService = new EquipementRelationService(Http);
+
         pole_expertises = (await pole_expertiseDatas.GetAllAsync()).ToList();
         type_Equipements = (await typeEquipementDatas.GetAllAsync()).ToList();
         marques = (await marqueService.GetAllAsync()).ToList();
         existingMot = (await motService.GetAllAsync()).ToList();
         existingFonctionnalite = (await fonctionnaliteService.GetAllAsync()).ToList();
+        typeClients = (await typeClientService.GetAllAsync()).ToList();
+        typeUtilisations = (await typeUtilisationService.GetAllAsync()).ToList();
     }
+
     void AddCaracteristique()
     {
         // Fonctionnalité existante
@@ -484,20 +580,38 @@
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
-        var files = e.GetMultipleFiles(); // Récupère tous les fichiers sélectionnés
+        fileErrorMessage = null;
+
+        var files = e.GetMultipleFiles();
 
         foreach (var file in files)
         {
+            // BLOQUANT AVANT OpenReadStream
+            if (file.Size > MaxFileSize)
+            {
+                fileErrorMessage =
+                    $"Le fichier « {file.Name} » fait {(file.Size / 1024f / 1024f):0.00} Mo. " + "La taille maximale autorisée est de 10 Mo.";
+                continue;
+            }
+
             using var content = new MultipartFormDataContent();
-            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            using var stream = file.OpenReadStream(MaxFileSize);
+
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("http://localhost:7093/api/equipements/upload", content);
+            var response = await Http.PostAsync(
+                "http://localhost:7093/api/equipements/upload",
+                content
+            );
 
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<UploadResponse>();
+
                 addEquipement.Photos.Add(new Photo
                 {
                     Nom_Photo = file.Name,
@@ -551,19 +665,34 @@
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Erreur lors de l'ajout de l'équipement ❌");
+                throw new Exception("Erreur lors de l'ajout de l'équipement");
             }
 
-            var createdeqipement = await response.Content.ReadFromJsonAsync<Equipement>();
+            var createdEquipement = await response.Content.ReadFromJsonAsync<Equipement>();
 
-            addEquipement = createdeqipement;
+            var equipementId = createdEquipement.Id_Equipement;
+
+            // Types clients
+            if (selectedTypeClients.Any())
+            {
+                await _equipementRelationService.LierTypeClients(equipementId, selectedTypeClients);
+            }
+
+            // Types d’utilisation
+            if (selectedTypeUtilisations.Any())
+            {
+
+                await _equipementRelationService.LierTypeUtilisations(equipementId, selectedTypeUtilisations);
+            }
+
+            addEquipement = createdEquipement;
             isSubmitted = true;
-            await ShowAlert("Équipement ajouté avec succès ✅");
+            await ShowAlert("Équipement ajouté avec succès");
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            await ShowAlert("Il y a eu une erreur lors de l'ajout de l'équipement ❌");
+            await ShowAlert("Il y a eu une erreur lors de l'ajout de l'équipement");
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
         finally

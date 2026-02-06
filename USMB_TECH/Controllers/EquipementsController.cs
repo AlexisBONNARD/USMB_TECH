@@ -117,5 +117,58 @@ namespace USMB_TECH.Controllers
             return Ok(new { url = $"/uploads/{file.FileName}" });
         }
 
+
+        [HttpPost("{id}/type-clients")]
+        public async Task<IActionResult> SetTypeClients(int id, [FromBody] List<int> typeClientIds)
+        {
+            var equipement = await _dataRepository.GetByIdAsync(id);
+
+            if (equipement == null)
+                return NotFound($"Équipement {id} introuvable");
+
+            equipement.Autorisers ??= new List<Autoriser>();
+
+            equipement.Autorisers.Clear();
+
+            foreach (var typeClientId in typeClientIds)
+            {
+                equipement.Autorisers.Add(new Autoriser
+                {
+                    Id_Equipement = id,
+                    Id_Type_Client = typeClientId
+                });
+            }
+
+            await _dataRepository.UpdateAsync(equipement, equipement);
+
+            return NoContent();
+        }
+
+        [HttpPost("{id}/type-utilisations")]
+        public async Task<IActionResult> SetTypeUtilisations(int id, [FromBody] List<int> typeUtilisationIds)
+        {
+            var equipement = await _dataRepository.GetByIdAsync(id);
+
+            if (equipement == null)
+                return NotFound($"Équipement {id} introuvable");
+
+            equipement.Proposers ??= new List<Proposer>();
+
+            equipement.Proposers.Clear();
+
+            foreach (var typeUtilisationId in typeUtilisationIds)
+            {
+                equipement.Proposers.Add(new Proposer
+                {
+                    Id_Equipement = id,
+                    Id_Type_Utilisation = typeUtilisationId
+                });
+            }
+
+            await _dataRepository.UpdateAsync(equipement, equipement);
+
+            return NoContent();
+        }
+
     }
 }

@@ -17,27 +17,27 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped<AdminState>();
 
-builder.Services.AddScoped<IMainService<Equipement, int>>(eq => new WebService<Equipement, int>("Equipements"));
-builder.Services.AddScoped<IMainService<Laboratoire, string>>(eq => new WebService<Laboratoire, string>("Laboratoires"));
-builder.Services.AddScoped<IMainService<LaboratoireUpdate, string>>(eq => new WebService<LaboratoireUpdate, string>("Laboratoires"));
-builder.Services.AddScoped<IMainService<Pole_Expertise, int>>(eq => new WebService<Pole_Expertise, int>("Pole_Expertises"));
-builder.Services.AddScoped<IMainService<Prise_Contact, int>>(eq => new WebService<Prise_Contact, int>("Prise_Contacts"));
-builder.Services.AddScoped<IMainService<Prestation, int>>(eq => new WebService<Prestation, int>("Prestations"));
-builder.Services.AddScoped<IMainService<PrestationUpdateModel, int>>(eq => new WebService<PrestationUpdateModel, int>("Prestations"));
-builder.Services.AddScoped<IMainService<Thematique, int>>(eq => new WebService<Thematique, int>("Thematique"));
-builder.Services.AddScoped<IMainService<Type_Equipement, int>>(eq => new WebService<Type_Equipement, int>("Type_Equipements"));
-builder.Services.AddScoped<IMainService<Type_Prestation, int>>(eq => new WebService<Type_Prestation, int>("Type_Prestations"));
-builder.Services.AddScoped<IMainService<Type_Client, int>>(eq => new WebService<Type_Client, int>("Type_Clients"));
-builder.Services.AddScoped<IMainService<Type_Utilisation, int>>(eq => new WebService<Type_Utilisation, int>("Type_Utilisations"));
-builder.Services.AddScoped<IMainService<Marque, int>>(eq => new WebService<Marque, int>("Marques"));
-builder.Services.AddScoped<IMainService<Domaine_Excellence, int>>(eq => new WebService<Domaine_Excellence, int>("Domaine_Excellences"));
-builder.Services.AddScoped<IMainService<Mot_Clef, int>>(eq => new WebService<Mot_Clef, int>("Mot_Clefs"));
-builder.Services.AddScoped<IMainService<Contact_USMB, string>>(eq => new WebService<Contact_USMB, string>("Contact_USMB"));
-builder.Services.AddScoped<IMainService<Fonction, int>>(eq => new WebService<Fonction, int>("Fonction"));
-builder.Services.AddScoped<IMainService<Contact_USMB, int>>(eq => new WebService<Contact_USMB, int>("Contact_USMB"));
-builder.Services.AddScoped<IMainService<Contact_USMBUpdateModel, int>>(eq => new WebService<Contact_USMBUpdateModel, int>("Contact_USMB"));
-builder.Services.AddScoped<IMainService<Unite_Oeuvre,int>>(eq => new WebService<Unite_Oeuvre, int>("Unite_Oeuvres"));
-builder.Services.AddScoped<IMainService<Fonctionnalite, int>>(eq => new WebService<Fonctionnalite, int>("Fonctionnalites"));
+builder.Services.AddScoped<IMainService<Equipement, int>>(sp => new WebService<Equipement, int>(sp.GetRequiredService<HttpClient>(), "Equipements"));
+builder.Services.AddScoped<IMainService<Laboratoire, string>>(sp => new WebService<Laboratoire, string>(sp.GetRequiredService<HttpClient>(), "Laboratoires"));
+builder.Services.AddScoped<IMainService<LaboratoireUpdate, string>>(sp => new WebService<LaboratoireUpdate, string>(sp.GetRequiredService<HttpClient>(), "Laboratoires"));
+builder.Services.AddScoped<IMainService<Pole_Expertise, int>>(sp => new WebService<Pole_Expertise, int>(sp.GetRequiredService<HttpClient>(), "Pole_Expertises"));
+builder.Services.AddScoped<IMainService<Prise_Contact, int>>(sp => new WebService<Prise_Contact, int>(sp.GetRequiredService<HttpClient>(), "Prise_Contacts"));
+builder.Services.AddScoped<IMainService<Prestation, int>>(sp => new WebService<Prestation, int>(sp.GetRequiredService<HttpClient>(), "Prestations"));
+builder.Services.AddScoped<IMainService<PrestationUpdateModel, int>>(sp => new WebService<PrestationUpdateModel, int>(sp.GetRequiredService<HttpClient>(), "Prestations"));
+builder.Services.AddScoped<IMainService<Thematique, int>>(sp => new WebService<Thematique, int>(sp.GetRequiredService<HttpClient>(), "thematique"));
+builder.Services.AddScoped<IMainService<Type_Equipement, int>>(sp => new WebService<Type_Equipement, int>(sp.GetRequiredService<HttpClient>(), "Type_Equipements"));
+builder.Services.AddScoped<IMainService<Type_Prestation, int>>(sp => new WebService<Type_Prestation, int>(sp.GetRequiredService<HttpClient>(), "Type_Prestations"));
+builder.Services.AddScoped<IMainService<Type_Client, int>>(sp => new WebService<Type_Client, int>(sp.GetRequiredService<HttpClient>(), "type_client"));
+builder.Services.AddScoped<IMainService<Type_Utilisation, int>>(sp => new WebService<Type_Utilisation, int>(sp.GetRequiredService<HttpClient>(), "type_utilisation"));
+builder.Services.AddScoped<IMainService<Marque, int>>(sp => new WebService<Marque, int>(sp.GetRequiredService<HttpClient>(), "Marques"));
+builder.Services.AddScoped<IMainService<Domaine_Excellence, int>>(sp => new WebService<Domaine_Excellence, int>(sp.GetRequiredService<HttpClient>(), "Domaine_Excellences"));
+builder.Services.AddScoped<IMainService<Mot_Clef, int>>(sp => new WebService<Mot_Clef, int>(sp.GetRequiredService<HttpClient>(), "Mot_Clefs"));
+builder.Services.AddScoped<IMainService<Contact_USMB, string>>(sp => new WebService<Contact_USMB, string>(sp.GetRequiredService<HttpClient>(), "Contact_USMB"));
+builder.Services.AddScoped<IMainService<Fonction, int>>(sp => new WebService<Fonction, int>(sp.GetRequiredService<HttpClient>(), "Fonction"));
+builder.Services.AddScoped<IMainService<Contact_USMB, int>>(sp => new WebService<Contact_USMB, int>(sp.GetRequiredService<HttpClient>(), "Contact_USMB"));
+builder.Services.AddScoped<IMainService<Contact_USMBUpdateModel, int>>(sp => new WebService<Contact_USMBUpdateModel, int>(sp.GetRequiredService<HttpClient>(), "Contact_USMB"));
+builder.Services.AddScoped<IMainService<Unite_Oeuvre, int>>(sp => new WebService<Unite_Oeuvre, int>(sp.GetRequiredService<HttpClient>(), "Unite_Oeuvres"));
+builder.Services.AddScoped<IMainService<Fonctionnalite, int>>(sp => new WebService<Fonctionnalite, int>(sp.GetRequiredService<HttpClient>(), "Fonctionnalites"));
 
 builder.Services.AddScoped<SearchService>();
 await builder.Build().RunAsync();
