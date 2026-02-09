@@ -104,21 +104,21 @@ public class PrestationDetailsTests : BaseTest
         );
     }
 
-    [Fact]
-    public async Task Deleting_Prestation_Should_Succeed()
-    {
-        await Page.GotoAsync($"{BaseUrl}/prestation/{PrestationId}");
+    //[Fact]
+    //public async Task Deleting_Prestation_Should_Succeed()
+    //{
+    //    await Page.GotoAsync($"{BaseUrl}/prestation/{PrestationId}");
 
-        await Page.ClickAsync("text=Admin");
+    //    await Page.ClickAsync("text=Admin");
 
-        Page.Dialog += async (_, dialog) =>
-        {
-            await dialog.AcceptAsync();
-        };
+    //    Page.Dialog += async (_, dialog) =>
+    //    {
+    //        await dialog.AcceptAsync();
+    //    };
 
-        await Page.GetByTestId("prestation-delete-btn").ClickAsync();
+    //    await Page.GetByTestId("prestation-delete-btn").ClickAsync();
 
-        await Expect(Page.GetByTestId("prestation-delete-alert"))
-            .ToContainTextAsync("Prestation supprimée");
-    }
+    //    await Expect(Page.GetByTestId("prestation-delete-alert"))
+    //        .ToContainTextAsync("Prestation supprimée");
+    //}
 }

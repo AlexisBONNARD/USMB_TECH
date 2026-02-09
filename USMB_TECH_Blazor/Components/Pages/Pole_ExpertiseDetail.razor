@@ -103,18 +103,6 @@ else
 
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
-            <div class="info-block">
-                <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue" data-testid="pole-domaine-btn" @onclick="@(() => GoToDomaine(pole_expertise.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
-                    @pole_expertise?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
-                </div>
-            </div>
-
-            @*   <div class="info-block">
-                <h4>Localisation :</h4>
-                <div class="btn-blue">Le Bourget du Lac</div>
-            </div> *@
-
             <FormulaireContact />
         </div>
 

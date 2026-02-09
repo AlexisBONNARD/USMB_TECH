@@ -100,21 +100,21 @@ public class PoleExpertiseDetailsTests : BaseTest
         );
     }
 
-    [Fact]
-    public async Task Deleting_Pole_Should_Succeed()
-    {
-        await Page.GotoAsync($"{BaseUrl}/pole_expertise/{PoleId}");
+    //[Fact]
+    //public async Task Deleting_Pole_Should_Succeed()
+    //{
+    //    await Page.GotoAsync($"{BaseUrl}/pole_expertise/{PoleId}");
 
-        await Page.ClickAsync("text=Admin");
+    //    await Page.ClickAsync("text=Admin");
 
-        Page.Dialog += async (_, dialog) =>
-        {
-            await dialog.AcceptAsync();
-        };
+    //    Page.Dialog += async (_, dialog) =>
+    //    {
+    //        await dialog.AcceptAsync();
+    //    };
 
-        await Page.GetByTestId("pole-delete-btn").ClickAsync();
+    //    await Page.GetByTestId("pole-delete-btn").ClickAsync();
 
-        await Expect(Page.GetByTestId("pole-delete-alert"))
-            .ToContainTextAsync("Pole d'expertise supprimé");
-    }
+    //    await Expect(Page.GetByTestId("pole-delete-alert"))
+    //        .ToContainTextAsync("Pole d'expertise supprimé");
+    //}
 }

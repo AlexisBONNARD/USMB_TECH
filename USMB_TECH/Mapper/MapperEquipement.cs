@@ -133,6 +133,10 @@ namespace USMB_TECH.Mapper
                         .Select(t => t.ThematiqueNavigation.Nom_Thematique)
                             .Distinct()
                             .ToList(): new List<string>()));
+            CreateMap<Type_UtilisationDTO, Type_Utilisation>().ReverseMap();
+            CreateMap<Type_ClientDTO, Type_Client>().ReverseMap();
+            CreateMap<AddType_UtilisationDTO, Type_Utilisation>();
+            CreateMap<AddType_ClientDTO, Type_Client>();
         }
     }
 }

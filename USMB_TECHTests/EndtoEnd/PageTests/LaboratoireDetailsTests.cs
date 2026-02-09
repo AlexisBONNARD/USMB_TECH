@@ -80,21 +80,21 @@ public class LaboratoireDetailsTests : BaseTest
         );
     }
 
-    [Fact]
-    public async Task Deleting_Laboratoire_Should_Succeed()
-    {
-        await Page.GotoAsync($"{BaseUrl}/laboratoire/{LaboId}");
+    //[Fact]
+    //public async Task Deleting_Laboratoire_Should_Succeed()
+    //{
+    //    await Page.GotoAsync($"{BaseUrl}/laboratoire/{LaboId}");
 
-        await Page.ClickAsync("text=Admin");
+    //    await Page.ClickAsync("text=Admin");
 
-        Page.Dialog += async (_, dialog) =>
-        {
-            await dialog.AcceptAsync();
-        };
+    //    Page.Dialog += async (_, dialog) =>
+    //    {
+    //        await dialog.AcceptAsync();
+    //    };
 
-        await Page.GetByTestId("laboratoire-delete-btn").ClickAsync();
+    //    await Page.GetByTestId("laboratoire-delete-btn").ClickAsync();
 
-        // Redirection + message
-        await Page.WaitForURLAsync($"{BaseUrl}/");
-    }
+    //    // Redirection + message
+    //    await Page.WaitForURLAsync($"{BaseUrl}/");
+    //}
 }

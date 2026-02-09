@@ -35,6 +35,12 @@
         <hr />
         <h4 class="add_style">Photos</h4>
         <InputFile OnChange="HandleFileUpload" multiple />
+        @if (!string.IsNullOrEmpty(fileErrorMessage))
+        {
+            <div class="alert alert-warning mt-2">
+                @fileErrorMessage
+            </div>
+        }
         @if (domaineExcellence.Photos != null && domaineExcellence.Photos.Any())
         {
             <div class="uploaded-photos">
@@ -71,6 +77,8 @@
     private string message = "";
     [Parameter] public EventCallback<Domaine_Excellence> OnDomaineExcellenceAdded { get; set; }
     [Parameter] public bool EnableRedirect { get; set; } = true;
+    private const long MaxFileSize = 10_000_000; // 10 Mo
+    private string fileErrorMessage;
 
     private async Task HandleValidSubmit()
     {
@@ -94,12 +102,12 @@
 
             domaineExcellence = createdDomaine;
             isSubmitted = true;
-            ShowAlert("Domaine d'excellence ajouté avec succès ✅");
+            ShowAlert("Domaine d'excellence ajouté avec succès");
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            ShowAlert("Erreur lors de l'ajout du domaine d'excellence ❌");
+            ShowAlert("Erreur lors de l'ajout du domaine d'excellence");
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
         finally
@@ -125,12 +133,22 @@
     }
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
+        fileErrorMessage = null;
         var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
+            if (file.Size > MaxFileSize)
+            {
+                fileErrorMessage =
+                    $"Le fichier « {file.Name} » fait {(file.Size / 1024f / 1024f):0.00} Mo. " + "La taille maximale autorisée est de 10 Mo.";
+                continue;
+            }
             using var content = new MultipartFormDataContent();
-            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            using var stream = file.OpenReadStream(MaxFileSize);
+
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
 
             content.Add(fileContent, "file", file.Name);
 

@@ -17,10 +17,11 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EquipementsController(IMainRepository<Equipement, int> dataRepository, IMapper mapper) : ControllerBase
+    public class EquipementsController(IMainRepository<Equipement, int> dataRepository, IMapper mapper, EquipementManager equipementManager) : ControllerBase
     {
         private readonly IMainRepository<Equipement, int> _dataRepository = dataRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly EquipementManager _equipementManager = equipementManager;
 
         // GET: api/Equipements
         [HttpGet]
@@ -95,6 +96,7 @@ namespace USMB_TECH.Controllers
             await _dataRepository.DeleteAsync(equipement);
             return NoContent();
         }
+
         // POST: api/Equipements
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
@@ -117,5 +119,24 @@ namespace USMB_TECH.Controllers
             return Ok(new { url = $"/uploads/{file.FileName}" });
         }
 
+        [HttpPost("{id}/type-clients")]
+        public async Task<IActionResult> SetTypeClients(int id, [FromBody] List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+                return BadRequest("Liste vide");
+
+            await _equipementManager.SetTypeClientsAsync(id, ids);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/type-utilisations")]
+        public async Task<IActionResult> SetTypeUtilisations(int id, [FromBody] List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+                return BadRequest("Liste vide");
+
+            await _equipementManager.SetTypeUtilisationsAsync(id, ids);
+            return NoContent();
+        }
     }
 }

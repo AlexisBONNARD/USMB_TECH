@@ -102,5 +102,11 @@ namespace USMB_TECH.Models
 
         [InverseProperty(nameof(Exposer.EquipementNavigation))]
         public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();
+
+        [InverseProperty(nameof(Proposer.EquipementNavigation))]
+        public virtual ICollection<Proposer> Proposers { get; set; } = new List<Proposer>();
+
+        [InverseProperty(nameof(Autoriser.EquipementNavigation))]
+        public virtual ICollection<Autoriser> Autorisers { get; set; } = new List<Autoriser>();
     }
 }

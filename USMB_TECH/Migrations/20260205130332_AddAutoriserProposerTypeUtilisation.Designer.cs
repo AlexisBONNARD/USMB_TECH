@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using USMB_TECH.Models.EntityFramework;
@@ -11,9 +12,11 @@ using USMB_TECH.Models.EntityFramework;
 namespace USMB_TECH.Migrations
 {
     [DbContext(typeof(UsmbTechDbContext))]
-    partial class UsmbTechDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260205130332_AddAutoriserProposerTypeUtilisation")]
+    partial class AddAutoriserProposerTypeUtilisation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,7 +100,8 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_type_client");
 
-                    b.HasKey("Id_Equipement", "Id_Type_Client");
+                    b.HasKey("Id_Equipement", "Id_Type_Client")
+                        .HasName("pk_autoriser");
 
                     b.HasIndex("Id_Type_Client");
 
@@ -936,7 +940,8 @@ namespace USMB_TECH.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_type_utilisation");
 
-                    b.HasKey("Id_Equipement", "Id_Type_Utilisation");
+                    b.HasKey("Id_Equipement", "Id_Type_Utilisation")
+                        .HasName("pk_proposer");
 
                     b.HasIndex("Id_Type_Utilisation");
 
@@ -1185,13 +1190,15 @@ namespace USMB_TECH.Migrations
                         .WithMany("Autorisers")
                         .HasForeignKey("Id_Equipement")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_autoriser_equipement");
 
                     b.HasOne("USMB_TECH.Models.Type_Client", "Type_ClientNavigation")
                         .WithMany("Autorisers")
                         .HasForeignKey("Id_Type_Client")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_autoriser_type_client");
 
                     b.Navigation("EquipementNavigation");
 
@@ -1646,7 +1653,8 @@ namespace USMB_TECH.Migrations
                         .WithMany("Proposers")
                         .HasForeignKey("Id_Equipement")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_proposer_equipement");
 
                     b.HasOne("USMB_TECH.Models.Type_Utilisation", "Type_UtilisationNavigation")
                         .WithMany("Proposers")
