@@ -157,6 +157,9 @@ if (isset($_POST['login']) && isset($_POST['password']))
         // si c'est un administrateur qui se connecte, on efface les données anciennes du journal
         nettoieLogConnexion($nbMaxJoursLogConnexion);
 		nettoieLogEmail($nbMaxJoursLogEmail);
+		// Synchronisation automatique des équipements pour tous les utilisateurs
+		include_once __DIR__ . "/../../sync_equipements.php"; 
+
 		if (isset($_POST['url']))
 		{
 			$url=rawurldecode($_POST['url']);
