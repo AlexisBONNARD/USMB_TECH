@@ -136,24 +136,9 @@ else
         <!-- ========== COLONNE DROITE ========== -->
         <div class="col-right">
             <div class="info-block">
-                <h4>Domaine d'excellence :</h4>
-                <div class="btn-blue" data-testid="equipement-domaine-btn" @onclick="@(() => RetourDomaineExcellence(equipement.Pole_ExpertiseNavigation.Domaine_ExcellenceNavigation.Id_Domaine_Excellence))">
-                    @equipement.Pole_ExpertiseNavigation?.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence
-                </div>
-            </div>
-
-            @*   <div class="info-block">
                 <h4>Localisation :</h4>
-                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)'</div>
-            </div> *@
-
-            <div class="info-block">
-                <h4>Pôle d'expertise :</h4>
-                <div class="btn-blue" data-testid="equipement-pole-btn" @onclick="@(() => RetourListe(equipement.Id_Pole_Expertise))">
-                    @equipement.Pole_ExpertiseNavigation?.Nom_Pole_Expertise
-                </div>
-            </div>
-
+                <div class="btn-blue">Le Bourget du Lac</div>
+            </div> 
             <FormulaireContact />
         </div>
     </div>

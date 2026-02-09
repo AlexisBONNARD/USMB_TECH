@@ -2,6 +2,8 @@
 @inject IMainService<Equipement,int> EquipementService
 @inject IMainService<Laboratoire, string> LaboratoireService
 @inject IMainService<Prise_Contact,int> Prise_ContactService
+@inject IMainService<Type_Client,int> Type_ClientService
+@inject IMainService<Type_Utilisation,int> Type_UtilisationService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -17,23 +19,20 @@
             <div class="row">
                 <InputText class="input half" data-testid="contact-nom" @bind-Value="prise_contact.Nom_Contact" placeholder="Nom *" />
                 <InputText class="input half" data-testid="contact-prenom" @bind-Value="prise_contact.Prenom_Contact" placeholder="Prénom *" />
+                <InputText class="input half" data-testid="contact-email" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
                 <ValidationMessage For="@(() => prise_contact.Nom_Contact)" />
                 <ValidationMessage For="@(() => prise_contact.Prenom_Contact)" />
+                <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
             </div>
-
-            <InputText class="input" data-testid="contact-email" @bind-Value="prise_contact.Email_Contact" placeholder="Email *" />
-            <ValidationMessage For="@(() => prise_contact.Email_Contact)" />
 
             <div class="row">
                 <label>Type d’entité :</label>
                 <InputSelect class="input" data-testid="contact-entreprise" @bind-Value="prise_contact.Entreprise_Contact">
                     <option value="Aucun">Je ne sais pas</option>
-                    <option value="Entreprise">Une Entreprise</option>
-                    <option value="Colectivité">Une Colectivité</option>
-                    <option value="Asotiation">Une Asotiation</option>
-                    <option value="Académique">Académique</option>
-                    <option value="USMB">L'USMB</option>
-                    <option value="UNITA">UNITA</option>
+                    @foreach (var tc in type_clients)
+                    {
+                        <option value="@tc.Nom_Type_Client">@tc.Nom_Type_Client</option>
+                    }
                 </InputSelect>
             </div>
 
@@ -41,9 +40,10 @@
                 <label>Type de besoin :</label>
                 <InputSelect class="input" @bind-Value="typeBesoinSelectionne">
                     <option value="Aucun">Je ne sais pas</option>
-                    <option value="Prestation">Prestation</option>
-                    <option value="Formation">Formation</option>
-                    <option value="Location">Location</option>
+                    @foreach (var tu in type_utilisations)
+                    {
+                        <option value="@tu.Nom_Type_Utilisation">@tu.Nom_Type_Utilisation</option>
+                    }
                 </InputSelect>
             </div>
             <InputTextArea class="input textarea"
@@ -128,20 +128,20 @@
         Formation,
         Location
     }
-
     private string? message;
     private bool isSuccess = false;
     private bool isMultipleErrors = false;
     private TypeCible typeSelectionne = TypeCible.Aucun;
-
     private Prise_Contact prise_contact = new()
     {
         Id_Type_Client = 1
     };
-
     private List<Pole_Expertise> pole_expertises = new();
     private List<Equipement> equipements = new();
+    private Equipement equipement = new();
     private List<Laboratoire> laboratoires = new();
+    private List<Type_Client> type_clients = new();
+    private List<Type_Utilisation> type_utilisations = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -155,6 +155,21 @@
             .Where(x => x != null).ToList()!;
 
         AutoFillFromUrl();
+
+        type_clients = (await Type_ClientService.GetAllAsync()).Where(x => x != null).ToList()!;
+
+        if (prise_contact.Id_Equipement != null)
+        {
+            equipement = await EquipementService.GetByIdAsync(prise_contact.Id_Equipement.Value);
+
+            // type_clients = equipement.Autorisers.Select(a => a.Type_ClientNavigation).Where(tc => tc != null).Distinct().ToList();
+
+            type_utilisations = equipement.Proposers.Select(p => p.Type_UtilisationNavigation).Where(tu => tu != null).Distinct().ToList();
+        }
+        else
+        {
+            type_utilisations = (await Type_UtilisationService.GetAllAsync()).Where(x => x != null).ToList()!;
+        }
     }
 
     private void AutoFillFromUrl()
@@ -188,6 +203,7 @@
             }
         }
     }
+
     private void NormaliserAvantEnvoi()
     {
         if (typeSelectionne != TypeCible.Equipement)
@@ -199,6 +215,7 @@
         if (typeSelectionne != TypeCible.Laboratoire)
             prise_contact.Nom_Court = null;
     }
+
     private bool ValiderCible()
     {
         return
@@ -239,7 +256,6 @@
         }
     }
 
-
     private async Task ShowAlert(string msg, bool success)
     {
         message = msg;
@@ -267,5 +283,4 @@
 
         return $"{typeBesoinSelectionne} : {precisionBesoin.Trim()}";
     }
-
 }
