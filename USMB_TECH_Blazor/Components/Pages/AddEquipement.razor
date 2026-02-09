@@ -578,12 +578,9 @@
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
         fileErrorMessage = null;
-
         var files = e.GetMultipleFiles();
-
         foreach (var file in files)
         {
-            // BLOQUANT AVANT OpenReadStream
             if (file.Size > MaxFileSize)
             {
                 fileErrorMessage =
