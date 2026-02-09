@@ -87,13 +87,6 @@
                 <div>
                     <label>
                         Description :
-                        @* <span class="info-tooltip">
-                            ⓘ
-                            <span class="tooltip-text">
-                                Dans cette section, vous pouvez décrire votre exemple afin d'aider
-                                l'utilisateur à avoir une idée de l'utilisation de la plateforme.
-                            </span>
-                        </span> *@
                     </label>
                     <input class="form-control mb-1"
                            @bind="newCaracteristiqueDesc"
@@ -189,7 +182,6 @@
             }
         }
 
-
         <hr />
         <h4 class="add_style">Pôle d'expertise *</h4>
         <InputSelect class="form-select mb-2" @bind-Value="LastPole_Expertise">
@@ -209,7 +201,6 @@
                 <AddPole_Expertise OnPole_ExpertiseAdded="OnPole_ExpertiseAdded" EnableRedirect="false" />
             </div>
         </div>
-
 
         <hr />
         <h4 class="add_style">Type d'équipement *</h4>
@@ -390,17 +381,29 @@
     void ToggleTypeClient(int id, bool isChecked)
     {
         if (isChecked)
-            selectedTypeClients.Add(id);
+        {
+            if (!selectedTypeClients.Contains(id))
+                selectedTypeClients.Add(id);
+        }
         else
+        {
             selectedTypeClients.Remove(id);
+        }
     }
+
     void ToggleTypeUtilisation(int id, bool isChecked)
     {
         if (isChecked)
-            selectedTypeUtilisations.Add(id);
+        {
+            if (!selectedTypeUtilisations.Contains(id))
+                selectedTypeUtilisations.Add(id);
+        }
         else
+        {
             selectedTypeUtilisations.Remove(id);
+        }
     }
+
 
     public class EquipementRelationService
     {
@@ -428,9 +431,7 @@
         }
     }
 
-
     private string _lastPole_Expertise;
-
     private string LastPole_Expertise
     {
         get => _lastPole_Expertise;
@@ -466,9 +467,7 @@
         }
     }
 
-
     private string newTypeEquipement = "";
-
     protected override async Task OnInitializedAsync()
     {
         _equipementRelationService = new EquipementRelationService(Http);
@@ -558,7 +557,6 @@
         }
     }
 
-
     private void OpenModal()
     {
         JS.InvokeVoidAsync("openModalPole_expertise");
@@ -576,7 +574,6 @@
         LastPole_Expertise = pole_expertise.Nom_Pole_Expertise;
         CloseModal();
     }
-
 
     private async Task HandleFileUpload(InputFileChangeEventArgs e)
     {
@@ -661,6 +658,9 @@
                     // Id_Equipement sera rempli côté backend
                 }).ToList();
 
+            await JS.InvokeVoidAsync("console.log", "Types clients sélectionnés :", selectedTypeClients);
+            await JS.InvokeVoidAsync("console.log", "Types d’utilisation sélectionnés :", selectedTypeUtilisations);
+
             var response = await Http.PostAsJsonAsync("http://localhost:7093/api/Equipements", addEquipement);
 
             if (!response.IsSuccessStatusCode)
@@ -716,6 +716,7 @@
             Navigation.NavigateTo($"/equipement/{addEquipement.Id_Equipement}");
         }
     }
+
     private void pole_expertiseRotation(string SelectedPole_Expertise)
     {
         addEquipement.Nom_Pole_Expertise = SelectedPole_Expertise;
@@ -741,7 +742,6 @@
         }
     }
 
-
     void RemoveTypeEquipement(Type_Equipement t)
     {
         type_Equipements.Remove(t);
@@ -752,6 +752,9 @@
     }
 
     private string _lastMarque;
+    private string newMarque = "";
+    private List<Marque> marques = new();
+    private Marque derniereMarqueAjoutee;
     private string LastMarque
     {
         get => _lastMarque;
@@ -766,10 +769,6 @@
             }
         }
     }
-
-    private string newMarque = "";
-    private List<Marque> marques = new();
-    private Marque derniereMarqueAjoutee;
 
     void AddMarque()
     {
@@ -793,5 +792,4 @@
             derniereMarqueAjoutee = null;
         }
     }
-
 }

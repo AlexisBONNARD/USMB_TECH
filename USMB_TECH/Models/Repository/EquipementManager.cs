@@ -40,7 +40,6 @@ namespace USMB_TECH.Models.Repository
                 .ToListAsync();
         }
 
-
         public async Task<Equipement?> GetByIdAsync(int id)
         {
             return await _context.Equipements
@@ -74,7 +73,6 @@ namespace USMB_TECH.Models.Repository
                     .ThenInclude(ex => ex.ThematiqueNavigation)
                 .FirstOrDefaultAsync(e => e.Id_Equipement == id);
         }
-
 
         public async Task AddAsync(Equipement entity)
         {
@@ -255,12 +253,107 @@ namespace USMB_TECH.Models.Repository
             // -------------------
             // 7 Gestion Autorisers (Type_Client)
             // -------------------
-            await HandleAutorisersAsync(entity);
+            var autorisersTemp = entity.Autorisers;
+            entity.Autorisers = new List<Autoriser>();
+
+            if (autorisersTemp != null && autorisersTemp.Any())
+            {
+                var autorisersFinal = new List<Autoriser>();
+
+                foreach (var autoriser in autorisersTemp)
+                {
+                    Type_Client typeClient = null;
+
+                    if (autoriser.Id_Type_Client > 0)
+                    {
+                        typeClient = await _context.Type_Clients
+                            .FindAsync(autoriser.Id_Type_Client);
+                    }
+                    else if (autoriser.Type_ClientNavigation != null &&
+                             !string.IsNullOrWhiteSpace(autoriser.Type_ClientNavigation.Nom_Type_Client))
+                    {
+                        typeClient = await _context.Type_Clients
+                            .FirstOrDefaultAsync(tc =>
+                                tc.Nom_Type_Client == autoriser.Type_ClientNavigation.Nom_Type_Client);
+
+                        if (typeClient == null)
+                        {
+                            typeClient = new Type_Client
+                            {
+                                Nom_Type_Client = autoriser.Type_ClientNavigation.Nom_Type_Client,
+                                Mult_Tarif_Type_Client = autoriser.Type_ClientNavigation.Mult_Tarif_Type_Client
+                            };
+                            _context.Type_Clients.Add(typeClient);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    if (typeClient != null)
+                    {
+                        autorisersFinal.Add(new Autoriser
+                        {
+                            Id_Equipement = entity.Id_Equipement,
+                            Id_Type_Client = typeClient.Id_Type_Client
+                        });
+                    }
+                }
+
+                _context.Autorisers.AddRange(autorisersFinal);
+                await _context.SaveChangesAsync();
+            }
+
 
             // -------------------
             // 8 Gestion Proposers (Type_Utilisation)
             // -------------------
-            await HandleProposersAsync(entity);
+            var proposersTemp = entity.Proposers;
+            entity.Proposers = new List<Proposer>();
+
+            if (proposersTemp != null && proposersTemp.Any())
+            {
+                var proposersFinal = new List<Proposer>();
+
+                foreach (var proposer in proposersTemp)
+                {
+                    Type_Utilisation typeUtilisation = null;
+
+                    if (proposer.Id_Type_Utilisation > 0)
+                    {
+                        typeUtilisation = await _context.Type_Utilisations
+                            .FindAsync(proposer.Id_Type_Utilisation);
+                    }
+                    else if (proposer.Type_UtilisationNavigation != null &&
+                             !string.IsNullOrWhiteSpace(proposer.Type_UtilisationNavigation.Nom_Type_Utilisation))
+                    {
+                        typeUtilisation = await _context.Type_Utilisations
+                            .FirstOrDefaultAsync(tu =>
+                                tu.Nom_Type_Utilisation == proposer.Type_UtilisationNavigation.Nom_Type_Utilisation);
+
+                        if (typeUtilisation == null)
+                        {
+                            typeUtilisation = new Type_Utilisation
+                            {
+                                Nom_Type_Utilisation = proposer.Type_UtilisationNavigation.Nom_Type_Utilisation
+                            };
+                            _context.Type_Utilisations.Add(typeUtilisation);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    if (typeUtilisation != null)
+                    {
+                        proposersFinal.Add(new Proposer
+                        {
+                            Id_Equipement = entity.Id_Equipement,
+                            Id_Type_Utilisation = typeUtilisation.Id_Type_Utilisation
+                        });
+                    }
+                }
+
+                _context.Proposers.AddRange(proposersFinal);
+                await _context.SaveChangesAsync();
+            }
+
 
             await _context.SaveChangesAsync();
 
@@ -336,6 +429,10 @@ namespace USMB_TECH.Models.Repository
                 }
             }
 
+            // --- Posseders ---
+            _context.Posseders.RemoveRange(
+                _context.Posseders.Where(p => p.Id_Equipement == entityToUpdate.Id_Equipement));
+
             // --- Autorisers ---
             _context.Autorisers.RemoveRange(
                 _context.Autorisers.Where(a => a.Id_Equipement == entityToUpdate.Id_Equipement));
@@ -349,8 +446,138 @@ namespace USMB_TECH.Models.Repository
             // recréation depuis l’entité mise à jour
             updatedEntity.Id_Equipement = entityToUpdate.Id_Equipement;
 
-            await HandleAutorisersAsync(updatedEntity);
-            await HandleProposersAsync(updatedEntity);
+            // -------------------
+            // Recréation Posseders (Fonctionnalites)
+            // -------------------
+            if (updatedEntity.Posseders != null && updatedEntity.Posseders.Any())
+            {
+                var possedersFinal = new List<Posseder>();
+
+                foreach (var posseder in updatedEntity.Posseders)
+                {
+                    if (posseder?.FonctionnaliteNavigation == null ||
+                        string.IsNullOrWhiteSpace(posseder.FonctionnaliteNavigation.Nom_Fonctionnalite))
+                        continue;
+
+                    var fonctionnalite = await _context.Fonctionnalites
+                        .FirstOrDefaultAsync(f =>
+                            f.Nom_Fonctionnalite == posseder.FonctionnaliteNavigation.Nom_Fonctionnalite);
+
+                    if (fonctionnalite == null)
+                    {
+                        fonctionnalite = new Fonctionnalite
+                        {
+                            Nom_Fonctionnalite = posseder.FonctionnaliteNavigation.Nom_Fonctionnalite,
+                            Description = posseder.FonctionnaliteNavigation.Description
+                        };
+                        _context.Fonctionnalites.Add(fonctionnalite);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    possedersFinal.Add(new Posseder
+                    {
+                        Id_Equipement = entityToUpdate.Id_Equipement,
+                        FonctionnaliteNavigation = fonctionnalite
+                    });
+                }
+
+                _context.Posseders.AddRange(possedersFinal);
+            }
+
+            // -------------------
+            // Recréation Autorisers (Type_Client)
+            // -------------------
+            if (updatedEntity.Autorisers != null && updatedEntity.Autorisers.Any())
+            {
+                var autorisersFinal = new List<Autoriser>();
+
+                foreach (var autoriser in updatedEntity.Autorisers)
+                {
+                    Type_Client typeClient = null;
+
+                    if (autoriser.Id_Type_Client > 0)
+                    {
+                        typeClient = await _context.Type_Clients
+                            .FindAsync(autoriser.Id_Type_Client);
+                    }
+                    else if (autoriser.Type_ClientNavigation != null &&
+                             !string.IsNullOrWhiteSpace(autoriser.Type_ClientNavigation.Nom_Type_Client))
+                    {
+                        typeClient = await _context.Type_Clients
+                            .FirstOrDefaultAsync(tc =>
+                                tc.Nom_Type_Client == autoriser.Type_ClientNavigation.Nom_Type_Client);
+
+                        if (typeClient == null)
+                        {
+                            typeClient = new Type_Client
+                            {
+                                Nom_Type_Client = autoriser.Type_ClientNavigation.Nom_Type_Client,
+                                Mult_Tarif_Type_Client = autoriser.Type_ClientNavigation.Mult_Tarif_Type_Client
+                            };
+                            _context.Type_Clients.Add(typeClient);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    if (typeClient != null)
+                    {
+                        autorisersFinal.Add(new Autoriser
+                        {
+                            Id_Equipement = entityToUpdate.Id_Equipement,
+                            Id_Type_Client = typeClient.Id_Type_Client
+                        });
+                    }
+                }
+
+                _context.Autorisers.AddRange(autorisersFinal);
+            }
+
+            // -------------------
+            // Recréation Proposers (Type_Utilisation)
+            // -------------------
+            if (updatedEntity.Proposers != null && updatedEntity.Proposers.Any())
+            {
+                var proposersFinal = new List<Proposer>();
+
+                foreach (var proposer in updatedEntity.Proposers)
+                {
+                    Type_Utilisation typeUtilisation = null;
+
+                    if (proposer.Id_Type_Utilisation > 0)
+                    {
+                        typeUtilisation = await _context.Type_Utilisations
+                            .FindAsync(proposer.Id_Type_Utilisation);
+                    }
+                    else if (proposer.Type_UtilisationNavigation != null &&
+                             !string.IsNullOrWhiteSpace(proposer.Type_UtilisationNavigation.Nom_Type_Utilisation))
+                    {
+                        typeUtilisation = await _context.Type_Utilisations
+                            .FirstOrDefaultAsync(tu =>
+                                tu.Nom_Type_Utilisation == proposer.Type_UtilisationNavigation.Nom_Type_Utilisation);
+
+                        if (typeUtilisation == null)
+                        {
+                            typeUtilisation = new Type_Utilisation
+                            {
+                                Nom_Type_Utilisation = proposer.Type_UtilisationNavigation.Nom_Type_Utilisation
+                            };
+                            _context.Type_Utilisations.Add(typeUtilisation);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    if (typeUtilisation != null)
+                    {
+                        proposersFinal.Add(new Proposer
+                        {
+                            Id_Equipement = entityToUpdate.Id_Equipement,
+                            Id_Type_Utilisation = typeUtilisation.Id_Type_Utilisation
+                        });
+                    }
+                }
+
+                _context.Proposers.AddRange(proposersFinal);
+            }
 
             await _context.SaveChangesAsync();
         }
@@ -398,98 +625,43 @@ namespace USMB_TECH.Models.Repository
                 .Where(predicate)
                 .ToListAsync();
         }
-        private async Task HandleAutorisersAsync(Equipement entity)
+
+        public async Task SetTypeClientsAsync(int equipementId, List<int> typeClientIds)
         {
-            if (entity.Autorisers == null || !entity.Autorisers.Any())
-                return;
+            var existants = _context.Autorisers
+                .Where(a => a.Id_Equipement == equipementId);
 
-            var autorisersFinal = new List<Autoriser>();
+            _context.Autorisers.RemoveRange(existants);
 
-            foreach (var autoriser in entity.Autorisers)
+            foreach (var id in typeClientIds)
             {
-                Type_Client typeClient = null;
-
-                if (autoriser.Id_Type_Client > 0)
+                _context.Autorisers.Add(new Autoriser
                 {
-                    typeClient = await _context.Type_Clients.FindAsync(autoriser.Id_Type_Client);
-                }
-                else if (autoriser.Type_ClientNavigation != null &&
-                         !string.IsNullOrWhiteSpace(autoriser.Type_ClientNavigation.Nom_Type_Client))
-                {
-                    typeClient = await _context.Type_Clients
-                        .FirstOrDefaultAsync(tc =>
-                            tc.Nom_Type_Client == autoriser.Type_ClientNavigation.Nom_Type_Client);
-
-                    if (typeClient == null)
-                    {
-                        typeClient = new Type_Client
-                        {
-                            Nom_Type_Client = autoriser.Type_ClientNavigation.Nom_Type_Client,
-                            Mult_Tarif_Type_Client = autoriser.Type_ClientNavigation.Mult_Tarif_Type_Client
-                        };
-                        _context.Type_Clients.Add(typeClient);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                if (typeClient != null)
-                {
-                    autorisersFinal.Add(new Autoriser
-                    {
-                        Id_Equipement = entity.Id_Equipement,
-                        Id_Type_Client = typeClient.Id_Type_Client
-                    });
-                }
+                    Id_Equipement = equipementId,
+                    Id_Type_Client = id
+                });
             }
 
-            _context.Autorisers.AddRange(autorisersFinal);
+            await _context.SaveChangesAsync();
         }
 
-        private async Task HandleProposersAsync(Equipement entity)
+        public async Task SetTypeUtilisationsAsync(int equipementId, List<int> typeUtilisationIds)
         {
-            if (entity.Proposers == null || !entity.Proposers.Any())
-                return;
+            var existants = _context.Proposers
+                .Where(p => p.Id_Equipement == equipementId);
 
-            var proposersFinal = new List<Proposer>();
+            _context.Proposers.RemoveRange(existants);
 
-            foreach (var proposer in entity.Proposers)
+            foreach (var id in typeUtilisationIds)
             {
-                Type_Utilisation typeUtilisation = null;
-
-                if (proposer.Id_Type_Utilisation > 0)
+                _context.Proposers.Add(new Proposer
                 {
-                    typeUtilisation = await _context.Type_Utilisations
-                        .FindAsync(proposer.Id_Type_Utilisation);
-                }
-                else if (proposer.Type_UtilisationNavigation != null &&
-                         !string.IsNullOrWhiteSpace(proposer.Type_UtilisationNavigation.Nom_Type_Utilisation))
-                {
-                    typeUtilisation = await _context.Type_Utilisations
-                        .FirstOrDefaultAsync(tu =>
-                            tu.Nom_Type_Utilisation == proposer.Type_UtilisationNavigation.Nom_Type_Utilisation);
-
-                    if (typeUtilisation == null)
-                    {
-                        typeUtilisation = new Type_Utilisation
-                        {
-                            Nom_Type_Utilisation = proposer.Type_UtilisationNavigation.Nom_Type_Utilisation
-                        };
-                        _context.Type_Utilisations.Add(typeUtilisation);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                if (typeUtilisation != null)
-                {
-                    proposersFinal.Add(new Proposer
-                    {
-                        Id_Equipement = entity.Id_Equipement,
-                        Id_Type_Utilisation = typeUtilisation.Id_Type_Utilisation
-                    });
-                }
+                    Id_Equipement = equipementId,
+                    Id_Type_Utilisation = id
+                });
             }
 
-            _context.Proposers.AddRange(proposersFinal);
+            await _context.SaveChangesAsync();
         }
     }
 }
