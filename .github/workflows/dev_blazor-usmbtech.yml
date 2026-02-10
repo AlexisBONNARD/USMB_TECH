@@ -22,8 +22,15 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+      - name: Restore
+        run: dotnet restore USMB_TECH_Blazor/USMB_TECH_Blazor.csproj
+
+      - name: Build
+        run: dotnet build USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release --no-restore
+
       - name: Publish Blazor
         run: dotnet publish USMB_TECH_Blazor/USMB_TECH_Blazor.csproj -c Release -o ./publish --no-build
+
 
       - name: Azure Login
         uses: azure/login@v2
