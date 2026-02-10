@@ -17,7 +17,7 @@ namespace USMB_TECH.Models
         public string Nom_Type_Client { get; set; }
 
         [Column("mult_tarif_type_client")]
-        [Precision(2, 2)]
+        [Precision(5, 2)]
         public double Mult_Tarif_Type_Client { get; set; }
 
         [InverseProperty(nameof(Prise_Contact.Type_ClientNavigation))]
