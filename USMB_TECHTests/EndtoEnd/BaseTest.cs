@@ -15,7 +15,7 @@ namespace USMB_TECHTests;
 [Trait("Category", "E2E")]
 public class BaseTest : PageTest
 {
-    protected const string BaseUrl = "https://blazor-usmbtech-ekf6gkgretedd7bc.francecentral-01.azurewebsites.net/";
+    protected const string BaseUrl = "https://localhost:7264";
 
     [SetUp]
     public async Task Setup()
