@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 using USMB_TECH.Models;
 
 namespace USMB_TECH_Blazor.Models
@@ -16,20 +17,26 @@ namespace USMB_TECH_Blazor.Models
         public int Id_Type_Equipement { get; set; }
 
         [Required(ErrorMessage = "Le nom de l'équipement est obligatoire")]
+        [MaxLength(50, ErrorMessage = "Le nom Equipement ne doit pas dépasser 50 caractères")]
         public string Nom_Equipement { get; set; }
+        
         [Required(ErrorMessage = "Le numéro d'immobilisation est obligatoire ou a été mal écrit")]
+        [MaxLength(50, ErrorMessage = "Le numéro d'Imobilisation ne doit pas dépasser 50 caractères")]
+        [RegularExpression(@"[a-zA-Z0-9-]{1,50}", ErrorMessage = "Le numéro d'immobilisation doit contenir uniquement des lettres, chiffres ou tirets")]
         public string Num_Immobilisation { get; set; }
+
         public DateTime Date_Acquisition { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage ="La description technique de votre équipement est obligatoire")]
+        [MaxLength(500, ErrorMessage = "La Description Technique de l'équipement ne doit pas dépasser 500 caractères")]
         public string Description_Technique { get; set; }
 
         [Required(ErrorMessage = "Un prix d'achat est obligatoire")]
-        [Range(0, double.MaxValue, ErrorMessage = "Le prix d'achat ne peut pas être négatif")]
+        [Range(0, 99999999.99, ErrorMessage = "Le prix d'achat ne peut pas être négatif")]
         public double Prix_Achat { get; set; }
 
         [Required(ErrorMessage = "Un prix de revient est obligatoire")]
-        [Range(0, double.MaxValue, ErrorMessage = "Le prix de revient ne peut pas être négatif")]
+        [Range(0, 99999999.99, ErrorMessage = "Le prix de revient ne peut pas être négatif")]
         public double Prix_Revient { get; set; }
 
         [Required(ErrorMessage = "Une pole_expertise doit être obligatoirement associée")]
@@ -50,7 +57,10 @@ namespace USMB_TECH_Blazor.Models
         public bool Utilisable_Chez_Le_Client { get; set; }
 
         public bool Actif { get; set; } = true;
+        
         public bool Disponibilite { get; set; }
+        
+        [MaxLength(150, ErrorMessage = "L'URL du Model 3D de l'équipement ne doit pas dépasser 150 caractères")]
         public string? Url_Modele_3D { get; set; }
 
         public string Nom_Contact { get; set; }

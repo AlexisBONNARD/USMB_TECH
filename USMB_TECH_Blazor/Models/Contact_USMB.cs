@@ -12,25 +12,25 @@ namespace USMB_TECH_Blazor.Models
         public int Id_Fonction { get; set; }
 
         [Required(ErrorMessage = "Le nom du contact est obligatoire.")]
-        [StringLength(100, ErrorMessage = "Le nom ne peut pas dépasser 100 caractères.")]
+        [MaxLength(50, ErrorMessage = "Le nom Contact ne doit pas dépasser 50 caractères")]
         public string Nom_Contact { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le prénom du contact est obligatoire.")]
-        [StringLength(100, ErrorMessage = "Le prénom ne peut pas dépasser 100 caractères.")]
+        [MaxLength(50, ErrorMessage = "Le prénom Contact ne doit pas dépasser 50 caractères.")]
         public string Prenom_Contact { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le code RH est obligatoire.")]
-        [StringLength(50, ErrorMessage = "Le code RH ne peut pas dépasser 50 caractères.")]
+        [MaxLength(25, ErrorMessage = "Le code RH ne doit pas dépasser 25 caractères.")]
         public string Code_RH { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "L'adresse e-mail est obligatoire.")]
         [EmailAddress(ErrorMessage = "Le format de l'adresse e-mail est invalide.")]
-        [StringLength(100, ErrorMessage = "L'adresse e-mail ne peut pas dépasser 100 caractères.")]
+        [MaxLength(50, ErrorMessage = "L'adresse e-mail ne doit pas dépasser 50 caractères.")]
         public string Mail { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le numéro de téléphone est obligatoire.")]
         [Phone(ErrorMessage = "Le format du numéro de téléphone est invalide.")]
-        [StringLength(20, ErrorMessage = "Le numéro de téléphone ne peut pas dépasser 20 caractères.")]
+        [MaxLength(50, ErrorMessage = "Le numéro de téléphone ne peut pas dépasser 50 caractères.")]
         public string Telephone { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le laboratoire du contact est obligatoire.")]
