@@ -106,7 +106,7 @@ else
     {
         try
         {
-            var response = await Http.PutAsJsonAsync($"http://localhost:7093/api/contact_usmb/{Id}", contact);
+            var response = await Http.PutAsJsonAsync($"https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/contact_usmb/{Id}", contact);
 
             if (response.IsSuccessStatusCode)
             {
