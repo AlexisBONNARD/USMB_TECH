@@ -16,8 +16,10 @@ namespace USMB_TECH_Blazor.Models
         public int Id_Adresse_Labo { get; set; }
 
         [Required(ErrorMessage = "Le laboratoire a besoin d'un nom long")]
+        [MaxLength(255, ErrorMessage = "Le Nom Laboratoire ne doit pas dépasser 255 caractères")]
         public string Nom_Long { get; set; }
 
+        [MaxLength(1000, ErrorMessage = "La Description Laboratoire ne doit pas dépasser 1000 caractères")]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "La rue du laboratoire est obligatoire")]

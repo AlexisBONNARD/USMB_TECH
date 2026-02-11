@@ -91,8 +91,6 @@
             Id_Type_Client = 1
         };
     private List<Pole_Expertise> pole_expertises = new();
-    private List<Equipement> equipements = new();
-    private Equipement equipement = new();
     private List<Laboratoire> laboratoires = new();
     private List<Type_Client> type_clients = new();
     private List<Type_Utilisation> type_utilisations = new();
@@ -102,95 +100,21 @@
         pole_expertises = (await Pole_ExpertiseService.GetAllAsync())
             .Where(x => x != null).ToList()!;
 
-        equipements = (await EquipementService.GetAllAsync())
-            .Where(x => x != null).ToList()!;
-
         laboratoires = (await LaboratoireService.GetAllAsync())
             .Where(x => x != null).ToList()!;
+        
+        type_utilisations = (await Type_UtilisationService.GetAllAsync())
+            .Where(x => x != null).ToList()!;
 
-        AutoFillFromUrl();
-
-        type_clients = (await Type_ClientService.GetAllAsync()).Where(x => x != null).ToList()!;
-
-        if (prise_contact.Id_Equipement != null)
-        {
-            equipement = await EquipementService.GetByIdAsync(prise_contact.Id_Equipement.Value);
-
-            // type_clients = equipement.Autorisers.Select(a => a.Type_ClientNavigation).Where(tc => tc != null).Distinct().ToList();
-
-            type_utilisations = equipement.Proposers.Select(p => p.Type_UtilisationNavigation).Where(tu => tu != null).Distinct().ToList();
-        }
-        else
-        {
-            type_utilisations = (await Type_UtilisationService.GetAllAsync()).Where(x => x != null).ToList()!;
-        }
-    }
-
-    private void AutoFillFromUrl()
-    {
-        var relative = Navigation.ToBaseRelativePath(Navigation.Uri);
-        var segments = relative.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-        for (int i = 0; i < segments.Length; i++)
-        {
-            if (segments[i].Equals("equipement", StringComparison.OrdinalIgnoreCase)
-                && i + 1 < segments.Length
-                && int.TryParse(segments[i + 1], out int idEquip))
-            {
-                typeSelectionne = TypeCible.Equipement;
-                prise_contact.Id_Equipement = idEquip;
-            }
-
-            if (segments[i].Equals("pole_expertise", StringComparison.OrdinalIgnoreCase)
-                && i + 1 < segments.Length
-                && int.TryParse(segments[i + 1], out int idPole))
-            {
-                typeSelectionne = TypeCible.Pole;
-                prise_contact.Id_Pole_Expertise = idPole;
-            }
-
-            if (segments[i].Equals("laboratoire", StringComparison.OrdinalIgnoreCase)
-                && i + 1 < segments.Length)
-            {
-                typeSelectionne = TypeCible.Laboratoire;
-                prise_contact.Nom_Court = segments[i + 1];
-            }
-        }
-    }
-
-    private void NormaliserAvantEnvoi()
-    {
-        if (typeSelectionne != TypeCible.Equipement)
-            prise_contact.Id_Equipement = null;
-
-        if (typeSelectionne != TypeCible.Pole)
-            prise_contact.Id_Pole_Expertise = null;
-
-        if (typeSelectionne != TypeCible.Laboratoire)
-            prise_contact.Nom_Court = null;
-    }
-
-    private bool ValiderCible()
-    {
-        return
-            typeSelectionne == TypeCible.Equipement && prise_contact.Id_Equipement != null
-         || typeSelectionne == TypeCible.Pole && prise_contact.Id_Pole_Expertise != null
-         || typeSelectionne == TypeCible.Laboratoire && !string.IsNullOrWhiteSpace(prise_contact.Nom_Court);
+        type_clients = (await Type_ClientService.GetAllAsync())
+            .Where(x => x != null).ToList()!;
     }
 
     private async Task HandleSubmit()
     {
-        NormaliserAvantEnvoi();
-
-        if (!ValiderCible())
-        {
-            await ShowAlert(
-                "Veuillez sélectionner soit un équipement, soit un pôle d’expertise, soit un laboratoire.",
-                false
-            );
-            return;
-        }
-
+        prise_contact.Nom_Court = "Valot";
+        prise_contact.Id_Pole_Expertise = null;
+        prise_contact.Id_Equipement = null;
         prise_contact.Description_besoins = ConstruireDescriptionBesoins();
 
         try

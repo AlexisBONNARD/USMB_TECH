@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace USMB_TECH_Blazor.Models
 {
@@ -9,6 +8,8 @@ namespace USMB_TECH_Blazor.Models
 
         public int? Id_Sous_Thematique { get; set; }
 
+        [Required]
+        [MaxLength(50)]
         public string Nom_Thematique { get; set; }
 
         public virtual ICollection<Exposer> Exposers { get; set; } = new List<Exposer>();

@@ -34,15 +34,21 @@ namespace USMB_TECH_Blazor.Models
         public string Nom_Contact  { get; set; }
 
         [Required(ErrorMessage = "La prestation actuelle n'a pas reçu de nom")]
+        [MaxLength(100, ErrorMessage = "L'Intitule Prestation ne doit pas dépasser 100 caractères")]
         public string Intitule_Prestation { get; set; }
 
         [Required(ErrorMessage = "Une description doit être donnée pour la prestation")]
+        [MaxLength(500, ErrorMessage = "La Description Prestation ne doit pas dépasser 500 caractères")]
         public string Description_Prestation { get; set; }
 
         [Required(ErrorMessage = "Vous devez renseigner un prix de revient")]
+        [Range(0, 99999999.99, ErrorMessage = "Le Prix de Revient doit avoir 10 chiffres max dont 2 max après la virgule")]
+        [Precision(10, 2)]
         public double Prix_Revient { get; set; }
 
         [Required(ErrorMessage = "Vous devez renseigner un prix de vente")]
+        [Range(0, 99999999.99, ErrorMessage = "Le Prix de Vente doit avoir 10 chiffres max dont 2 max après la virgule")]
+        [Precision(10, 2)]
         public double Prix_Vente { get; set; }
 
         public bool Peux_Ce_Realiser_Chez_Le_Client { get; set; }

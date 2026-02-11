@@ -44,6 +44,7 @@ else
                     </ul>
                 </section>
             }
+
             @if (pole_expertise.Exemple_Utilisations != null && pole_expertise.Exemple_Utilisations.Any())
             {
                 <h3>EXEMPLES DE RÉALISATIONS</h3>
@@ -53,7 +54,6 @@ else
                         <li>@exemple.Description_Utilisation</li>
                     }
                 </ul>
-
             }
         </div>
 
@@ -63,7 +63,6 @@ else
             {
                 <section>
                     <h3>NOS ÉQUIPEMENTS</h3>
-
                     <div class="center-grid">
                         @foreach (var equipement in pole_expertise.Equipements)
                         {
@@ -79,6 +78,7 @@ else
                     </div>
                 </section>
             }
+
             @if (prestations != null && prestations.Any())
             {
                 <section>
@@ -96,7 +96,6 @@ else
                             </div>
                         }
                     </div>
-
                 </section>
             }
         </div>
@@ -105,7 +104,6 @@ else
         <div class="col-right">
             <FormulaireContact />
         </div>
-
     </div>
 
     @if (AdminState.IsAdmin)
@@ -117,7 +115,6 @@ else
             Supprimer
         </button>
     }
-
 }
 
 @code {
@@ -133,22 +130,16 @@ else
     private string deleteMessage = null;
     private bool deleteSuccess = false;
 
-
     protected override async Task OnInitializedAsync()
     {
         pole_expertise = await Pole_ExpertiseService.GetByIdAsync(Id);
 
-        prestations = pole_expertise.Presenters
-            .Select(p => p.prestationNavigation)
-            .ToList();
+        prestations = pole_expertise.Presenters.Select(p => p.prestationNavigation).ToList();
 
-        motsCles = pole_expertise.Specifiers
-            .Select(s => s.Mot_ClefNavigation)
-            .ToList();
+        motsCles = pole_expertise.Specifiers.Select(s => s.Mot_ClefNavigation).ToList();
 
         domaine_excellence = pole_expertise.Domaine_ExcellenceNavigation?.Intitule_Domaine_Excellence;
     }
-
 
     // ----------- SUPPRESSION AVEC CONFIRMATION + MESSAGE -----------
     private async Task DeletePole_Expertise(int id)
@@ -166,16 +157,15 @@ else
             await Pole_ExpertiseService.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Pole d'expertise supprimé avec succès ✅");
+            await ShowDeleteAlert("Pole d'expertise supprimé avec succès");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
         {
             deleteSuccess = false;
-            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
         }
     }
-
 
     // ----------- AFFICHAGE & AUTO-DISPARITION -----------
     private async Task ShowDeleteAlert(string msg)
@@ -188,7 +178,6 @@ else
         deleteMessage = null;
         StateHasChanged();
     }
-
 
     private void RetourListe(int idEquipement)
     {

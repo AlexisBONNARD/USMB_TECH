@@ -7,6 +7,7 @@ namespace USMB_TECH_Blazor.Models
     {
         public int Id_Type_Utilisation { get; set; }
 
+        [MaxLength(50, ErrorMessage = "Le nom Type Utilisation ne doit pas dépasser 50 caractères")]
         public string Nom_Type_Utilisation { get; set; }
 
         public virtual ICollection<Proposer> Proposers { get; set; } = new List<Proposer>();

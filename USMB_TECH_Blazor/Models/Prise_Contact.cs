@@ -16,19 +16,24 @@ namespace USMB_TECH_Blazor.Models
         public int Id_Type_Client { get; set; }
 
         [Required(ErrorMessage = "Veuillez renseigner votre nom")]
+        [MaxLength(50, ErrorMessage = "Le nom Contact ne doit pas dépasser 50 caractères")]
         public string Nom_Contact { get; set; }
 
         [Required(ErrorMessage = "Veuillez renseigner votre prénom")]
+        [MaxLength(50, ErrorMessage = "Le prénom Contact ne doit pas dépasser 50 caractères")]
         public string Prenom_Contact { get; set; }
 
         [Required(ErrorMessage = "Veuillez renseigner votre type d’entreprise")]
+        [MaxLength(100, ErrorMessage = "Le nom de l’entreprise Contact ne doit pas dépasser 100 caractères")]
         public string Entreprise_Contact { get; set; }
 
         [Required(ErrorMessage = "Veuillez renseigner votre email")]
         [EmailAddress(ErrorMessage = "Le format de l'adresse e-mail est invalide.")]
+        [MaxLength(60, ErrorMessage = "L'email Contact ne doit pas dépasser 60 caractères")]
         public string Email_Contact { get; set; }
 
         [Required(ErrorMessage = "Veuillez décrire votre besoin")]
+        [MaxLength(200, ErrorMessage = "La description du besoins ne doit pas dépasser 200 caractères")]
         public string Description_besoins { get; set; }
 
         public virtual Laboratoire? LaboratoireNavigation { get; set; } = null!;
