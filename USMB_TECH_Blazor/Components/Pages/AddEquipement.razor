@@ -597,7 +597,7 @@
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("http://localhost:7093/api/equipements/upload", content);
+            var response = await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/equipements/upload", content);
   
             if (response.IsSuccessStatusCode)
             {
@@ -655,7 +655,7 @@
             await JS.InvokeVoidAsync("console.log", "Types clients sélectionnés :", selectedTypeClients);
             await JS.InvokeVoidAsync("console.log", "Types d’utilisation sélectionnés :", selectedTypeUtilisations);
 
-            var response = await Http.PostAsJsonAsync("http://localhost:7093/api/Equipements", addEquipement);
+            var response = await Http.PostAsJsonAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/Equipements", addEquipement);
 
             if (!response.IsSuccessStatusCode)
             {
