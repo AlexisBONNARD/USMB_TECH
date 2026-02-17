@@ -39,7 +39,7 @@ namespace USMB_TECH.Models
         [MaxLength(60)]
         public string Email_Contact { get; set; }
 
-        [Column("description_besoins")] // description_besoins est constituer du type du besoin (donc au début prestation/formation/location/? : présition de l atache voulue)
+        [Column("description_besoins")] 
         [MaxLength(200)]
         public string Description_besoins { get; set; }
 
