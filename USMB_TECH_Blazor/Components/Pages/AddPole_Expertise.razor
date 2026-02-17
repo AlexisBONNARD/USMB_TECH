@@ -311,7 +311,7 @@
             isLoading = true; // active le loader
             StateHasChanged();
 
-            // Si aucune photo uploadée → photo par défaut
+            // Si aucune photo uploadée mettre photo par défaut
             if (pole_expertise.Photos == null || !pole_expertise.Photos.Any())
             {
                 pole_expertise.Photos = new List<Photo>

@@ -17,10 +17,14 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Pole_ExpertisesController(IMainRepository<Pole_Expertise, int> dataRepository, UsmbTechDbContext context) : ControllerBase
+    public class Pole_ExpertisesController(
+    IMainRepository<Pole_Expertise, int> dataRepository,
+    UsmbTechDbContext context,
+    IWebHostEnvironment env) : ControllerBase
     {
         private readonly IMainRepository<Pole_Expertise, int> _dataRepository = dataRepository;
         private readonly UsmbTechDbContext _context = context;
+        private readonly IWebHostEnvironment _env = env;
 
         // GET: api/Pole_Expertises
         [HttpGet]
@@ -251,20 +255,20 @@ namespace USMB_TECH.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("Aucun fichier reçu");
 
-            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
 
-            if (!Directory.Exists(uploadsPath))
-                Directory.CreateDirectory(uploadsPath);
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-            var filePath = Path.Combine(uploadsPath, file.FileName);
+            var fileName = Path.GetFileName(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
 
-            return Ok(new { url = $"/uploads/{file.FileName}" });
+            var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+
+            return Ok(new { url = fileUrl });
         }
-
     }
 }

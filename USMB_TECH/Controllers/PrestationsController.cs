@@ -16,10 +16,15 @@ namespace USMB_TECH.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PrestationsController(IMainRepository<Prestation, int> dataRepository, IMapper mapper) : ControllerBase
+    public class PrestationsController(
+    IMainRepository<Prestation, int> dataRepository,
+    IMapper mapper,
+    IWebHostEnvironment env) : ControllerBase
     {
         private readonly IMainRepository<Prestation, int> _dataRepository = dataRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly IWebHostEnvironment _env = env;
+
 
         // GET: api/Prestations
         [HttpGet]
@@ -102,25 +107,27 @@ namespace USMB_TECH.Controllers
             await _dataRepository.DeleteAsync(prestations);
             return NoContent();
         }
+
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("Aucun fichier reçu");
 
-            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
 
-            if (!Directory.Exists(uploadsPath))
-                Directory.CreateDirectory(uploadsPath);
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-            var filePath = Path.Combine(uploadsPath, file.FileName);
+            var fileName = Path.GetFileName(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
 
-            return Ok(new { url = $"/uploads/{file.FileName}" });
+            var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+
+            return Ok(new { url = fileUrl });
         }
     }
 }

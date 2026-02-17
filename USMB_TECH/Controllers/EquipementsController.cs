@@ -15,13 +15,26 @@ using USMB_TECH.DTO;
 
 namespace USMB_TECH.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class EquipementsController(IMainRepository<Equipement, int> dataRepository, IMapper mapper, EquipementManager equipementManager) : ControllerBase
+    [Route("api/[controller]")]
+    public class EquipementsController : ControllerBase
     {
-        private readonly IMainRepository<Equipement, int> _dataRepository = dataRepository;
-        private readonly IMapper _mapper = mapper;
-        private readonly EquipementManager _equipementManager = equipementManager;
+        private readonly IMainRepository<Equipement, int> _dataRepository;
+        private readonly IMapper _mapper;
+        private readonly EquipementManager _equipementManager;
+        private readonly IWebHostEnvironment _env;
+
+        public EquipementsController(
+            IMainRepository<Equipement, int> dataRepository,
+            IMapper mapper,
+            EquipementManager equipementManager,
+            IWebHostEnvironment env)
+        {
+            _dataRepository = dataRepository;
+            _mapper = mapper;
+            _equipementManager = equipementManager;
+            _env = env;
+        }
 
         // GET: api/Equipements
         [HttpGet]
@@ -104,20 +117,26 @@ namespace USMB_TECH.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("Aucun fichier reçu");
 
-            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "../USMB_TECH_Blazor/wwwroot/uploads");
+            // Chemin réel Azure
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
 
-            if (!Directory.Exists(uploadsPath))
-                Directory.CreateDirectory(uploadsPath);
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-            var filePath = Path.Combine(uploadsPath, file.FileName);
+            var fileName = Path.GetFileName(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return Ok(new { url = $"/uploads/{file.FileName}" });
+            // URL publique complète
+            var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+
+            return Ok(new { url = fileUrl });
         }
+
 
         [HttpPost("{id}/type-clients")]
         public async Task<IActionResult> SetTypeClients(int id, [FromBody] List<int> ids)
