@@ -250,12 +250,12 @@
 
             contact = createdContact;
             isSubmitted = true;
-            ShowAlert("Contact ajouté avec succès ✅");
+            ShowAlert("Contact ajouté avec succès");
         }
         catch (Exception ex)
         {
             isSubmitted = false;
-            ShowAlert("Erreur lors de l'ajout du contact ❌");
+            ShowAlert("Erreur lors de l'ajout du contact");
             await JS.InvokeVoidAsync("console.error", ex.ToString());
         }
         finally

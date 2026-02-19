@@ -33,14 +33,6 @@ else
                 <p data-testid="prestation-description">@prestation.Description_Prestation</p>
                 <p data-testid="prestation-laboratoire">Laboratoire : @prestation.Nom_Court</p>
             </section>
-
-            @* <section>
-                <h3>PRIX</h3>
-                <ul class="list-style">
-                    <p>Revient : @prestation.Prix_Revient €</p>
-                    <p>Vente : @prestation.Prix_Vente €</p>
-                </ul>
-            </section> *@
         </div>
 
         <!-- ========= COLONNE CENTRALE ========= -->
@@ -53,6 +45,7 @@ else
                     <div class="center-grid">
                         @foreach (var pole_expertise in pole_expertises)
                         {
+                            @if (AdminState.IsAdmin) {
                             <div class="center-item" data-testid="prestation-pole-item" @onclick="@(() => RetourListe(pole_expertise.Id_Pole_Expertise, "pole_expertise"))">
                                 @if (pole_expertise.Photos != null && pole_expertise.Photos.Any())
                                 {
@@ -61,6 +54,7 @@ else
                                 }
                                 <p>@pole_expertise.Nom_Pole_Expertise</p>
                             </div>
+                            }
                         }
                     </div>
                 </section>
@@ -90,12 +84,6 @@ else
 
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
-
-            @* <div class="info-block">
-                <h4>Localisation :</h4>
-                <div class="btn-blue">Le Bourget du Lac (ce n'est pas la bonne donnée)</div>
-            </div> *@
-
             <FormulaireContact />
         </div>
     </div>
@@ -153,13 +141,13 @@ else
             await PrestationService.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Prestation supprimée avec succès ✅");
+            await ShowDeleteAlert("Prestation supprimée avec succès");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
         {
             deleteSuccess = false;
-            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
         }
     }
     private async Task ShowDeleteAlert(string msg)
@@ -177,5 +165,4 @@ else
     {
         Navigation.NavigateTo($"/prestation/edit/{id}", true);
     }
-
 }

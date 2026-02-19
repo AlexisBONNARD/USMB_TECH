@@ -170,13 +170,13 @@ else
             await dataRepository.DeleteAsync(id);
 
             deleteSuccess = true;
-            await ShowDeleteAlert("Domaine supprimé avec succès ✅");
+            await ShowDeleteAlert("Domaine supprimé avec succès");
             Navigation.NavigateTo("/", true);
         }
         catch (Exception ex)
         {
             deleteSuccess = false;
-            await ShowDeleteAlert($"Erreur lors de la suppression ❌ : {ex.Message}");
+            await ShowDeleteAlert($"Erreur lors de la suppression : {ex.Message}");
         }
     }
 
