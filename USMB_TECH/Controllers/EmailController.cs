@@ -12,15 +12,38 @@ namespace USMB_TECH.Controllers
     [Route("api/[controller]")]
     public class EmailController : ControllerBase
     {
+
+        private readonly IConfiguration _config;
+
+        public EmailController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [HttpPost]
         public async Task<IActionResult> SendEmail([FromForm] EmailRequest request)
         {
             try
             {
+                var emailAddress = _config["EmailSettings:Email"];
+                var password = _config["EmailSettings:Password"];
+
+                Console.WriteLine("Email: " + emailAddress);
+                Console.WriteLine("Password: " + password);
+                //await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                //await smtp.AuthenticateAsync(emailAddress, password);
+
                 var email = new MimeMessage();
 
-                email.From.Add(MailboxAddress.Parse("tonemail@gmail.com"));
+                // IMPORTANT : on envoie depuis TON compte SMTP
+                email.From.Add(MailboxAddress.Parse(emailAddress));
+
+                // On envoie au destinataire choisi
                 email.To.Add(MailboxAddress.Parse(request.ToEmail));
+
+                // Si quelqu’un répond, ça répond à l’expéditeur du formulaire
+                email.ReplyTo.Add(MailboxAddress.Parse(request.FromEmail));
+
                 email.Subject = "Message depuis le site";
 
                 var builder = new BodyBuilder
@@ -38,20 +61,30 @@ namespace USMB_TECH.Controllers
                 email.Body = builder.ToMessageBody();
 
                 using var smtp = new SmtpClient();
-                await smtp.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
 
-                // IMPORTANT : Ici dois étre mettre mis le email SMTP réel (pas celui du champ FromEmail)
-                await smtp.AuthenticateAsync("tonemail@gmail.com", "APP_PASSWORD");
+                await smtp.ConnectAsync(
+                    _config["EmailSettings:SmtpServer"],
+                    int.Parse(_config["EmailSettings:Port"]),
+                    MailKit.Security.SecureSocketOptions.StartTls
+                );
+
+                await smtp.AuthenticateAsync(emailAddress, password);
 
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
 
                 return Ok("Email envoyé");
             }
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, ex.Message);
+            //}
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                Console.WriteLine(ex.ToString());
+                return StatusCode(500, ex.ToString());
             }
+
         }
     }
 }
