@@ -45,6 +45,6 @@
             content.Add(new StreamContent(stream), "Attachment", file.Name);
         }
 
-        await Http.PostAsync("http://localhost:7093/api/email", content);
+        await Http.PostAsync("https://api-usmbtech-hvevdvgbdwh7aqf5.francecentral-01.azurewebsites.net/api/email", content);
     }
 }
