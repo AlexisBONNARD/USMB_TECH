@@ -1,0 +1,50 @@
+﻿@page "/email"
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+@inject AdminState AdminState
+
+<h3>Envoyer un email</h3>
+
+<input type="email" placeholder="Votre email" @bind="fromEmail" />
+<br />
+
+<input type="email" placeholder="Email destinataire" @bind="toEmail" />
+<br />
+
+<textarea placeholder="Message" @bind="message"></textarea>
+<br />
+
+<InputFile OnChange="HandleFile" />
+<br />
+
+<button @onclick="SendEmail">Envoyer</button>
+
+@code {
+    private string fromEmail;
+    private string toEmail;
+    private string message;
+    private IBrowserFile file;
+
+    private void HandleFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+    private async Task SendEmail()
+    {
+        var content = new MultipartFormDataContent();
+
+        content.Add(new StringContent(fromEmail), "FromEmail");
+        content.Add(new StringContent(toEmail), "ToEmail");
+        content.Add(new StringContent(message), "Message");
+
+        if (file != null)
+        {
+            var stream = file.OpenReadStream(10_000_000);
+            content.Add(new StreamContent(stream), "Attachment", file.Name);
+        }
+
+        await Http.PostAsync("http://localhost:7093/api/email", content);
+    }
+}

@@ -90,6 +90,10 @@ else
         <!-- ========= COLONNE DROITE ========= -->
         <div class="col-right">
             <p>à ajouter la Gestion des réservations</p>
+            <span class="nav-link"
+                  @onclick="@(() => RetourListeEmail("email"))">
+                <span class="">Envoyer email</span>
+            </span>
         </div>
     </div>
 }
@@ -117,5 +121,9 @@ else
     private void RetourLabo(string id, string nomChemin)
     {
         Navigation.NavigateTo($"/{nomChemin}/{id}");
+    }
+    private void RetourListeEmail(string nomChemin)
+    {
+        Navigation.NavigateTo($"/{nomChemin}");
     }
 }

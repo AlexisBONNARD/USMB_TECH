@@ -2,6 +2,7 @@
 @inject IMainService<Domaine_Excellence,int> Domaine_ExcellenceService
 @inject NavigationManager Nav
 @inject IJSRuntime JS
+@inject AdminState AdminState
 
 <HeadContent>
     <link href="css/Home.css" rel="stylesheet" />
@@ -54,7 +55,7 @@
                 {
                     @foreach (var domaine_excellence in domaines_excellences)
                     {
-                        <div class="domaine" @onclick="@(() => NavigationDomaine_Excellence(domaine_excellence.Id_Domaine_Excellence))">
+                        <div class="domaine" @onclick="AdminState.IsAdmin ? (() => NavigationDomaine_Excellence(domaine_excellence.Id_Domaine_Excellence)): null">
                             @if (domaine_excellence?.Photos != null && domaine_excellence.Photos.Any())
                             {
                                 <img src="@domaine_excellence.Photos.First().Url_Photo" class="domaine-img" />
